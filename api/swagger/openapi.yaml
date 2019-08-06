@@ -1,0 +1,436 @@
+openapi: '3.0.1'
+info:
+  description: ''
+  version: '1.0.0'
+  title: 'Parsr API'
+  contact:
+    email: 'sacha.bron.ats@axa.com'
+    name: Parsr
+    url: https://github.com/axa-group/Parsr
+
+servers:
+  - url: 'https://localhost:3001/api/v1'
+    description: 'Localhost server'
+
+paths:
+  /document:
+    post:
+      operationId: postDocument
+      tags:
+        - 'Input'
+      summary: Pipeline Input
+      description: 'Entry point to add a file to the processing queue.'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                config:
+                  $ref: '#/components/schemas/config'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: '{id}'
+          headers:
+            Location:
+              description: Path to the queue for the given job.
+              schema:
+                type: string
+                example: /api/v1.0/queue/{id}
+        '415':
+          description: Unsupported Media Type
+
+  /queue/{id}:
+    get:
+      operationId: getQueueStatus
+      tags:
+        - 'Processing'
+      summary: 'Get the status of the queue'
+      description: 'Get the status of the queue'
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Ok. Returns the status of the queue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/queueStatus'
+        '201':
+          description: Created. Returns the id of the document and links to generated resources.
+          headers:
+            Location:
+              description: Path to the primary output data
+              schema:
+                type: string
+                example: /api/v1.0/json/{id}
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  {
+                    id: '{id}',
+                    json: '/api/v1.0/json/{id}',
+                    markdown: '/api/v1.0/markdown/{id}',
+                    csv: '/api/v1.0/csv/{id}',
+                  }
+                properties:
+                  id:
+                    type: string
+                  json:
+                    type: string
+                  xml:
+                    type: string
+                  markdown:
+                    type: string
+                  text:
+                    type: string
+                  confidences:
+                    type: string
+                  json-compact:
+                    type: string
+                  csv:
+                    type: string
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+
+  /json/{id}:
+    get:
+      operationId: getJson
+      tags:
+        - 'Output'
+      summary: 'Get the JSON representation of the document'
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/json'
+        '404':
+          description: Not Found
+
+  #  /xml/{id}:
+  #    get:
+  #      operationId: getXml
+  #      tags:
+  #      - "Output"
+  #      summary: "Get the XML representation of the document"
+  #      parameters:
+  #      - $ref: '#/components/parameters/id'
+  #      responses:
+  #        "200":
+  #          description: Ok
+  #          content:
+  #            application/xml:
+  #              schema:
+  #                type: array
+  #                items:
+  #                  $ref: '#/components/schemas/json'
+  #                xml:
+  #                  name: document
+  #        "404":
+  #          description: Not Found
+
+  /text/{id}:
+    get:
+      operationId: getText
+      tags:
+        - 'Output'
+      summary: 'Get the raw text representation of the document'
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Ok
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        '404':
+          description: Not Found
+
+  #  /confidences/{id}:
+  #    get:
+  #      operationId: getConfidences
+  #      tags:
+  #      - "Output"
+  #      summary: "Get the confidences of every raw text words"
+  #      parameters:
+  #      - $ref: '#/components/parameters/id'
+  #      responses:
+  #        "200":
+  #          description: Ok
+  #          content:
+  #            text/plain:
+  #              schema:
+  #                type: string
+  #                example:
+  #                  100 98.5 98 95 98.2 90 93 99.8
+  #        "404":
+  #          description: Not Found
+
+  #  /json-compact/{id}:
+  #    get:
+  #      operationId: getJsonCompact
+  #      tags:
+  #      - "Output"
+  #      summary: "Get the JSON representation of the document in a more compact format (to be implemented)"
+  #      parameters:
+  #      - $ref: '#/components/parameters/id'
+  #      responses:
+  #        "501":
+  #          description: Not Implemented
+
+  /markdown/{id}:
+    get:
+      operationId: getMarkdown
+      tags:
+        - 'Output'
+      summary: 'Get the Markdown representation of the document'
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Ok
+          content:
+            text/markdown:
+              schema:
+                type: string
+                example: '## Lorem ipsum dolor sit amet, _consectetur adipiscing_ elit.'
+        '404':
+          description: Not Found
+
+  /csv/{id}:
+    get:
+      operationId: getCsvList
+      tags:
+        - 'Output'
+      summary: 'Get the list of every CSV file path'
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: Paths to CSV files
+                example: ['/api/v1.0/csv/{id}/1/1', '/api/v1.0/csv/{id}/{page}/{table}']
+        '404':
+          description: Not Found
+
+  /csv/{id}/{page}/{table}:
+    get:
+      operationId: getCsv
+      tags:
+        - 'Output'
+      summary: 'Get the CSV representation of a table'
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - name: page
+          in: path
+          description: Page number
+          required: true
+          schema:
+            type: number
+        - name: table
+          in: path
+          description: Table number
+          required: true
+          schema:
+            type: number
+
+      responses:
+        '200':
+          description: Ok
+          content:
+            text/csv:
+              schema:
+                type: string
+                example: |
+                  3x4 table;Empty column;Numbers
+                  ;;
+                  Item A;;3.14
+                  "Item B
+                  on two lines";;1,234.56
+        '404':
+          description: Not Found
+
+components:
+  parameters:
+    id:
+      name: id
+      in: path
+      description: ID of the document
+      required: true
+      schema:
+        type: string
+
+  schemas:
+    queueStatus:
+      type: object
+      properties:
+        progress-percentage:
+          type: number
+          example: 25
+        status:
+          type: string
+          example: 'detecting reading order'
+        start-date:
+          type: string
+          format: date-time
+        estimated-remaining-time:
+          type: number
+          example: 60
+
+    config:
+      type: object
+      properties:
+        version:
+          type: number
+        extractor:
+          type: object
+          properties:
+            pdf:
+              type: string
+              enum: ['pdf2json', 'tesseract', 'abbyy']
+            img:
+              type: string
+              enum: ['tesseract', 'abbyy']
+            language:
+              type: string
+        cleaner:
+          oneOf:
+            - type: string
+            - type: object
+        output:
+          type: object
+          properties:
+            granularity:
+              type: string
+              enum: ['word', 'character', 'line', 'paragraph']
+            formats:
+              type: object
+              properties:
+                json:
+                  type: boolean
+                #json-compact:
+                #  type: boolean
+                text:
+                  type: boolean
+                markdown:
+                  type: boolean
+                #xml:
+                #  type: boolean
+                #confidences:
+                #  type: boolean
+                csv:
+                  type: boolean
+                #pdf:
+                #  type: boolean
+      example:
+        verison: '1.0'
+
+    element:
+      type: object
+      properties:
+        id:
+          type: number
+          xml:
+            attribute: true
+        type:
+          type: string
+          enum:
+            [
+              character,
+              drawing,
+              heading,
+              image,
+              list,
+              paragraph,
+              table,
+              table-cell,
+              table-row,
+              word,
+              line,
+              barcode,
+            ]
+          xml:
+            attribute: true
+        box:
+          $ref: '#/components/schemas/box'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/element'
+    box:
+      type: object
+      properties:
+        l:
+          type: number
+        t:
+          type: number
+        w:
+          type: number
+        h:
+          type: number
+    json:
+      type: object
+      properties:
+        metadata:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+                xml:
+                  attribute: true
+              order:
+                type: number
+        pages:
+          type: array
+          items:
+            type: object
+            properties:
+              pageNumber:
+                type: number
+                xml:
+                  attribute: true
+              box:
+                $ref: '#/components/schemas/box'
+              elements:
+                type: array
+                items:
+                  $ref: '#/components/schemas/element'
+        fonts:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+                xml:
+                  attribute: true
+              name:
+                type: string
+              size:
+                type: number

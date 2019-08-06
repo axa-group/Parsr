@@ -1,0 +1,518 @@
+openapi: 3.0.1
+info:
+  title: Parsr API
+  contact:
+    name: Parsr
+    url: https://github.com/axa-group/Parsr
+    email: sacha.bron.ats@axa.com
+  version: 1.0.0
+servers:
+  - url: https://localhost:3000/api/v1
+    description: Localhost server
+paths:
+  /document:
+    post:
+      tags:
+        - Input
+      summary: Pipeline Input
+      description: Entry point to add a file to the processing queue.
+      operationId: postDocument
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/body'
+      responses:
+        202:
+          description: Accepted
+          headers:
+            Location:
+              description: Path to the queue for the given job.
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: https://doctech.ael.li/api/v1/queue/{id}
+        415:
+          description: Unsupported Media Type
+      x-swagger-router-controller: Input
+  /queue/{id}:
+    get:
+      tags:
+        - Processing
+      summary: Get the status of the queue
+      description: Get the status of the queue
+      operationId: getQueueStatus
+      parameters:
+        - name: id
+          in: path
+          description: ID of the document
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok. Returns the status of the queue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/queueStatus'
+        201:
+          description: Created. Returns the id of the document and links to generated resources.
+          headers:
+            Location:
+              description: Path to the primary output data
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: https://doctech.ael.li/api/v1/json/{id}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_201'
+        404:
+          description: Not Found
+        500:
+          description: Internal Server Error
+      x-swagger-router-controller: Processing
+  /json/{id}:
+    get:
+      tags:
+        - Output
+      summary: Get the JSON representation of the document
+      operationId: getJson
+      parameters:
+        - name: id
+          in: path
+          description: ID of the document
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/json'
+        404:
+          description: Not Found
+      x-swagger-router-controller: Output
+  /xml/{id}:
+    get:
+      tags:
+        - Output
+      summary: Get the XML representation of the document
+      operationId: getXml
+      parameters:
+        - name: id
+          in: path
+          description: ID of the document
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+          content:
+            application/xml:
+              schema:
+                type: array
+                xml:
+                  name: document
+                items:
+                  $ref: '#/components/schemas/json'
+        404:
+          description: Not Found
+      x-swagger-router-controller: Output
+  /text/{id}:
+    get:
+      tags:
+        - Output
+      summary: Get the raw text representation of the document
+      operationId: getText
+      parameters:
+        - name: id
+          in: path
+          description: ID of the document
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        404:
+          description: Not Found
+      x-swagger-router-controller: Output
+  /confidances/{id}:
+    get:
+      tags:
+        - Output
+      summary: Get the confidances of every raw text words
+      operationId: getConfidances
+      parameters:
+        - name: id
+          in: path
+          description: ID of the document
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 100 98.5 98 95 98.2 90 93 99.8
+        404:
+          description: Not Found
+      x-swagger-router-controller: Output
+  /json-compact/{id}:
+    get:
+      tags:
+        - Output
+      summary: Get the JSON representation of the document in a more compact format (to be implemented)
+      operationId: getJsonCompact
+      parameters:
+        - name: id
+          in: path
+          description: ID of the document
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        501:
+          description: Not Implemented
+      x-swagger-router-controller: Output
+  /markdown/{id}:
+    get:
+      tags:
+        - Output
+      summary: Get the Markdown representation of the document
+      operationId: getMarkdown
+      parameters:
+        - name: id
+          in: path
+          description: ID of the document
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+          content:
+            text/markdown:
+              schema:
+                type: string
+                example: '## Lorem ipsum dolor sit amet, _consectetur adipiscing_
+                  elit.'
+        404:
+          description: Not Found
+      x-swagger-router-controller: Output
+  /csv/{id}:
+    get:
+      tags:
+        - Output
+      summary: Get the list of every CSV file path
+      operationId: getCsvList
+      parameters:
+        - name: id
+          in: path
+          description: ID of the document
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                example:
+                  - https://dochtech.ael.li/api/v1/csv/{id}/1/1
+                  - https://dochtech.ael.li/api/v1/csv/{id}{page}/{table}
+                items:
+                  type: string
+                  description: Paths to CSV files
+        404:
+          description: Not Found
+      x-swagger-router-controller: Output
+  /csv/{id}/{page}/{table}:
+    get:
+      tags:
+        - Output
+      summary: Get the CSV representation of a table
+      operationId: getCsv
+      parameters:
+        - name: id
+          in: path
+          description: ID of the document
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+        - name: page
+          in: path
+          description: Page number
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: number
+        - name: table
+          in: path
+          description: Table number
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: number
+      responses:
+        200:
+          description: Ok
+          content:
+            text/csv:
+              schema:
+                type: string
+                example: |
+                  3x4 table;Empty column;Numbers
+                  ;;
+                  Item A;;3.14
+                  "Item B
+                  on two lines";;1,234.56
+        404:
+          description: Not Found
+      x-swagger-router-controller: Output
+components:
+  schemas:
+    queueStatus:
+      type: object
+      properties:
+        progress-percentage:
+          type: number
+          example: 25
+        status:
+          type: string
+          example: detecting reading order
+        start-date:
+          type: string
+          format: date-time
+        estimated-remaining-time:
+          type: number
+          example: 60
+    config:
+      type: object
+      properties:
+        version:
+          type: number
+        extractor:
+          $ref: '#/components/schemas/config_extractor'
+        cleaner:
+          oneOf:
+            - type: string
+            - type: object
+        output:
+          $ref: '#/components/schemas/config_output'
+      example:
+        verison: '1.0'
+    element:
+      type: object
+      properties:
+        id:
+          type: number
+          xml:
+            attribute: true
+        type:
+          type: string
+          xml:
+            attribute: true
+          enum:
+            - character
+            - drawing
+            - heading
+            - image
+            - list
+            - paragraph
+            - table
+            - table-cell
+            - table-row
+            - word
+            - line
+            - barcode
+        box:
+          $ref: '#/components/schemas/box'
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/element'
+    box:
+      type: object
+      properties:
+        l:
+          type: number
+        t:
+          type: number
+        w:
+          type: number
+        h:
+          type: number
+    json:
+      type: object
+      properties:
+        metadata:
+          type: array
+          items:
+            $ref: '#/components/schemas/json_metadata'
+        pages:
+          type: array
+          items:
+            $ref: '#/components/schemas/json_pages'
+        fonts:
+          type: array
+          items:
+            $ref: '#/components/schemas/json_fonts'
+    body:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+        config:
+          $ref: '#/components/schemas/config'
+    inline_response_201:
+      type: object
+      properties:
+        id:
+          type: string
+        json:
+          type: string
+        xml:
+          type: string
+        markdown:
+          type: string
+        text:
+          type: string
+        confidances:
+          type: string
+        json-compact:
+          type: string
+        csv:
+          type: string
+      example: '{"id":"{id}","json":"https://doctech.ael.li/api/v1/json/{id}","markdown":"https://doctech.ael.li/api/v1/markdown/{id}","csv":"https://doctech.ael.li/api/v1/csv/{id}"}'
+    config_extractor:
+      type: object
+      properties:
+        pdf:
+          type: string
+          enum:
+            - pdf2json
+            - tesseract
+            - abbyy
+        img:
+          type: string
+          enum:
+            - tesseract
+            - abbyy
+        language:
+          type: string
+    config_output_formats:
+      type: object
+      properties:
+        json:
+          type: boolean
+        json-compact:
+          type: boolean
+        text:
+          type: boolean
+        markdown:
+          type: boolean
+        xml:
+          type: boolean
+        confidances:
+          type: boolean
+        csv:
+          type: boolean
+        pandas:
+          type: boolean
+        pdf:
+          type: boolean
+    config_output:
+      type: object
+      properties:
+        granularity:
+          type: string
+          enum:
+            - word
+            - character
+            - line
+            - paragraph
+        formats:
+          $ref: '#/components/schemas/config_output_formats'
+    json_metadata:
+      type: object
+      properties:
+        id:
+          type: number
+          xml:
+            attribute: true
+        order:
+          type: number
+    json_pages:
+      type: object
+      properties:
+        pageNumber:
+          type: number
+          xml:
+            attribute: true
+        box:
+          $ref: '#/components/schemas/box'
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/element'
+    json_fonts:
+      type: object
+      properties:
+        id:
+          type: number
+          xml:
+            attribute: true
+        name:
+          type: string
+        size:
+          type: number
+  parameters:
+    id:
+      name: id
+      in: path
+      description: ID of the document
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string

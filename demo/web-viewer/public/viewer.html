@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parsr</title>
+    <link rel="stylesheet" href="/css/compiled.css" />
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-main">
+            <div class="container">
+                <a href="#" class="header-burger float-xs-right hidden-md-up">
+                    <span class="header-burger-line"></span>
+                </a>
+
+                <form id="overviewSearch" class="header-search float-xs-right" data-search="header">
+                    <div class="header-search-dunno">
+                        <input type="text" class="header-search-input" name="file" placeholder="Enter a previous file name (exemple.json)" />
+                        <button type="submit" class="header-search-button">
+                            <span class="sr-only">Search</span>
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </form>
+
+                <nav id="main-nav" class="nav">
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">Upload</a>
+                        </li>
+                        <li class="nav-item active">
+                            <a href="/viewer.html" class="nav-link">Viewer</a>
+                        </li>
+                        <!-- more items -->
+                    </ul>
+                    <div class="nav-stroke" data-spy="stroke" data-target="#main-nav" />
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Viewer</h2>
+        <div id="rendering-spinner" class="loading-spinner">
+            <div class="loading-spinner-animation"></div>
+            <div class="loading-spinner-caption">Rendering JSON Output...</div>
+        </div>
+        <div id="folder"></div>
+    </div>
+    <div id="render"></div>
+    <script src="/js/renderer.js"></script>
+    <script src="/js/viewer.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"outDir": "dist",
+		"target": "es5",
+		"moduleResolution": "node",
+		"noImplicitAny": true,
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"declaration": true,
+		"sourceMap": true,
+		"lib": ["es7"]
+	},
+	"exclude": ["public", "dist"]
+}

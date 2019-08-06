@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+[ -x /usr/libexec/s2i/assemble ] && /usr/libexec/s2i/assemble
+
+
+echo ""
+
+echo "Installing API"
+npm run install:api
+
+echo
+
+echo "Installing Frontend (from demo)"
+# "install:front": "npm install && npm run build:ts && npm run build:sass",
+#npm run install:front
+npm run build:ts 
+cd demo/web-viewer
+npm install 
+npm run build:sass

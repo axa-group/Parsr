@@ -1,0 +1,23 @@
+[
+	{
+		"number": 1,
+		"pages": 1,
+		"height": 1264,
+		"width": 894,
+		"fonts": [{ "fontspec": "0", "size": "14", "family": "ArialMT", "color": "#000000" }],
+		"text": [
+			{ "top": 109, "left": 108, "width": 22, "height": 18, "font": 0, "data": "I’m" },
+			{ "top": 109, "left": 130, "width": 5, "height": 18, "font": 0, "data": " " },
+			{ "top": 109, "left": 135, "width": 9, "height": 18, "font": 0, "data": "a" },
+			{ "top": 109, "left": 144, "width": 5, "height": 18, "font": 0, "data": " " },
+			{ "top": 109, "left": 148, "width": 67, "height": 18, "font": 0, "data": "sentence" },
+			{ "top": 109, "left": 215, "width": 5, "height": 18, "font": 0, "data": " " },
+			{ "top": 109, "left": 220, "width": 29, "height": 18, "font": 0, "data": "with" },
+			{ "top": 109, "left": 249, "width": 5, "height": 18, "font": 0, "data": " " },
+			{ "top": 109, "left": 254, "width": 57, "height": 18, "font": 0, "data": "multiple" },
+			{ "top": 109, "left": 311, "width": 5, "height": 18, "font": 0, "data": " " },
+			{ "top": 109, "left": 315, "width": 49, "height": 18, "font": 0, "data": "words." },
+			{ "top": 109, "left": 364, "width": 5, "height": 18, "font": 0, "data": " " }
+		]
+	}
+]

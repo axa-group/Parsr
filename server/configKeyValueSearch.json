@@ -1,0 +1,107 @@
+{
+	"version": 0.5,
+	"extractor": {
+		"pdf": "pdf2json",
+		"img": "tesseract",
+		"language": "eng"
+	},
+	"cleaner": [
+		"out-of-page-removal",
+		"whitespace-removal",
+		"redundancy-detection",
+		"reading-order-detection",
+		"link-detection",
+		["words-to-line", { "maximumSpaceBetweenWords": 100 }],
+		"lines-to-paragraph",
+		"heading-detection",
+		["header-footer-detection", { "maxMarginPercentage": 15 }],
+		"hierarchy-detection",
+		[
+			"key-value-detection",
+			{
+				"keyValueDividerChars": [":", ";"],
+				"keyPatterns": {
+					"Name": ["Name", "PATIENT NAME", "Patient Name", "PATIENT", "User"],
+					"Date of admission": [
+						"Registered At",
+						"ADMISSION DATE & TIME",
+						"Adm Date/Time",
+						"ADMISSION DATE",
+						"Reg/Admit Date",
+						"ADMISSION DATE TIME"
+					],
+					"Date of discharge": [
+						"Discharged At",
+						"DISCHARGE DATE AND TIME",
+						"DISCHARGE DATE & TIME",
+						"Dis Date/Time",
+						"DISCHARGE DATE",
+						"Discharge Date",
+						"DISCHARGE DATE TIME"
+					],
+					"D.O.B or Age": ["DOB", "SEX / AGE", "Age / Gender"],
+					"Passport or National ID": [
+						"IC No",
+						"IC / PASSPORT NO",
+						"ID No.",
+						"NRIC / PASSPORT",
+						"IC/PP/BC No.",
+						"NRIC/Passport"
+					],
+					"Admission doctor": ["ADMITTING DOCTOR", "Admitting Dr", "DOCTOR", "ATTENDING DOCTOR"],
+					"Ward type": ["WARD / ROOM / CLASS", "Ward/Rm/Bed/Type", "WARD/BED", "BED NO / WARD"],
+					"Patient address": ["Patient Add", "ADDRESS"],
+					"Admission Number": ["Admission No", "ADMISSION NO"],
+					"Account": ["Account", "PATIENT ACCOUNT NO"],
+					"BED TYPE": ["BED TYPE"],
+					"BILL NO": ["BILL NO", "Bill No."],
+					"Invoice Date": ["INVOICE DATE", "Bill Date/Time", "BILL DATE"],
+					"Invoice Number": ["INVOICE NO"],
+					"Bill Type": ["Bill Type"],
+					"Cashier ID": ["CASHIER ID"],
+					"Charge Type": ["CHARGE TYPE", "Charge Type"],
+					"CO. Guarantor": ["CO. GUARANTOR"],
+					"Credit Term": ["CREDIT TERM", "Credit Term"],
+					"Consultant": ["Consultant"],
+					"Date": ["DATE", "Date / Time"],
+					"Debtor Code": ["DEBTOR CODE"],
+					"Debtor Name": ["DEBTOR NAME"],
+					"Employee Name": ["EMPLOYEE NAME"],
+					"Employee No": ["EMPLOYEE NO"],
+					"Financial Type": ["FINANCIAL TYPE"],
+					"GL Number": ["GL No", "GL Ref No", "CLAIMS/PLY/GL NO", "GL REFERENCE NO", "LG Ref No"],
+					"Lab No": ["Lab No"],
+					"Length of Stay": ["Length of Stay(LOS)"],
+					"Location": ["Location"],
+					"Medical Record Number": ["MEDICAL RECORD NO", "MRN"],
+					"PRN": ["PRN"],
+					"Page": ["Page", "PAGE"],
+					"Phone": ["Phone", "TEL."],
+					"Policy Number": ["Policy No", "POLICY / REF NO"],
+					"Prepared By": ["Prepared By"],
+					"Printed": ["Printed"],
+					"Registration Number": ["REGISTRATION NO"],
+					"Relation": ["RELATION"],
+					"Received": ["Received"],
+					"Reported": ["Reported"],
+					"Title": ["Title"],
+					"Visit ID": ["VISIT ID", "Visit ID"],
+					"Visite TYPE": ["VISIT TYPE", "Visit Type"],
+					"Visit No": ["Visit No"]
+				},
+				"threshold": 0.8
+			}
+		]
+	],
+	"output": {
+		"granularity": "word",
+		"includeMarginals": false,
+		"formats": {
+			"json": true,
+			"text": true,
+			"csv": true,
+			"markdown": true,
+			"pdf": false
+		}
+	}
+}

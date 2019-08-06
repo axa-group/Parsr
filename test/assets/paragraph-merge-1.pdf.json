@@ -1,0 +1,39 @@
+[
+	{
+		"number": 1,
+		"pages": 1,
+		"height": 1262,
+		"width": 892,
+		"fonts": [{ "fontspec": "0", "size": "21", "family": "Times", "color": "#161413" }],
+		"text": [
+			{ "top": 69, "left": 261, "width": 51, "height": 31, "font": 0, "data": "Lorem " },
+			{ "top": 69, "left": 316, "width": 48, "height": 31, "font": 0, "data": "ipsum " },
+			{ "top": 69, "left": 370, "width": 42, "height": 31, "font": 0, "data": "dolor " },
+			{ "top": 69, "left": 416, "width": 18, "height": 31, "font": 0, "data": "sit " },
+			{ "top": 69, "left": 438, "width": 43, "height": 31, "font": 0, "data": "amet, " },
+			{ "top": 69, "left": 487, "width": 106, "height": 31, "font": 0, "data": "consectetuer " },
+			{ "top": 69, "left": 596, "width": 83, "height": 31, "font": 0, "data": "adipiscing" },
+			{ "top": 91, "left": 261, "width": 27, "height": 31, "font": 0, "data": "elit. " },
+			{ "top": 91, "left": 293, "width": 17, "height": 31, "font": 0, "data": "Ut " },
+			{ "top": 91, "left": 315, "width": 8, "height": 31, "font": 0, "data": "a " },
+			{ "top": 91, "left": 328, "width": 57, "height": 31, "font": 0, "data": "sapien. " },
+			{ "top": 91, "left": 389, "width": 66, "height": 31, "font": 0, "data": "Aliquam " },
+			{ "top": 91, "left": 460, "width": 55, "height": 31, "font": 0, "data": "aliquet " },
+			{ "top": 91, "left": 520, "width": 46, "height": 31, "font": 0, "data": "purus " },
+			{ "top": 91, "left": 570, "width": 68, "height": 31, "font": 0, "data": "molestie " },
+			{ "top": 91, "left": 642, "width": 46, "height": 31, "font": 0, "data": "dolor." },
+			{ "top": 112, "left": 261, "width": 57, "height": 31, "font": 0, "data": "Integer " },
+			{ "top": 112, "left": 322, "width": 34, "height": 31, "font": 0, "data": "quis " },
+			{ "top": 112, "left": 360, "width": 34, "height": 31, "font": 0, "data": "eros " },
+			{ "top": 112, "left": 399, "width": 16, "height": 31, "font": 0, "data": "ut " },
+			{ "top": 112, "left": 419, "width": 30, "height": 31, "font": 0, "data": "erat " },
+			{ "top": 112, "left": 454, "width": 65, "height": 31, "font": 0, "data": "posuere " },
+			{ "top": 112, "left": 523, "width": 60, "height": 31, "font": 0, "data": "dictum. " },
+			{ "top": 112, "left": 588, "width": 41, "height": 31, "font": 0, "data": "Nulla " },
+			{ "top": 112, "left": 634, "width": 38, "height": 31, "font": 0, "data": "vitae" },
+			{ "top": 134, "left": 261, "width": 49, "height": 31, "font": 0, "data": "turpis. " },
+			{ "top": 134, "left": 314, "width": 70, "height": 31, "font": 0, "data": "Praesent " },
+			{ "top": 134, "left": 389, "width": 46, "height": 31, "font": 0, "data": "lacus." }
+		]
+	}
+]
