@@ -73,7 +73,7 @@ export class JsonExporter extends Exporter {
 			const jsonPage: JsonPage = {
 				box: this.boxToJsonBox(page.box),
 				pageNumber: page.pageNumber,
-				elements: page.elements
+				elements: [...page.elements]
 					.sort(utils.sortElementsByOrder)
 					.map((element: Element) => this.elementToJsonElement(element)),
 			};
@@ -203,7 +203,7 @@ export class JsonExporter extends Exporter {
 			) {
 				jsonElement.content = element.toString();
 			} else {
-				jsonElement.content = element.content
+				jsonElement.content = [...element.content]
 					.sort(utils.sortElementsByOrder)
 					.map(elem => this.elementToJsonElement(elem));
 			}

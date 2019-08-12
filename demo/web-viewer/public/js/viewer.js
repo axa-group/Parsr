@@ -39,7 +39,6 @@ if (document.location.search) {
 			folderTag.style.display = 'block';
 			spinnerTag.classList.remove('is-active');
 			console.error(err);
-			alert(err);
 		});
 }
 
@@ -53,8 +52,8 @@ function updateFolder(files) {
 	str += '<h3>Folder</h3>';
 	str += '<p>';
 	str += files
-		.map(file => {
-			return `<a href="viewer.html?file=${file}">${file}</a><br>`;
+		.map(fileName => {
+			return `<a href="viewer.html?file=${fileName}">${fileName}</a><br>`;
 		})
 		.join('\n');
 	str += '</p>';

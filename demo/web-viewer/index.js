@@ -98,13 +98,13 @@ app.get('/json', (req, res) => {
 
 app.get('/json/:id', (req, res) => {
 	console.log(decodeURIComponent(req.params.id));
-	let path = `${__dirname}/pipeline/output/${decodeURIComponent(req.params.id)}`;
-	if (!fs.existsSync(path)) {
+	let outputPath = `${__dirname}/pipeline/output/${decodeURIComponent(req.params.id)}`;
+	if (!fs.existsSync(outputPath)) {
 		res.sendStatus(404);
 		return;
 	}
 
-	let file = JSON.parse(fs.readFileSync(path, 'utf8'));
+	let file = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
 	res.json(file);
 });
 
@@ -176,8 +176,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
 function processPDF(pdfFile, documentId, configName, res) {
 	console.log('Processing ' + pdfFile);
 
-	debugFlag = true ? 'pipeline' : '';
-	process.env.NODE_DEBUG = debugFlag;
+	process.env.NODE_DEBUG = 'pipeline';
 
 	let args = [
 		`../../dist/bin/index.js`,
@@ -226,11 +225,11 @@ try {
 	// noop: folder already exists
 }
 
-let port = process.argv[2] || 3000;
+const port = 3000;
 const server = app.listen(port, () => {
-	const host = server.address().address === '::' ? '[::]' : server.address().address;
-	const port = server.address().port;
-	console.log(`App listening at http://${host}:${port}`);
+	const hostName = server.address().address === '::' ? '[::]' : server.address().address;
+	const portName = server.address().port;
+	console.log(`App listening at http://${hostName}:${portName}`);
 });
 
 process.on('exit', function(code) {

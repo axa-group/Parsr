@@ -232,7 +232,7 @@ export class NumberCorrectionModule extends Module<Options> {
 	}
 
 	private correctLines(page: Page) {
-		page.getElementsOfType<Line>(Line).map(line => {
+		page.getElementsOfType<Line>(Line).forEach(line => {
 			if (
 				line.content &&
 				line.content.length >= 2 &&

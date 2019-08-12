@@ -27,12 +27,12 @@ mime = magic.Magic(mime=True)
 class ParserApi:
     def __init__(self, server:str):
         self.server = server
-        self.jobId = None
+        self.job_id = None
 
     def __supported_input_files(self) -> list:
         return ['*.pdf', '*.jpg', '*.jpeg', '*.png', '*.tiff', '*.tif',]
 
-    def sendDocument(self, file:str, config:str) -> dict:
+    def send_document(self, file:str, config:str) -> dict:
         packet = {
             'file': (file, open(file, 'rb'), 'application/pdf'),
             'config': (config, open(config, 'rb'), 'application/json'),
@@ -40,7 +40,7 @@ class ParserApi:
         r = requests.post('http://'+self.server+'/api/v1/document', files=packet)
         return {'file': file, 'config': config, 'status_code': r.status_code, 'server_response': r.text}
 
-    def sendDocumentsFromFolder(self, folder:str, config:str) -> list:
+    def send_documents_from_folder(self, folder:str, config:str) -> list:
         responses = []
         os.chdir(folder)
         files = [glob.glob(e) for e in self.__supported_input_files()]
@@ -54,28 +54,28 @@ class ParserApi:
             responses.append({'file': file, 'config': config, 'status_code': r.status_code, 'server_response': r.text})
         return responses
 
-    def getStatus(self, request_id):
+    def get_status(self, request_id):
         r = requests.get('http://{}/api/v1/queue/{}'.format(self.server, request_id))
         return {'request_id': request_id, 'server_response': r.text}
 
-    def getJson(self, request_id):
+    def get_json(self, request_id):
         r = requests.get('http://{}/api/v1/json/{}'.format(self.server, request_id))
         return {'request_id': request_id, 'server_response': r.json()}
 
-    def getMarkdown(self, request_id):
+    def get_markdown(self, request_id):
         r = requests.get('http://{}/api/v1/markdown/{}'.format(self.server, request_id))
         return {'request_id': request_id, 'server_response': r.text}
 
-    def getText(self, request_id):
+    def get_text(self, request_id):
         r = requests.get('http://{}/api/v1/text/{}'.format(self.server, request_id))
         return {'request_id': request_id, 'server_response': r.text}
 
-    def getCsv(self, request_id, page=None, table=None):
+    def get_csv(self, request_id, page=None, table=None):
         if page is None and table is None:
             r = requests.get('http://{}/api/v1/csv/{}'.format(self.server, request_id))
         else:
             r = requests.get('http://{}/api/v1/csv/{}/{}/{}'.format(self.server, request_id, page, table))
         return {'request_id': request_id, 'server_response': r.text}
 
-    def displayMarkdownAsHTML(self, markdown_content):
+    def display_markdown_as_html(self, markdown_content):
         display(HTML(markdown_content))

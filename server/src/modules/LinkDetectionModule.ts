@@ -50,7 +50,7 @@ export class LinkDetectionModule extends Module {
 				} else if ((match = word.content.match(actionGoToRegex))) {
 					word.content = match[1] + match[3];
 					// tslint:disable-next-line:no-conditional-assignment
-				} else if ((match = word.content.match(actionRegex))) {
+				} else if (word.content.match(actionRegex)) {
 					logger.debug('Unknown action: %s', word.content);
 				}
 			});
