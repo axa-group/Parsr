@@ -51,8 +51,9 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 
 			this.order = 0;
 			// The min width is actually as a % of page width
-			this.currentPageMinColumnWidth =
-				((this.options.minColumnWidthInPagePercent / 100) * page.width) | 0;
+			this.currentPageMinColumnWidth = Math.trunc(
+				(this.options.minColumnWidthInPagePercent / 100) * page.width,
+			);
 
 			this.process(elements);
 
@@ -210,15 +211,14 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 
 		for (let i = 0; i < elementsGroups.length; ++i) {
 			// calculate group width
-			let columnWidth = this.calcualteGroupWidth(elementsGroups[i]);
+			const columnWidth = this.calcualteGroupWidth(elementsGroups[i]);
 			if (columnWidth < this.currentPageMinColumnWidth) {
-				// default Right merge
 				if (i < elementsGroups.length - 1) {
+					// default Right merge
 					elementsGroups[i + 1] = [...elementsGroups[i], ...elementsGroups[i + 1]];
 					elementsGroups.splice(i--, 1);
-				}
-				// if no rightMerge possible try left merge
-				else if (i > 0) {
+				} else if (i > 0) {
+					// if no rightMerge possible try left merge
 					elementsGroups[i - 1] = [...elementsGroups[i - 1], ...elementsGroups[i]];
 					elementsGroups.splice(i--, 1);
 				}
