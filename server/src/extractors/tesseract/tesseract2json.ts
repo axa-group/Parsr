@@ -115,7 +115,10 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
 					const word: Word = new Word(
 						new BoundingBox(elem.left, elem.top, elem.width, elem.height),
 						String(elem.text),
-						new Font('Arial', 12), // TODO Proper font size
+						// Tesseract doesn't provide font information then we use a undefined font
+						// that will be ignored in viewer and will calculate 'proper' font size
+						// using word bounds height
+						Font.undefinedFont,
 					);
 
 					word.confidence = elem.conf;

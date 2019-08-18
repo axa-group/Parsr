@@ -30,68 +30,6 @@ export interface FontOptions {
  * of the format of text, including the font name, size, italics, weight, color, etc.
  */
 export class Font {
-	private _name: string;
-	private _size: number;
-	private _weight: string;
-	private _isItalic: boolean;
-	private _isUnderline: boolean;
-	private _color: Color;
-	private _url?: string;
-	private _scaling?: number;
-
-	constructor(name: string, size: number, options?: FontOptions) {
-		this.name = name;
-		this.size = size;
-
-		if (typeof options === 'undefined') {
-			options = {};
-		}
-
-		if (options.weight) {
-			this.weight = options.weight;
-		} else {
-			this.weight = 'medium';
-		}
-
-		if (options.isItalic) {
-			this.isItalic = options.isItalic;
-		} else {
-			this.isItalic = false;
-		}
-
-		if (options.isUnderline) {
-			this.isUnderline = options.isUnderline;
-		} else {
-			this.isUnderline = false;
-		}
-
-		if (options.color) {
-			this.color = options.color;
-		} else {
-			this.color = '#000000';
-		}
-	}
-
-	/**
-	 * Compares a given font's properties with the current font's properties, to check if they are equal.
-	 * @param font The name of the target font to be compared to 'this'.
-	 * @return true/false depending on weather or not the font specified as parameter is the same as the one
-	 * in 'this'.
-	 */
-	public isEqual(font: Font): boolean {
-		if (
-			font.name === this.name &&
-			font.size === this.size &&
-			font.weight === this.weight &&
-			font.isItalic === this.isItalic &&
-			font.isUnderline === this.isUnderline &&
-			font.color === this.color
-		) {
-			return true;
-		}
-		return false;
-	}
-
 	/**
 	 * Getter name
 	 * @return {string}
@@ -218,5 +156,73 @@ export class Font {
 	 */
 	public set scaling(value: number) {
 		this._scaling = value;
+	}
+
+	public static undefinedFont: Font = new Font('undefined', 0);
+	private _name: string;
+	private _size: number;
+	private _weight: string;
+	private _isItalic: boolean;
+	private _isUnderline: boolean;
+	private _color: Color;
+	private _url?: string;
+	private _scaling?: number;
+
+	constructor(name: string, size: number, options?: FontOptions) {
+		this.name = name;
+		this.size = size;
+
+		if (typeof options === 'undefined') {
+			options = {};
+		}
+
+		if (options.weight) {
+			this.weight = options.weight;
+		} else {
+			this.weight = 'medium';
+		}
+
+		if (options.isItalic) {
+			this.isItalic = options.isItalic;
+		} else {
+			this.isItalic = false;
+		}
+
+		if (options.isUnderline) {
+			this.isUnderline = options.isUnderline;
+		} else {
+			this.isUnderline = false;
+		}
+
+		if (options.color) {
+			this.color = options.color;
+		} else {
+			this.color = '#000000';
+		}
+
+		if (options.scaling) {
+			this.scaling = options.scaling;
+		}
+	}
+
+	/**
+	 * Compares a given font's properties with the current font's properties, to check if they are equal.
+	 * @param font The name of the target font to be compared to 'this'.
+	 * @return true/false depending on weather or not the font specified as parameter is the same as the one
+	 * in 'this'.
+	 */
+	public isEqual(font: Font): boolean {
+		if (
+			font.name === this.name &&
+			font.size === this.size &&
+			font.weight === this.weight &&
+			font.isItalic === this.isItalic &&
+			font.isUnderline === this.isUnderline &&
+			font.color === this.color &&
+			font.scaling === this.scaling
+		) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -83,7 +83,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
 						);
 					});
 
-					const doc: Document = new Document(pages);
+					const doc: Document = new Document(pages, pdfInputFile);
 					logger.debug('Done');
 					resolve(doc);
 				} else {
