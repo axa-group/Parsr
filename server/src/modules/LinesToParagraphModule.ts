@@ -142,8 +142,13 @@ export class LinesToParagraphModule extends Module<Options> {
 
 		let orientation = this.detectParagraphOrientation(paragraph, bottomLine);
 
-		if (orientation === 'DISALIGNED' || orientation === 'JUSTIFIED') {
+		if (orientation === 'JUSTIFIED') {
 			return false;
+		}
+
+		// for now by default we fall back to Left if we can not determine the allignement.
+		if (orientation === 'DISALIGNED') {
+			orientation = 'LEFT';
 		}
 
 		linecontent.sort((a: Word, b: Word) => {
