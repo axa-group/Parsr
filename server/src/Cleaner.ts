@@ -15,6 +15,7 @@
  */
 
 import { HeaderFooterDetectionModule } from './modules/HeaderFooterDetectionModule';
+import { PageNumberDetectionModule } from './modules/PageNumberDetectionModule';
 import { HeadingDetectionModule } from './modules/HeadingDetectionModule';
 import { HierarchyDetectionModule } from './modules/HierarchyDetectionModule';
 import { KeyValueDetectionModule } from './modules/KeyValueDetectionModule';
@@ -53,6 +54,7 @@ export class Cleaner {
 		HierarchyDetectionModule,
 		LinkDetectionModule,
 		HeaderFooterDetectionModule,
+		PageNumberDetectionModule,
 		NumberCorrectionModule,
 		RedundancyDetectionModule,
 		WhitespaceRemovalModule,

@@ -9,13 +9,13 @@
 		"out-of-page-removal",
 		"whitespace-removal",
 		"redundancy-detection",
-	
-		["header-footer-detection", { "maxMarginPercentage": 15 }],
 
+		["header-footer-detection", { "maxMarginPercentage": 15 }],
 		["reading-order-detection", {"minColumnWidthInPagePercent": 15}],
 		"link-detection",
 		["words-to-line", { "maximumSpaceBetweenWords": 100 }],
 		"lines-to-paragraph",
+		["page-number-detection", { "maxMarginPercentage": 15 }],
 		"heading-detection",
 		"hierarchy-detection",
 		["regex-matcher", {
