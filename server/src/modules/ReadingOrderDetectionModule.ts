@@ -17,6 +17,7 @@
 import { Document, Element, Page } from '../types/DocumentRepresentation';
 import * as utils from '../utils';
 import { Module } from './Module';
+import { HeaderFooterDetectionModule } from './HeaderFooterDetectionModule';
 
 // TODO Handle rtl (right-to-left) languages
 /**
@@ -37,6 +38,8 @@ const defaultOptions: Options = {
 
 export class ReadingOrderDetectionModule extends Module<Options> {
 	public static moduleName = 'reading-order-detection';
+
+	public static dependencies = [HeaderFooterDetectionModule];
 	private order: number = 0;
 	private currentPageMinColumnWidth: number = 5;
 
@@ -68,14 +71,26 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 
 	private process(elements: Element[]): void {
 		const verticalGroups = this.findVerticalGroups(elements);
-		this.processVerticalGroups(verticalGroups);
+		this.processVerticalGroups(verticalGroups, 0, 0);
 	}
 
-	private processVerticalGroups(groups: Element[][]): void {
+	private processVerticalGroups(
+		groups: Element[][],
+		columnLeftParent: number,
+		columnRightParent: number,
+	): void {
 		groups.forEach(group => {
 			const horizontalGroups = this.findHorizontalGroups(group);
 			const superHorizontalGroups = this.findHorizontalSuperGroups(horizontalGroups);
-			this.processHorizontalGroups(superHorizontalGroups);
+
+			let columnRight = this.calculateColumnRight(horizontalGroups);
+			let columnLeft = this.calculateColumnLeft(horizontalGroups);
+			if (horizontalGroups.length == 1 && columnRightParent) {
+				columnRight = columnRightParent;
+				columnLeft = columnLeftParent;
+			}
+
+			this.processHorizontalGroups(superHorizontalGroups, columnLeft, columnRight);
 		});
 	}
 
@@ -100,18 +115,22 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 		return superGroups;
 	}
 
-	private processHorizontalGroups(groups: Element[][]): void {
+	private processHorizontalGroups(
+		groups: Element[][],
+		columnLeft: number,
+		columnRight: number,
+	): void {
 		if (groups.length > 1) {
 			groups.forEach(group => {
 				const verticalGroups = this.findVerticalGroups(group);
-				this.processVerticalGroups(verticalGroups);
+				this.processVerticalGroups(verticalGroups, columnLeft, columnRight);
 			});
 		} else if (groups.length === 1) {
-			this.processBlock(groups[0]);
+			this.processBlock(groups[0], columnLeft, columnRight);
 		}
 	}
 
-	private processBlock(group: Element[]): void {
+	private processBlock(group: Element[], columnLeft: number, columnRight: number): void {
 		group.sort((a, b) => {
 			// Some line are not really flat. This fixes the uncertainty.
 			if (Math.abs(a.top - b.top) > Math.min(a.height, b.height) / 2) {
@@ -123,6 +142,8 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 
 		group.forEach(element => {
 			element.properties.order = this.order++;
+			element.properties.cr = ((columnRight * 100) | 0) / 100;
+			element.properties.cl = ((columnLeft * 100) | 0) / 100;
 		});
 	}
 
@@ -241,5 +262,47 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 			}
 		}
 		return maxX - minX;
+	}
+
+	private calculateColumnRight(groups: Element[][]) {
+		let maxX = 0;
+
+		for (let i = 0; i < groups.length; ++i) {
+			for (let j = 0; j < groups[i].length; ++j) {
+				if (
+					groups[i][j].properties.isFooter ||
+					groups[i][j].properties.isHeader ||
+					groups[i][j].properties.isPageNumber ||
+					groups[i][j].properties.isRedundant
+				) {
+					continue;
+				}
+				if (groups[i][j].left + groups[i][j].width > maxX) {
+					maxX = groups[i][j].left + groups[i][j].width;
+				}
+			}
+		}
+		return maxX;
+	}
+
+	private calculateColumnLeft(groups: Element[][]) {
+		let minX = 100000000;
+
+		for (let i = 0; i < groups.length; ++i) {
+			for (let j = 0; j < groups[i].length; ++j) {
+				if (
+					groups[i][j].properties.isFooter ||
+					groups[i][j].properties.isHeader ||
+					groups[i][j].properties.isPageNumber ||
+					groups[i][j].properties.isRedundant
+				) {
+					continue;
+				}
+				if (groups[i][j].left < minX) {
+					minX = groups[i][j].left;
+				}
+			}
+		}
+		return minX;
 	}
 }

@@ -17,7 +17,6 @@
 import { BoundingBox, Document, Element, Paragraph, Text } from '../types/DocumentRepresentation';
 import * as utils from '../utils';
 import logger from '../utils/Logger';
-import { LinesToParagraphModule } from './LinesToParagraphModule';
 import { Module } from './Module';
 
 /**
@@ -37,7 +36,7 @@ const defaultOptions: Options = {
 
 export class HeaderFooterDetectionModule extends Module<Options> {
 	public static moduleName = 'header-footer-detection';
-	public static dependencies = [LinesToParagraphModule];
+	public static dependencies = [];
 
 	constructor(options?: Options) {
 		super(options, defaultOptions);

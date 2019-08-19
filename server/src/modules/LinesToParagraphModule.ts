@@ -22,6 +22,7 @@ import {
 	Line,
 	Page,
 	Paragraph,
+	Word,
 } from '../types/DocumentRepresentation';
 import * as utils from '../utils';
 import logger from '../utils/Logger';
@@ -88,6 +89,7 @@ export class LinesToParagraphModule extends Module<Options> {
 						// isntBulletList(prev, curr) &&
 						// TODO handle table elements: !line1.properties.isTableElement &&
 						// TODO handle table elements: !line2.properties.isTableElement &&
+						!this.havePlaceForFirstWordInPreviousLine(prev, curr, mergeGroup) &&
 						prev instanceof Heading === curr instanceof Heading
 					) {
 						mergeGroup.push(curr);
@@ -99,6 +101,19 @@ export class LinesToParagraphModule extends Module<Options> {
 				}
 
 				toBeMerged.push(mergeGroup);
+			}
+
+			// Clean the properties.cr  information as it is not usefull down the line
+			for (let i = 0; i < toBeMerged.length; ++i) {
+				for (let j = 0; j < toBeMerged[i].length; ++j) {
+					let line = toBeMerged[i][j];
+					for (let k = 0; k < line.content.length; ++k) {
+						if (line.content[k].properties && line.content[k].properties.cr) {
+							delete line.content[k].properties.cr;
+							delete line.content[k].properties.cl;
+						}
+					}
+				}
 			}
 
 			let newOrder = 0;
@@ -117,6 +132,153 @@ export class LinesToParagraphModule extends Module<Options> {
 		});
 
 		return doc;
+	}
+
+	private havePlaceForFirstWordInPreviousLine(topLine: Line, bottomLine: Line, paragraph: Line[]) {
+		let topLineRight: number = topLine.right;
+		let topLineLeft: number = topLine.left;
+
+		let linecontent: Word[] = bottomLine.content;
+
+		let orientation = this.detectParagraphOrientation(paragraph, bottomLine);
+
+		if (orientation === 'DISALIGNED' || orientation === 'JUSTIFIED') {
+			return false;
+		}
+
+		linecontent.sort((a: Word, b: Word) => {
+			return a.left < b.left ? -1 : 1;
+		});
+
+		let firstWord: Word = linecontent[0];
+
+		let hyphenIndex = firstWord.content.length;
+
+		let text: string = firstWord.content.toString();
+		text = text.toLowerCase();
+
+		for (let i = 1; i < text.length; ++i) {
+			// special break character
+			// TODO : Expand with all standart unicode set of separator
+			if (' \t.?!,;-:。？！，；：'.indexOf(text[i]) != -1) {
+				hyphenIndex = i;
+				break;
+			}
+		}
+
+		if (hyphenIndex != firstWord.content.length) {
+			hyphenIndex++;
+		}
+
+		// todo : better hyphen rules
+		let supposedWidth: number = (firstWord.width / firstWord.content.length) * hyphenIndex;
+
+		if (
+			orientation === 'LEFT' &&
+			topLineRight + supposedWidth < firstWord.properties.cr - this.options.alignUncertainty
+		) {
+			return true;
+		}
+
+		if (
+			orientation === 'RIGHT' &&
+			topLineLeft - supposedWidth > firstWord.properties.cl + this.options.alignUncertainty
+		) {
+			return true;
+		}
+
+		if (
+			orientation === 'CENTER' &&
+			topLineLeft - firstWord.properties.cl + (firstWord.properties.cr - topLineRight) >
+				supposedWidth + this.options.alignUncertainty
+		) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private detectParagraphOrientation(paragraph: Line[], newLine: Line) {
+		let left: number[] = [];
+		let right: number[] = [];
+		let center: number[] = [];
+
+		for (let i = 0; i < paragraph.length; ++i) {
+			let line = paragraph[i];
+			let orientation = this.getLineOrientation(line);
+			left.push(orientation.left);
+			right.push(orientation.right);
+			center.push(orientation.center);
+		}
+		let orientation = this.getLineOrientation(newLine);
+		left.push(orientation.left);
+		right.push(orientation.right);
+		center.push(orientation.center);
+
+		let isLeftAligned = false;
+		left.sort();
+		if (Math.abs(left[0] - left[left.length - 1]) < this.options.alignUncertainty * 2) {
+			isLeftAligned = true;
+		}
+
+		let isRightAligned = false;
+		right.sort();
+		if (Math.abs(right[0] - right[right.length - 1]) < this.options.alignUncertainty * 2) {
+			isRightAligned = true;
+		}
+
+		let isCenterAligned = false;
+		center.sort();
+		if (Math.abs(center[0] - center[center.length - 1]) < this.options.alignUncertainty * 2) {
+			isCenterAligned = true;
+		}
+
+		if (isRightAligned && isLeftAligned) {
+			return 'JUSTIFIED';
+		}
+
+		if (isLeftAligned) {
+			return 'LEFT';
+		}
+
+		if (isRightAligned) {
+			return 'RIGHT';
+		}
+
+		if (isCenterAligned) {
+			return 'CENTER';
+		}
+
+		return 'DISALIGNED';
+	}
+
+	private getLineOrientation(line: Line) {
+		let linecontent: Word[] = line.content;
+		let left: number = 0;
+		let right: number = 0;
+		let center: number = 0;
+
+		linecontent.sort((a: Word, b: Word) => {
+			return a.left < b.left ? -1 : 1;
+		});
+
+		let firstWord = linecontent[0];
+		left = firstWord.box.left;
+
+		linecontent.sort((a: Word, b: Word) => {
+			return a.right > b.right ? -1 : 1;
+		});
+
+		let lastWord = linecontent[0];
+		right = lastWord.box.right;
+
+		center = firstWord.box.left + (lastWord.box.right - firstWord.box.left) / 2;
+
+		return {
+			left: left,
+			right: right,
+			center: center,
+		};
 	}
 
 	/**
