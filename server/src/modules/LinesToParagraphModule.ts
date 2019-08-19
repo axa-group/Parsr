@@ -274,6 +274,12 @@ export class LinesToParagraphModule extends Module<Options> {
 
 		center = firstWord.box.left + (lastWord.box.right - firstWord.box.left) / 2;
 
+		// reset line to original
+
+		linecontent.sort((a: Word, b: Word) => {
+			return a.left < b.left ? -1 : 1;
+		});
+
 		return {
 			left: left,
 			right: right,
