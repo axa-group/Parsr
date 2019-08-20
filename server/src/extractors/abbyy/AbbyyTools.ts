@@ -172,7 +172,11 @@ export class AbbyyTools extends Extractor {
 		}
 		if ('scaling' in formattingObj) {
 			fontoptions.scaling = parseInt(formattingObj.scaling, 10);
+		} else {
+			// default scaling to use
+			fontoptions.scaling = 1000;
 		}
+
 		if ('ff' in formattingObj) {
 			ff = formattingObj.ff;
 		}
