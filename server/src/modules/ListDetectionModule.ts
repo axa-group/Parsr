@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { Document, Text } from '../types/DocumentRepresentation';
+import { BoundingBox, Document, List, Paragraph, Text } from '../types/DocumentRepresentation';
+import * as utils from '../utils';
 import { Module } from './Module';
 
 // TODO Handle ordered list.
@@ -31,10 +32,31 @@ export class ListDetectionModule extends Module {
 		const maxBulletLength = 3;
 
 		doc.pages.forEach(page => {
-			// let texts: Text[] = page.getTexts();
+			// const texts: Text[] = page.getElementsOfType<Paragraph>(Paragraph);
 		});
 
 		return doc;
+
+		function createNewList(paragraphs: Paragraph[], isOrdered: boolean): List {
+			return new List(BoundingBox.merge([...paragraphs.map(p => p.box)]), paragraphs, isOrdered);
+		}
+
+		function addItemToList(existingList: List, paragraph: Paragraph) {
+			existingList.addParagraph(paragraph);
+		}
+
+		function detectKindOfListItem(paragraph: Paragraph): boolean {
+			let isOrderedList: boolean = false;
+			if (paragraph.content.length !== 0) {
+				if (utils.isBullet(paragraph.content[0].content[0])) {
+					isOrderedList = false;
+					paragraph.content[0].content.shift();
+				} else if (utils.isNumbering(paragraph.content[0].content[0])) {
+					isOrderedList = true;
+				}
+			}
+			return isOrderedList;
+		}
 
 		function isAligned(bullet: Text, text: Text): boolean {
 			return (

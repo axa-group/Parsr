@@ -332,7 +332,7 @@ export function hasSameLocation(uncertainty: number, ...texts: Text[]): boolean 
  * @returns true/false representing the result of the check.
  */
 export function isBullet(text: Text): boolean {
-	const bulletCharacters: string[] = ['●', '', '•', '', 'º', '■', '–', '·', '*', '-'];
+	const bulletCharacters: string[] = ['●', '', '•', '', 'º', '■', '–', '·', '*', '-', '→'];
 	const bulletOr = bulletCharacters.map(b => `\\${b}`).join('|');
 	return new RegExp(`^(${bulletOr})`).test(text.toString().trim());
 }
