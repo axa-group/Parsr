@@ -66,46 +66,17 @@ export class LinesToParagraphModule extends Module<Options> {
 				);
 				return page;
 			}
-
-			const lines: Line[] = page.getElementsOfType<Line>(Line).sort(utils.sortElementsByOrder);
-			const toBeMerged: Line[][] = [];
-			const otherElements: Element[] = page.elements.filter(
+			const lines: Line[] = page
+				.getElementsOfType<Line>(Line, false)
+				.sort(utils.sortElementsByOrder);
+			const otherPageElements: Element[] = page.elements.filter(
 				element => !(element instanceof Line) || !lines.includes(element),
 			);
-
-			for (let i = 0; i < lines.length; i++) {
-				const firstLine: Line = lines[i];
-				const mergeGroup: Line[] = [firstLine];
-
-				for (let j = i + 1; j < lines.length; j++) {
-					const prev: Line = lines[j - 1];
-					const curr: Line = lines[j];
-
-					if (
-						//// FIXME (!this.options.checkFont || line1.font === line2.font) &&
-						this.isAdjacentLine(prev, curr) &&
-						(utils.isAligned([prev, curr], this.options.alignUncertainty) ||
-							utils.isAlignedCenter([prev, curr], this.options.alignUncertainty)) &&
-						// isntBulletList(prev, curr) &&
-						// TODO handle table elements: !line1.properties.isTableElement &&
-						// TODO handle table elements: !line2.properties.isTableElement &&
-						!this.havePlaceForFirstWordInPreviousLine(prev, curr, mergeGroup) &&
-						prev instanceof Heading === curr instanceof Heading
-					) {
-						mergeGroup.push(curr);
-						i++;
-					} else {
-						// i = j;
-						break;
-					}
-				}
-
-				toBeMerged.push(mergeGroup);
-			}
+			const otherElements: Element[] = this.joinLinesInElements(otherPageElements);
+			const joinedLines: Line[][] = this.joinLines(lines);
 
 			// Clean the properties.cr  information as it is not usefull down the line
-			// for (let i = 0; i < toBeMerged.length; ++i) {
-			for (const theseLines of toBeMerged) {
+			for (const theseLines of joinedLines) {
 				for (const thisLine of theseLines) {
 					for (const thisWord of thisLine.content) {
 						if (thisWord.properties && thisWord.properties.cr) {
@@ -115,23 +86,95 @@ export class LinesToParagraphModule extends Module<Options> {
 					}
 				}
 			}
-
-			let newOrder = 0;
-			const paragraphs: Paragraph[] = toBeMerged.map((group: Line[]) => {
-				const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
-					new Paragraph(new BoundingBox(0, 0, 0, 0)),
-					...group,
-				);
-				paragraph.properties.order = newOrder++;
-				return paragraph;
-			});
-
+			const paragraphs: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
 			page.elements = otherElements.concat(paragraphs);
 
 			return page;
 		});
 
 		return doc;
+	}
+
+	private joinLinesInElements(elements: Element[]) {
+		elements.forEach(element => {
+			this.joinLinesFromElement(element);
+		});
+		return elements;
+	}
+
+	private joinLinesFromElement(element: Element): Line {
+		if (
+			!(element instanceof Line) &&
+			element.content &&
+			typeof element.content !== 'string' &&
+			element.content.length !== 0
+		) {
+			const containedLines: Line[] = [];
+			element.content.forEach(el => {
+				const containedLine = this.joinLinesFromElement(el);
+				if (containedLine) {
+					containedLines.push(containedLine);
+				}
+			});
+			if (containedLines.length > 0) {
+				this.updateElementContents(element, containedLines);
+			}
+		} else if (element instanceof Line) {
+			return element;
+		}
+		return null;
+	}
+
+	private updateElementContents(element: Element, lines: Line[]) {
+		const joinedLines = this.joinLines(lines);
+		const elementContent = this.mergeLinesIntoParagraphs(joinedLines);
+		element.content = elementContent;
+	}
+
+	private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
+		let newOrder = 0;
+		return joinedLines.map((group: Line[]) => {
+			const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
+				new Paragraph(new BoundingBox(0, 0, 0, 0)),
+				...group,
+			);
+			paragraph.properties.order = newOrder++;
+			return paragraph;
+		});
+	}
+
+	private joinLines(lines: Line[]): Line[][] {
+		const toBeMerged: Line[][] = [];
+		for (let i = 0; i < lines.length; i++) {
+			const firstLine: Line = lines[i];
+			const mergeGroup: Line[] = [firstLine];
+
+			for (let j = i + 1; j < lines.length; j++) {
+				const prev: Line = lines[j - 1];
+				const curr: Line = lines[j];
+
+				if (
+					//// FIXME (!this.options.checkFont || line1.font === line2.font) &&
+					this.isAdjacentLine(prev, curr) &&
+					(utils.isAligned([prev, curr], this.options.alignUncertainty) ||
+						utils.isAlignedCenter([prev, curr], this.options.alignUncertainty)) &&
+					// isntBulletList(prev, curr) &&
+					// TODO handle table elements: !line1.properties.isTableElement &&
+					// TODO handle table elements: !line2.properties.isTableElement &&
+					!this.havePlaceForFirstWordInPreviousLine(prev, curr, mergeGroup) &&
+					prev instanceof Heading === curr instanceof Heading
+				) {
+					mergeGroup.push(curr);
+					i++;
+				} else {
+					// i = j;
+					break;
+				}
+			}
+
+			toBeMerged.push(mergeGroup);
+		}
+		return toBeMerged;
 	}
 
 	private havePlaceForFirstWordInPreviousLine(topLine: Line, bottomLine: Line, paragraph: Line[]) {
@@ -203,13 +246,13 @@ export class LinesToParagraphModule extends Module<Options> {
 		return false;
 	}
 
-	private detectParagraphOrientation(lines: Line[], newLine: Line) {
+	private detectParagraphOrientation(paragraph: Line[], newLine: Line) {
 		const left: number[] = [];
 		const right: number[] = [];
 		const center: number[] = [];
 
-		for (const thisLine of lines) {
-			const orient = this.getLineOrientation(thisLine);
+		for (const line of paragraph) {
+			const orient = this.getLineOrientation(line);
 			left.push(orient.left);
 			right.push(orient.right);
 			center.push(orient.center);

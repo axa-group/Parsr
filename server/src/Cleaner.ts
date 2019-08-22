@@ -29,6 +29,7 @@ import { RedundancyDetectionModule } from './modules/RedundancyDetectionModule';
 import { RegexMatcherModule } from './modules/RegexMatcherModule';
 import { RemoteModule } from './modules/RemoteModule';
 import { SeparateWordsModule } from './modules/SeparateWordsModule';
+import { TableDetectionModule } from './modules/TableDetectionModule';
 import { WhitespaceRemovalModule } from './modules/WhitespaceRemovalModule';
 import { WordsToLineModule } from './modules/WordsToLineModule';
 import { CleanerConfig, Config } from './types/Config';
@@ -59,6 +60,7 @@ export class Cleaner {
 		RedundancyDetectionModule,
 		WhitespaceRemovalModule,
 		HeadingDetectionModule,
+		TableDetectionModule,
 		RegexMatcherModule,
 		RemoteModule,
 		SeparateWordsModule,

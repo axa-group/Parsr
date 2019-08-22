@@ -70,6 +70,7 @@ class Renderer {
 		this.currentHeight = 0;
 		this.metadata = [];
 		console.log('pdf', pdf);
+		//console.log('Fonts', this.pdf.fonts);
 		// this.createStyleDico(this.pdf.fontCatalog);
 
 		pdf.metadata.forEach(m => {
@@ -87,7 +88,7 @@ class Renderer {
 			pageDiv.style.width = page.box.w + 'pt';
 			pageDiv.title = `Page ${i + 1} / ${this.pdf.pages.length}`;
 			this.target.appendChild(pageDiv);
-			this.renderPage(page, pageDiv);
+			this.renderPage(page, pageDiv, this.pdf.fonts);
 			this.currentHeight += page.box.h;
 		}
 
@@ -121,7 +122,7 @@ class Renderer {
 		}
 	}
 
-	renderPage(page, target) {
+	renderPage(page, target, fonts) {
 		if (page.locale) {
 			let div = document.createElement('div');
 			div.innerText = page.localeCode;
@@ -146,11 +147,11 @@ class Renderer {
 		}
 
 		for (let i = 0; i < page.elements.length; i++) {
-			this.renderElement(page.elements[i], target, 0, 0, 0, 1);
+			this.renderElement(page.elements[i], target, 0, 0, 0, 1, fonts);
 		}
 	}
 
-	renderElement(element, parent, leftRef, topRef, depth, ratio) {
+	renderElement(element, parent, leftRef, topRef, depth, ratio, fonts) {
 		let e = element;
 		e.metadata = e.metadata.map(id => this.metadata[id]);
 
@@ -162,6 +163,7 @@ class Renderer {
 					parseFloat(parent.style.left) + leftRef,
 					parseFloat(parent.style.top) + topRef,
 					depth + 1,
+					fonts
 				);
 			}
 
@@ -230,8 +232,21 @@ class Renderer {
 		div.style.height = e.box.h + 'pt';
 		div.style.zIndex = 100 + depth;
 
-		if (e.type !== 'character') {
-			div.style.fontSize = e.box.h * 0.85 + 'pt'; // FIXME use proper font size
+		if (e.type !== 'character' && e.font) {			
+			let font = fonts.filter(font => font.id === e.font)[0];			
+			if(font) {
+				if(font.scaling) {
+					//ABBYY	
+					div.style.fontSize = (font.size * (font.scaling/1000)) + 'em';
+				} else if (font.name === "undefined") {
+					//tesseract	
+					div.style.fontSize = e.box.h * 0.85 + 'pt';
+				} else {
+					//pdf2json		
+					let adjustedFontSize = parseInt(font.size) * 0.95;
+					div.style.fontSize = adjustedFontSize + 'px';
+				}							
+			}			
 		}
 
 		div.classList.add(`element-${e.type}`);
@@ -258,7 +273,9 @@ class Renderer {
 		}
 
 		if (typeof e.content === 'string') {
-			div.innerText = e.content;
+			let textWrapper = document.createElement('span');
+			textWrapper.innerText = e.content;
+			div.appendChild(textWrapper);
 			div.setAttribute('data-text', e.content);
 			div.title =
 				(JSON.stringify(e.content).length > 40 ? '...' : e.content) +
@@ -278,6 +295,7 @@ class Renderer {
 					parseFloat(div.style.top) + topRef,
 					depth + 1,
 					ratio,
+					fonts
 				);
 			}
 		} else {

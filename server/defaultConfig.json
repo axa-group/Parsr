@@ -9,9 +9,9 @@
 		"out-of-page-removal",
 		"whitespace-removal",
 		"redundancy-detection",
-
+		["table-detection", { "pages": "all", "flavor": "lattice" }],
 		["header-footer-detection", { "maxMarginPercentage": 15 }],
-		["reading-order-detection", {"minColumnWidthInPagePercent": 15}],
+		["reading-order-detection", { "minColumnWidthInPagePercent": 15 }],
 		"link-detection",
 		["words-to-line", { "maximumSpaceBetweenWords": 100 }],
 		"lines-to-paragraph",
