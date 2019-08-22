@@ -10,12 +10,13 @@
 		"whitespace-removal",
 		"redundancy-detection",
 		["table-detection", { "pages": "all", "flavor": "lattice" }],
-		"reading-order-detection",
+		["header-footer-detection", { "maxMarginPercentage": 15 }],
+		["reading-order-detection", { "minColumnWidthInPagePercent": 15 }],
 		"link-detection",
 		["words-to-line", { "maximumSpaceBetweenWords": 100 }],
 		"lines-to-paragraph",
+		["page-number-detection", { "maxMarginPercentage": 15 }],
 		"heading-detection",
-		["header-footer-detection", { "maxMarginPercentage": 15 }],
 		"hierarchy-detection",
 		["regex-matcher", {
 			"queries": [
