@@ -15,7 +15,6 @@
  */
 
 import { HeaderFooterDetectionModule } from './modules/HeaderFooterDetectionModule';
-import { PageNumberDetectionModule } from './modules/PageNumberDetectionModule';
 import { HeadingDetectionModule } from './modules/HeadingDetectionModule';
 import { HierarchyDetectionModule } from './modules/HierarchyDetectionModule';
 import { KeyValueDetectionModule } from './modules/KeyValueDetectionModule';
@@ -24,6 +23,7 @@ import { LinkDetectionModule } from './modules/LinkDetectionModule';
 import { Module } from './modules/Module';
 import { NumberCorrectionModule } from './modules/NumberCorrectionModule';
 import { OutOfPageRemovalModule } from './modules/OutOfPageRemovalModule';
+import { PageNumberDetectionModule } from './modules/PageNumberDetectionModule';
 import { ReadingOrderDetectionModule } from './modules/ReadingOrderDetectionModule';
 import { RedundancyDetectionModule } from './modules/RedundancyDetectionModule';
 import { RegexMatcherModule } from './modules/RegexMatcherModule';

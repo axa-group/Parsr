@@ -16,8 +16,8 @@
 
 import { Document, Element, Page } from '../types/DocumentRepresentation';
 import * as utils from '../utils';
-import { Module } from './Module';
 import { HeaderFooterDetectionModule } from './HeaderFooterDetectionModule';
+import { Module } from './Module';
 
 // TODO Handle rtl (right-to-left) languages
 /**
@@ -85,7 +85,7 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 
 			let columnRight = this.calculateColumnRight(horizontalGroups);
 			let columnLeft = this.calculateColumnLeft(horizontalGroups);
-			if (horizontalGroups.length == 1 && columnRightParent) {
+			if (horizontalGroups.length === 1 && columnRightParent) {
 				columnRight = columnRightParent;
 				columnLeft = columnLeftParent;
 			}
@@ -142,8 +142,8 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 
 		group.forEach(element => {
 			element.properties.order = this.order++;
-			element.properties.cr = ((columnRight * 100) | 0) / 100;
-			element.properties.cl = ((columnLeft * 100) | 0) / 100;
+			element.properties.cr = Math.trunc(columnRight * 100) / 100;
+			element.properties.cl = Math.trunc(columnLeft * 100) / 100;
 		});
 	}
 
@@ -267,18 +267,18 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 	private calculateColumnRight(groups: Element[][]) {
 		let maxX = 0;
 
-		for (let i = 0; i < groups.length; ++i) {
-			for (let j = 0; j < groups[i].length; ++j) {
+		for (const theseElements of groups) {
+			for (const thisElement of theseElements) {
 				if (
-					groups[i][j].properties.isFooter ||
-					groups[i][j].properties.isHeader ||
-					groups[i][j].properties.isPageNumber ||
-					groups[i][j].properties.isRedundant
+					thisElement.properties.isFooter ||
+					thisElement.properties.isHeader ||
+					thisElement.properties.isPageNumber ||
+					thisElement.properties.isRedundant
 				) {
 					continue;
 				}
-				if (groups[i][j].left + groups[i][j].width > maxX) {
-					maxX = groups[i][j].left + groups[i][j].width;
+				if (thisElement.left + thisElement.width > maxX) {
+					maxX = thisElement.left + thisElement.width;
 				}
 			}
 		}
@@ -288,18 +288,18 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 	private calculateColumnLeft(groups: Element[][]) {
 		let minX = 100000000;
 
-		for (let i = 0; i < groups.length; ++i) {
-			for (let j = 0; j < groups[i].length; ++j) {
+		for (const theseElements of groups) {
+			for (const thisElement of theseElements) {
 				if (
-					groups[i][j].properties.isFooter ||
-					groups[i][j].properties.isHeader ||
-					groups[i][j].properties.isPageNumber ||
-					groups[i][j].properties.isRedundant
+					thisElement.properties.isFooter ||
+					thisElement.properties.isHeader ||
+					thisElement.properties.isPageNumber ||
+					thisElement.properties.isRedundant
 				) {
 					continue;
 				}
-				if (groups[i][j].left < minX) {
-					minX = groups[i][j].left;
+				if (thisElement.left < minX) {
+					minX = thisElement.left;
 				}
 			}
 		}

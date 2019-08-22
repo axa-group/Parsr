@@ -104,13 +104,13 @@ export class LinesToParagraphModule extends Module<Options> {
 			}
 
 			// Clean the properties.cr  information as it is not usefull down the line
-			for (let i = 0; i < toBeMerged.length; ++i) {
-				for (let j = 0; j < toBeMerged[i].length; ++j) {
-					let line = toBeMerged[i][j];
-					for (let k = 0; k < line.content.length; ++k) {
-						if (line.content[k].properties && line.content[k].properties.cr) {
-							delete line.content[k].properties.cr;
-							delete line.content[k].properties.cl;
+			// for (let i = 0; i < toBeMerged.length; ++i) {
+			for (const theseLines of toBeMerged) {
+				for (const thisLine of theseLines) {
+					for (const thisWord of thisLine.content) {
+						if (thisWord.properties && thisWord.properties.cr) {
+							delete thisWord.properties.cr;
+							delete thisWord.properties.cl;
 						}
 					}
 				}
@@ -135,10 +135,10 @@ export class LinesToParagraphModule extends Module<Options> {
 	}
 
 	private havePlaceForFirstWordInPreviousLine(topLine: Line, bottomLine: Line, paragraph: Line[]) {
-		let topLineRight: number = topLine.right;
-		let topLineLeft: number = topLine.left;
+		const topLineRight: number = topLine.right;
+		const topLineLeft: number = topLine.left;
 
-		let linecontent: Word[] = bottomLine.content;
+		const linecontent: Word[] = bottomLine.content;
 
 		let orientation = this.detectParagraphOrientation(paragraph, bottomLine);
 
@@ -155,7 +155,7 @@ export class LinesToParagraphModule extends Module<Options> {
 			return a.left < b.left ? -1 : 1;
 		});
 
-		let firstWord: Word = linecontent[0];
+		const firstWord: Word = linecontent[0];
 
 		let hyphenIndex = firstWord.content.length;
 
@@ -165,18 +165,18 @@ export class LinesToParagraphModule extends Module<Options> {
 		for (let i = 1; i < text.length; ++i) {
 			// special break character
 			// TODO : Expand with all standart unicode set of separator
-			if (' \t.?!,;-:。？！，；：'.indexOf(text[i]) != -1) {
+			if (' \t.?!,;-:。？！，；：'.indexOf(text[i]) !== -1) {
 				hyphenIndex = i;
 				break;
 			}
 		}
 
-		if (hyphenIndex != firstWord.content.length) {
+		if (hyphenIndex !== firstWord.content.length) {
 			hyphenIndex++;
 		}
 
 		// todo : better hyphen rules
-		let supposedWidth: number = (firstWord.width / firstWord.content.length) * hyphenIndex;
+		const supposedWidth: number = (firstWord.width / firstWord.content.length) * hyphenIndex;
 
 		if (
 			orientation === 'LEFT' &&
@@ -203,19 +203,18 @@ export class LinesToParagraphModule extends Module<Options> {
 		return false;
 	}
 
-	private detectParagraphOrientation(paragraph: Line[], newLine: Line) {
-		let left: number[] = [];
-		let right: number[] = [];
-		let center: number[] = [];
+	private detectParagraphOrientation(lines: Line[], newLine: Line) {
+		const left: number[] = [];
+		const right: number[] = [];
+		const center: number[] = [];
 
-		for (let i = 0; i < paragraph.length; ++i) {
-			let line = paragraph[i];
-			let orientation = this.getLineOrientation(line);
-			left.push(orientation.left);
-			right.push(orientation.right);
-			center.push(orientation.center);
+		for (const thisLine of lines) {
+			const orient = this.getLineOrientation(thisLine);
+			left.push(orient.left);
+			right.push(orient.right);
+			center.push(orient.center);
 		}
-		let orientation = this.getLineOrientation(newLine);
+		const orientation = this.getLineOrientation(newLine);
 		left.push(orientation.left);
 		right.push(orientation.right);
 		center.push(orientation.center);
@@ -258,7 +257,7 @@ export class LinesToParagraphModule extends Module<Options> {
 	}
 
 	private getLineOrientation(line: Line) {
-		let linecontent: Word[] = line.content;
+		const linecontent: Word[] = line.content;
 		let left: number = 0;
 		let right: number = 0;
 		let center: number = 0;
@@ -267,14 +266,14 @@ export class LinesToParagraphModule extends Module<Options> {
 			return a.left < b.left ? -1 : 1;
 		});
 
-		let firstWord = linecontent[0];
+		const firstWord = linecontent[0];
 		left = firstWord.box.left;
 
 		linecontent.sort((a: Word, b: Word) => {
 			return a.right > b.right ? -1 : 1;
 		});
 
-		let lastWord = linecontent[0];
+		const lastWord = linecontent[0];
 		right = lastWord.box.right;
 
 		center = firstWord.box.left + (lastWord.box.right - firstWord.box.left) / 2;
@@ -285,11 +284,7 @@ export class LinesToParagraphModule extends Module<Options> {
 			return a.left < b.left ? -1 : 1;
 		});
 
-		return {
-			left: left,
-			right: right,
-			center: center,
-		};
+		return { left, right, center };
 	}
 
 	/**
