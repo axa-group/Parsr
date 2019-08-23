@@ -81,7 +81,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
 							);
 							const pages: Page[] = [];
 							obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj)));
-							resolve(new Document(pages));
+							resolve(new Document(pages, pdfInputFile));
 						});
 					} catch (err) {
 						reject(`parseXml failed: ${err}`);
