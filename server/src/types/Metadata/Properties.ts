@@ -30,4 +30,8 @@ export interface Properties {
 	isPageNumber?: boolean;
 	bulletList?: boolean;
 	order?: number;
+	// column right
+	cr?: number;
+	// column left
+	cl?: number;
 }
