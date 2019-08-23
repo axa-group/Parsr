@@ -19,11 +19,6 @@ import * as utils from '../utils';
 import logger from '../utils/Logger';
 import { Module } from './Module';
 
-/**
- * Stability: Experimental
- * Characterize marginals (header and footer) in a document. The word marginals comes
- * from https://english.stackexchange.com/a/25105
- */
 interface Options {
 	ignorePages?: number[];
 	maxMarginPercentage?: number;
@@ -34,8 +29,8 @@ const defaultOptions: Options = {
 	maxMarginPercentage: 30,
 };
 
-export class HeaderFooterDetectionModule extends Module<Options> {
-	public static moduleName = 'header-footer-detection';
+export class PageNumberDetectionModule extends Module<Options> {
+	public static moduleName = 'page-number-detection';
 	public static dependencies = [];
 
 	constructor(options?: Options) {
