@@ -43,7 +43,7 @@ import logger from '../../utils/Logger';
  * @returns The promise of a valid document (in the format DocumentRepresentation).
  */
 export function execute(pdfInputFile: string): Promise<Document> {
-	return new Promise<Document>((resolve, reject) => {
+	return new Promise<Document>((resolveDocument, rejectDocument) => {
 		return repairPdf(pdfInputFile).then(repairedPdf => {
 			const xmlOutputFile: string = utils.getTemporaryFile('.xml');
 			logger.debug(`pdf2txt.py ${['-A', '-t', 'xml', '-o', xmlOutputFile, repairedPdf].join(' ')}`);
@@ -59,12 +59,12 @@ export function execute(pdfInputFile: string): Promise<Document> {
 			});
 
 			function parseXmlToObject(xml: string): Promise<object> {
-				const promise = new Promise<object>((resolve, reject) => {
-					parseString(xml, { attrkey: '_attr' }, (err, dataObject) => {
-						if (err) {
-							reject(err);
+				const promise = new Promise<object>((resolveObject, rejectObject) => {
+					parseString(xml, { attrkey: '_attr' }, (error, dataObject) => {
+						if (error) {
+							rejectObject(error);
 						}
-						resolve(dataObject);
+						resolveObject(dataObject);
 					});
 				});
 				return promise;
@@ -81,13 +81,13 @@ export function execute(pdfInputFile: string): Promise<Document> {
 							);
 							const pages: Page[] = [];
 							obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj)));
-							resolve(new Document(pages, pdfInputFile));
+							resolveDocument(new Document(pages, pdfInputFile));
 						});
 					} catch (err) {
-						reject(`parseXml failed: ${err}`);
+						rejectDocument(`parseXml failed: ${err}`);
 					}
 				} else {
-					reject(`pdfminer return code is ${code}`);
+					rejectDocument(`pdfminer return code is ${code}`);
 				}
 			});
 			// return doc;
