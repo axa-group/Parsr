@@ -263,19 +263,19 @@ export class LinesToParagraphModule extends Module<Options> {
 		center.push(orientation.center);
 
 		let isLeftAligned = false;
-		left.sort();
+		left.sort((a, b) => a - b);
 		if (Math.abs(left[0] - left[left.length - 1]) < this.options.alignUncertainty * 2) {
 			isLeftAligned = true;
 		}
 
 		let isRightAligned = false;
-		right.sort();
+		right.sort((a, b) => a - b);
 		if (Math.abs(right[0] - right[right.length - 1]) < this.options.alignUncertainty * 2) {
 			isRightAligned = true;
 		}
 
 		let isCenterAligned = false;
-		center.sort();
+		center.sort((a, b) => a - b);
 		if (Math.abs(center[0] - center[center.length - 1]) < this.options.alignUncertainty * 2) {
 			isCenterAligned = true;
 		}

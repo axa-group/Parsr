@@ -233,7 +233,7 @@ class Renderer {
 		div.style.zIndex = 100 + depth;
 
 		if (e.type !== 'character' && e.font) {			
-			let font = fonts.filter(font => font.id === e.font)[0];			
+			let font = fonts.filter(f => f.id === e.font)[0];			
 			if(font) {
 				if(font.scaling) {
 					//ABBYY	
