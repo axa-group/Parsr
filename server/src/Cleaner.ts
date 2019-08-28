@@ -23,11 +23,13 @@ import { LinkDetectionModule } from './modules/LinkDetectionModule';
 import { Module } from './modules/Module';
 import { NumberCorrectionModule } from './modules/NumberCorrectionModule';
 import { OutOfPageRemovalModule } from './modules/OutOfPageRemovalModule';
+import { PageNumberDetectionModule } from './modules/PageNumberDetectionModule';
 import { ReadingOrderDetectionModule } from './modules/ReadingOrderDetectionModule';
 import { RedundancyDetectionModule } from './modules/RedundancyDetectionModule';
 import { RegexMatcherModule } from './modules/RegexMatcherModule';
 import { RemoteModule } from './modules/RemoteModule';
 import { SeparateWordsModule } from './modules/SeparateWordsModule';
+import { TableDetectionModule } from './modules/TableDetectionModule';
 import { WhitespaceRemovalModule } from './modules/WhitespaceRemovalModule';
 import { WordsToLineModule } from './modules/WordsToLineModule';
 import { CleanerConfig, Config } from './types/Config';
@@ -53,10 +55,12 @@ export class Cleaner {
 		HierarchyDetectionModule,
 		LinkDetectionModule,
 		HeaderFooterDetectionModule,
+		PageNumberDetectionModule,
 		NumberCorrectionModule,
 		RedundancyDetectionModule,
 		WhitespaceRemovalModule,
 		HeadingDetectionModule,
+		TableDetectionModule,
 		RegexMatcherModule,
 		RemoteModule,
 		SeparateWordsModule,

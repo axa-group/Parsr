@@ -32,10 +32,9 @@ export class HeadingDetectionModule extends Module {
 	public static dependencies = [LinesToParagraphModule];
 
 	public main(doc: Document): Document {
-		const existingHeaders = doc.pages
-			.map(page => {
-				return page.getElementsOfType<Heading>(Heading).filter(t => t.toString().trim() !== '');
-			})
+		const existingHeaders = doc
+			.getElementsOfType<Heading>(Heading)
+			.filter(t => t.toString().trim() !== '')
 			.reduce((a, b) => a.concat(b), []);
 
 		if (existingHeaders.length !== 0) {
@@ -43,10 +42,9 @@ export class HeadingDetectionModule extends Module {
 			return doc;
 		}
 
-		const paragraphs: Paragraph[] = doc.pages
-			.map(page => {
-				return page.getElementsOfType<Paragraph>(Paragraph).filter(t => t.toString().trim() !== '');
-			})
+		const paragraphs: Paragraph[] = doc
+			.getElementsOfType<Paragraph>(Paragraph)
+			.filter(t => t.toString().trim() !== '')
 			.reduce((a, b) => a.concat(b), []);
 
 		const sizeProportion: Map<number, number> = new Map();

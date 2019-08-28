@@ -51,60 +51,23 @@ export class WordsToLineModule extends Module<Options> {
 		Object.assign(opt, defaultOptions, this.options);
 
 		doc.pages = doc.pages.map(page => {
-			const toBeMerged: Word[][] = [];
-
 			if (page.getElementsOfType<Line>(Line).length > 0) {
 				logger.warn('Warning: this page already has some line in it. Not performing line merge.');
 				return page;
 			}
 
 			const words: Word[] = page
-				.getElementsOfType<Word>(Word)
+				.getElementsOfType<Word>(Word, false)
 				.filter(Element.hasBoundingBox)
 				.sort(utils.sortElementsByOrder);
-			const otherElements: Element[] = page.elements.filter(
-				element => !(element instanceof Word) || !words.includes(element),
+
+			const otherPageElements: Element[] = page.elements.filter(
+				element => !(element instanceof Word),
 			);
+			const otherElements: Element[] = this.joinWordsInElements(otherPageElements, opt);
 
-			for (let i = 0; i < words.length; i++) {
-				const first = words[i];
-				const mergeGroup: Word[] = [first];
-
-				for (let j = i + 1; j < words.length; j++) {
-					const prev = words[j - 1];
-					const curr = words[j];
-
-					if (
-						Math.abs(prev.top - curr.top) <= prev.height * opt.topUncertainty &&
-						Math.abs(prev.height - curr.height) <= prev.height * opt.lineHeightUncertainty &&
-						curr.left - (prev.left + prev.width) <= opt.maximumSpaceBetweenWords &&
-						// FIXME element cannot be a Heading since it is a Word
-						// (prev instanceof Heading) === (curr instanceof Heading) &&
-						prev.properties.isPageNumber === curr.properties.isPageNumber
-						// TODO: handle table elements: (opt.mergeTableElements
-						// || (!prev.metadata.tableElement && !curr.metadata.tableElement))
-					) {
-						mergeGroup.push(curr);
-						i++;
-					} else {
-						break;
-					}
-				}
-
-				toBeMerged.push(mergeGroup);
-			}
-
-			const texts: Text[] = [];
-			let newOrder = 0;
-
-			toBeMerged.forEach((group: Word[]) => {
-				const line: Line = utils.mergeElements<Word, Line>(
-					new Line(new BoundingBox(0, 0, 0, 0)),
-					...group,
-				);
-				line.properties.order = newOrder++;
-				texts.push(line);
-			});
+			const alignedPageWords: Word[][] = this.joinAlignedWords(words, opt);
+			const texts: Text[] = this.mergeWordsIntoTexts(alignedPageWords);
 
 			// FIXME I think this will remove any chars left in the page
 			page.elements = otherElements.concat(texts);
@@ -113,5 +76,82 @@ export class WordsToLineModule extends Module<Options> {
 		});
 
 		return doc;
+	}
+
+	private joinWordsInElements(elements: Element[], options: Options) {
+		elements.forEach(element => {
+			this.joinWordsFromElement(element, options);
+		});
+		return elements;
+	}
+
+	private joinWordsFromElement(element: Element, options: Options): Word {
+		if (element.content && typeof element.content !== 'string' && element.content.length !== 0) {
+			const containedWords: Word[] = [];
+			element.content.forEach(el => {
+				const containedWord = this.joinWordsFromElement(el, options);
+				if (containedWord) {
+					containedWords.push(containedWord);
+				}
+			});
+			if (containedWords.length > 0) {
+				this.updateElementContents(element, containedWords, options);
+			}
+		} else if (element instanceof Word) {
+			return element;
+		}
+		return null;
+	}
+
+	private updateElementContents(element: Element, words: Word[], options: Options) {
+		const joinedWords = this.joinAlignedWords(words, options);
+		const elementContent = this.mergeWordsIntoTexts(joinedWords);
+		element.content = elementContent;
+	}
+
+	private mergeWordsIntoTexts(alignedWords: Word[][]): Text[] {
+		const texts: Text[] = [];
+		let newOrder = 0;
+		alignedWords.forEach((group: Word[]) => {
+			const line: Line = utils.mergeElements<Word, Line>(
+				new Line(new BoundingBox(0, 0, 0, 0)),
+				...group,
+			);
+			line.properties.order = newOrder++;
+			texts.push(line);
+		});
+		return texts;
+	}
+
+	private joinAlignedWords(words: Word[], opt: Options): Word[][] {
+		const toBeMerged: Word[][] = [];
+		for (let i = 0; i < words.length; i++) {
+			const first = words[i];
+			const mergeGroup: Word[] = [first];
+
+			for (let j = i + 1; j < words.length; j++) {
+				const prev = words[j - 1];
+				const curr = words[j];
+
+				if (
+					Math.abs(prev.top - curr.top) <= prev.height * opt.topUncertainty &&
+					Math.abs(prev.height - curr.height) <= prev.height * opt.lineHeightUncertainty &&
+					curr.left - (prev.left + prev.width) <= opt.maximumSpaceBetweenWords &&
+					// FIXME element cannot be a Heading since it is a Word
+					// (prev instanceof Heading) === (curr instanceof Heading) &&
+					prev.properties.isPageNumber === curr.properties.isPageNumber
+					// TODO: handle table elements: (opt.mergeTableElements
+					// || (!prev.metadata.tableElement && !curr.metadata.tableElement))
+				) {
+					mergeGroup.push(curr);
+					i++;
+				} else {
+					break;
+				}
+			}
+
+			toBeMerged.push(mergeGroup);
+		}
+		return toBeMerged;
 	}
 }

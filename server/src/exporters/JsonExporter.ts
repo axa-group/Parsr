@@ -48,7 +48,7 @@ import { Exporter } from './Exporter';
 export class JsonExporter extends Exporter {
 	private granularity: string;
 	private currentMetadataId: number = 1;
-	private currentFontId: number = 1;
+	private currentFontId: number = 0;
 	private json: JsonExport = {} as JsonExport;
 	private fontCatalog: Map<Font, number> = new Map<Font, number>();
 	private metadataCatalog: Map<Metadata, number> = new Map<Metadata, number>();
@@ -210,11 +210,15 @@ export class JsonExporter extends Exporter {
 
 			if (element instanceof Word) {
 				if (typeof element.font !== 'undefined') {
-					if (!this.fontCatalog.has(element.font)) {
-						this.fontCatalog.set(element.font, this.currentFontId++);
+					const allFonts = Array.from(this.fontCatalog.keys());
+					const wordFont = allFonts.filter(font => font.isEqual(element.font));
+					if (wordFont.length === 0) {
+						this.currentFontId++;
+						this.fontCatalog.set(element.font, this.currentFontId);
+						jsonElement.font = this.currentFontId;
+					} else {
+						jsonElement.font = this.fontCatalog.get(wordFont[0]);
 					}
-
-					jsonElement.font = this.fontCatalog.get(element.font);
 				}
 			}
 		} else if (element instanceof List) {
