@@ -16,10 +16,10 @@
 
 import { expect } from 'chai';
 import 'mocha';
-import { LinesToParagraphModule } from '../server/src/modules/LinesToParagraphModule';
-import { ReadingOrderDetectionModule } from '../server/src/modules/ReadingOrderDetectionModule';
-import { WhitespaceRemovalModule } from '../server/src/modules/WhitespaceRemovalModule';
-import { WordsToLineModule } from '../server/src/modules/WordsToLineModule';
+import { LinesToParagraphModule } from '../server/src/modules/LinesToParagraphModule/LinesToParagraphModule';
+import { ReadingOrderDetectionModule } from '../server/src/modules/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
+import { WhitespaceRemovalModule } from '../server/src/modules/WhitespaceRemovalModule/WhitespaceRemovalModule';
+import { WordsToLineModule } from '../server/src/modules/WordsToLineModule/WordsToLineModule';
 import { Paragraph, Word } from '../server/src/types/DocumentRepresentation';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
 import { getPdf, runModules } from './helpers';
