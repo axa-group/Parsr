@@ -113,34 +113,6 @@ function getPage(pageObj: PdfminerPage): Page {
 	});
 	elements = [...elements, ...paras];
 
-	// // treat figure
-	// if (Object.keys(pageObj).includes('figure')) {
-	// 	logger.info(
-	// 		`Here's a figure on page ${pageObj._attr.id}: ${utils.prettifyObject(pageObj.figure)}`,
-	// 	);
-	// }
-
-	// // treat curve
-	// if (Object.keys(pageObj).includes('curve')) {
-	// 	logger.info(
-	// 		`Here's a curve on page ${pageObj._attr.id}: ${utils.prettifyObject(pageObj.curve)}`,
-	// 	);
-	// }
-
-	// // treat rect
-	// if (Object.keys(pageObj).includes('rect')) {
-	// 	logger.info(
-	// 		`Here's a rect on page ${pageObj._attr.id}: ${utils.prettifyObject(pageObj.rect)}`,
-	// 	);
-	// }
-
-	// // treat line
-	// if (Object.keys(pageObj).includes('line')) {
-	// 	logger.info(
-	// 		`Here's a line on page ${pageObj._attr.id}: ${utils.prettifyObject(pageObj.line)}`,
-	// 	);
-	// }
-
 	return new Page(parseFloat(pageObj._attr.id), paras, pageBbox);
 }
 
