@@ -6,9 +6,6 @@ platform:
   os: linux
   arch: amd64
 
-node:
-  memory: high
-
 steps:
 - name: Change file ownership
   image: alpine:latest
@@ -25,7 +22,7 @@ steps:
   - npm install
 
 - name: Run formatter
-  image: axarev/documentparser
+  image: axarev/parsr
   environment:
     LD_LIBRARY_PATH: /opt/rh/rh-nodejs8/root/usr/lib64
   commands:
@@ -38,36 +35,17 @@ steps:
   - npm run lint
 
 - name: Run tests
-  image: axarev/documentparser
+  image: axarev/parsr
   environment:
     LD_LIBRARY_PATH: /opt/rh/rh-nodejs8/root/usr/lib64
   commands:
   - export PATH=/opt/rh/rh-nodejs8/root/usr/bin:$PATH
   - npm run test
 
-- name: Code-analysis
-  image: aosapps/drone-sonar-plugin:1.0
-  settings:
-    sonar_host:
-      from_secret: sonar_host
-    sonar_token:
-      from_secret: sonar_token
-  when:
-    branch:
-    - master
-
-- name: Tag with demo
-  image: busybox
-  commands: 
-  - echo demo > .tags
-  when:
-    branch:
-    - demo
-
 - name: Build Docker image
   image: plugins/docker
   settings:
-    repo: axarev/documentparser
+    repo: axarev/parsr
     context: .
     dockerfile: docker/parsr/Dockerfile
     username: 
@@ -76,84 +54,11 @@ steps:
       from_secret: registry_password
     build_args:
       DEV_MODE: 'true'
-#    auto_tag: true
   when:
     branch:
     - develop
-    - demo
+    - feature/drone*
     event:
       exclude:
       - pull_request
 
-- name: Deploy dev
-  image: docker
-  environment:
-    DOCKER_HOST: 
-      from_secret: docker_host
-    CA: 
-      from_secret: docker_ca
-    CLIENT_CERT: 
-      from_secret: docker_cert
-    CLIENT_KEY: 
-      from_secret: docker_key
-    DOCKER_CERT_PATH: /cert
-    DOCKER_TLS_VERIFY: 1
-    DOCKER_IMAGE: axarev/documentparser:latest
-    DOCKER_SERVICE: documentparser_documentparser-dev
-    REGISTRY_USER: 
-      from_secret: registry_user
-    REGISTRY_PASSWORD: 
-      from_secret: registry_password
-  commands:
-  - mkdir -p "$DOCKER_CERT_PATH"
-  - echo "$CA" > $DOCKER_CERT_PATH/ca.pem
-  - echo "$CLIENT_CERT" > $DOCKER_CERT_PATH/cert.pem
-  - echo "$CLIENT_KEY" > $DOCKER_CERT_PATH/key.pem
-  - docker login -u "$REGISTRY_USER" -p"$REGISTRY_PASSWORD"
-  - docker service update --with-registry-auth --image $DOCKER_IMAGE $DOCKER_SERVICE
-  - rm -rf $DOCKER_CERT_PATH
-  when:
-    branch:
-    - develop
-    - drone-ci
-    event:
-      exclude:
-      - pull_request
-
-- name: Deploy demo
-  image: docker
-  environment:
-    DOCKER_HOST: 
-      from_secret: docker_host
-    CA: 
-      from_secret: docker_ca
-    CLIENT_CERT: 
-      from_secret: docker_cert
-    CLIENT_KEY: 
-      from_secret: docker_key
-    DOCKER_CERT_PATH: /cert
-    DOCKER_TLS_VERIFY: 1
-    DOCKER_IMAGE: axarev/documentparser:demo
-    DOCKER_SERVICE: documentparser_parsr-demo
-    REGISTRY_USER: 
-      from_secret: registry_user
-    REGISTRY_PASSWORD: 
-      from_secret: registry_password
-  commands:
-  - mkdir -p "$DOCKER_CERT_PATH"
-  - echo "$CA" > $DOCKER_CERT_PATH/ca.pem
-  - echo "$CLIENT_CERT" > $DOCKER_CERT_PATH/cert.pem
-  - echo "$CLIENT_KEY" > $DOCKER_CERT_PATH/key.pem
-  - docker login -u "$REGISTRY_USER" -p"$REGISTRY_PASSWORD"
-  - docker service update --with-registry-auth --image $DOCKER_IMAGE $DOCKER_SERVICE
-  - rm -rf $DOCKER_CERT_PATH
-  when:
-    branch:
-    - demo
-    event:
-      exclude:
-      - pull_request
-
-
-image_pull_secrets:
-  - dockerconfigjson
