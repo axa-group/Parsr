@@ -21,16 +21,14 @@ import { getSubCollections } from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import { WordsToLineModule } from '../WordsToLineModule/WordsToLineModule';
+import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
 	keyPatterns?: object;
 	threshold?: number;
 }
 
-const defaultOptions: Options = {
-	keyPatterns: {},
-	threshold: 0.2,
-};
+const defaultOptions = (defaultConfig as any) as Options;
 
 export type KeyCandidate = {
 	words: Word[];

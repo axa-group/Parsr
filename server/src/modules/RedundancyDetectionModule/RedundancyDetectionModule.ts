@@ -17,16 +17,14 @@
 import { Document, Page, Text } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import { Module } from '../Module';
+import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
 	percentageOfRedondancy?: number;
 	minimumPages?: number;
 }
 
-const defaultOptions: Options = {
-	percentageOfRedondancy: 0.5,
-	minimumPages: 6,
-};
+const defaultOptions = (defaultConfig as any) as Options;
 
 // TODO Idea split large document every 100 pages or so.
 /**

@@ -16,14 +16,13 @@
 
 import { Document, Page, Text } from '../../types/DocumentRepresentation';
 import { Module } from '../Module';
+import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
 	minWidth?: number;
 }
 
-const defaultOptions: Options = {
-	minWidth: 0,
-};
+const defaultOptions = (defaultConfig as any) as Options;
 
 /**
  * Stabiltiy: Stable

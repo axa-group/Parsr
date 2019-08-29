@@ -29,6 +29,7 @@ import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import { ReadingOrderDetectionModule } from '../ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 import { WordsToLineModule } from '../WordsToLineModule/WordsToLineModule';
+import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
 	addNewline?: boolean;
@@ -38,13 +39,7 @@ interface Options {
 	maxInterline?: number; // factor of line height
 }
 
-const defaultOptions = {
-	addNewline: true,
-	alignUncertainty: 3,
-	checkFont: false,
-	maxInterline: 0.3,
-	lineLengthUncertainty: 0.25,
-};
+const defaultOptions = (defaultConfig as any) as Options;
 
 /**
  * Stability: Stable

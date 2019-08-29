@@ -19,16 +19,14 @@ import { JsonExporter } from '../../exporters/JsonExporter';
 import { Document, JsonExport } from '../../types/DocumentRepresentation';
 import { json2document } from '../../utils/json2document';
 import { Module } from '../Module';
+import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
 	url?: string;
 	granularity?: string;
 }
 
-const defaultOptions: Options = {
-	url: 'localhost',
-	granularity: 'word',
-};
+const defaultOptions = (defaultConfig as any) as Options;
 
 export class RemoteModule extends Module<Options> {
 	public static moduleName = 'remote';

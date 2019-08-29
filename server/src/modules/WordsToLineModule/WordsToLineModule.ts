@@ -26,20 +26,16 @@ import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import { ReadingOrderDetectionModule } from '../ReadingOrderDetectionModule/ReadingOrderDetectionModule';
+import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	lineHeightUncertainty?: number;
-	topUncertainty?: number;
-	maximumSpaceBetweenWords?: number;
+	lineHeightUncertainty?: number; // proportion
+	topUncertainty?: number; // proportion
+	maximumSpaceBetweenWords?: number; // value in px
 	mergeTableElements?: boolean;
 }
 
-const defaultOptions: Options = {
-	lineHeightUncertainty: 1.2, // proportion
-	topUncertainty: 0.4, // proportion
-	maximumSpaceBetweenWords: 100, // value in px
-	mergeTableElements: false,
-};
+const defaultOptions = (defaultConfig as any) as Options;
 
 /**
  * Stability: Stable

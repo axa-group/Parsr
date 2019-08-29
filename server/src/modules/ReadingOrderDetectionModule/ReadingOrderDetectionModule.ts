@@ -18,6 +18,7 @@ import { Document, Element, Page } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import { HeaderFooterDetectionModule } from '../HeaderFooterDetectionModule/HeaderFooterDetectionModule';
 import { Module } from '../Module';
+import * as defaultConfig from './defaultConfig.json';
 
 // TODO Handle rtl (right-to-left) languages
 /**
@@ -31,10 +32,7 @@ interface Options {
 	minVerticalGapWidth?: number;
 }
 
-const defaultOptions: Options = {
-	minVerticalGapWidth: 5,
-	minColumnWidthInPagePercent: 5,
-};
+const defaultOptions = (defaultConfig as any) as Options;
 
 export class ReadingOrderDetectionModule extends Module<Options> {
 	public static moduleName = 'reading-order-detection';

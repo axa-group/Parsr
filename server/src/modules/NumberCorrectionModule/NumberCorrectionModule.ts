@@ -23,6 +23,7 @@ import {
 	Word,
 } from '../../types/DocumentRepresentation';
 import { Module } from '../Module';
+import * as defaultConfig from './defaultConfig.json';
 
 /**
  * Stability: Experimental
@@ -31,22 +32,17 @@ import { Module } from '../Module';
  */
 
 interface Options {
-	numberRegExp?: RegExp;
+	numberRegExp?: string;
 	fixSplitNumbers?: boolean;
 	maxConsecutiveSplits?: number;
-	whitelist?: Set<string>;
+	whitelist?: [];
 }
 
-const defaultOptions: Options = {
-	// This regexp might be changed depending of the language and number notation.
-	// French accounting notation: 1234567,89
-	// US English scientific notation: 1.892323
-	// US English accounting notation: 1,234,567.89
-	fixSplitNumbers: true,
-	maxConsecutiveSplits: 3,
-	numberRegExp: RegExp('^([0-9]{1,3},([0-9]{3},)*[0-9]{3}|[0-9]+)(\\.[0-9]{2})?$'),
-	whitelist: new Set<string>(),
-};
+// The default regexps might be changed depending of the language and number notation.
+// French accounting notation: 1234567,89
+// US English scientific notation: 1.892323
+// US English accounting notation: 1,234,567.89
+const defaultOptions = (defaultConfig as any) as Options;
 
 function charArrayToString(input: Character[] | string): string {
 	if (Array.isArray(input)) {
@@ -196,8 +192,8 @@ export class NumberCorrectionModule extends Module<Options> {
 	private getBestSuggestion(input: string, preCandidates?: Map<string, number>): string | null {
 		const suggestions = this.suggestNumberCorrections(
 			input,
-			this.options.numberRegExp,
-			this.options.whitelist,
+			RegExp(this.options.numberRegExp),
+			new Set(this.options.whitelist),
 			preCandidates,
 		);
 		if (suggestions.length > 0) {

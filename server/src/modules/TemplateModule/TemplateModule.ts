@@ -18,6 +18,7 @@ import { Document } from '../../types/DocumentRepresentation';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import { WordsToLineModule } from '../WordsToLineModule/WordsToLineModule';
+import * as defaultConfig from './defaultConfig.json';
 
 // List of every options you need.
 // Don't forget the question mark!
@@ -26,9 +27,7 @@ interface Options {
 }
 
 // Default options if none have been set in the configuration file.
-const defaultOptions: Options = {
-	yourOption: 'hello world',
-};
+const defaultOptions = (defaultConfig as any) as Options;
 
 /**
  * Template Module. Do not use as is.

@@ -1,0 +1,6 @@
+{
+	"lineHeightUncertainty": 1.2, 
+	"topUncertainty": 0.4, 
+	"maximumSpaceBetweenWords": 100, 
+	"mergeTableElements": false
+}

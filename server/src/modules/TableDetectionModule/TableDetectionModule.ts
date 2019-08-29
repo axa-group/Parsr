@@ -11,16 +11,14 @@ import {
 import { isInBox } from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
+import * as defaultConfig from './defaultConfig.json';
 
 export interface Options {
-	pages?: string;
-	flavor?: string;
+	pages?: string; // Comma-separated page numbers. Example: '1,3,4' or '1,4-end' or 'all'.
+	flavor?: string; // The parsing method to use ('lattice' or 'stream'). Lattice is used by default.
 }
 
-const defaultOptions: Options = {
-	pages: 'all', // Comma-separated page numbers. Example: '1,3,4' or '1,4-end' or 'all'.
-	flavor: 'lattice', // The parsing method to use ('lattice' or 'stream'). Lattice is used by default.
-};
+const defaultOptions = (defaultConfig as any) as Options;
 
 export interface TableExtractorResult {
 	stdout: string;

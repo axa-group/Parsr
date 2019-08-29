@@ -19,6 +19,7 @@ import { RegexMetadata } from '../../types/Metadata';
 import logger from '../../utils/Logger';
 import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagraphModule';
 import { Module } from '../Module';
+import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
 	queries?: Array<{ regex: string; label: string }>;
@@ -26,10 +27,7 @@ interface Options {
 	isCaseSensitive?: boolean;
 }
 
-const defaultOptions: Options = {
-	isCaseSensitive: true,
-	isGlobal: true,
-};
+const defaultOptions = (defaultConfig as any) as Options;
 
 export class RegexMatcherModule extends Module<Options> {
 	public static moduleName = 'regex-matcher';

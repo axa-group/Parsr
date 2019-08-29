@@ -24,16 +24,14 @@ import {
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
+import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
 	ignorePages?: number[];
 	maxMarginPercentage?: number;
 }
 
-const defaultOptions: Options = {
-	ignorePages: [],
-	maxMarginPercentage: 30,
-};
+const defaultOptions = (defaultConfig as any) as Options;
 
 export class PageNumberDetectionModule extends Module<Options> {
 	public static moduleName = 'page-number-detection';
