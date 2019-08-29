@@ -37,8 +37,8 @@ const defaultExtractor: TableExtractor = {
 		const tableExtractor = child_process.spawnSync('python3', [
 			__dirname + '/../../assets/TableDetectionScript.py',
 			inputFile,
-			options.pages,
 			options.flavor,
+			options.pages,
 		]);
 		return {
 			stdout: tableExtractor.stdout.toString(),
