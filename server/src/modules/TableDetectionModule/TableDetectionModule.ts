@@ -35,7 +35,7 @@ export interface TableExtractor {
 const defaultExtractor: TableExtractor = {
 	readTables(inputFile: string, options: Options): TableExtractorResult {
 		const tableExtractor = child_process.spawnSync('python3', [
-			__dirname + '/../../assets/TableDetectionScript.py',
+			__dirname + '/../../../assets/TableDetectionScript.py',
 			inputFile,
 			options.pages,
 			options.flavor,
