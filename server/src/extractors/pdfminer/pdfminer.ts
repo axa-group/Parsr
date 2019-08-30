@@ -107,13 +107,16 @@ function getPage(pageObj: PdfminerPage): Page {
 	let elements: Element[] = [];
 
 	// treat paragraphs
-	const paras: Paragraph[] = pageObj.textbox.map(para => {
-		const lines: Line[] = para.textline.map(line => breakLineIntoWords(line, ',', pageBbox.height));
-		return new Paragraph(getBoundingBox(para._attr.bbox, ',', pageBbox.height), lines);
-	});
-	elements = [...elements, ...paras];
-
-	return new Page(parseFloat(pageObj._attr.id), paras, pageBbox);
+	if (pageObj.textbox !== undefined) {
+		const paras: Paragraph[] = pageObj.textbox.map(para => {
+			const lines: Line[] = para.textline.map(line =>
+				breakLineIntoWords(line, ',', pageBbox.height),
+			);
+			return new Paragraph(getBoundingBox(para._attr.bbox, ',', pageBbox.height), lines);
+		});
+		elements = [...elements, ...paras];
+	}
+	return new Page(parseFloat(pageObj._attr.id), elements, pageBbox);
 }
 
 // Pdfminer's bboxes are of the format: x0, y0, x1, y1. Our BoundingBox dims are as: left, top, width, height
