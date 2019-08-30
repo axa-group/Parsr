@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-import { HeaderFooterDetectionModule } from './modules/HeaderFooterDetectionModule';
-import { HeadingDetectionModule } from './modules/HeadingDetectionModule';
-import { HierarchyDetectionModule } from './modules/HierarchyDetectionModule';
-import { KeyValueDetectionModule } from './modules/KeyValueDetectionModule';
-import { LinesToParagraphModule } from './modules/LinesToParagraphModule';
-import { LinkDetectionModule } from './modules/LinkDetectionModule';
+import { HeaderFooterDetectionModule } from './modules/HeaderFooterDetectionModule/HeaderFooterDetectionModule';
+import { HeadingDetectionModule } from './modules/HeadingDetectionModule/HeadingDetectionModule';
+import { HierarchyDetectionModule } from './modules/HierarchyDetectionModule/HierarchyDetectionModule';
+import { KeyValueDetectionModule } from './modules/KeyValueDetectionModule/KeyValueDetectionModule';
+import { LinesToParagraphModule } from './modules/LinesToParagraphModule/LinesToParagraphModule';
+import { LinkDetectionModule } from './modules/LinkDetectionModule/LinkDetectionModule';
 import { Module } from './modules/Module';
-import { NumberCorrectionModule } from './modules/NumberCorrectionModule';
-import { OutOfPageRemovalModule } from './modules/OutOfPageRemovalModule';
-import { PageNumberDetectionModule } from './modules/PageNumberDetectionModule';
-import { ReadingOrderDetectionModule } from './modules/ReadingOrderDetectionModule';
-import { RedundancyDetectionModule } from './modules/RedundancyDetectionModule';
-import { RegexMatcherModule } from './modules/RegexMatcherModule';
-import { RemoteModule } from './modules/RemoteModule';
-import { SeparateWordsModule } from './modules/SeparateWordsModule';
-import { TableDetectionModule } from './modules/TableDetectionModule';
-import { WhitespaceRemovalModule } from './modules/WhitespaceRemovalModule';
-import { WordsToLineModule } from './modules/WordsToLineModule';
+import { NumberCorrectionModule } from './modules/NumberCorrectionModule/NumberCorrectionModule';
+import { OutOfPageRemovalModule } from './modules/OutOfPageRemovalModule/OutOfPageRemovalModule';
+import { PageNumberDetectionModule } from './modules/PageNumberDetectionModule/PageNumberDetectionModule';
+import { ReadingOrderDetectionModule } from './modules/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
+import { RedundancyDetectionModule } from './modules/RedundancyDetectionModule/RedundancyDetectionModule';
+import { RegexMatcherModule } from './modules/RegexMatcherModule/RegexMatcherModule';
+import { RemoteModule } from './modules/RemoteModule/RemoteModule';
+import { SeparateWordsModule } from './modules/SeparateWordsModule/SeparateWordsModule';
+import { TableDetectionModule } from './modules/TableDetectionModule/TableDetectionModule';
+import { WhitespaceRemovalModule } from './modules/WhitespaceRemovalModule/WhitespaceRemovalModule';
+import { WordsToLineModule } from './modules/WordsToLineModule/WordsToLineModule';
 import { CleanerConfig, Config } from './types/Config';
 import { Document } from './types/DocumentRepresentation/Document';
 import logger from './utils/Logger';

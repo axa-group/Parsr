@@ -1,4 +1,3 @@
-import sys
 import camelot
 import json
 
@@ -125,28 +124,37 @@ def createPageData(pageIndex, tables):
     pageData['tables'] = tables
     return pageData
 
+def main():
+    import sys
+    pdfFile = str(sys.argv[1])
+    flavor = str(sys.argv[2])
 
-pdfFile = str(sys.argv[1])
-pages = str(sys.argv[2])
-flavor = str(sys.argv[3])
-tables = camelot.read_pdf(pdfFile, pages, None, flavor)
+    pages = 'all'
+    if len(sys.argv) > 3:
+        pages = str(sys.argv[3])
 
-if len(tables) == 0:
-    #print('No tables detected ', tables)
-    print(json.dumps([]))
-    exit(0)
+    tables = camelot.read_pdf(pdfFile, pages, None, flavor)
 
-output = []
-distinctPages = set(list(map(lambda x: x.page, tables)))
-#print('Pages with tables: ', distinctPages)
-for page in distinctPages:
-    tablesInPage = list(filter(lambda x: x.page == page, tables))
-    #print('Current page', page)
-    #print('Tables found', tablesInPage)
-    tablesData = list(map(lambda x: extractTableData(x), tablesInPage))
-    tablesData = list(filter(lambda x: x != None, tablesData))
-    output.append(createPageData(page, tablesData))
+    if len(tables) == 0:
+        #print('No tables detected ', tables)
+        print(json.dumps([]))
+        sys.exit(0)
 
-print(json.dumps(output))
-#print(output)
-exit(0)
+    output = []
+    distinctPages = set(list(map(lambda x: x.page, tables)))
+    #print('Pages with tables: ', distinctPages)
+    for page in distinctPages:
+        tablesInPage = list(filter(lambda x: x.page == page, tables))
+        #print('Current page', page)
+        #print('Tables found', tablesInPage)
+        tablesData = list(map(lambda x: extractTableData(x), tablesInPage))
+        tablesData = list(filter(lambda x: x != None, tablesData))
+        output.append(createPageData(page, tablesData))
+
+    print(json.dumps(output))
+    #print(output)
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

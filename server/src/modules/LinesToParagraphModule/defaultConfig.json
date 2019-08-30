@@ -1,0 +1,7 @@
+{
+	"addNewline": true,
+	"alignUncertainty": 3,
+	"checkFont": false,
+	"maxInterline": 0.3,
+	"lineLengthUncertainty": 0.25
+}

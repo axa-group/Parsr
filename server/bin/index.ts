@@ -31,6 +31,7 @@ import { AbbyyTools } from '../src/extractors/abbyy/AbbyyTools';
 import { AbbyyToolsXml } from '../src/extractors/abbyy/AbbyyToolsXml';
 import { JsonExtractor } from '../src/extractors/json/JsonExtractor';
 import { PdfJsonExtractor } from '../src/extractors/pdf2json/PdfJsonExtractor';
+import { PdfminerExtractor } from '../src/extractors/pdfminer/PdfminerExtractor';
 import { TesseractExtractor } from '../src/extractors/tesseract/TesseractExtractor';
 import { Orchestrator } from '../src/Orchestrator';
 import { Config } from '../src/types/Config';
@@ -213,6 +214,8 @@ function main(): void {
 			return new Orchestrator(new AbbyyTools(config), cleaner);
 		} else if (config.extractor.pdf === 'tesseract') {
 			return pdfWithTesseract();
+		} else if (config.extractor.pdf === 'pdfminer') {
+			return new Orchestrator(new PdfminerExtractor(config), cleaner);
 		} else {
 			return new Orchestrator(new PdfJsonExtractor(config), cleaner);
 		}
