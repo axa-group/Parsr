@@ -58,13 +58,15 @@ Under a **Debian** based distribution:
 ```sh
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
-sudo apt-get install nodejs npm qpdf imagemagick pdf2json tesseract-ocr libtesseract-dev
+sudo apt-get install nodejs npm qpdf imagemagick pdf2json python-pdfminer tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
+pip install camelot-py
 ```
 
 Under **Arch** Linux :
 
 ```sh
-pacman -S nodejs npm qpdf imagemagick pdf2json tesseract
+pacman -S nodejs npm qpdf imagemagick pdf2json pdfminer tesseract python-pip
+pip install camelot-py
 ```
 
 #### 1.2.2. Installing Dependencies under MacOS
@@ -82,6 +84,21 @@ Next, install the required dependencies:
 brew install node qpdf imagemagick pdf2json tesseract tesseract-lang
 ```
 
+To install the python based depedencies (pdfminer and camelot), install, first install `pip`:
+
+```sh
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python get-pip.py
+```
+
+and then the dependencies:
+
+```sh
+pip install pdfminer.six
+pip install python-tk ghostscript camelot-py
+
+```
+
 #### 1.2.3. Installing Dependencies under Windows
 
 1. We recommand using [Chocolatey](https://chocolatey.org) as the package manager for installing dependencies under Windows. To install Chocolatey, [follow these instructions](https://chocolatey.org/install#installing-chocolatey).
@@ -93,6 +110,8 @@ brew install node qpdf imagemagick pdf2json tesseract tesseract-lang
    ```
 
 3. [Download and install **`node.js`**](https://nodejs.org/en/download)
+4. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install-deps.html#for-windows).
+5. For the **pdfminer** extractor for pdfs, [follow these steps](https://github.com/pdfminer/pdfminer.six#how-to-install).
 
 ##### 1.2.3.1. pdf2json
 
@@ -321,7 +340,7 @@ Third Party Libraries licenses :
 1. **QPDF**: Apache [http://qpdf.sourceforge.net](http://qpdf.sourceforge.net/)
 2. **ImageMagick**: Apache 2.0 [https://imagemagick.org/script/license.php](https://imagemagick.org/script/license.php)
 3. **Pdf2json**: Apache 2.0 [https://github.com/modesty/pdf2json/blob/scratch/quadf-forms/license.txt](https://github.com/modesty/pdf2json/blob/scratch/quadf-forms/license.txt)
-4. **Pdfminer**: MIT [https://github.com/euske/pdfminer/blob/master/LICENSE](https://github.com/euske/pdfminer/blob/master/LICENSE)
+4. **Pdfminer.six**: MIT [https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE](https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE)
 5. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
 6. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)
 7. **MuPDF** (Optional dependency): AGPL [https://mupdf.com/license.html](https://mupdf.com/license.html)
