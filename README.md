@@ -58,13 +58,15 @@ Under a **Debian** based distribution:
 ```sh
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
-sudo apt-get install nodejs npm qpdf imagemagick pdf2json python-pdfminer tesseract-ocr libtesseract-dev
+sudo apt-get install nodejs npm qpdf imagemagick pdf2json python-pdfminer tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
+pip install camelot-py
 ```
 
 Under **Arch** Linux :
 
 ```sh
-pacman -S nodejs npm qpdf imagemagick pdf2json pdfminer tesseract
+pacman -S nodejs npm qpdf imagemagick pdf2json pdfminer tesseract python-pip
+pip install camelot-py
 ```
 
 #### 1.2.2. Installing Dependencies under MacOS
