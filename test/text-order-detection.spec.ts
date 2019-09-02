@@ -16,7 +16,7 @@
 
 import { expect } from 'chai';
 import 'mocha';
-import { ReadingOrderDetectionModule } from '../server/src/modules/ReadingOrderDetectionModule';
+import { ReadingOrderDetectionModule } from '../server/src/modules/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 import { Element } from '../server/src/types/DocumentRepresentation/Element';
 import { getPdf, runModules } from './helpers';
 

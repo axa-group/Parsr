@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
-import { Options, TableDetectionModule, TableExtractor, TableExtractorResult } from '../server/src/modules/TableDetectionModule';
+import { Options, TableDetectionModule, TableExtractor, TableExtractorResult } from '../server/src/modules/TableDetectionModule/TableDetectionModule';
 import { TableRow } from '../server/src/types/DocumentRepresentation';
 import { Element } from '../server/src/types/DocumentRepresentation/Element';
 import { Table } from '../server/src/types/DocumentRepresentation/Table';
