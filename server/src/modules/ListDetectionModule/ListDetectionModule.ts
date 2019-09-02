@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-import {
-	// BoundingBox,
-	Document,
-	// List,
-	Paragraph,
-	// Text,
-} from '../../types/DocumentRepresentation';
+import { BoundingBox, Document, List, Paragraph } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
@@ -35,12 +29,13 @@ export class ListDetectionModule extends Module {
 	public static moduleName = 'list-detection';
 
 	public main(doc: Document): Document {
-		// const maxSpace = 60; // space width between bullet and text in px
-		// const maxBulletLength = 3;
 		logger.info(`Starting list detection..`);
 
+		// declare containers
 		let ordered: Paragraph[] = [];
 		let unordered: Paragraph[] = [];
+
+		// populate with candidates using detection criteria algo
 		doc.pages.forEach(page => {
 			ordered = [
 				...ordered,
@@ -57,22 +52,51 @@ export class ListDetectionModule extends Module {
 		});
 
 		// sort detected positives in their reading order
-		ordered.sort((a, b) => a.properties.order - b.properties.order);
-		unordered.sort((a, b) => a.properties.order - b.properties.order);
+		const orderedListGroups: Paragraph[][] = groupParasByConsecutiveGroups(ordered);
+		const unorderedListGroups: Paragraph[][] = groupParasByConsecutiveGroups(unordered);
 
-		logger.debug(`--> ordered paras: ${ordered.map(o => '|||' + o.toString())}`);
-		logger.debug(`--> unordered paras: ${unordered.map(o => '|||' + o.toString())}`);
+		// final lists
+		const orderedLists: List[] = orderedListGroups.map(
+			pg => new List(BoundingBox.merge(pg.map(p => p.box)), pg, true),
+		);
+		const unorderedLists: List[] = unorderedListGroups.map(
+			pg => new List(BoundingBox.merge(pg.map(p => p.box)), pg, false),
+		);
+
+		// log counts as debug
+		logger.debug(
+			`Ordered lists detected: ${orderedLists.length} of lengths ${orderedLists.map(
+				l => l.content.length,
+			)}`,
+		);
+		logger.debug(
+			`Unordered lists detected: ${unorderedLists.length} of lengths ${unorderedLists.map(
+				l => l.content.length,
+			)}`,
+		);
+
+		// TODO: replace existing paragraphs and add the lists to the document
+		// -- here
 
 		logger.info(`Finished list detection.`);
 		return doc;
 
-		// function createNewList(paragraphs: Paragraph[], isOrdered: boolean): List {
-		// 	return new List(BoundingBox.merge([...paragraphs.map(p => p.box)]), paragraphs, isOrdered);
-		// }
-
-		// function addItemToList(existingList: List, paragraph: Paragraph) {
-		// 	existingList.addParagraph(paragraph);
-		// }
+		function groupParasByConsecutiveGroups(paras: Paragraph[]): Paragraph[][] {
+			paras.sort((a, b) => a.properties.order - b.properties.order);
+			const ret: Paragraph[][] = [];
+			if (!paras.length) {
+				return ret;
+			}
+			let ixf = 0;
+			for (let ixc = 1; ixc < paras.length; ixc += 1) {
+				if (paras[ixc].properties.order !== paras[ixc - 1].properties.order + 1) {
+					ret.push(paras.slice(ixf, ixc));
+					ixf = ixc;
+				}
+			}
+			ret.push(paras.slice(ixf, paras.length));
+			return ret.filter(p => p.length > 1); // return paragraph groups of length > 1
+		}
 
 		function detectKindOfListItem(paragraph: Paragraph): string {
 			let listType: string = 'none';
