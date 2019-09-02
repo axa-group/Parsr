@@ -14,57 +14,85 @@
  * limitations under the License.
  */
 
-import { BoundingBox, Document, List, Paragraph, Text } from '../types/DocumentRepresentation';
+import {
+	// BoundingBox,
+	Document,
+	// List,
+	Paragraph,
+	// Text,
+} from '../types/DocumentRepresentation';
 import * as utils from '../utils';
+import logger from '../utils/Logger';
 import { Module } from './Module';
 
 // TODO Handle ordered list.
 /**
  * Stability: Unstable
  * Merge lines containing bullet points characters and tag them accordingly.
- * Doesn't handle odered list (with bullet such as `1)`, `I.`, `a)`, `i.`, etc.) yet.
+ * Doesn't handle ordered list (with bullet such as `1)`, `I.`, `a)`, `i.`, etc.) yet.
  */
 export class ListDetectionModule extends Module {
-	public static moduleName = 'list-detection-module';
+	public static moduleName = 'list-detection';
 
 	public main(doc: Document): Document {
-		const maxSpace = 60; // space width between bullet and text in px
-		const maxBulletLength = 3;
+		// const maxSpace = 60; // space width between bullet and text in px
+		// const maxBulletLength = 3;
+		logger.info(`Starting list detection..`);
 
+		let ordered: Paragraph[] = [];
+		let unordered: Paragraph[] = [];
 		doc.pages.forEach(page => {
-			// const texts: Text[] = page.getElementsOfType<Paragraph>(Paragraph);
+			ordered = [
+				...ordered,
+				...page
+					.getElementsOfType<Paragraph>(Paragraph)
+					.filter(para => detectKindOfListItem(para) === 'ordered'),
+			];
+			unordered = [
+				...unordered,
+				...page
+					.getElementsOfType<Paragraph>(Paragraph)
+					.filter(para => detectKindOfListItem(para) === 'unordered'),
+			];
 		});
 
+		// sort detected positives in their reading order
+		ordered.sort((a, b) => a.properties.order - b.properties.order);
+		unordered.sort((a, b) => a.properties.order - b.properties.order);
+
+		logger.debug(`--> ordered paras: ${ordered.map(o => '|||' + o.toString())}`);
+		logger.debug(`--> unordered paras: ${unordered.map(o => '|||' + o.toString())}`);
+
+		logger.info(`Finished list detection.`);
 		return doc;
 
-		function createNewList(paragraphs: Paragraph[], isOrdered: boolean): List {
-			return new List(BoundingBox.merge([...paragraphs.map(p => p.box)]), paragraphs, isOrdered);
-		}
+		// function createNewList(paragraphs: Paragraph[], isOrdered: boolean): List {
+		// 	return new List(BoundingBox.merge([...paragraphs.map(p => p.box)]), paragraphs, isOrdered);
+		// }
 
-		function addItemToList(existingList: List, paragraph: Paragraph) {
-			existingList.addParagraph(paragraph);
-		}
+		// function addItemToList(existingList: List, paragraph: Paragraph) {
+		// 	existingList.addParagraph(paragraph);
+		// }
 
-		function detectKindOfListItem(paragraph: Paragraph): boolean {
-			let isOrderedList: boolean = false;
+		function detectKindOfListItem(paragraph: Paragraph): string {
+			let listType: string = 'none';
 			if (paragraph.content.length !== 0) {
-				if (utils.isBullet(paragraph.content[0].content[0])) {
-					isOrderedList = false;
-					paragraph.content[0].content.shift();
-				} else if (utils.isNumbering(paragraph.content[0].content[0])) {
-					isOrderedList = true;
+				if (utils.isBullet(paragraph)) {
+					listType = 'unordered';
+				} else if (utils.isNumbering(paragraph)) {
+					listType = 'ordered';
 				}
 			}
-			return isOrderedList;
+			return listType;
 		}
 
-		function isAligned(bullet: Text, text: Text): boolean {
-			return (
-				bullet.left + bullet.width + maxSpace >= text.left &&
-				bullet.left < text.left + text.width &&
-				((bullet.top <= text.top && bullet.top + bullet.height >= text.top) ||
-					(bullet.top >= text.top && bullet.top <= text.top + text.height))
-			);
-		}
+		// function isAligned(bullet: Text, text: Text): boolean {
+		// 	return (
+		// 		bullet.left + bullet.width + maxSpace >= text.left &&
+		// 		bullet.left < text.left + text.width &&
+		// 		((bullet.top <= text.top && bullet.top + bullet.height >= text.top) ||
+		// 			(bullet.top >= text.top && bullet.top <= text.top + text.height))
+		// 	);
+		// }
 	}
 }

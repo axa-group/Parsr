@@ -343,7 +343,7 @@ export function isBullet(text: Text): boolean {
  * @returns true/false representing the result of the check.
  */
 export function isNumbering(text: Text): boolean {
-	const regex = /^\d[.)0-9]*/gm;
+	const regex = /^\d[.:)0-9]*/gm;
 	return regex.test(text.toString().trim());
 }
 

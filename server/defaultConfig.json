@@ -17,6 +17,7 @@
 		"lines-to-paragraph",
 		["page-number-detection", { "maxMarginPercentage": 15 }],
 		"heading-detection",
+		"list-detection",
 		"hierarchy-detection",
 		["regex-matcher", {
 			"queries": [

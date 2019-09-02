@@ -20,6 +20,7 @@ import { HierarchyDetectionModule } from './modules/HierarchyDetectionModule';
 import { KeyValueDetectionModule } from './modules/KeyValueDetectionModule';
 import { LinesToParagraphModule } from './modules/LinesToParagraphModule';
 import { LinkDetectionModule } from './modules/LinkDetectionModule';
+import { ListDetectionModule } from './modules/ListDetectionModule';
 import { Module } from './modules/Module';
 import { NumberCorrectionModule } from './modules/NumberCorrectionModule';
 import { OutOfPageRemovalModule } from './modules/OutOfPageRemovalModule';
@@ -54,6 +55,7 @@ export class Cleaner {
 		LinesToParagraphModule,
 		HierarchyDetectionModule,
 		LinkDetectionModule,
+		ListDetectionModule,
 		HeaderFooterDetectionModule,
 		PageNumberDetectionModule,
 		NumberCorrectionModule,
