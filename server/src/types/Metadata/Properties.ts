@@ -17,6 +17,7 @@
 export interface Properties {
 	titleScores?: {
 		size: number;
+		wordHeight: number;
 		weight: number;
 		color: number;
 		name: number;

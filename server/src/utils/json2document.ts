@@ -167,6 +167,7 @@ function propertiesFromJson(propertiesObj: JsonProperties): Properties {
 	const prop: Properties = {};
 	if (propertiesObj.hasOwnProperty('titleScores')) {
 		prop.titleScores = {
+			wordHeight: propertiesObj.titleScores.wordHeight,
 			size: propertiesObj.titleScores.size,
 			weight: propertiesObj.titleScores.weight,
 			color: propertiesObj.titleScores.color,

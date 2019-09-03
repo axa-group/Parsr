@@ -64,7 +64,7 @@ export class HeadingDetectionModule extends Module {
 					.map(w => w.box.height)
 					.reduce((a, b) => a + b) / paragraph.getWords().map(w => w.box.height).length;
 
-			wordHeightProportion.set(medianWordHeight, Math.trunc(sizeProportion.get(font.size)) + 1);
+			wordHeightProportion.set(Math.trunc(medianWordHeight), Math.trunc(medianWordHeight) + 1);
 			sizeProportion.set(font.size, Math.trunc(sizeProportion.get(font.size)) + 1);
 			nameProportion.set(font.name, Math.trunc(nameProportion.get(font.name)) + 1);
 			italicProportion.set(font.isItalic, Math.trunc(italicProportion.get(font.isItalic)) + 1);
@@ -76,8 +76,11 @@ export class HeadingDetectionModule extends Module {
 			weightProportion.set(font.weight, Math.trunc(weightProportion.get(font.weight)) + 1);
 		});
 
-		// const mostCommonSize: [number, number] = Array.from(sizeProportion).reduce(
-		const mostCommonSize: [number, number] = Array.from(wordHeightProportion).reduce(
+		const mostCommonSize: [number, number] = Array.from(sizeProportion).reduce(
+			(a, b) => (a[1] > b[1] ? a : b),
+			[0, 0],
+		);
+		const mostCommonWordHeight: [number, number] = Array.from(wordHeightProportion).reduce(
 			(a, b) => (a[1] > b[1] ? a : b),
 			[0, 0],
 		);
@@ -106,6 +109,7 @@ export class HeadingDetectionModule extends Module {
 		paragraphs.forEach((paragraph: Paragraph) => {
 			const scores = {
 				size: 0,
+				wordHeight: 0,
 				weight: 0,
 				color: 0,
 				name: 0,
@@ -114,6 +118,7 @@ export class HeadingDetectionModule extends Module {
 			};
 
 			scores.size = paragraph.getMainFont().size / mostCommonSize[0];
+			scores.wordHeight = paragraph.getMainFont().size / mostCommonWordHeight[0];
 			scores.weight = paragraph.getMainFont().weight !== mostCommonWeight[0] ? 1 : 0;
 			scores.italic = paragraph.getMainFont().isItalic !== mostCommonItalic[0] ? 1 : 0;
 			scores.underline = paragraph.getMainFont().isUnderline !== mostCommonUnderline[0] ? 1 : 0;
@@ -124,7 +129,7 @@ export class HeadingDetectionModule extends Module {
 			allLevels.add(paragraph.getMainFont().size);
 		});
 
-		titleFromSize(1.3);
+		titleFromWordHeight(1.3);
 
 		/*
 		let titleNb = 0;
@@ -137,12 +142,33 @@ export class HeadingDetectionModule extends Module {
 
 		return doc;
 
-		function titleFromSize(threshold: number) {
+		// function titleFromSize(threshold: number) {
+		// 	const levels: number[] = Array.from(allLevels).sort((a, b) => b - a);
+		// 	paragraphs.forEach((paragraph: Paragraph) => {
+		// 		const scores = paragraph.properties.titleScores;
+
+		// 		if (scores.size > threshold) {
+		// 			const heading: Heading = new Heading(paragraph.box, paragraph.content);
+		// 			heading.language = paragraph.language;
+		// 			heading.level = levels.indexOf(heading.getMainFont().size) + 1;
+		// 			heading.metadata = paragraph.metadata;
+		// 			heading.properties = paragraph.properties;
+		// 			heading.parent = paragraph.parent;
+		// 			heading.redundant = paragraph.redundant;
+
+		// 			doc = utils.replaceObject<Paragraph, Heading>(doc, paragraph, heading);
+
+		// 			// titleNb++;
+		// 		}
+		// 	});
+		// }
+
+		function titleFromWordHeight(threshold: number) {
 			const levels: number[] = Array.from(allLevels).sort((a, b) => b - a);
 			paragraphs.forEach((paragraph: Paragraph) => {
 				const scores = paragraph.properties.titleScores;
 
-				if (scores.size > threshold) {
+				if (scores.wordHeight > threshold) {
 					const heading: Heading = new Heading(paragraph.box, paragraph.content);
 					heading.language = paragraph.language;
 					heading.level = levels.indexOf(heading.getMainFont().size) + 1;
