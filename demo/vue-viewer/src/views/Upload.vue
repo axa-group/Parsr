@@ -2,7 +2,7 @@
 	<div class="main v-application v-application--is-ltr">
 		<form @submit.prevent="upload">
 			<fieldset>
-				<label for="file">Input PDF</label>
+				<label for="file">Input file <span class="required">*</span></label>
 				<input
 					type="file"
 					id="file"
@@ -181,6 +181,7 @@
 					/></a>
 				</div>
 			</fieldset -->
+			<p class="required"><span>*</span> Required fields</p>
 			<v-btn rounded class="submit" :loading="loading" :disabled="isSubmitDisabled" @click="upload"
 				>SUBMIT</v-btn
 			>
@@ -196,6 +197,7 @@ export default {
 			infoIcon: InfoIcon,
 			file: null,
 			loading: false,
+			uploadConfig: null,
 			config: {
 				version: 0.5,
 				extractor: {
@@ -207,12 +209,14 @@ export default {
 					'out-of-page-removal',
 					'whitespace-removal',
 					'redundancy-detection',
-					'reading-order-detection',
+					['table-detection', { pages: 'all', flavor: 'lattice' }],
+					['header-footer-detection', { maxMarginPercentage: 15 }],
+					['reading-order-detection', { minColumnWidthInPagePercent: 15 }],
 					'link-detection',
 					['words-to-line', { maximumSpaceBetweenWords: 100 }],
 					'lines-to-paragraph',
+					['page-number-detection', { maxMarginPercentage: 15 }],
 					'heading-detection',
-					['header-footer-detection', { maxMarginPercentage: 15 }],
 					'hierarchy-detection',
 				],
 				output: {
@@ -244,7 +248,8 @@ export default {
 			return !this.file || !this.config;
 		},
 		configAsBinary() {
-			var data = this.encode(JSON.stringify({ ...this.config, ...this.customConfig }));
+			//var data = this.encode(JSON.stringify({ ...this.config, ...this.customConfig }));
+			var data = this.encode(JSON.stringify(this.config));
 			return new Blob([data], {
 				type: 'application/json',
 			});
@@ -258,14 +263,14 @@ export default {
 			this.file = event.target.files[0];
 		},
 		configChanged(event) {
-			this.config = event.target.files[0];
+			this.uploadConfig = event.target.files[0];
 		},
 		upload() {
 			this.loading = true;
 			this.$store
 				.dispatch('postDocument', {
 					file: this.file,
-					configuration: this.config,
+					configuration: this.uploadConfig ? this.uploadConfig : this.configAsBinary,
 				})
 				.then(() => {
 					this.loading = false;
@@ -310,6 +315,17 @@ label {
 	text-align: right;
 }
 
+label span {
+	color: #00008a;
+	font-weight: bold;
+}
+.required {
+	font-size: 0.8em;
+}
+.required span {
+	color: #00008a;
+	font-weight: bold;
+}
 .switch {
 	border-bottom: 1px solid #ebebf1;
 	margin: 0;

@@ -1,7 +1,6 @@
 <template>
 	<div id="nav">
 		<span class="brand">
-			<img :src="logo" />
 			<span>Parsr</span>
 		</span>
 
@@ -18,7 +17,6 @@
 
 <script>
 import NavItem from '@/components/NavBarItem.vue';
-import Logo from '@/assets/logo.png';
 import SearchIcon from '@/assets/search.png';
 import GuideIcon from '@/assets/guide.png';
 
@@ -28,7 +26,6 @@ export default {
 		return {
 			searchIcon: SearchIcon,
 			guideIcon: GuideIcon,
-			logo: Logo,
 		};
 	},
 	methods: {
