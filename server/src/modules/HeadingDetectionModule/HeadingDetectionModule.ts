@@ -47,6 +47,7 @@ export class HeadingDetectionModule extends Module {
 			.filter(t => t.toString().trim() !== '')
 			.reduce((a, b) => a.concat(b), []);
 
+		const wordHeightProportion: Map<number, number> = new Map();
 		const sizeProportion: Map<number, number> = new Map();
 		const nameProportion: Map<string, number> = new Map();
 		const italicProportion: Map<boolean, number> = new Map();
@@ -56,6 +57,14 @@ export class HeadingDetectionModule extends Module {
 
 		paragraphs.forEach((paragraph: Paragraph) => {
 			const font: Font = paragraph.getMainFont();
+
+			const medianWordHeight: number =
+				paragraph
+					.getWords()
+					.map(w => w.box.height)
+					.reduce((a, b) => a + b) / paragraph.getWords().map(w => w.box.height).length;
+
+			wordHeightProportion.set(medianWordHeight, Math.trunc(sizeProportion.get(font.size)) + 1);
 			sizeProportion.set(font.size, Math.trunc(sizeProportion.get(font.size)) + 1);
 			nameProportion.set(font.name, Math.trunc(nameProportion.get(font.name)) + 1);
 			italicProportion.set(font.isItalic, Math.trunc(italicProportion.get(font.isItalic)) + 1);
@@ -67,7 +76,8 @@ export class HeadingDetectionModule extends Module {
 			weightProportion.set(font.weight, Math.trunc(weightProportion.get(font.weight)) + 1);
 		});
 
-		const mostCommonSize: [number, number] = Array.from(sizeProportion).reduce(
+		// const mostCommonSize: [number, number] = Array.from(sizeProportion).reduce(
+		const mostCommonSize: [number, number] = Array.from(wordHeightProportion).reduce(
 			(a, b) => (a[1] > b[1] ? a : b),
 			[0, 0],
 		);
