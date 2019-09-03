@@ -52,16 +52,25 @@ export class ListDetectionModule extends Module {
 		});
 
 		// sort detected positives in their reading order
-		const orderedListGroups: Paragraph[][] = groupParasByConsecutiveGroups(ordered);
-		const unorderedListGroups: Paragraph[][] = groupParasByConsecutiveGroups(unordered);
+		const orderedListGroups: Paragraph[][] = groupParasByConsecutiveGroups(ordered).filter(
+			p => p.length > 1,
+		); // return paragraph groups of length > 1 -- TODO: make this an argument
+		const unorderedListGroups: Paragraph[][] = groupParasByConsecutiveGroups(unordered).filter(
+			p => p.length > 1,
+		); // return paragraph groups of length > 1 -- TODO: make this an argument
 
 		// final lists
-		const orderedLists: List[] = orderedListGroups.map(
-			pg => new List(BoundingBox.merge(pg.map(p => p.box)), pg, true),
-		);
-		const unorderedLists: List[] = unorderedListGroups.map(
-			pg => new List(BoundingBox.merge(pg.map(p => p.box)), pg, false),
-		);
+		logger.debug(`Making list objects and replacing original paragraphs inside the document...`);
+		const orderedLists: List[] = orderedListGroups.map(paras => {
+			const list: List = new List(BoundingBox.merge(paras.map(p => p.box)), paras, true);
+			replaceParagraphsByListInDocument(list, paras);
+			return list;
+		});
+		const unorderedLists: List[] = unorderedListGroups.map(paras => {
+			const list: List = new List(BoundingBox.merge(paras.map(p => p.box)), paras, true);
+			replaceParagraphsByListInDocument(list, paras);
+			return list;
+		});
 
 		// log counts as debug
 		logger.debug(
@@ -75,11 +84,67 @@ export class ListDetectionModule extends Module {
 			)}`,
 		);
 
-		// TODO: replace existing paragraphs and add the lists to the document
-		// -- here
-
+		// done
 		logger.info(`Finished list detection.`);
 		return doc;
+
+		// replace existing paragraphs and add the lists to the document
+		function replaceParagraphsByListInDocument(list: List, paragraphs: Paragraph[]) {
+			// use the order of the first paragraph for the list
+			list.properties.order = paragraphs[0].properties.order;
+
+			logger.debug(
+				`replacing element order #${list.properties.order}, a list of size ${
+					list.content.length
+				}, initial element count: ${[...doc.pages.map(p => p.elements.length)].reduce(
+					(a, b) => a + b,
+					0,
+				)}`,
+			);
+
+			// replace the first paragraph with the list
+			for (const page of doc.pages) {
+				if (page.elements.includes(paragraphs[0])) {
+					page.elements.splice(1, page.elements.indexOf(paragraphs[0]), list);
+					break;
+				}
+			}
+
+			// save the highest order information from the paragraph
+			const orderDelta: number = paragraphs
+				.slice(1, paragraphs.length)
+				.map(p => p.properties.order)
+				.sort((a, b) => b - a)[0];
+
+			// remove the other paragraphs
+			if (paragraphs.length > 1) {
+				for (let i = 1; i < paragraphs.length; i++) {
+					const para = paragraphs[i];
+					doc.pages
+						.filter(page => page.elements.includes(para))
+						.forEach(page => {
+							page.elements.splice(page.elements.indexOf(para), 1);
+						});
+				}
+			}
+
+			// delta back the order number from all succeeding elements in the document
+			doc.pages.forEach(page => {
+				page.elements
+					.filter(elem => elem.properties.order > orderDelta)
+					.forEach(e => {
+						e.properties.order = e.properties.order - orderDelta;
+					});
+			});
+
+			// debug output
+			logger.debug(
+				`done. total elements at the end ${[...doc.pages.map(p => p.elements.length)].reduce(
+					(a, b) => a + b,
+					0,
+				)}`,
+			);
+		}
 
 		function groupParasByConsecutiveGroups(paras: Paragraph[]): Paragraph[][] {
 			paras.sort((a, b) => a.properties.order - b.properties.order);
@@ -95,7 +160,7 @@ export class ListDetectionModule extends Module {
 				}
 			}
 			ret.push(paras.slice(ixf, paras.length));
-			return ret.filter(p => p.length > 1); // return paragraph groups of length > 1
+			return ret;
 		}
 
 		function detectKindOfListItem(paragraph: Paragraph): string {
