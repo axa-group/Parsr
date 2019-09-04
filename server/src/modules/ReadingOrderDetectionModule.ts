@@ -26,19 +26,16 @@ import { Module } from './Module';
  */
 
 interface Options {
-	minColumnWidthInPagePercent?: number;
-	minVerticalGapWidth?: number;
+	minWidth?: number;
 }
 
 const defaultOptions: Options = {
-	minVerticalGapWidth: 5,
-	minColumnWidthInPagePercent: 5,
+	minWidth: 5,
 };
 
 export class ReadingOrderDetectionModule extends Module<Options> {
 	public static moduleName = 'reading-order-detection';
 	private order: number = 0;
-	private currentPageMinColumnWidth: number = 5;
 
 	constructor(options?: Options) {
 		super(options, defaultOptions);
@@ -50,11 +47,6 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 			const elements: Element[] = page.elements.filter(Element.hasBoundingBox);
 
 			this.order = 0;
-			// The min width is actually as a % of page width
-			this.currentPageMinColumnWidth = Math.trunc(
-				(this.options.minColumnWidthInPagePercent / 100) * page.width,
-			);
-
 			this.process(elements);
 
 			elements.sort(utils.sortElementsByOrder);
@@ -192,7 +184,7 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 
 				elementsRest.forEach(e => {
 					if (
-						e.left <= rightmost + this.options.minVerticalGapWidth &&
+						e.left <= rightmost + this.options.minWidth &&
 						e.left >= startGroup &&
 						!group.includes(e)
 					) {
@@ -207,39 +199,6 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 			group = [];
 		}
 
-		// Merge to right to small collumn
-
-		for (let i = 0; i < elementsGroups.length; ++i) {
-			// calculate group width
-			const columnWidth = this.calcualteGroupWidth(elementsGroups[i]);
-			if (columnWidth < this.currentPageMinColumnWidth) {
-				if (i < elementsGroups.length - 1) {
-					// default Right merge
-					elementsGroups[i + 1] = [...elementsGroups[i], ...elementsGroups[i + 1]];
-					elementsGroups.splice(i--, 1);
-				} else if (i > 0) {
-					// if no rightMerge possible try left merge
-					elementsGroups[i - 1] = [...elementsGroups[i - 1], ...elementsGroups[i]];
-					elementsGroups.splice(i--, 1);
-				}
-			}
-		}
-
 		return elementsGroups;
-	}
-
-	private calcualteGroupWidth(elements: Element[]) {
-		let minX = elements[0].left;
-		let maxX = elements[0].left + elements[0].width;
-
-		for (let i = 1; i < elements.length; ++i) {
-			if (elements[i].left < minX) {
-				minX = elements[i].left;
-			}
-			if (elements[i].left + elements[i].width > maxX) {
-				maxX = elements[i].left + elements[i].width;
-			}
-		}
-		return maxX - minX;
 	}
 }
