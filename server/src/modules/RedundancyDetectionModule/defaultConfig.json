@@ -1,4 +1,6 @@
 {
+    "name": "redundancy-detection",
+    "description": "Detects and remove duplicate textual elements on each page of the document.",
 	"percentageOfRedondancy": 0.5,
 	"minimumPages": 6
 }

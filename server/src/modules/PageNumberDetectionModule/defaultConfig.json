@@ -1,4 +1,6 @@
 {
+    "name": "page-number-detection",
+    "description": "Detects the page number for each page in a document",
 	"ignorePages": [],
 	"maxMarginPercentage": 30
 }
