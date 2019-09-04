@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Create paragraphs from a bunch of lines.
+Create paragraphs from a collection of lines.
 
 ## What it does
 
