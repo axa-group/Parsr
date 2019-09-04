@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Document, Paragraph, Table } from '../types/DocumentRepresentation';
-import { Exporter } from './Exporter';
+import { Document, Paragraph, Table } from '../../types/DocumentRepresentation';
+import { Exporter } from '../Exporter';
 
 export class TextExporter extends Exporter {
 	private includeHeaderFooter: boolean;

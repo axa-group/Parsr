@@ -15,9 +15,9 @@
  */
 
 import * as mdtable from 'markdown-table';
-import { Document, Heading, List, Paragraph, Table } from '../types/DocumentRepresentation';
-import logger from '../utils/Logger';
-import { Exporter } from './Exporter';
+import { Document, Heading, List, Paragraph, Table } from '../../types/DocumentRepresentation';
+import logger from '../../utils/Logger';
+import { Exporter } from '../Exporter';
 
 export class MarkdownExporter extends Exporter {
 	private includeHeaderFooter: boolean;

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Exporter } from './Exporter';
+import { Exporter } from '../Exporter';
 
-export class XmlExporter extends Exporter {
+export class JsonCompactExporter extends Exporter {
 	public export(): Promise<any> {
 		throw new Error('Not implemented yet.'); // TODO
 	}

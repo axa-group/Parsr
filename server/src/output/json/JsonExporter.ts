@@ -37,13 +37,13 @@ import {
 	TableRow,
 	Text,
 	Word,
-} from '../types/DocumentRepresentation';
-import { SvgLine } from '../types/DocumentRepresentation/SvgLine';
-import { SvgShape } from '../types/DocumentRepresentation/SvgShape';
-import { ComplexMetadata, Metadata, NumberMetadata } from '../types/Metadata';
-import * as utils from '../utils';
-import logger from '../utils/Logger';
-import { Exporter } from './Exporter';
+} from '../../types/DocumentRepresentation';
+import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
+import { SvgShape } from '../../types/DocumentRepresentation/SvgShape';
+import { ComplexMetadata, Metadata, NumberMetadata } from '../../types/Metadata';
+import * as utils from '../../utils';
+import logger from '../../utils/Logger';
+import { Exporter } from '../Exporter';
 
 export class JsonExporter extends Exporter {
 	private granularity: string;

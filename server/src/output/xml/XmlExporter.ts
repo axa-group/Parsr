@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-export * from './Exporter';
-export * from './JsonExporter';
-export * from './JsonCompactExporter';
-export * from './MarkdownExporter';
-export * from './TextExporter';
-export * from './XmlExporter';
-export * from './ConfidencesExporter';
-export * from './CsvExporter';
-export * from './PdfExporter';
+import { Exporter } from '../Exporter';
+
+export class XmlExporter extends Exporter {
+	public export(): Promise<any> {
+		throw new Error('Not implemented yet.'); // TODO
+	}
+}

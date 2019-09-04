@@ -17,8 +17,8 @@
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
-import { ReadingOrderDetectionModule } from '../server/src/modules/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
-import { WordsToLineModule } from '../server/src/modules/WordsToLineModule/WordsToLineModule';
+import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
+import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
 import { Document, Element } from '../server/src/types/DocumentRepresentation';
 import { getPdf, runModules } from './helpers';
 

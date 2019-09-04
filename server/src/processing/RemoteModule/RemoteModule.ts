@@ -15,7 +15,7 @@
  */
 
 import axios, { AxiosResponse } from 'axios';
-import { JsonExporter } from '../../exporters/JsonExporter';
+import { JsonExporter } from '../../output/json/JsonExporter';
 import { Document, JsonExport } from '../../types/DocumentRepresentation';
 import { json2document } from '../../utils/json2document';
 import { Module } from '../Module';

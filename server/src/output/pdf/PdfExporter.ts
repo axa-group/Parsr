@@ -16,11 +16,11 @@
 
 import { spawnSync } from 'child_process';
 import * as os from 'os';
-import { Document } from '../types/DocumentRepresentation';
-import { getTemporaryFile } from '../utils';
-import logger from '../utils/Logger';
-import { Exporter } from './Exporter';
-import { MarkdownExporter } from './MarkdownExporter';
+import { Document } from '../../types/DocumentRepresentation';
+import { getTemporaryFile } from '../../utils';
+import logger from '../../utils/Logger';
+import { Exporter } from '../Exporter';
+import { MarkdownExporter } from '../markdown/MarkdownExporter';
 
 export class PdfExporter extends Exporter {
 	private includeHeaderFooter: boolean;

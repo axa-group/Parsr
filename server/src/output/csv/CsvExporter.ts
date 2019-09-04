@@ -18,8 +18,8 @@ import * as stringify from 'csv-stringify/lib/sync';
 import * as fs from 'fs';
 import * as path from 'path';
 
-import { Page, Table } from '../types/DocumentRepresentation';
-import { Exporter } from './Exporter';
+import { Page, Table } from '../../types/DocumentRepresentation';
+import { Exporter } from '../Exporter';
 
 export class CsvExporter extends Exporter {
 	public export(outputPath: string): Promise<any> {
