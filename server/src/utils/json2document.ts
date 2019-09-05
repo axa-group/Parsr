@@ -174,6 +174,8 @@ function propertiesFromJson(propertiesObj: JsonProperties): Properties {
 			name: propertiesObj.titleScores.name,
 			italic: propertiesObj.titleScores.italic,
 			underline: propertiesObj.titleScores.underline,
+			capitalCase: propertiesObj.titleScores.capitalCase,
+			titleCase: propertiesObj.titleScores.titleCase,
 		};
 	}
 	if (propertiesObj.hasOwnProperty('order')) {

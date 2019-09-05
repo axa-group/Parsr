@@ -23,6 +23,8 @@ export interface Properties {
 		name: number;
 		italic: number;
 		underline: number;
+		capitalCase: number;
+		titleCase: number;
 	};
 
 	isRedundant?: boolean;
