@@ -12,7 +12,7 @@
 				/>
 			</fieldset>
 			<fieldset>
-				<label for="config">Pipe config</label>
+				<label for="config">Modules config</label>
 				<input
 					type="file"
 					id="config"
@@ -181,23 +181,34 @@
 					/></a>
 				</div>
 			</fieldset -->
-			<p class="required"><span>*</span> Required fields</p>
 			<v-btn rounded class="submit" :loading="loading" :disabled="isSubmitDisabled" @click="upload"
 				>SUBMIT</v-btn
 			>
+			<p class="required"><span>*</span> Required fields</p>
 		</form>
+		<div v-if="processStatus.length > 0" class="processTracker">
+			<p v-for="status in processStatus" :key="status">
+				<span v-html="status" /> <img :src="checkIcon" />
+			</p>
+		</div>
+		<strong v-if="processStatusCompleted">Process completed</strong>
 	</div>
 </template>
 <script>
 import InfoIcon from '@/assets/info.png';
+import CheckIcon from '@/assets/check.png';
 import { mapState } from 'vuex';
+import { setInterval, clearInterval, setTimeout } from 'timers';
 export default {
 	data() {
 		return {
 			infoIcon: InfoIcon,
+			checkIcon: CheckIcon,
 			file: null,
 			loading: false,
 			uploadConfig: null,
+			processStatus: [],
+			processStatusCompleted: false,
 			config: {
 				version: 0.5,
 				extractor: {
@@ -265,6 +276,33 @@ export default {
 		configChanged(event) {
 			this.uploadConfig = event.target.files[0];
 		},
+		trackPipeStatus() {
+			const interval = setInterval(() => {
+				this.$store
+					.dispatch('getDocumentStatus')
+					.then(response => {
+						const currentStatus = response.status
+							? response.status
+									.split(', Options')
+									.join("<p style='font-size:0.8em;color:#a8a8a8'> - Options") + '</p>'
+							: null;
+						if (currentStatus && [...this.processStatus].pop() != currentStatus) {
+							this.processStatus.push(currentStatus);
+						} else if (response.id) {
+							this.loading = false;
+							this.processStatusCompleted = true;
+							clearInterval(interval);
+							setTimeout(() => {
+								this.$router.push('viewer');
+							}, 1000);
+						}
+					})
+					.catch(error => {
+						console.log(error.message);
+						this.loading = false;
+					});
+			}, 1000);
+		},
 		upload() {
 			this.loading = true;
 			this.$store
@@ -273,7 +311,9 @@ export default {
 					configuration: this.uploadConfig ? this.uploadConfig : this.configAsBinary,
 				})
 				.then(() => {
-					this.loading = false;
+					this.processStatus = ['Upload Completed'];
+					//this.loading = false;
+					this.trackPipeStatus();
 				})
 				.catch(error => {
 					console.log(error.message);
@@ -293,8 +333,10 @@ export default {
 <style lang="scss" scoped>
 .main {
 	padding-top: 20px;
+	flex-direction: column;
 }
 .submit {
+	margin-top: 10px;
 	background-color: #00008a !important;
 	color: #ffffff !important;
 }
@@ -321,6 +363,7 @@ label span {
 }
 .required {
 	font-size: 0.8em;
+	margin-top: 5px;
 }
 .required span {
 	color: #00008a;
@@ -353,5 +396,37 @@ label span {
 .switch + a {
 	margin-top: 10px;
 	display: inline-block;
+}
+
+.processTracker {
+	border-top: 1px solid #cccccc;
+	border-bottom: 1px solid #cccccc;
+	min-width: 600px;
+	max-width: 50%;
+	margin: 0 auto;
+	padding: 10px 0px;
+}
+.processTracker p {
+	margin: 0;
+	white-space: pre-wrap;
+}
+.processTracker p span {
+	display: inline-block;
+	max-width: 80%;
+	vertical-align: top;
+}
+.processTracker p img {
+	margin-left: 10px;
+}
+
+.processTracker span > p {
+	border: solid 1px red;
+	display: block;
+	max-width: 80%;
+}
+
+.processTracker + strong {
+	margin-top: 10px;
+	font-size: 1.2em;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<component :is="elementComponent" :element="element"></component>
+	<component :is="elementComponent" :element="element" :fonts="fonts"></component>
 </template>
 <script>
 import pageElementMixin from '@/mixins/pageElementMixin';

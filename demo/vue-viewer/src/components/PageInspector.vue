@@ -38,7 +38,7 @@
 			></v-switch>
 			<v-switch
 				v-model="headingsFilter"
-				label="Headings (todo)"
+				label="Headings"
 				class="switch"
 				color="indigo darken-3"
 				:hide-details="true"

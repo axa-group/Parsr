@@ -31,4 +31,7 @@ export default {
 		console.log(formData);
 		return apiClient.post('/document', formData);
 	},
+	getDocumentStatus(docID) {
+		return apiClient.get('/queue/' + docID);
+	},
 };

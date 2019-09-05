@@ -97,6 +97,7 @@ export class ApiServer {
 	 * Status: 500 - Internal Server Error
 	 */
 	private handleGetQueue(req: Request, res: Response): void {
+		res.setHeader('Access-Control-Allow-Origin', '*');
 		const docId = req.params.id;
 		let pipelineProcess: PipelineProcess;
 

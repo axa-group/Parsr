@@ -63,8 +63,14 @@ export default new Vuex.Store({
 		postDocument({ commit }, { file, configuration }) {
 			return DocumentService.postDocument(file, configuration).then(response => {
 				console.log(commit);
-				console.log(response);
 				commit('SET_DOCUMENT_ID', response.data);
+				commit('SET_DOCUMENT', null);
+				return response.data;
+			});
+		},
+		getDocumentStatus() {
+			//console.log(commit);
+			return DocumentService.getDocumentStatus(this.state.uuid).then(response => {
 				return response.data;
 			});
 		},

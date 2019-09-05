@@ -11,23 +11,43 @@
 				Debug Info: Page {{ page.pageNumber }} - Viewer Zoom {{ zoom }} - Page Zoom to fit
 				{{ zoomToFitPage }}
 			</text-->
-			<!--pageElements v-for="element in page.elements" :key="element.id" :element="element" /-->
-			<paragraph
-				v-for="element in pageElements"
+			<!--pageElements
+				v-for="element in page.elements"
+				:key="element.id"
+				:element="element"
+				:fonts="fonts"
+			/-->
+			<heading
+				v-for="element in elementsOfType('heading')"
 				:key="element.id"
 				:element="element"
 				:fonts="fonts"
 			/>
+			<paragraph
+				v-for="element in elementsOfType('paragraph')"
+				:key="element.id"
+				:element="element"
+				:fonts="fonts"
+			/>
+			<!--component
+				v-for="element in page.elements"
+				:functional="true"
+				:is="componentFor(element)"
+				:key="element.id"
+				:element="element"
+				:fonts="fonts"
+			></component-->
 		</svg>
 	</div>
 </template>
 
 <script>
-//import PageElements from '@/components/DocumentPreview/PageElements';
+// import PageElements from '@/components/DocumentPreview/PageElements';
 import scrollItemMixin from '@/mixins/scrollItemMixin.js';
 import Paragraph from '@/components/DocumentPreview/Paragraph';
+import Heading from '@/components/DocumentPreview/Heading';
 export default {
-	components: { Paragraph },
+	components: { Paragraph, Heading },
 	mixins: [scrollItemMixin],
 	data() {
 		return {
@@ -51,6 +71,9 @@ export default {
 		},
 	},
 	computed: {
+		elementsOfType() {
+			return elementType => this.pageElements.filter(element => element.type === elementType);
+		},
 		pageElements() {
 			if (!this.appeared) {
 				return [];
@@ -65,6 +88,29 @@ export default {
 		},
 		isPageLandscape() {
 			return this.page.box.w > this.page.box.h;
+		},
+		componentFor() {
+			/*return element => {
+				if (this.element.type === 'paragraph') {
+				return 'Paragraph';
+			} else if (this.element.type === 'line') {
+				return 'LineElement';
+			} else if (this.element.type === 'word') {
+				return 'Word';
+			} else {
+				//console.log('UNKNOWN TYPE ' + this.element.type + ' ID ' + this.element.id);
+				return 'Paragraph';
+			}*/
+			return element => {
+				switch (element.type) {
+					case 'paragraph':
+					case 'heading':
+						return 'Paragraph';
+					default:
+						console.log('UNKNOWN TYPE ' + element.type + ' ID ' + element.id);
+						return null;
+				}
+			};
 		},
 	},
 	methods: {
@@ -132,6 +178,11 @@ export default {
 .VisibleParagraphs rect.Paragraph {
 	fill: transparent;
 	stroke: red;
+	stroke-width: 1;
+}
+.VisibleHeadings rect.Heading {
+	fill: transparent;
+	stroke: fuchsia;
 	stroke-width: 1;
 }
 .VisibleLines line {
