@@ -2,7 +2,7 @@
 	<div class="main viewer">
 		<thumbnails
 			v-if="documentFetched"
-			title="Title.pdf"
+			:title="inputFileName"
 			:totalPages="documentPages"
 			:selectedPage="selectedPage"
 		/>
@@ -36,6 +36,7 @@ export default {
 			return this.document != null;
 		},
 		...mapState({
+			inputFileName: state => state.inputFileName,
 			document: state => state.document,
 			selectedPage: state => state.selectedPage,
 			zoom: state => state.zoom,

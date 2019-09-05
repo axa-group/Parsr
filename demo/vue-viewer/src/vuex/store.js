@@ -9,6 +9,7 @@ export default new Vuex.Store({
 		selectedPage: 1,
 		zoom: 1.0,
 		uuid: '75c4bcb6d51e4e60a3f0682f858ffe',
+		inputFileName: null,
 		document: null,
 		inspectorFilters: {},
 		customConfig: {
@@ -42,6 +43,9 @@ export default new Vuex.Store({
 		fitZoom(state, zoom) {
 			state.zoom = zoom;
 		},
+		setInputFileName(state, name) {
+			state.inputFileName = name;
+		},
 		SET_DOCUMENT(state, document) {
 			state.document = document;
 		},
@@ -62,9 +66,9 @@ export default new Vuex.Store({
 		},
 		postDocument({ commit }, { file, configuration }) {
 			return DocumentService.postDocument(file, configuration).then(response => {
-				console.log(commit);
 				commit('SET_DOCUMENT_ID', response.data);
 				commit('SET_DOCUMENT', null);
+				commit('setInputFileName', file.name);
 				return response.data;
 			});
 		},
