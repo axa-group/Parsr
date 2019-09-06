@@ -21,9 +21,9 @@ import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagra
 import { Module } from '../Module';
 
 // TODO This module doesn't work very well. It doesn't detect titles that are just bold text and
-//      should use the location of elements of the page to improve detection and accuary.
+//      should use the location of elements of the page to improve detection and accuracy.
 /**
- * Stabiltiy: Experimental
+ * Stability: Experimental
  * Detect title text blocks in the document, based on the font difference.
  */
 
@@ -42,8 +42,8 @@ export class HeadingDetectionModule extends Module {
 			return doc;
 		}
 
-		computeHeadersByVoting(false); // old
-		computeHeadersByEliminationOfBaseTextFont(true); // new
+		computeHeadersByVoting(false); // older algorithm - interesting ideas
+		computeHeadersByEliminationOfBaseTextFont(true); // newer algorithm based on detecting a base font
 
 		return doc;
 
