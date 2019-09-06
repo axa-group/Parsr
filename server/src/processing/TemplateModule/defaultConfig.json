@@ -1,5 +1,5 @@
 {
-    "name": "template",
-    "description": "A boilerplate template showing how a template can be made",
+	"name": "template",
+	"description": "A boilerplate template showing how a template can be made",
 	"yourOption": "the value"
 }

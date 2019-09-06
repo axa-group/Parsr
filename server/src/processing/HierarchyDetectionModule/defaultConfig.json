@@ -1,4 +1,4 @@
 {
-    "name": "hierarchy-detection",
-    "description": "Detects the Hierarchy within a document, respecting indentation of element blocks to create a hierarchical structure."
+	"name": "hierarchy-detection",
+	"description": "Detects the Hierarchy within a document, respecting indentation of element blocks to create a hierarchical structure."
 }

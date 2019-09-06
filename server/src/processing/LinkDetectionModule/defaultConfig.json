@@ -1,4 +1,4 @@
 {
-    "name": "link-detection",
-    "description": "The Link detection module detects URLs, GoTo links, as well as actionLaunch, actionNamed, actionMovie based links in a PDF document, when used on a pdf2json output."
+	"name": "link-detection",
+	"description": "The Link detection module detects URLs, GoTo links, as well as actionLaunch, actionNamed, actionMovie based links in a PDF document, when used on a pdf2json output."
 }
