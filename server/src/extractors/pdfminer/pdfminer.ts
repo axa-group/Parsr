@@ -46,13 +46,26 @@ export function execute(pdfInputFile: string): Promise<Document> {
 	return new Promise<Document>((resolveDocument, rejectDocument) => {
 		return repairPdf(pdfInputFile).then(repairedPdf => {
 			const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-			logger.debug(`pdf2txt.py ${['-A', '-t', 'xml', '-o', xmlOutputFile, repairedPdf].join(' ')}`);
+			logger.debug(
+				`pdf2txt.py ${['-c', 'utf-8', '-A', '-t', 'xml', '-o', xmlOutputFile, repairedPdf].join(
+					' ',
+				)}`,
+			);
 
 			if (!fs.existsSync(xmlOutputFile)) {
 				fs.appendFileSync(xmlOutputFile, '');
 			}
 
-			const pdfminer = spawn('pdf2txt.py', ['-A', '-t', 'xml', '-o', xmlOutputFile, repairedPdf]);
+			const pdfminer = spawn('pdf2txt.py', [
+				'-c',
+				'utf-8',
+				'-A',
+				'-t',
+				'xml',
+				'-o',
+				xmlOutputFile,
+				repairedPdf,
+			]);
 
 			pdfminer.stderr.on('data', data => {
 				logger.error('pdfminer error:', data.toString('utf8'));
