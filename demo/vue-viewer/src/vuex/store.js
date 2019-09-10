@@ -12,19 +12,47 @@ export default new Vuex.Store({
 		inputFileName: null,
 		document: null,
 		inspectorFilters: {},
-		customConfig: {
+		defaultConfig: {
+			version: 0.5,
+			extractor: {
+				pdf: 'pdf2json',
+				img: 'tesseract',
+				language: ['eng', 'fra'],
+			},
 			cleaner: [
 				'out-of-page-removal',
 				'whitespace-removal',
-				'redundancy-detection',
-				'reading-order-detection',
+				['redundancy-detection', { percentageOfRedundancy: 0.5, minimumPages: 6 }],
+				['table-detection', { pages: 'all', flavor: 'lattice' }],
+				['header-footer-detection', { maxMarginPercentage: 15, ignorePages: [] }],
+				['reading-order-detection', { minVerticalGapWidth: 5, minColumnWidthInPagePercent: 5 }],
 				'link-detection',
-				'words-to-line',
-				'lines-to-paragraph',
+				['words-to-line', { maximumSpaceBetweenWords: 100 }],
+				[
+					'lines-to-paragraph',
+					{
+						addNewline: true,
+						alignUncertainty: 3,
+						checkFont: false,
+						maxInterline: 0.3,
+						lineLengthUncertainty: 0.25,
+					},
+				],
+				['page-number-detection', { maxMarginPercentage: 15, ignorePages: [] }],
 				'heading-detection',
-				'header-footer-detection',
 				'hierarchy-detection',
 			],
+			output: {
+				granularity: 'word',
+				includeMarginals: false,
+				formats: {
+					json: true,
+					text: true,
+					csv: true,
+					markdown: true,
+					pdf: false,
+				},
+			},
 		},
 	},
 	mutations: {
@@ -45,6 +73,15 @@ export default new Vuex.Store({
 		},
 		setInputFileName(state, name) {
 			state.inputFileName = name;
+		},
+		updateConfig(state, configItem) {
+			if (configItem.selected) {
+				state.defaultConfig.cleaner.push(configItem.item);
+			} else {
+				state.defaultConfig.cleaner = state.defaultConfig.cleaner.filter(
+					el => el !== configItem.item,
+				);
+			}
 		},
 		SET_DOCUMENT(state, document) {
 			state.document = document;

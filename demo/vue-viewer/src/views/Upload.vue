@@ -2,279 +2,120 @@
 	<div class="main v-application v-application--is-ltr">
 		<form @submit.prevent="upload">
 			<fieldset>
-				<label for="file">Input file <span class="required">*</span></label>
+				<legend>Input file</legend>
 				<input
 					type="file"
 					id="file"
 					name="file"
 					accept="application/pdf"
 					@change="fileChanged($event)"
+					style="margin:10px 0px"
 				/>
 			</fieldset>
+
 			<fieldset>
-				<label for="config">Modules config</label>
-				<input
-					type="file"
-					id="config"
-					name="config"
-					accept="application/json"
-					@change="configChanged($event)"
+				<legend>Modules configuration</legend>
+				<configItem
+					v-for="(item, index) in defaultConfig.cleaner"
+					:key="'Item_' + index"
+					:model="customConfig.cleaner"
+					:value="item"
+					:defaultValues="defaultValues(item)"
+					@change="configChange"
 				/>
 			</fieldset>
-			<!-- fieldset>
-				<div>
-					<v-switch
-						v-model="customConfig.cleaner"
-						value="out-of-page-removal"
-						label="Out of page removal"
-						class="switch"
-						color="indigo darken-3"
-						:hide-details="true"
-					></v-switch>
-					<a
-						href="https://github.com/axa-group/Parsr/blob/develop/docs/modules/out-of-page-removal-module.md"
-						target="_blank"
-						><img :src="infoIcon"
-					/></a>
-				</div>
-				<div>
-					<v-switch
-						v-model="customConfig.cleaner"
-						value="whitespace-removal"
-						label="White space removal"
-						class="switch"
-						color="indigo darken-3"
-						:hide-details="true"
-					></v-switch
-					><a
-						href="https://github.com/axa-group/Parsr/blob/develop/docs/modules/whitespace-removal-module.md"
-						target="_blank"
-						><img :src="infoIcon"
-					/></a>
-				</div>
-				<div>
-					<v-switch
-						v-model="customConfig.cleaner"
-						value="redundancy-detection"
-						label="Redundancy detection"
-						class="switch"
-						color="indigo darken-3"
-						:hide-details="true"
-					></v-switch
-					><a
-						href="https://github.com/axa-group/Parsr/blob/develop/docs/modules/redundancy-detection-module.md"
-						target="_blank"
-						><img :src="infoIcon"
-					/></a>
-				</div>
-				<div>
-					<v-switch
-						v-model="customConfig.cleaner"
-						value="reading-order-detection"
-						label="Reading order detection"
-						class="switch"
-						color="indigo darken-3"
-						:hide-details="true"
-					></v-switch
-					><a
-						href="https://github.com/axa-group/Parsr/blob/develop/docs/modules/reading-order-detection-module.md"
-						target="_blank"
-						><img :src="infoIcon"
-					/></a>
-				</div>
-				<div>
-					<v-switch
-						v-model="customConfig.cleaner"
-						value="link-detection"
-						label="Link detection"
-						class="switch"
-						color="indigo darken-3"
-						:hide-details="true"
-					></v-switch
-					><a
-						href="https://github.com/axa-group/Parsr/blob/develop/docs/modules/link-detection-module.md"
-						target="_blank"
-						><img :src="infoIcon"
-					/></a>
-				</div>
-				<div>
-					<v-switch
-						v-model="customConfig.cleaner"
-						value="words-to-line"
-						label="Words to line"
-						class="switch"
-						color="indigo darken-3"
-						:hide-details="true"
-					>
-						<template v-slot:append>
-							<span>Max. space between words</span>
-							<input type="text" value="100" />
-						</template> </v-switch
-					><a
-						href="https://github.com/axa-group/Parsr/blob/develop/docs/modules/words-to-line-module.md"
-						target="_blank"
-						><img :src="infoIcon"
-					/></a>
-				</div>
-				<div>
-					<v-switch
-						v-model="customConfig.cleaner"
-						value="lines-to-paragraph"
-						label="Lines to paragraph"
-						class="switch"
-						color="indigo darken-3"
-						:hide-details="true"
-					></v-switch
-					><a
-						href="https://github.com/axa-group/Parsr/blob/develop/docs/modules/lines-to-paragraph-module.md"
-						target="_blank"
-						><img :src="infoIcon"
-					/></a>
-				</div>
-				<div>
-					<v-switch
-						v-model="customConfig.cleaner"
-						value="heading-detection"
-						label="Heading detection"
-						class="switch"
-						color="indigo darken-3"
-						:hide-details="true"
-					></v-switch
-					><a
-						href="https://github.com/axa-group/Parsr/blob/develop/docs/modules/heading-detection-module.md"
-						target="_blank"
-						><img :src="infoIcon"
-					/></a>
-				</div>
-				<div>
-					<v-switch
-						v-model="customConfig.cleaner"
-						value="header-footer-detection"
-						label="Header/Footer detection"
-						class="switch"
-						color="indigo darken-3"
-						:hide-details="true"
-					>
-						<template v-slot:append>
-							<span>Max. margin percentage</span>
-							<input type="text" value="15" />
-						</template> </v-switch
-					><a
-						href="https://github.com/axa-group/Parsr/blob/develop/docs/modules/header-footer-detection-module.md"
-						target="_blank"
-						><img :src="infoIcon"
-					/></a>
-				</div>
-				<div>
-					<v-switch
-						v-model="customConfig.cleaner"
-						value="hierarchy-detection"
-						label="Hierarchy detection"
-						class="switch"
-						color="indigo darken-3"
-						:hide-details="true"
-					></v-switch
-					><a
-						href="https://github.com/axa-group/Parsr/blob/develop/docs/modules/hierarchy-detection-module.md"
-						target="_blank"
-						><img :src="infoIcon"
-					/></a>
-				</div>
-			</fieldset -->
-			<v-btn rounded class="submit" :loading="loading" :disabled="isSubmitDisabled" @click="upload"
-				>SUBMIT</v-btn
-			>
+
+			<v-btn rounded class="submit" :disabled="isSubmitDisabled" @click="upload">SUBMIT</v-btn>
 			<p class="required"><span>*</span> Required fields</p>
 		</form>
-		<div v-if="processStatus.length > 0" class="processTracker">
-			<p v-for="status in processStatus" :key="status">
-				<span v-html="status" /> <img :src="checkIcon" />
-			</p>
-		</div>
-		<strong v-if="processStatusCompleted">Process completed</strong>
+
+		<v-overlay :absolute="false" opacity="0.5" :value="processStatus.length > 0" :dark="false">
+			<div v-if="processStatus.length > 0" class="processTracker">
+				<p v-for="status in processStatus" :key="status">
+					<span v-html="status" /> <img :src="checkIcon" />
+				</p>
+				<v-progress-circular
+					v-if="loading"
+					color="#00008a"
+					indeterminate
+					size="24"
+				></v-progress-circular>
+				<strong v-if="processStatusCompleted">Process completed</strong>
+			</div>
+		</v-overlay>
 	</div>
 </template>
 <script>
-import InfoIcon from '@/assets/info.png';
 import CheckIcon from '@/assets/check.png';
 import { mapState } from 'vuex';
 import { setInterval, clearInterval, setTimeout } from 'timers';
+import ConfigItem from '@/components/UploadConfig/ConfigItem';
 export default {
 	data() {
 		return {
-			infoIcon: InfoIcon,
+			items: [true, false],
 			checkIcon: CheckIcon,
 			file: null,
 			loading: false,
-			uploadConfig: null,
 			processStatus: [],
 			processStatusCompleted: false,
-			config: {
-				version: 0.5,
-				extractor: {
-					pdf: 'pdf2json',
-					img: 'tesseract',
-					language: ['eng', 'fra'],
-				},
-				cleaner: [
-					'out-of-page-removal',
-					'whitespace-removal',
-					'redundancy-detection',
-					['table-detection', { pages: 'all', flavor: 'lattice' }],
-					['header-footer-detection', { maxMarginPercentage: 15 }],
-					['reading-order-detection', { minColumnWidthInPagePercent: 15 }],
-					'link-detection',
-					['words-to-line', { maximumSpaceBetweenWords: 100 }],
-					'lines-to-paragraph',
-					['page-number-detection', { maxMarginPercentage: 15 }],
-					'heading-detection',
-					'hierarchy-detection',
-				],
-				output: {
-					granularity: 'word',
-					includeMarginals: false,
-					formats: {
-						json: true,
-						text: true,
-						csv: true,
-						markdown: true,
-						pdf: false,
-					},
-				},
-			},
+			customConfig: null,
 		};
 	},
-
-	/*watch: {
-		customCleaner() {
-			console.log('Change');
-			console.log({ ...this.config, ...this.customConfig });
-		},
-	},*/
+	components: { ConfigItem },
 	computed: {
 		...mapState({
-			customConfig: state => state.customConfig,
+			defaultConfig: state => state.defaultConfig,
 		}),
 		isSubmitDisabled() {
-			return !this.file || !this.config;
+			return !this.file;
 		},
 		configAsBinary() {
-			//var data = this.encode(JSON.stringify({ ...this.config, ...this.customConfig }));
-			var data = this.encode(JSON.stringify(this.config));
+			var data = this.encode(JSON.stringify({ ...this.defaultConfig, ...this.customConfig }));
 			return new Blob([data], {
 				type: 'application/json',
 			});
 		},
-		/*customCleaner() {
-			return this.customConfig.cleaner.slice();
-		},*/
+	},
+	beforeMount() {
+		this.customConfig = { ...this.defaultConfig };
 	},
 	methods: {
+		defaultValues(configItem) {
+			if (Array.isArray(configItem)) {
+				console.log('IS Array');
+				console.log(configItem);
+				return this.defaultValuesForModule(Object.keys(configItem[1]));
+			}
+			return null;
+		},
+		defaultValuesForModule(moduleParam) {
+			console.log('Module');
+			console.log(moduleParam);
+			const defaults = {};
+			moduleParam.forEach(element => {
+				switch (element) {
+					case 'flavor':
+						defaults[element] = ['lattice', 'stream'];
+						break;
+					case 'addNewline':
+					case 'checkFont':
+						defaults[element] = [true, false];
+						break;
+				}
+			});
+			return defaults;
+		},
+		configChange(configItem) {
+			if (configItem.selected) {
+				this.customConfig.cleaner.push(configItem.item);
+			} else {
+				this.customConfig.cleaner = this.customConfig.cleaner.filter(el => el !== configItem.item);
+			}
+			//this.$store.commit('updateConfig', configItem);
+		},
 		fileChanged(event) {
 			this.file = event.target.files[0];
-		},
-		configChanged(event) {
-			this.uploadConfig = event.target.files[0];
 		},
 		trackPipeStatus() {
 			const interval = setInterval(() => {
@@ -308,7 +149,7 @@ export default {
 			this.$store
 				.dispatch('postDocument', {
 					file: this.file,
-					configuration: this.uploadConfig ? this.uploadConfig : this.configAsBinary,
+					configuration: this.configAsBinary,
 				})
 				.then(() => {
 					this.processStatus = ['Upload Completed'];
@@ -330,6 +171,7 @@ export default {
 	},
 };
 </script>
+
 <style lang="scss" scoped>
 .main {
 	padding-top: 20px;
@@ -346,8 +188,15 @@ form {
 	margin: 0 auto;
 }
 fieldset {
-	margin-bottom: 10px;
-	border: 0px;
+	margin-bottom: 0px;
+	border-left: 0px;
+	border-right: 0px;
+	border-bottom: 0px;
+	border-top: 1px solid #cccccc;
+}
+fieldset legend {
+	text-align: left;
+	padding-right: 10px;
 }
 label {
 	margin-right: 10px;
@@ -369,38 +218,10 @@ label span {
 	color: #00008a;
 	font-weight: bold;
 }
-.switch {
-	border-bottom: 1px solid #ebebf1;
-	margin: 0;
-	padding: 10px;
-	display: inline-block;
-	vertical-align: top;
-	width: 300px;
-}
-
-.switch span {
-	font-size: 0.8em;
-	vertical-align: middle;
-	color: rgba(0, 0, 0, 0.54);
-	margin-top: 3px;
-	margin-left: 38px;
-}
-.switch input {
-	border: solid 1px #cccccc;
-	width: 40px;
-	font-size: 0.8em;
-	vertical-align: middle;
-	margin-left: 5px;
-	text-align: center;
-}
-.switch + a {
-	margin-top: 10px;
-	display: inline-block;
-}
 
 .processTracker {
-	border-top: 1px solid #cccccc;
-	border-bottom: 1px solid #cccccc;
+	background-color: white;
+	border-radius: 10px;
 	min-width: 600px;
 	max-width: 50%;
 	margin: 0 auto;
