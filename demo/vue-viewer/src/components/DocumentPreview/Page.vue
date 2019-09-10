@@ -144,8 +144,6 @@ export default {
 
 <style lang="scss">
 .PageContainer {
-	/*border-top: 1px solid black;
-	border-bottom: 1px solid green;*/
 	margin: 0 auto;
 }
 .Page {
