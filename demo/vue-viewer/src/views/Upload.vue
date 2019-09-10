@@ -20,7 +20,7 @@
 					:key="'Item_' + index"
 					:model="customConfig.cleaner"
 					:value="item"
-					:defaultValues="defaultValues(item)"
+					:params="moduleParams(item)"
 					@change="configChange"
 				/>
 			</fieldset>
@@ -81,19 +81,42 @@ export default {
 		this.customConfig = { ...this.defaultConfig };
 	},
 	methods: {
-		defaultValues(configItem) {
+		moduleParams(configItem) {
 			if (Array.isArray(configItem)) {
-				console.log('IS Array');
-				console.log(configItem);
-				return this.defaultValuesForModule(Object.keys(configItem[1]));
+				const moduleParams = {};
+				let defaultValues = this.defaultValuesForModule(configItem);
+				if (defaultValues != {}) moduleParams['defaultValues'] = defaultValues;
+				let sliderValues = this.sliderValuesForModule(configItem);
+				if (sliderValues != {}) moduleParams['sliders'] = sliderValues;
+				return moduleParams;
 			}
-			return null;
+			return {};
 		},
-		defaultValuesForModule(moduleParam) {
+		sliderValuesForModule(module) {
+			console.log('Module Sliders');
+			console.log(module);
+			const sliders = {};
+			Object.keys(module[1]).forEach(element => {
+				switch (element) {
+					case 'percentageOfRedundancy':
+						sliders[element] = { min: 0, max: 10, multiplier: 10, decimals: 1 };
+						break;
+					case 'maxMarginPercentage':
+					case 'minColumnWidthInPagePercent':
+						sliders[element] = { min: 0, max: 100, multiplier: 1, decimals: 0 };
+						break;
+					case 'lineLengthUncertainty':
+						sliders[element] = { min: 0, max: 100, multiplier: 100, decimals: 2 };
+						break;
+				}
+			});
+			return sliders;
+		},
+		defaultValuesForModule(module) {
 			console.log('Module');
-			console.log(moduleParam);
+			console.log(module);
 			const defaults = {};
-			moduleParam.forEach(element => {
+			Object.keys(module[1]).forEach(element => {
 				switch (element) {
 					case 'flavor':
 						defaults[element] = ['lattice', 'stream'];
