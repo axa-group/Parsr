@@ -16,6 +16,9 @@
 		"vuex": "^3.0.1"
 	},
 	"devDependencies": {
+		"@fortawesome/fontawesome-free": "^5.10.2",
+		"@mdi/font": "^4.3.95",
+		"@mdi/js": "^4.3.95",
 		"@vue/cli-plugin-babel": "^3.9.0",
 		"@vue/cli-plugin-eslint": "^3.9.0",
 		"@vue/cli-service": "^3.9.0",
@@ -23,6 +26,7 @@
 		"babel-eslint": "^10.0.1",
 		"eslint": "^5.16.0",
 		"eslint-plugin-vue": "^5.0.0",
+		"material-design-icons-iconfont": "^5.0.1",
 		"sass": "^1.17.4",
 		"sass-loader": "^7.1.0",
 		"vue-cli-plugin-vuetify": "^0.6.3",
