@@ -63,6 +63,7 @@
 		"pino": "^5.13.2",
 		"pino-pretty": "^2.6.1",
 		"request": "^2.88.0",
+		"skmeans": "^0.11.0",
 		"string-similarity": "^1.2.1",
 		"svgson": "^3.1.0",
 		"tslint": "^5.19.0",

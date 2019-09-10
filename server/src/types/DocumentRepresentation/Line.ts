@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
+import { Font } from './Font';
 import { Text } from './Text';
 import { Word } from './Word';
 
@@ -86,5 +88,42 @@ export class Line extends Text {
 	 */
 	public set scaling(value: number) {
 		this._scaling = value;
+	}
+
+	/**
+	 * Returns the main font of the line using a basket + voting mechanism. The most used font will be returned
+	 * as a valid Font object.
+	 */
+	public getMainFont(): Font | undefined {
+		const fonts: Font[] = this.content
+			.map((word: Word) => word.font)
+			.reduce((a, b) => a.concat(b), []);
+
+		const baskets: Font[][] = [];
+
+		fonts.forEach((font: Font) => {
+			let basketFound: boolean = false;
+			baskets.forEach((basket: Font[]) => {
+				if (basket.length > 0 && basket[0].isEqual(font)) {
+					basket.push(font);
+					basketFound = true;
+				}
+			});
+
+			if (!basketFound) {
+				baskets.push([font]);
+			}
+		});
+
+		baskets.sort((a, b) => {
+			return b.length - a.length;
+		});
+
+		if (baskets.length > 0 && baskets[0].length > 0) {
+			return baskets[0][0];
+		} else {
+			logger.warn(`No font found for line id ${this.id}`);
+			return undefined;
+		}
 	}
 }

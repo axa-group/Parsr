@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as skmeans from 'skmeans';
 import {
 	BoundingBox,
 	Document,
@@ -36,7 +37,7 @@ interface Options {
 	alignUncertainty?: number; // value in px
 	checkFont?: boolean;
 	lineLengthUncertainty?: number; // factor of line width
-	maxInterline?: number; // factor of line height
+	maxInterlineToleranceFactor?: number; // factor of line height
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -54,6 +55,7 @@ export class LinesToParagraphModule extends Module<Options> {
 	}
 
 	public main(doc: Document): Document {
+		// get the average interline distance to be used as a parameter for the merge
 		doc.pages.forEach((page: Page) => {
 			if (page.getElementsOfType<Paragraph>(Paragraph).length > 0) {
 				logger.warn(
@@ -61,16 +63,20 @@ export class LinesToParagraphModule extends Module<Options> {
 				);
 				return page;
 			}
-			const lines: Line[] = page
-				.getElementsOfType<Line>(Line, false)
-				.sort(utils.sortElementsByOrder);
+			const lines: Line[] = [...page.getElementsOfType<Line>(Line, false)].sort(
+				utils.sortElementsByOrder,
+			);
+			const interlineDistanceForPage = this.findMostCommonInterlineDistance(lines);
 			const otherPageElements: Element[] = page.elements.filter(
 				element => !(element instanceof Line) || !lines.includes(element),
 			);
-			const otherElements: Element[] = this.joinLinesInElements(otherPageElements);
-			const joinedLines: Line[][] = this.joinLines(lines);
+			const otherElements: Element[] = this.joinLinesInElements(
+				otherPageElements,
+				interlineDistanceForPage,
+			);
+			const joinedLines: Line[][] = this.joinLines(lines, interlineDistanceForPage);
 
-			// Clean the properties.cr  information as it is not usefull down the line
+			// Clean the properties.cr  information as it is not useful down the line
 			for (const theseLines of joinedLines) {
 				for (const thisLine of theseLines) {
 					for (const thisWord of thisLine.content) {
@@ -90,14 +96,14 @@ export class LinesToParagraphModule extends Module<Options> {
 		return doc;
 	}
 
-	private joinLinesInElements(elements: Element[]) {
+	private joinLinesInElements(elements: Element[], interlineDistanceForPage: number) {
 		elements.forEach(element => {
-			this.joinLinesFromElement(element);
+			this.joinLinesFromElement(element, interlineDistanceForPage);
 		});
 		return elements;
 	}
 
-	private joinLinesFromElement(element: Element): Line {
+	private joinLinesFromElement(element: Element, interlineDistanceForPage: number): Line {
 		if (
 			!(element instanceof Line) &&
 			element.content &&
@@ -106,13 +112,13 @@ export class LinesToParagraphModule extends Module<Options> {
 		) {
 			const containedLines: Line[] = [];
 			element.content.forEach(el => {
-				const containedLine = this.joinLinesFromElement(el);
+				const containedLine = this.joinLinesFromElement(el, interlineDistanceForPage);
 				if (containedLine) {
 					containedLines.push(containedLine);
 				}
 			});
 			if (containedLines.length > 0) {
-				this.updateElementContents(element, containedLines);
+				this.updateElementContents(element, containedLines, interlineDistanceForPage);
 			}
 		} else if (element instanceof Line) {
 			return element;
@@ -120,8 +126,8 @@ export class LinesToParagraphModule extends Module<Options> {
 		return null;
 	}
 
-	private updateElementContents(element: Element, lines: Line[]) {
-		const joinedLines = this.joinLines(lines);
+	private updateElementContents(element: Element, lines: Line[], interlineDistanceForPage: number) {
+		const joinedLines = this.joinLines(lines, interlineDistanceForPage);
 		const elementContent = this.mergeLinesIntoParagraphs(joinedLines);
 		element.content = elementContent;
 	}
@@ -138,7 +144,7 @@ export class LinesToParagraphModule extends Module<Options> {
 		});
 	}
 
-	private joinLines(lines: Line[]): Line[][] {
+	private joinLines(lines: Line[], interlineDistanceForPage: number): Line[][] {
 		const toBeMerged: Line[][] = [];
 		for (let i = 0; i < lines.length; i++) {
 			const firstLine: Line = lines[i];
@@ -150,7 +156,7 @@ export class LinesToParagraphModule extends Module<Options> {
 
 				if (
 					//// FIXME (!this.options.checkFont || line1.font === line2.font) &&
-					this.isAdjacentLine(prev, curr) &&
+					this.isAdjacentLine(prev, curr, interlineDistanceForPage) &&
 					(utils.isAligned([prev, curr], this.options.alignUncertainty) ||
 						utils.isAlignedCenter([prev, curr], this.options.alignUncertainty)) &&
 					// isntBulletList(prev, curr) &&
@@ -184,7 +190,7 @@ export class LinesToParagraphModule extends Module<Options> {
 			return false;
 		}
 
-		// for now by default we fall back to Left if we can not determine the allignement.
+		// for now by default we fall back to Left if we can not determine the alignment.
 		if (orientation === 'DISALIGNED') {
 			orientation = 'LEFT';
 		}
@@ -329,12 +335,63 @@ export class LinesToParagraphModule extends Module<Options> {
 	 * Checks if two lines are adjacent or not by using a measure of their overlap uncertainty.
 	 * @param line1 the first line
 	 * @param line2 the second line
+	 * @param interlineDistanceForPage Interline distance on this page.
 	 */
-	private isAdjacentLine(line1: Line, line2: Line): boolean {
+	private isAdjacentLine(line1: Line, line2: Line, interlineDistanceForPage: number): boolean {
 		const verticalOverlapUncertainty = (line1.height * 2) / 3;
+		if (interlineDistanceForPage === 0) {
+			interlineDistanceForPage = line1.height * 1.5;
+		} // defaulting to the most common inter-line-dists
 		return (
 			line1.top + line1.height < line2.top + verticalOverlapUncertainty &&
-			line1.top + line1.height * (1 + this.options.maxInterline) > line2.top
+			line1.top +
+				line1.height +
+				interlineDistanceForPage * this.options.maxInterlineToleranceFactor >
+				line2.top
 		);
+	}
+
+	/**
+	 * Finds the most common interline distance given a collection of lines
+	 * @param lines a collection of lines for input
+	 */
+	private findMostCommonInterlineDistance(lines: Line[]): number | undefined {
+		let mostCommonInterLine: number;
+		const baseLines: number[] = [...lines]
+			.sort(utils.sortElementsByOrder) // get lines
+			.map(line => Math.fround((line.top + line.height) / 2)); // get their baselines
+
+		const baseLineDiffs: number[] = [...baseLines]
+			.slice(1)
+			.map((n, i) => n - baseLines[i])
+			.filter(value => value > 0);
+
+		if (baseLineDiffs.length === 0) {
+			return 0;
+		}
+
+		const baseLineDiffClusters: {
+			it: string;
+			k: string;
+			idxs: number[];
+			centroids: number[];
+		} = skmeans(baseLineDiffs, 2, 'kmpp');
+		if (
+			utils.findPositionsInArray(baseLineDiffClusters.idxs, 1).length >
+			utils.findPositionsInArray(baseLineDiffClusters.idxs, 0).length
+		) {
+			mostCommonInterLine = baseLineDiffClusters.centroids[1];
+		} else if (
+			utils.findPositionsInArray(baseLineDiffClusters.idxs, 1).length <
+			utils.findPositionsInArray(baseLineDiffClusters.idxs, 0).length
+		) {
+			mostCommonInterLine = baseLineDiffClusters.centroids[0];
+		} else {
+			mostCommonInterLine = Math.min(
+				baseLineDiffClusters.centroids[0],
+				baseLineDiffClusters.centroids[1],
+			);
+		}
+		return mostCommonInterLine;
 	}
 }

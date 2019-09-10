@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
 import { Font } from './Font';
 import { Line } from './Line';
@@ -94,11 +95,9 @@ export class Paragraph extends Text {
 	 * Returns the main font of the paragraph using a basket + voting mechanism. The most used font will be returned
 	 * as a valid Font object.
 	 */
-	public getMainFont(): Font {
+	public getMainFont(): Font | undefined {
 		const fonts: Font[] = this.content
-			.map((line: Line) => {
-				return line.content.map((word: Word) => word.font);
-			})
+			.map((line: Line) => line.getMainFont())
 			.reduce((a, b) => a.concat(b), []);
 
 		const baskets: Font[][] = [];
@@ -124,7 +123,8 @@ export class Paragraph extends Text {
 		if (baskets.length > 0 && baskets[0].length > 0) {
 			return baskets[0][0];
 		} else {
-			throw new Error(`No font found for paragraph id ${this.id}`);
+			logger.warn(`No font found for paragraph id ${this.id}`);
+			return undefined;
 		}
 	}
 
