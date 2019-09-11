@@ -271,15 +271,15 @@ export class ApiServer {
 		const docId: string = req.params.id;
 		const page: number = parseInt(req.params.page, 10);
 		const binder: Binder = this.fileManager.getBinder(docId);
-		var PDFImage = require('pdf-image').PDFImage;
-		var pdfImage = new PDFImage(binder.input, {
+		const PDFImage = require('pdf-image').PDFImage;
+		const pdfImage = new PDFImage(binder.input, {
 			convertOptions: {
 				'-resize': '200x200',
 				'-colorspace': 'RGB',
 			},
 		});
 		pdfImage.convertPage(page).then(
-			function(imagePath: string) {
+			(imagePath: string) => {
 				logger.info(`Thumbnail path ${imagePath}!`);
 				res.sendFile(imagePath, {
 					headers: {
@@ -287,7 +287,7 @@ export class ApiServer {
 					},
 				});
 			},
-			function(err: Error) {
+			(err: Error) => {
 				res.status(500).send(err);
 			},
 		);
