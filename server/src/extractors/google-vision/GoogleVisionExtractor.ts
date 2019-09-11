@@ -130,7 +130,6 @@ export class GoogleVisionExtractor extends Extractor {
 								gSymbol.text,
 							);
 							characters.push(character);
-							elements.push(character);
 						});
 
 						let lang;
@@ -150,11 +149,9 @@ export class GoogleVisionExtractor extends Extractor {
 							lang,
 						);
 						words.push(word);
-						elements.push(word);
 					});
 
 					const line = new Line(this.googleBoxToParsrBox(gParagraph.boundingBox), words);
-					elements.push(line);
 					const paragraph = new Paragraph(this.googleBoxToParsrBox(gParagraph.boundingBox), [line]);
 					paragraphs.push(paragraph);
 					elements.push(paragraph);
