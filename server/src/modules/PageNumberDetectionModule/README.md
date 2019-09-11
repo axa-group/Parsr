@@ -2,6 +2,8 @@
 
 ## Purpose
 
+Detects the page number for each page in a document.
+
 ## What it does
 
 ## Dependencies

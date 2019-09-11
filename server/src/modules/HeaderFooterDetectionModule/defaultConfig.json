@@ -1,4 +1,6 @@
 {
+	"name": "header-footer-detection",
+	"description": "Detect the header and footer areas in a document, and set the appropriate properties of all the elements contained within those areas.",
 	"ignorePages": [],
 	"maxMarginPercentage": 30
 }
