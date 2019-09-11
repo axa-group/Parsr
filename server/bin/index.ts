@@ -29,6 +29,7 @@ import {
 } from '../src/exporters';
 import { AbbyyTools } from '../src/extractors/abbyy/AbbyyTools';
 import { AbbyyToolsXml } from '../src/extractors/abbyy/AbbyyToolsXml';
+import { GoogleVisionExtractor } from '../src/extractors/google-vision/GoogleVisionExtractor';
 import { JsonExtractor } from '../src/extractors/json/JsonExtractor';
 import { PdfJsonExtractor } from '../src/extractors/pdf2json/PdfJsonExtractor';
 import { PdfminerExtractor } from '../src/extractors/pdfminer/PdfminerExtractor';
@@ -124,6 +125,8 @@ function main(): void {
 				if (nbTexts === 0) {
 					if (config.extractor.img === 'tesseract') {
 						orchestrator = pdfWithTesseract();
+					} else if (config.extractor.img === 'google-vision') {
+						orchestrator = new Orchestrator(new GoogleVisionExtractor(config), cleaner);
 					} else {
 						orchestrator = new Orchestrator(new AbbyyTools(config), cleaner);
 					}
@@ -238,6 +241,8 @@ function main(): void {
 	function getImgExtractor(): Orchestrator {
 		if (config.extractor.img === 'tesseract') {
 			return new Orchestrator(new TesseractExtractor(config), cleaner);
+		} else if (config.extractor.img === 'google-vision') {
+			return new Orchestrator(new GoogleVisionExtractor(config), cleaner);
 		} else {
 			return new Orchestrator(new AbbyyTools(config), cleaner);
 		}

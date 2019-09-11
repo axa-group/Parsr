@@ -58,8 +58,8 @@ export interface OutputConfig {
 export type CleanerConfig = Array<string | [string, object]>;
 
 export interface ExtractorConfig {
-	pdf: 'pdf2json' | 'pdfminer' | 'tesseract' | 'abbyy';
-	img: 'tesseract' | 'abbyy';
+	pdf: 'pdf2json' | 'pdfminer' | 'tesseract' | 'abbyy' | 'google-vision';
+	img: 'tesseract' | 'abbyy' | 'google-vision';
 	language: TesseractLanguage | TesseractLanguage[];
 }
 

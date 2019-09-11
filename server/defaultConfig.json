@@ -1,8 +1,8 @@
 {
 	"version": 0.5,
 	"extractor": {
-		"pdf": "pdf2json",
-		"img": "tesseract",
+		"pdf": "google-vision",
+		"img": "google-vision",
 		"language": ["eng", "fra"]
 	},
 	"cleaner": [
