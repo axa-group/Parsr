@@ -122,7 +122,7 @@ The platform can export the following formats:
 - `markdown`
 - `text`
 - `csv`
-- ~~`pdf`~~ (planned)
+- `pdf` (pandoc required)
 
 ### 4.2. Granularity
 
@@ -142,19 +142,34 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 	"extractor": {
 		"pdf": "pdfminer",
 		"img": "tesseract",
-		"language": "eng"
+		"language": ["eng", "fra"]
 	},
 	"cleaner": [
 		"out-of-page-removal",
 		"whitespace-removal",
 		"redundancy-detection",
-		"reading-order-detection",
+		["table-detection", { "pages": "all", "flavor": "lattice" }],
+		["header-footer-detection", { "maxMarginPercentage": 15 }],
+		["reading-order-detection", { "minColumnWidthInPagePercent": 15 }],
 		"link-detection",
-		[ "words-to-line", { "maximumSpaceBetweenWords": 100 } ],
+		["words-to-line", { "maximumSpaceBetweenWords": 100 }],
 		"lines-to-paragraph",
+		["page-number-detection", { "maxMarginPercentage": 15 }],
 		"heading-detection",
-		[ "header-footer-detection", { "maxMarginPercentage": 15 } ],
-		"hierarchy-detection"
+		"hierarchy-detection",
+		["regex-matcher", {
+			"queries": [
+				{
+					"label": "Car",
+					"regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
+				}, {
+					"label": "Age",
+					"regex": "(\\d+)[ -]*(ans|jarige)"
+				}, {
+					"label": "Percent",
+					"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
+				}]
+		}]
 	],
 	"output": {
 		"granularity": "word",
@@ -163,7 +178,8 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 			"json": true,
 			"text": true,
 			"csv": true,
-			"markdown": true
+			"markdown": true,
+			"pdf": false
 		}
 	}
 }
