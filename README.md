@@ -2,7 +2,7 @@
 
 # Parsr: Turn your documents into data!
 
-[中文](docs/configuration-file.md)
+[中文](README_zh-cn.md)
 
 **Parsr**, is a minimal-footprint document (image, pdf) cleaning, parsing and extraction toolchain which generates readily available, organized and usable data for data scientists and developers.
 
