@@ -115,6 +115,7 @@ export class GoogleVisionExtractor extends Extractor {
 
 		const pages: Page[] = [];
 		let pageNumber = 1;
+		let order = 1;
 
 		result[0].fullTextAnnotation.pages.forEach(gPage => {
 			const elements: Element[] = [];
@@ -129,6 +130,7 @@ export class GoogleVisionExtractor extends Extractor {
 								this.googleBoxToParsrBox(gSymbol.boundingBox),
 								gSymbol.text,
 							);
+							character.properties.order = order++;
 							characters.push(character);
 						});
 
@@ -148,11 +150,14 @@ export class GoogleVisionExtractor extends Extractor {
 							Font.undefinedFont,
 							lang,
 						);
+						word.properties.order = order++;
 						words.push(word);
 					});
 
 					const line = new Line(this.googleBoxToParsrBox(gParagraph.boundingBox), words);
+					line.properties.order = order++;
 					const paragraph = new Paragraph(this.googleBoxToParsrBox(gParagraph.boundingBox), [line]);
+					paragraph.properties.order = order++;
 					paragraphs.push(paragraph);
 					elements.push(paragraph);
 				});
