@@ -7,7 +7,6 @@
 					type="file"
 					id="file"
 					name="file"
-					accept="application/pdf"
 					@change="fileChanged($event)"
 					style="margin:10px 0px"
 				/>
