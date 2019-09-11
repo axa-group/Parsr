@@ -46,6 +46,7 @@ export class ApiServer {
 	private allowedMimetypes: string[] = [
 		'application/pdf',
 		'application/xml',
+		'text/xml',
 		'image/tiff',
 		'image/png',
 		'image/jpeg',
