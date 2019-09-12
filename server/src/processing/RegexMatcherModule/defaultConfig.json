@@ -1,0 +1,11 @@
+{
+	"name": "regex-matcher",
+	"description": "Matches the text against a certain number of Regular Expressions, configurable in the configuration.",
+	"isCaseSensitive": {
+		"value": true
+	},
+	"isGlobal": {
+		"value": true
+	},
+	"queries": []
+}

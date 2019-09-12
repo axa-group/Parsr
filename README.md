@@ -241,10 +241,10 @@ The tool contains a pipeline of modules that process the document step by step a
 To start the web viewer demo, simply run:
 
 ```sh
-npm run start:web
+npm run start:web:vue
 ```
 
-Then, open [localhost:3000](http://localhost:3000) with your favorite browser.
+Then, open [localhost:8080](http://localhost:8080) with your favorite browser.
 
 #### 2.2.3. Command Line Usage
 
