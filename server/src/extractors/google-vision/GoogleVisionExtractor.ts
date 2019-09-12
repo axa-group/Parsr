@@ -131,6 +131,9 @@ export class GoogleVisionExtractor extends Extractor {
 								gSymbol.text,
 							);
 							character.properties.order = order++;
+							if (gSymbol.confidence > 0) {
+								character.confidence = gSymbol.confidence;
+							}
 							characters.push(character);
 						});
 
@@ -151,6 +154,9 @@ export class GoogleVisionExtractor extends Extractor {
 							lang,
 						);
 						word.properties.order = order++;
+						if (gWord.confidence > 0) {
+							word.confidence = gWord.confidence;
+						}
 						words.push(word);
 					});
 
@@ -158,6 +164,9 @@ export class GoogleVisionExtractor extends Extractor {
 					line.properties.order = order++;
 					const paragraph = new Paragraph(this.googleBoxToParsrBox(gParagraph.boundingBox), [line]);
 					paragraph.properties.order = order++;
+					if (gParagraph.confidence > 0) {
+						paragraph.confidence = gParagraph.confidence;
+					}
 					paragraphs.push(paragraph);
 					elements.push(paragraph);
 				});
@@ -168,6 +177,7 @@ export class GoogleVisionExtractor extends Extractor {
 				elements,
 				new BoundingBox(0, 0, gPage.width, gPage.height),
 			);
+
 			pages.push(page);
 		});
 
