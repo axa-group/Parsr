@@ -23,7 +23,10 @@ import * as defaultConfig from './defaultConfig.json';
 // List of every options you need.
 // Don't forget the question mark!
 interface Options {
-	yourOption?: string;
+	yourOption?: {
+		value: string;
+		range: string[];
+	};
 }
 
 // Default options if none have been set in the configuration file.

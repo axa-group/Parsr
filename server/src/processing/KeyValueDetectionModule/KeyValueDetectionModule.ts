@@ -25,6 +25,7 @@ import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
 	keyPatterns?: object;
+	keyValueDividerChars?: string[];
 	threshold?: number;
 }
 
@@ -49,22 +50,16 @@ export class KeyValueDetectionModule extends Module<Options> {
 	}
 
 	public main(doc: Document): Document {
-		const opt: Options = {
-			keyPatterns: {},
-			threshold: 0.2,
-		};
-		Object.assign(opt, defaultOptions, this.options);
-
-		if (this.options.threshold === undefined) {
+		if (this.options.threshold.value === undefined) {
 			logger.info('Not computing key-value pairs, no threshold vas specified');
 			return doc;
-		} else if (this.options.keyPatterns === {}) {
+		} else if (this.options.keyPatterns.value === {}) {
 			logger.info('The key patterns not precised. Not computing key-value pairs.');
 			return doc;
 		} else {
 			logger.info(
 				'Detecting key-value pairs, for key patterns',
-				Object.keys(this.options.keyPatterns),
+				Object.keys(this.options.keyPatterns.value),
 				'...',
 			);
 		}
@@ -76,7 +71,7 @@ export class KeyValueDetectionModule extends Module<Options> {
 			const allLines: Line[] = page.getElementsOfType<Line>(Line);
 			const allKeys: KeyCandidate[] = [];
 
-			for (const [key, patterns] of Object.entries(this.options.keyPatterns)) {
+			for (const [key, patterns] of Object.entries(this.options.keyPatterns.value)) {
 				allLines.forEach(line => {
 					if (Array.isArray(patterns)) {
 						const bestKey: KeyCandidate = patterns
@@ -84,7 +79,7 @@ export class KeyValueDetectionModule extends Module<Options> {
 								return this.findKeys(key, p, line.content).sort((a, b) => b.score - a.score)[0];
 							})
 							.filter(k => typeof k !== 'undefined' && k.words.length !== 0)
-							.filter(c => c.score > this.options.threshold)
+							.filter(c => c.score > this.options.threshold.value)
 							.reduce(this.takeBestScore, {
 								score: 0,
 								words: [],
@@ -182,7 +177,7 @@ export class KeyValueDetectionModule extends Module<Options> {
 				word.left >= keyBox.right &&
 				word.right <= nextKeyBox.left &&
 				keyCandidates.every(keyCandindate => !keyCandindate.words.includes(word)) &&
-				!this.options.keyValueDividerChars.includes(word.toString())
+				!this.options.keyValueDividerChars.value.includes(word.toString())
 			);
 		});
 	}
@@ -195,7 +190,7 @@ export class KeyValueDetectionModule extends Module<Options> {
 	 */
 	private findKeys(key, pattern: string, words: Word[]): KeyCandidate[] {
 		const filteredWords: Word[] = words.filter(
-			w => !this.options.keyValueDividerChars.includes(w.toString()),
+			w => !this.options.keyValueDividerChars.value.includes(w.toString()),
 		);
 
 		let wordCollections: Word[][] = [];
@@ -215,7 +210,7 @@ export class KeyValueDetectionModule extends Module<Options> {
 				.map(w => w.toString().trim())
 				.reduce((w1, w2) => w1 + ' ' + w2, '')
 				.trim()
-				.replace(new RegExp(`(?:\\${this.options.keyValueDividerChars.join('|\\')})`), '');
+				.replace(new RegExp(`(?:\\${this.options.keyValueDividerChars.value.join('|\\')})`), '');
 			const score: number = string_similarity.compareTwoStrings(wcString, pattern);
 			if (score > bestMatch.score) {
 				bestMatch.words = wc;

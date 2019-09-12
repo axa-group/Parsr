@@ -14,8 +14,13 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 export interface Options {
-	pages?: string; // Comma-separated page numbers. Example: '1,3,4' or '1,4-end' or 'all'.
-	flavor?: string; // The parsing method to use ('lattice' or 'stream'). Lattice is used by default.
+	pages?: {
+		value: number[];
+	};
+	flavor?: {
+		value: string;
+		range: string[];
+	};
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -32,11 +37,23 @@ export interface TableExtractor {
 
 const defaultExtractor: TableExtractor = {
 	readTables(inputFile: string, options: Options): TableExtractorResult {
+		let pages: string = 'all';
+		let flavor: string = 'lattice';
+		if (options.pages.value.length !== 0) {
+			pages = options.pages.value.join(',');
+		}
+		if (options.flavor.range.indexOf(options.flavor.value) === -1) {
+			logger.warn(
+				`table detection flavor asked for: ${options.flavor.value} is not a possibility. defaulting to 'lattice'`,
+			);
+		} else {
+			flavor = options.flavor.value;
+		}
 		const tableExtractor = child_process.spawnSync('python3', [
 			__dirname + '/../../../assets/TableDetectionScript.py',
 			inputFile,
-			options.flavor,
-			options.pages,
+			flavor,
+			pages,
 		]);
 		return {
 			stdout: tableExtractor.stdout.toString(),

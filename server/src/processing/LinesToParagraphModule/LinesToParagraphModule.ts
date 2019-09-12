@@ -33,10 +33,30 @@ import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
 	addNewline?: boolean;
-	alignUncertainty?: number; // value in px
-	checkFont?: boolean;
-	lineLengthUncertainty?: number; // factor of line width
-	maxInterline?: number; // factor of line height
+	alignUncertainty?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
+	checkFont?: {
+		value: boolean;
+	};
+	lineLengthUncertainty?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
+	maxInterline?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -151,8 +171,8 @@ export class LinesToParagraphModule extends Module<Options> {
 				if (
 					//// FIXME (!this.options.checkFont || line1.font === line2.font) &&
 					this.isAdjacentLine(prev, curr) &&
-					(utils.isAligned([prev, curr], this.options.alignUncertainty) ||
-						utils.isAlignedCenter([prev, curr], this.options.alignUncertainty)) &&
+					(utils.isAligned([prev, curr], this.options.alignUncertainty.value) ||
+						utils.isAlignedCenter([prev, curr], this.options.alignUncertainty.value)) &&
 					// isntBulletList(prev, curr) &&
 					// TODO handle table elements: !line1.properties.isTableElement &&
 					// TODO handle table elements: !line2.properties.isTableElement &&
@@ -218,14 +238,14 @@ export class LinesToParagraphModule extends Module<Options> {
 
 		if (
 			orientation === 'LEFT' &&
-			topLineRight + supposedWidth < firstWord.properties.cr - this.options.alignUncertainty
+			topLineRight + supposedWidth < firstWord.properties.cr - this.options.alignUncertainty.value
 		) {
 			return true;
 		}
 
 		if (
 			orientation === 'RIGHT' &&
-			topLineLeft - supposedWidth > firstWord.properties.cl + this.options.alignUncertainty
+			topLineLeft - supposedWidth > firstWord.properties.cl + this.options.alignUncertainty.value
 		) {
 			return true;
 		}
@@ -233,7 +253,7 @@ export class LinesToParagraphModule extends Module<Options> {
 		if (
 			orientation === 'CENTER' &&
 			topLineLeft - firstWord.properties.cl + (firstWord.properties.cr - topLineRight) >
-				supposedWidth + this.options.alignUncertainty
+				supposedWidth + this.options.alignUncertainty.value
 		) {
 			return true;
 		}
@@ -259,19 +279,19 @@ export class LinesToParagraphModule extends Module<Options> {
 
 		let isLeftAligned = false;
 		left.sort();
-		if (Math.abs(left[0] - left[left.length - 1]) < this.options.alignUncertainty * 2) {
+		if (Math.abs(left[0] - left[left.length - 1]) < this.options.alignUncertainty.value * 2) {
 			isLeftAligned = true;
 		}
 
 		let isRightAligned = false;
 		right.sort();
-		if (Math.abs(right[0] - right[right.length - 1]) < this.options.alignUncertainty * 2) {
+		if (Math.abs(right[0] - right[right.length - 1]) < this.options.alignUncertainty.value * 2) {
 			isRightAligned = true;
 		}
 
 		let isCenterAligned = false;
 		center.sort();
-		if (Math.abs(center[0] - center[center.length - 1]) < this.options.alignUncertainty * 2) {
+		if (Math.abs(center[0] - center[center.length - 1]) < this.options.alignUncertainty.value * 2) {
 			isCenterAligned = true;
 		}
 
@@ -334,7 +354,7 @@ export class LinesToParagraphModule extends Module<Options> {
 		const verticalOverlapUncertainty = (line1.height * 2) / 3;
 		return (
 			line1.top + line1.height < line2.top + verticalOverlapUncertainty &&
-			line1.top + line1.height * (1 + this.options.maxInterline) > line2.top
+			line1.top + line1.height * (1 + this.options.maxInterline.value) > line2.top
 		);
 	}
 }

@@ -29,10 +29,30 @@ import { ReadingOrderDetectionModule } from '../ReadingOrderDetectionModule/Read
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	lineHeightUncertainty?: number; // proportion
-	topUncertainty?: number; // proportion
-	maximumSpaceBetweenWords?: number; // value in px
-	mergeTableElements?: boolean;
+	lineHeightUncertainty?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
+	topUncertainty?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
+	maximumSpaceBetweenWords?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
+	mergeTableElements?: {
+		value: number;
+	};
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -137,13 +157,13 @@ export class WordsToLineModule extends Module<Options> {
 				const curr = words[j];
 
 				if (
-					Math.abs(prev.top - curr.top) <= prev.height * opt.topUncertainty &&
-					Math.abs(prev.height - curr.height) <= prev.height * opt.lineHeightUncertainty &&
-					curr.left - (prev.left + prev.width) <= opt.maximumSpaceBetweenWords &&
+					Math.abs(prev.top - curr.top) <= prev.height * opt.topUncertainty.value &&
+					Math.abs(prev.height - curr.height) <= prev.height * opt.lineHeightUncertainty.value &&
+					curr.left - (prev.left + prev.width) <= opt.maximumSpaceBetweenWords.value &&
 					// FIXME element cannot be a Heading since it is a Word
 					// (prev instanceof Heading) === (curr instanceof Heading) &&
 					prev.properties.isPageNumber === curr.properties.isPageNumber
-					// TODO: handle table elements: (opt.mergeTableElements
+					// TODO: handle table elements: (opt.mergeTableElements.value
 					// || (!prev.metadata.tableElement && !curr.metadata.tableElement))
 				) {
 					mergeGroup.push(curr);

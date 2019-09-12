@@ -19,7 +19,13 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	minWidth?: number;
+	minWidth?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -40,7 +46,7 @@ export class WhitespaceRemovalModule extends Module<Options> {
 			page.elements = page.elements.filter(e => {
 				return (
 					!(e instanceof Text) ||
-					(e.width < this.options.minWidth ||
+					(e.width < this.options.minWidth.value ||
 						(!/^\s*$/.test(e.toString()) && !isOverlapping(e, page)))
 				);
 			});

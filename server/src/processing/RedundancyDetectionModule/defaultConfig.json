@@ -1,6 +1,14 @@
 {
 	"name": "redundancy-detection",
 	"description": "Detects and remove duplicate textual elements on each page of the document.",
-	"percentageOfRedondancy": 0.5,
-	"minimumPages": 6
+	"percentageOfRedondancy": {
+		"value": 0.5,
+		"range": {
+			"min": 0.0,
+			"max": 1.0
+		}
+	},
+	"minimumPages": {
+		"value": 6
+	}
 }

@@ -22,8 +22,13 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	url?: string;
-	granularity?: string;
+	url?: {
+		value: number;
+	};
+	granularity?: {
+		value: string;
+		range: string[];
+	};
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -36,12 +41,12 @@ export class RemoteModule extends Module<Options> {
 	}
 
 	public main(doc: Document): Promise<Document> {
-		const jsonExporter = new JsonExporter(doc, this.options.granularity);
+		const jsonExporter = new JsonExporter(doc, this.options.granularity.value);
 		const json: JsonExport = jsonExporter.getJson();
 
 		return axios({
 			method: 'POST',
-			url: this.options.url,
+			url: this.options.url.value,
 			data: json,
 			timeout: 0x7ffffff,
 		}).then((response: AxiosResponse<JsonExport>) => {

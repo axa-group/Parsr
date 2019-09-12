@@ -28,8 +28,20 @@ import * as defaultConfig from './defaultConfig.json';
  */
 
 interface Options {
-	minColumnWidthInPagePercent?: number;
-	minVerticalGapWidth?: number;
+	minColumnWidthInPagePercent?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
+	minVerticalGapWidth?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -53,7 +65,7 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 			this.order = 0;
 			// The min width is actually as a % of page width
 			this.currentPageMinColumnWidth = Math.trunc(
-				(this.options.minColumnWidthInPagePercent / 100) * page.width,
+				(this.options.minColumnWidthInPagePercent.value / 100) * page.width,
 			);
 
 			this.process(elements);
@@ -211,7 +223,7 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 
 				elementsRest.forEach(e => {
 					if (
-						e.left <= rightmost + this.options.minVerticalGapWidth &&
+						e.left <= rightmost + this.options.minVerticalGapWidth.value &&
 						e.left >= startGroup &&
 						!group.includes(e)
 					) {

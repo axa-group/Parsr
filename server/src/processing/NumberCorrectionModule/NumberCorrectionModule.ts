@@ -32,10 +32,22 @@ import * as defaultConfig from './defaultConfig.json';
  */
 
 interface Options {
-	numberRegExp?: string;
-	fixSplitNumbers?: boolean;
-	maxConsecutiveSplits?: number;
-	whitelist?: [];
+	numberRegExp?: {
+		value: string;
+	};
+	fixSplitNumbers?: {
+		value: boolean;
+	};
+	maxConsecutiveSplits?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
+	whitelist?: {
+		value: string[];
+	};
 }
 
 // The default regexps might be changed depending of the language and number notation.
@@ -65,7 +77,7 @@ export class NumberCorrectionModule extends Module<Options> {
 			// Correct numbers embedded into Words
 			this.correctWords(page);
 			// Correct numbers that might be split by mistake into exactly 2 Words under a Line node.
-			if (options.fixSplitNumbers) {
+			if (options.fixSplitNumbers.value) {
 				this.correctLines(page);
 			}
 		});
@@ -192,8 +204,8 @@ export class NumberCorrectionModule extends Module<Options> {
 	private getBestSuggestion(input: string, preCandidates?: Map<string, number>): string | null {
 		const suggestions = this.suggestNumberCorrections(
 			input,
-			RegExp(this.options.numberRegExp),
-			new Set(this.options.whitelist),
+			RegExp(this.options.numberRegExp.value),
+			new Set(this.options.whitelist.value),
 			preCandidates,
 		);
 		if (suggestions.length > 0) {
@@ -230,7 +242,7 @@ export class NumberCorrectionModule extends Module<Options> {
 			if (
 				line.content &&
 				line.content.length >= 2 &&
-				line.content.length <= this.options.maxConsecutiveSplits
+				line.content.length <= this.options.maxConsecutiveSplits.value
 			) {
 				// Make sure words are numbers
 				const consecutiveWordsAreNumbers = line.content.reduce((acc, word) => {

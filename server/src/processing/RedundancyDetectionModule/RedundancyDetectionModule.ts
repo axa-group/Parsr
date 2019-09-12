@@ -20,8 +20,16 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	percentageOfRedondancy?: number;
-	minimumPages?: number;
+	percentageOfRedondancy?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
+	minimumPages?: {
+		value: number;
+	};
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -103,8 +111,8 @@ export class RedundancyDetectionModule extends Module<Options> {
 			const redundant: Text[][] = [];
 			groups.forEach(group => {
 				if (
-					group.length > doc.pages.length * opt.percentageOfRedondancy &&
-					doc.pages.length > opt.minimumPages
+					group.length > doc.pages.length * opt.percentageOfRedondancy.value &&
+					doc.pages.length > opt.minimumPages.value
 				) {
 					group.forEach(t => (t.properties.isRedundant = true));
 					redundant.push(group);

@@ -1,5 +1,8 @@
 {
 	"name": "template",
 	"description": "A boilerplate template showing how a template can be made",
-	"yourOption": "the value"
+	"yourOption": {
+		"value": "Your value",
+		"min": ["option1", "option2"]
+	}
 }
