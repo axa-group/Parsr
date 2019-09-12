@@ -465,6 +465,14 @@ export function toKebabCase(str: string): string {
 	return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
+// converts a sentence to title case
+export function toTitleCase(str: string): string {
+	return str
+		.split(' ')
+		.map(w => w[0].toUpperCase() + w.slice(1, w.length))
+		.join(' ');
+}
+
 /**
  * Generates a convex hull from vertices
  * @param vertices the list of vertices of type number[][], as [[x,y], ...]
