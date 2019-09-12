@@ -24,9 +24,17 @@ import { WordsToLineModule } from '../WordsToLineModule/WordsToLineModule';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	keyPatterns?: object;
+	keyPatterns?: {
+		value: object; // object of type { keyname: Array<string> } to represent various keys and set of patterns to match
+	};
 	keyValueDividerChars?: string[];
-	threshold?: number;
+	thresholdRatio?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -39,7 +47,7 @@ export type KeyCandidate = {
 };
 
 /**
- * Detect key value pairs in a document, of the type <Key> <Seperator> <Value>, using a threshold probability.
+ * Detect key value pairs in a document, of the type <Key> <Seperator> <Value>, using a thresholdRatio probability.
  */
 export class KeyValueDetectionModule extends Module<Options> {
 	public static moduleName = 'key-value-detection';
@@ -50,8 +58,8 @@ export class KeyValueDetectionModule extends Module<Options> {
 	}
 
 	public main(doc: Document): Document {
-		if (this.options.threshold.value === undefined) {
-			logger.info('Not computing key-value pairs, no threshold vas specified');
+		if (this.options.thresholdRatio.value === undefined) {
+			logger.info('Not computing key-value pairs, no thresholdRatio vas specified');
 			return doc;
 		} else if (this.options.keyPatterns.value === {}) {
 			logger.info('The key patterns not precised. Not computing key-value pairs.');
@@ -65,7 +73,7 @@ export class KeyValueDetectionModule extends Module<Options> {
 		}
 
 		// Extract collections of key-matches for each permutation of word length in a particular line,
-		// then select the highest scoring matches above the limiting threshold.
+		// then select the highest scoring matches above the limiting thresholdRatio.
 		doc.pages.forEach(page => {
 			logger.debug('----------------- page', page.pageNumber);
 			const allLines: Line[] = page.getElementsOfType<Line>(Line);
@@ -79,7 +87,7 @@ export class KeyValueDetectionModule extends Module<Options> {
 								return this.findKeys(key, p, line.content).sort((a, b) => b.score - a.score)[0];
 							})
 							.filter(k => typeof k !== 'undefined' && k.words.length !== 0)
-							.filter(c => c.score > this.options.threshold.value)
+							.filter(c => c.score > this.options.thresholdRatio.value)
 							.reduce(this.takeBestScore, {
 								score: 0,
 								words: [],

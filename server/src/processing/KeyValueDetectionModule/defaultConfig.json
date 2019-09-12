@@ -5,7 +5,7 @@
 		"value": {}
 	},
 	"keyValueDividerChars": [":", ";"],
-	"threshold": {
+	"thresholdRatio": {
 		"value": 0.2,
 		"range": {
 			"min": 0.0,

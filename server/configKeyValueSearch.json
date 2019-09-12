@@ -91,7 +91,7 @@
 					"Visite TYPE": ["VISIT TYPE", "Visit Type"],
 					"Visit No": ["Visit No"]
 				},
-				"threshold": 0.8
+				"thresholdRatio": 0.8
 			}
 		],
 		[
