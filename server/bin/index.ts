@@ -20,21 +20,19 @@ import * as filetype from 'file-type';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Cleaner } from '../src/Cleaner';
-import {
-	CsvExporter,
-	JsonExporter,
-	MarkdownExporter,
-	PdfExporter,
-	TextExporter,
-} from '../src/exporters';
-import { AbbyyTools } from '../src/extractors/abbyy/AbbyyTools';
-import { AbbyyToolsXml } from '../src/extractors/abbyy/AbbyyToolsXml';
-import { GoogleVisionExtractor } from '../src/extractors/google-vision/GoogleVisionExtractor';
-import { JsonExtractor } from '../src/extractors/json/JsonExtractor';
-import { PdfJsonExtractor } from '../src/extractors/pdf2json/PdfJsonExtractor';
-import { PdfminerExtractor } from '../src/extractors/pdfminer/PdfminerExtractor';
-import { TesseractExtractor } from '../src/extractors/tesseract/TesseractExtractor';
+import { AbbyyTools } from '../src/input/abbyy/AbbyyTools';
+import { AbbyyToolsXml } from '../src/input/abbyy/AbbyyToolsXml';
+import { GoogleVisionExtractor } from '../src/input/google-vision/GoogleVisionExtractor';
+import { JsonExtractor } from '../src/input/json/JsonExtractor';
+import { PdfJsonExtractor } from '../src/input/pdf2json/PdfJsonExtractor';
+import { PdfminerExtractor } from '../src/input/pdfminer/PdfminerExtractor';
+import { TesseractExtractor } from '../src/input/tesseract/TesseractExtractor';
 import { Orchestrator } from '../src/Orchestrator';
+import { CsvExporter } from '../src/output/csv/CsvExporter';
+import { JsonExporter } from '../src/output/json/JsonExporter';
+import { MarkdownExporter } from '../src/output/markdown/MarkdownExporter';
+import { PdfExporter } from '../src/output/pdf/PdfExporter';
+import { TextExporter } from '../src/output/text/TextExporter';
 import { Config } from '../src/types/Config';
 import { Document } from '../src/types/DocumentRepresentation/';
 import * as utils from '../src/utils';

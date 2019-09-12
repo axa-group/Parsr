@@ -15,8 +15,11 @@
  */
 
 import { isInBox } from '../../utils';
+import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
+import { Font } from './Font';
+import { Paragraph } from './Paragraph';
 import { Text } from './Text';
 
 export type directionType = 'horizontal' | 'vertical';
@@ -263,6 +266,42 @@ export class Page {
 	 */
 	public set box(value: BoundingBox) {
 		this._box = value;
+	}
+
+	/**
+	 * Returns the main font of the page using the paragraphs' basket + voting
+	 * mechanism. The most used font will be returned as a valid Font object.
+	 */
+	public getMainFont(): Font | undefined {
+		const fonts: Font[] = this.getElementsOfType<Paragraph>(Paragraph)
+			.map(p => p.getMainFont())
+			.filter(f => f !== undefined);
+
+		const baskets: Font[][] = [];
+		fonts.forEach((font: Font) => {
+			let basketFound: boolean = false;
+			baskets.forEach((basket: Font[]) => {
+				if (basket.length > 0 && basket[0].isEqual(font)) {
+					basket.push(font);
+					basketFound = true;
+				}
+			});
+
+			if (!basketFound) {
+				baskets.push([font]);
+			}
+		});
+
+		baskets.sort((a, b) => {
+			return b.length - a.length;
+		});
+
+		if (baskets.length > 0 && baskets[0].length > 0) {
+			return baskets[0][0];
+		} else {
+			logger.debug(`no font found for page ${this.pageNumber}`);
+			return undefined;
+		}
 	}
 
 	/**

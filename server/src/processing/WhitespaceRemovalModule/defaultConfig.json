@@ -1,0 +1,9 @@
+{
+	"name": "whitespace-removal",
+	"description": "Removes textual elements containing only whitespace as content.",
+	"minWidth": {
+		"value": 0,
+		"min": 0,
+		"max": 100
+	}
+}
