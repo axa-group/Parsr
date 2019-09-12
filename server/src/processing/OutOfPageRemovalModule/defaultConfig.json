@@ -1,0 +1,4 @@
+{
+	"name": "out-of-page-removal",
+	"description": "Removes all the elements of the page whose bounding boxes are not physically inside the page."
+}

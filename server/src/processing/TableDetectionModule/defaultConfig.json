@@ -1,0 +1,11 @@
+{
+	"name": "table-detection",
+	"description": "Table extraction from the PDF file",
+	"pages": {
+		"value": []
+	},
+	"flavor": {
+		"value": "lattice",
+		"range": ["lattice", "stream"]
+	}
+}

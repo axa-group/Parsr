@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
-import { TableDetectionModule, TableExtractor, TableExtractorResult, Options } from '../server/src/modules/TableDetectionModule/TableDetectionModule';
+import { TableDetectionModule, TableExtractor, TableExtractorResult, Options } from '../server/src/processing/TableDetectionModule/TableDetectionModule';
 import { Element } from '../server/src/types/DocumentRepresentation/Element';
 import { getPdf, runModules } from './helpers';
 import { Table } from '../server/src/types/DocumentRepresentation/Table';
