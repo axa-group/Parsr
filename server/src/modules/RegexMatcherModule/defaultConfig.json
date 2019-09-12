@@ -1,6 +1,0 @@
-{
-    "name": "regex-matcher",
-    "description": "Matches the text against a certain number of Regular Expressions, configurable in the configuration.",
-	"isCaseSensitive": true,
-    "isGlobal": true
-}

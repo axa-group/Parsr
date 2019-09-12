@@ -1,9 +1,0 @@
-{
-    "name": "lines-to-paragraph",
-    "description": "Create paragraphs from a collection of lines.",
-	"addNewline": true,
-	"alignUncertainty": 3,
-	"checkFont": false,
-	"maxInterline": 0.3,
-	"lineLengthUncertainty": 0.25
-}

@@ -133,6 +133,10 @@ You can download Tesseract 4.0 64-bit for Windows or check out other available f
 Then, you need to add tesseract.exe to your PATH:
 If you have install it in `C:\Program Files (x86)\Tesseract-OCR`, you can either add it [using the user interface](https://docs.alfresco.com/4.2/tasks/fot-addpath.html) execute the following command in Powershell (Run as Administrator):
 
+```sh
+setx PATH "\$env:PATH;C:\Program Files (x86)\Tesseract-OCR" -m
+```
+
 ### 1.3. Optional Dependencies
 
 The following dependencies are **completely optional**, and their exclusion does not hinder the proper functioning of the Parsr pipeline.
@@ -237,10 +241,10 @@ The tool contains a pipeline of modules that process the document step by step a
 To start the web viewer demo, simply run:
 
 ```sh
-npm run start:web
+npm run start:web:vue
 ```
 
-Then, open [localhost:3000](http://localhost:3000) with your favorite browser.
+Then, open [localhost:8080](http://localhost:8080) with your favorite browser.
 
 #### 2.2.3. Command Line Usage
 

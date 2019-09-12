@@ -17,12 +17,12 @@
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
-import { JsonExporter } from '../server/src/exporters/JsonExporter';
-import { HeadingDetectionModule } from '../server/src/modules/HeadingDetectionModule/HeadingDetectionModule';
-import { HierarchyDetectionModule } from '../server/src/modules/HierarchyDetectionModule/HierarchyDetectionModule';
-import { LinesToParagraphModule } from '../server/src/modules/LinesToParagraphModule/LinesToParagraphModule';
-import { ReadingOrderDetectionModule } from '../server/src/modules/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
-import { WordsToLineModule } from '../server/src/modules/WordsToLineModule/WordsToLineModule';
+import { JsonExporter } from '../server/src/output/json/JsonExporter';
+import { HeadingDetectionModule } from '../server/src/processing/HeadingDetectionModule/HeadingDetectionModule';
+import { HierarchyDetectionModule } from '../server/src/processing/HierarchyDetectionModule/HierarchyDetectionModule';
+import { LinesToParagraphModule } from '../server/src/processing/LinesToParagraphModule/LinesToParagraphModule';
+import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
+import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
 import { Document, Element, JsonExport } from '../server/src/types/DocumentRepresentation';
 import { json2document } from '../server/src/utils/json2document';
 import { getPdf, runModules } from './helpers';
