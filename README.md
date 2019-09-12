@@ -2,6 +2,8 @@
 
 # Parsr: Turn your documents into data!
 
+[中文](README_zh-cn.md)
+
 **Parsr**, is a minimal-footprint document (image, pdf) cleaning, parsing and extraction toolchain which generates readily available, organized and usable data for data scientists and developers.
 
 It provides users with clean structured and label-enriched information set for ready-to-use applications ranging from data entry and document analysis automation, archival, and many others.
@@ -130,6 +132,10 @@ You can download Tesseract 4.0 64-bit for Windows or check out other available f
 
 Then, you need to add tesseract.exe to your PATH:
 If you have install it in `C:\Program Files (x86)\Tesseract-OCR`, you can either add it [using the user interface](https://docs.alfresco.com/4.2/tasks/fot-addpath.html) execute the following command in Powershell (Run as Administrator):
+
+```sh
+setx PATH "\$env:PATH;C:\Program Files (x86)\Tesseract-OCR" -m
+```
 
 ### 1.3. Optional Dependencies
 
