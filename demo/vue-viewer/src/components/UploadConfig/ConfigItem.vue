@@ -19,7 +19,7 @@
 									<input
 										v-if="params.defaultValues[option] == null"
 										type="text"
-										:value="itemOptions[option]"
+										:value="itemOptions[option].value"
 										@change="optionChange(option, $event)"
 									/>
 									<v-select
@@ -38,7 +38,7 @@
 									</v-select>
 									<v-slider
 										v-if="params.sliders[option]"
-										:value="itemOptions[option] * params.sliders[option].multiplier"
+										:value="itemOptions[option].value * params.sliders[option].multiplier"
 										:max="params.sliders[option].max"
 										:min="params.sliders[option].min"
 										hide-details
@@ -105,10 +105,10 @@ export default {
 	},
 	methods: {
 		optionChange(item, event) {
-			this.value[1][item] = event.target.value;
+			this.value[1][item].value = event.target.value;
 		},
 		optionChangeSlider(item, value) {
-			this.value[1][item] = (value / this.params.sliders[item].multiplier).toFixed(
+			this.value[1][item].value = (value / this.params.sliders[item].multiplier).toFixed(
 				this.params.sliders[item].decimals,
 			);
 		},
