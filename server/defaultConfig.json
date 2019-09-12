@@ -1,8 +1,8 @@
 {
 	"version": 0.5,
 	"extractor": {
-		"pdf": "google-vision",
-		"img": "google-vision",
+		"pdf": "pdfminer",
+		"img": "tesseract",
 		"language": ["eng", "fra"]
 	},
 	"cleaner": [
@@ -33,7 +33,7 @@
 		}]
 	],
 	"output": {
-		"granularity": "character",
+		"granularity": "word",
 		"includeMarginals": false,
 		"formats": {
 			"json": true,
