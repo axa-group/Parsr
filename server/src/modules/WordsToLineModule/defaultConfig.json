@@ -1,8 +1,0 @@
-{
-    "name": "words-to-line",
-    "description": "Create lines from a bunch of words, according to the reading order.",
-	"lineHeightUncertainty": 1.2, 
-	"topUncertainty": 0.4, 
-	"maximumSpaceBetweenWords": 100, 
-	"mergeTableElements": false
-}

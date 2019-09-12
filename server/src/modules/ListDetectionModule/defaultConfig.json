@@ -1,4 +1,0 @@
-{
-    "name": "list-detection",
-    "description": "Detects unordered and ordered lists in the text from paragraphs, using bullet points and numberings as indications. This module is a work in progress."
-}
