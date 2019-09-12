@@ -55,6 +55,16 @@ const defaultExtractor: TableExtractor = {
 			flavor,
 			pages,
 		]);
+
+		if (!tableExtractor.stdout || !tableExtractor.stderr) {
+			return {
+				stdout: '',
+				stderr:
+					'Unable to run python script. Are you sure python3 and camelot-py[cv] are installed?',
+				status: 10,
+			};
+		}
+
 		return {
 			stdout: tableExtractor.stdout.toString(),
 			stderr: tableExtractor.stderr.toString(),
