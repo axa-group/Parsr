@@ -48,7 +48,7 @@ The cleaner array may appear unconventionnal but is really easy to use. Every it
         // The thrid module to run with some special options
         [
             "module-name-3",
-            { "option-1": 100, "option-2": true }
+            { "option-1": { value: 50, min: 0, max: 100 }, "option-2": { value: true } }
         ],
     ],
     // Output options (See section 4.)
@@ -90,8 +90,8 @@ Module can be called in the full form:
 [
 	"module",
 	{
-		"option-1": 100,
-		"option-2": true
+		"option-1": { "value": 100 },
+		"option-2": { "value": true }
 	}
 ],
 ```
@@ -140,7 +140,7 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 {
 	"version": 0.5,
 	"extractor": {
-		"pdf": "pdfminer",
+		"pdf": "pdf2json",
 		"img": "tesseract",
 		"language": ["eng", "fra"]
 	},
@@ -148,28 +148,36 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 		"out-of-page-removal",
 		"whitespace-removal",
 		"redundancy-detection",
-		["table-detection", { "pages": "all", "flavor": "lattice" }],
-		["header-footer-detection", { "maxMarginPercentage": 15 }],
-		["reading-order-detection", { "minColumnWidthInPagePercent": 15 }],
+		"table-detection",
+		["header-footer-detection", { "maxMarginPercentage": { "value": 15 } }],
+		["reading-order-detection", { "minColumnWidthInPagePercent": { "value": 15 } }],
 		"link-detection",
-		["words-to-line", { "maximumSpaceBetweenWords": 100 }],
+		["words-to-line", { "maximumSpaceBetweenWords": { "value": 100 } }],
 		"lines-to-paragraph",
-		["page-number-detection", { "maxMarginPercentage": 15 }],
+		["page-number-detection", { "maxMarginPercentage": { "value": 15 } }],
 		"heading-detection",
 		"hierarchy-detection",
-		["regex-matcher", {
-			"queries": [
-				{
-					"label": "Car",
-					"regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
-				}, {
-					"label": "Age",
-					"regex": "(\\d+)[ -]*(ans|jarige)"
-				}, {
-					"label": "Percent",
-					"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
-				}]
-		}]
+		[
+			"regex-matcher",
+			{
+				"queries": {
+					"value": [
+						{
+							"label": "Car",
+							"regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
+						},
+						{
+							"label": "Age",
+							"regex": "(\\d+)[ -]*(ans|jarige)"
+						},
+						{
+							"label": "Percent",
+							"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
+						}
+					]
+				}
+			}
+		]
 	],
 	"output": {
 		"granularity": "word",
