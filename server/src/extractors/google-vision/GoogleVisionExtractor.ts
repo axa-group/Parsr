@@ -15,6 +15,11 @@ import { Extractor } from '../Extractor';
 type GoogleVisionResponse = Array<{
 	fullTextAnnotation: FullTextAnnotation;
 	textAnnotations: TextAnnotation[];
+	error: {
+		message: string;
+		code: number;
+		details: any[];
+	};
 }>;
 
 type GoogleVisionDetectedBreak = {
@@ -112,6 +117,16 @@ export class GoogleVisionExtractor extends Extractor {
 	private async execute(inputFile: string) {
 		const client = new vision.ImageAnnotatorClient();
 		const result: GoogleVisionResponse = await client.documentTextDetection(inputFile);
+
+		if (result[0].error) {
+			const e = result[0].error;
+			let details = '';
+
+			if (e.details.length > 0) {
+				details = ` Details: \n${e.details.join('\n')}`;
+			}
+			throw new Error(`Google Vision Error #${e.code}: ${e.message}${details}`);
+		}
 
 		const pages: Page[] = [];
 		let pageNumber = 1;

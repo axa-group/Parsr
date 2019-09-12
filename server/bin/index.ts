@@ -124,9 +124,8 @@ function main(): void {
 
 				if (nbTexts === 0) {
 					if (config.extractor.img === 'tesseract') {
-						orchestrator = pdfWithTesseract();
-					} else if (config.extractor.img === 'google-vision') {
-						orchestrator = new Orchestrator(new GoogleVisionExtractor(config), cleaner);
+						filePath = pdfToImage(filePath);
+						orchestrator = new Orchestrator(new TesseractExtractor(config), cleaner);
 					} else {
 						orchestrator = new Orchestrator(new AbbyyTools(config), cleaner);
 					}
@@ -216,7 +215,8 @@ function main(): void {
 		if (config.extractor.pdf === 'abbyy') {
 			return new Orchestrator(new AbbyyTools(config), cleaner);
 		} else if (config.extractor.pdf === 'tesseract') {
-			return pdfWithTesseract();
+			filePath = pdfToImage(filePath);
+			return new Orchestrator(new TesseractExtractor(config), cleaner);
 		} else if (config.extractor.pdf === 'pdfminer') {
 			return new Orchestrator(new PdfminerExtractor(config), cleaner);
 		} else {
@@ -254,24 +254,25 @@ function main(): void {
 	 *
 	 * @returns The Orchestrator instance
 	 */
-	function pdfWithTesseract(): Orchestrator {
-		const tifFilePath = filePath + '.tiff';
+	function pdfToImage(pdfPath: string): string {
+		const tifFilePath = pdfPath + '.tiff';
 		const ret = child_process.spawnSync(utils.getConvertPath(), [
 			'-density',
 			'200x200',
 			'-compress',
 			'Fax',
-			filePath,
+			pdfPath,
 			tifFilePath,
 		]);
+
 		if (ret.status !== 0) {
 			logger.error(ret.stderr);
 			throw new Error(
 				'ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)',
 			);
 		}
-		filePath = tifFilePath;
-		return new Orchestrator(new TesseractExtractor(config), cleaner);
+
+		return tifFilePath;
 	}
 }
 

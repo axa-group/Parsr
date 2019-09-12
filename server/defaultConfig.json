@@ -33,7 +33,7 @@
 		}]
 	],
 	"output": {
-		"granularity": "word",
+		"granularity": "character",
 		"includeMarginals": false,
 		"formats": {
 			"json": true,
