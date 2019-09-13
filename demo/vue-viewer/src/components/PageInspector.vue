@@ -30,7 +30,7 @@
 			></v-switch>
 			<v-switch
 				v-model="tablesFilter"
-				label="Tables (todo)"
+				label="Tables"
 				class="switch"
 				color="indigo darken-3"
 				:hide-details="true"
