@@ -21,35 +21,132 @@ export default new Vuex.Store({
 			},
 			cleaner: [
 				'out-of-page-removal',
-				'whitespace-removal',
+				[
+					'whitespace-removal',
+					{
+						minWidth: {
+							value: 0,
+							range: { min: 0, max: 100 },
+						},
+					},
+				],
 				[
 					'redundancy-detection',
-					{ percentageOfRedundancy: { value: 0.5 }, minimumPages: { value: 6 } },
+					{
+						percentageOfRedundancy: { value: 0.5, range: { min: 0.0, max: 1.0 } },
+						minimumPages: { value: 6 },
+					},
 				],
-				'table-detection',
+				[
+					'table-detection',
+					{
+						pages: { value: 'all' },
+						flavor: {
+							value: 'lattice',
+							range: ['lattice', 'stream'],
+						},
+					},
+				],
 				[
 					'header-footer-detection',
-					{ maxMarginPercentage: { value: 15 }, ignorePages: { value: [] } },
+					{
+						maxMarginPercentage: {
+							value: 15,
+							range: {
+								min: 0,
+								max: 100,
+							},
+						},
+						ignorePages: { value: [] },
+					},
 				],
 				[
 					'reading-order-detection',
-					{ minVerticalGapWidth: { value: 5 }, minColumnWidthInPagePercent: { value: 5 } },
+					{
+						minVerticalGapWidth: {
+							value: 5,
+							range: {
+								min: 0,
+								max: 100,
+							},
+						},
+						minColumnWidthInPagePercent: {
+							value: 5,
+							range: {
+								min: 0,
+								max: 100,
+							},
+						},
+					},
 				],
 				'link-detection',
-				['words-to-line', { maximumSpaceBetweenWords: { value: 100 } }],
+				[
+					'words-to-line',
+					{
+						lineHeightUncertainty: {
+							value: 1.0,
+							range: {
+								min: 0.0,
+								max: 1.0,
+							},
+						},
+						topUncertainty: {
+							value: 0.4,
+							range: {
+								min: 0.0,
+								max: 1.0,
+							},
+						},
+						maximumSpaceBetweenWords: {
+							value: 100,
+							range: {
+								min: 0,
+								max: 100,
+							},
+						},
+						mergeTableElements: { value: false, range: [true, false] },
+					},
+				],
 				[
 					'lines-to-paragraph',
 					{
-						addNewline: { value: true },
-						alignUncertainty: { value: 3 },
-						checkFont: { value: false },
-						maxInterline: { value: 0.3 },
-						lineLengthUncertainty: { value: 0.25 },
+						addNewline: { value: true, range: [true, false] },
+						alignUncertainty: {
+							value: 3,
+							range: {
+								min: 0,
+								max: 100,
+							},
+						},
+						checkFont: { value: false, range: [true, false] },
+						maxInterline: {
+							value: 0.3,
+							range: {
+								min: 0.0,
+								max: 1.0,
+							},
+						},
+						lineLengthUncertainty: {
+							value: 0.25,
+							range: {
+								min: 0.0,
+								max: 1.0,
+							},
+						},
 					},
 				],
 				[
 					'page-number-detection',
-					{ maxMarginPercentage: { value: 15 }, ignorePages: { value: [] } },
+					{
+						maxMarginPercentage: {
+							value: 15,
+							range: {
+								min: 0,
+								max: 100,
+							},
+						},
+						ignorePages: { value: [] },
+					},
 				],
 				'heading-detection',
 				'hierarchy-detection',

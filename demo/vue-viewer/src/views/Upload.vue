@@ -98,10 +98,17 @@ export default {
 			Object.keys(module[1]).forEach(element => {
 				switch (element) {
 					case 'percentageOfRedundancy':
+					case 'lineHeightUncertainty':
+					case 'topUncertainty':
+					case 'maxInterline':
 						sliders[element] = { min: 0, max: 10, multiplier: 10, decimals: 1 };
 						break;
+					case 'minWidth':
 					case 'maxMarginPercentage':
 					case 'minColumnWidthInPagePercent':
+					case 'minVerticalGapWidth':
+					case 'maximumSpaceBetweenWords':
+					case 'alignUncertainty':
 						sliders[element] = { min: 0, max: 100, multiplier: 1, decimals: 0 };
 						break;
 					case 'lineLengthUncertainty':
@@ -122,6 +129,7 @@ export default {
 						break;
 					case 'addNewline':
 					case 'checkFont':
+					case 'mergeTableElements':
 						defaults[element] = [true, false];
 						break;
 				}

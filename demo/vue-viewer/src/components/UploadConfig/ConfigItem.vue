@@ -25,7 +25,7 @@
 									<v-select
 										v-if="params.defaultValues[option]"
 										:items="params.defaultValues[option]"
-										v-model="itemOptions[option]"
+										v-model="itemOptions[option].value"
 										:flat="true"
 										:hide-details="true"
 										background-color="transparent"
