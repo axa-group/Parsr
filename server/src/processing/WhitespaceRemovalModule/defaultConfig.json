@@ -3,7 +3,6 @@
 	"description": "Removes textual elements containing only whitespace as content.",
 	"minWidth": {
 		"value": 0,
-		"min": 0,
-		"max": 100
+		"range": { "min": 0, "max": 100 }
 	}
 }
