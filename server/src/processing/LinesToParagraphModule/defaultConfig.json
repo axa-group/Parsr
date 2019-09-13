@@ -1,7 +1,7 @@
 {
 	"name": "lines-to-paragraph",
 	"description": "Create paragraphs from a collection of lines.",
-	"addNewline": true,
+	"addNewline": { "value": true, "range": [true, false] },
 	"alignUncertainty": {
 		"value": 3,
 		"range": {
@@ -10,7 +10,8 @@
 		}
 	},
 	"checkFont": {
-		"value": false
+		"value": false,
+		"range": [true, false]
 	},
 	"maxInterline": {
 		"value": 0.3,
