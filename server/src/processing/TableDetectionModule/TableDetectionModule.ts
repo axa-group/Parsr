@@ -8,7 +8,7 @@ import {
 	TableRow,
 	Word,
 } from '../../types/DocumentRepresentation';
-import { isInBox } from '../../utils';
+import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
@@ -49,7 +49,23 @@ const defaultExtractor: TableExtractor = {
 		} else {
 			flavor = options.flavor.value;
 		}
-		const tableExtractor = child_process.spawnSync('python3', [
+
+		// find python executable name
+		let pythonLocation: string = utils.getCommandLocationOnSystem('python3');
+		if (pythonLocation === '') {
+			pythonLocation = utils.getCommandLocationOnSystem('python');
+		}
+		if (pythonLocation === '') {
+			return {
+				stdout: '',
+				stderr: 'Unable to find python on the system. Are you sure it is installed?',
+				status: 10,
+			};
+		} else {
+			logger.debug(`python was found at ${pythonLocation}`);
+		}
+
+		const tableExtractor = child_process.spawnSync(pythonLocation, [
 			__dirname + '/../../../assets/TableDetectionScript.py',
 			inputFile,
 			flavor,
@@ -59,8 +75,7 @@ const defaultExtractor: TableExtractor = {
 		if (!tableExtractor.stdout || !tableExtractor.stderr) {
 			return {
 				stdout: '',
-				stderr:
-					'Unable to run python script. Are you sure python3 and camelot-py[cv] are installed?',
+				stderr: 'Unable to run python script. Are you sure camelot-py[cv] is installed?',
 				status: 10,
 			};
 		}
@@ -159,7 +174,7 @@ export class TableDetectionModule extends Module<Options> {
 	}
 
 	private wordsInCellBox(cellBounds: BoundingBox, pageWords: Word[]): Word[] {
-		return pageWords.filter(word => isInBox(word.box, cellBounds, false));
+		return pageWords.filter(word => utils.isInBox(word.box, cellBounds, false));
 	}
 
 	private removeWordsUsedInCells(document: Document) {
