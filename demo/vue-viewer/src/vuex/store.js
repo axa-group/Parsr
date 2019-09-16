@@ -84,7 +84,7 @@ export default new Vuex.Store({
 					'words-to-line',
 					{
 						lineHeightUncertainty: {
-							value: 1.0,
+							value: 0.2,
 							range: {
 								min: 0.0,
 								max: 1.0,
