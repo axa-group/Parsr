@@ -15,7 +15,7 @@ import * as defaultConfig from './defaultConfig.json';
 
 export interface Options {
 	pages?: {
-		value: number[];
+		value: string;
 	};
 	flavor?: {
 		value: string;
@@ -39,8 +39,8 @@ const defaultExtractor: TableExtractor = {
 	readTables(inputFile: string, options: Options): TableExtractorResult {
 		let pages: string = 'all';
 		let flavor: string = 'lattice';
-		if (options.pages.value.length !== 0) {
-			pages = options.pages.value.join(',');
+		if (options.pages) {
+			pages = options.pages.value;
 		}
 		if (options.flavor.range.indexOf(options.flavor.value) === -1) {
 			logger.warn(

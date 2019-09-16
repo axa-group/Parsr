@@ -29,6 +29,12 @@
 				:element="element"
 				:fonts="fonts"
 			/>
+			<tableData
+				v-for="element in elementsOfType('table')"
+				:key="element.id"
+				:element="element"
+				:fonts="fonts"
+			/>
 			<!--component
 				v-for="element in page.elements"
 				:functional="true"
@@ -46,8 +52,9 @@
 import scrollItemMixin from '@/mixins/scrollItemMixin.js';
 import Paragraph from '@/components/DocumentPreview/Paragraph';
 import Heading from '@/components/DocumentPreview/Heading';
+import TableData from '@/components/DocumentPreview/Table';
 export default {
-	components: { Paragraph, Heading },
+	components: { Paragraph, Heading, TableData },
 	mixins: [scrollItemMixin],
 	data() {
 		return {
@@ -167,7 +174,7 @@ export default {
 .Page rect {
 	fill: transparent;
 }
-.VisibleWords rect:not(.Paragraph) {
+.VisibleWords rect.Word {
 	fill: transparent;
 	stroke: rgb(0, 124, 12);
 	stroke-opacity: 0.5;
@@ -186,5 +193,15 @@ export default {
 .VisibleLines line {
 	stroke: rgb(0, 0, 255);
 	stroke-width: 1;
+}
+.VisibleTables rect.Table,
+.VisibleTables line.TableRow,
+.VisibleTables rect.TableCell {
+	fill: transparent;
+	stroke: rgb(0, 204, 255);
+	stroke-width: 1;
+}
+g.TableContainer text {
+	dominant-baseline: text-after-edge;
 }
 </style>

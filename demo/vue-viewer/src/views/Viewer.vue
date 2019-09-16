@@ -16,6 +16,7 @@
 				VisibleLines: isLineFilter,
 				VisibleParagraphs: isParagraphFilter,
 				VisibleHeadings: isHeadingFilter,
+				VisibleTables: isTableFilter,
 			}"
 		/>
 		<pageInspector v-if="documentFetched" :filters="inspectorFilters" />
@@ -54,6 +55,9 @@ export default {
 		},
 		isHeadingFilter() {
 			return this.inspectorFilters.headings;
+		},
+		isTableFilter() {
+			return this.inspectorFilters.tables;
 		},
 	},
 	mounted() {

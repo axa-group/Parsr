@@ -1,6 +1,7 @@
 <template functional>
 	<g>
 		<rect
+			class="Word"
 			:x="props.element.box.l"
 			:y="props.element.box.t"
 			:width="props.element.box.w"

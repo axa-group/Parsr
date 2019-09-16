@@ -25,7 +25,7 @@
 									<v-select
 										v-if="params.defaultValues[option]"
 										:items="params.defaultValues[option]"
-										v-model="itemOptions[option]"
+										v-model="itemOptions[option].value"
 										:flat="true"
 										:hide-details="true"
 										background-color="transparent"
@@ -53,14 +53,7 @@
 				</v-expansion-panels>
 			</template>
 		</v-switch>
-		<v-btn
-			icon
-			text
-			small
-			color="transparent"
-			target="_blank"
-			:href="`https://github.com/axa-group/Parsr/blob/develop/docs/modules/${itemKey}-module.md`"
-		>
+		<v-btn icon text small color="transparent" target="_blank" :href="readmeLink(itemKey)">
 			<v-icon size="20" color="#cccccc">mdi-information-outline</v-icon>
 		</v-btn>
 	</fieldset>
@@ -104,6 +97,16 @@ export default {
 		},
 	},
 	methods: {
+		readmeLink(module) {
+			return (
+				'https://github.com/axa-group/Parsr/tree/develop/server/src/processing/' +
+				module
+					.replace(/-/g, ' ')
+					.replace(/\b\w/g, l => l.toUpperCase())
+					.replace(/ /g, '') +
+				'Module'
+			);
+		},
 		optionChange(item, event) {
 			this.value[1][item].value = event.target.value;
 		},
