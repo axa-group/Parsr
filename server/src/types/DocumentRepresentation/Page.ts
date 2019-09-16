@@ -15,8 +15,11 @@
  */
 
 import { isInBox } from '../../utils';
+import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
+import { Font } from './Font';
+import { Paragraph } from './Paragraph';
 import { Text } from './Text';
 
 export type directionType = 'horizontal' | 'vertical';
@@ -131,15 +134,19 @@ export class Page {
 	 * Get a list of elements of type in the current Page instance. Pre-ordered.
 	 *
 	 * @param type Type of the Element we want to list
+	 * @param deepSearch Allows searching all elements of type even if are placed as content of other element type
 	 * @return the list of matching Elements
 	 */
-	public getElementsOfType<T extends Element>(type: new (...args: any[]) => T): T[] {
+	public getElementsOfType<T extends Element>(
+		type: new (...args: any[]) => T,
+		deepSearch: boolean = true,
+	): T[] {
 		const result: T[] = new Array<T>();
 		this.preOrderTraversal((element: Element) => {
 			if (element instanceof type) {
 				result.push(element);
 			}
-		});
+		}, deepSearch);
 		return result;
 	}
 
@@ -158,15 +165,24 @@ export class Page {
 	 * Pre-order traversal, calling back when a node is traversed.
 	 *
 	 * @param preOrderCallback yield the Element.
+	 * @param deepSearch Allows searching all elements of type even if are placed in content of other element type
 	 */
-	public preOrderTraversal(preOrderCallback: (element: Element) => void): void {
+	public preOrderTraversal(
+		preOrderCallback: (element: Element) => void,
+		deepSearch: boolean = true,
+	): void {
 		let stack: Element[] = Array.from(this.elements);
 
 		while (stack.length > 0) {
 			const element = stack.shift();
 			preOrderCallback(element);
 
-			if (element.content && typeof element.content !== 'string' && element.content.length !== 0) {
+			if (
+				deepSearch &&
+				element.content &&
+				typeof element.content !== 'string' &&
+				element.content.length !== 0
+			) {
 				stack = stack.concat(element.content);
 			}
 		}
@@ -250,6 +266,42 @@ export class Page {
 	 */
 	public set box(value: BoundingBox) {
 		this._box = value;
+	}
+
+	/**
+	 * Returns the main font of the page using the paragraphs' basket + voting
+	 * mechanism. The most used font will be returned as a valid Font object.
+	 */
+	public getMainFont(): Font | undefined {
+		const fonts: Font[] = this.getElementsOfType<Paragraph>(Paragraph)
+			.map(p => p.getMainFont())
+			.filter(f => f !== undefined);
+
+		const baskets: Font[][] = [];
+		fonts.forEach((font: Font) => {
+			let basketFound: boolean = false;
+			baskets.forEach((basket: Font[]) => {
+				if (basket.length > 0 && basket[0].isEqual(font)) {
+					basket.push(font);
+					basketFound = true;
+				}
+			});
+
+			if (!basketFound) {
+				baskets.push([font]);
+			}
+		});
+
+		baskets.sort((a, b) => {
+			return b.length - a.length;
+		});
+
+		if (baskets.length > 0 && baskets[0].length > 0) {
+			return baskets[0][0];
+		} else {
+			logger.debug(`no font found for page ${this.pageNumber}`);
+			return undefined;
+		}
 	}
 
 	/**

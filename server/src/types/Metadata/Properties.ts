@@ -17,11 +17,14 @@
 export interface Properties {
 	titleScores?: {
 		size: number;
+		wordHeight: number;
 		weight: number;
 		color: number;
 		name: number;
 		italic: number;
 		underline: number;
+		capitalCase: number;
+		titleCase: number;
 	};
 
 	isRedundant?: boolean;
@@ -30,4 +33,8 @@ export interface Properties {
 	isPageNumber?: boolean;
 	bulletList?: boolean;
 	order?: number;
+	// column right
+	cr?: number;
+	// column left
+	cl?: number;
 }

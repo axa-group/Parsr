@@ -20,7 +20,8 @@
 				"-p"
 			],
 			"env": {
-				"NODE_DEBUG": "pipeline"
+				"NODE_DEBUG": "pipeline",
+				"GOOGLE_APPLICATION_CREDENTIALS": "${workspaceRoot}/***.json"
 			},
 			"outputCapture": "std"
 		}

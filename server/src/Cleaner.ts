@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-import { HeaderFooterDetectionModule } from './modules/HeaderFooterDetectionModule';
-import { HeadingDetectionModule } from './modules/HeadingDetectionModule';
-import { HierarchyDetectionModule } from './modules/HierarchyDetectionModule';
-import { KeyValueDetectionModule } from './modules/KeyValueDetectionModule';
-import { LinesToParagraphModule } from './modules/LinesToParagraphModule';
-import { LinkDetectionModule } from './modules/LinkDetectionModule';
-import { Module } from './modules/Module';
-import { NumberCorrectionModule } from './modules/NumberCorrectionModule';
-import { OutOfPageRemovalModule } from './modules/OutOfPageRemovalModule';
-import { ReadingOrderDetectionModule } from './modules/ReadingOrderDetectionModule';
-import { RedundancyDetectionModule } from './modules/RedundancyDetectionModule';
-import { RegexMatcherModule } from './modules/RegexMatcherModule';
-import { RemoteModule } from './modules/RemoteModule';
-import { SeparateWordsModule } from './modules/SeparateWordsModule';
-import { WhitespaceRemovalModule } from './modules/WhitespaceRemovalModule';
-import { WordsToLineModule } from './modules/WordsToLineModule';
+import { HeaderFooterDetectionModule } from './processing/HeaderFooterDetectionModule/HeaderFooterDetectionModule';
+import { HeadingDetectionModule } from './processing/HeadingDetectionModule/HeadingDetectionModule';
+import { HierarchyDetectionModule } from './processing/HierarchyDetectionModule/HierarchyDetectionModule';
+import { KeyValueDetectionModule } from './processing/KeyValueDetectionModule/KeyValueDetectionModule';
+import { LinesToParagraphModule } from './processing/LinesToParagraphModule/LinesToParagraphModule';
+import { LinkDetectionModule } from './processing/LinkDetectionModule/LinkDetectionModule';
+import { Module } from './processing/Module';
+import { NumberCorrectionModule } from './processing/NumberCorrectionModule/NumberCorrectionModule';
+import { OutOfPageRemovalModule } from './processing/OutOfPageRemovalModule/OutOfPageRemovalModule';
+import { PageNumberDetectionModule } from './processing/PageNumberDetectionModule/PageNumberDetectionModule';
+import { ReadingOrderDetectionModule } from './processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
+import { RedundancyDetectionModule } from './processing/RedundancyDetectionModule/RedundancyDetectionModule';
+import { RegexMatcherModule } from './processing/RegexMatcherModule/RegexMatcherModule';
+import { RemoteModule } from './processing/RemoteModule/RemoteModule';
+import { SeparateWordsModule } from './processing/SeparateWordsModule/SeparateWordsModule';
+import { TableDetectionModule } from './processing/TableDetectionModule/TableDetectionModule';
+import { WhitespaceRemovalModule } from './processing/WhitespaceRemovalModule/WhitespaceRemovalModule';
+import { WordsToLineModule } from './processing/WordsToLineModule/WordsToLineModule';
 import { CleanerConfig, Config } from './types/Config';
 import { Document } from './types/DocumentRepresentation/Document';
 import logger from './utils/Logger';
@@ -53,10 +55,12 @@ export class Cleaner {
 		HierarchyDetectionModule,
 		LinkDetectionModule,
 		HeaderFooterDetectionModule,
+		PageNumberDetectionModule,
 		NumberCorrectionModule,
 		RedundancyDetectionModule,
 		WhitespaceRemovalModule,
 		HeadingDetectionModule,
+		TableDetectionModule,
 		RegexMatcherModule,
 		RemoteModule,
 		SeparateWordsModule,

@@ -16,7 +16,7 @@
 
 import { expect } from 'chai';
 import 'mocha';
-import { RedundancyDetectionModule } from '../server/src/modules/RedundancyDetectionModule';
+import { RedundancyDetectionModule } from '../server/src/processing/RedundancyDetectionModule/RedundancyDetectionModule';
 import { Word } from '../server/src/types/DocumentRepresentation';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
 import { getPdf, runModules } from './helpers';

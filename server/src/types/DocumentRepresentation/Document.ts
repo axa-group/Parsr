@@ -15,7 +15,9 @@
  */
 
 import * as clone from 'clone';
+import logger from '../../utils/Logger';
 import { Element } from './Element';
+import { Font } from './Font';
 import { Page } from './Page';
 
 type Margins = {
@@ -32,6 +34,14 @@ type Margins = {
  */
 export class Document {
 	/**
+	 * Getter inputFile
+	 * @return {string}
+	 */
+	public get inputFile(): string {
+		return this._inputFile;
+	}
+
+	/**
 	 * Getter pages
 	 * @return {Page[]}
 	 */
@@ -45,6 +55,14 @@ export class Document {
 	 */
 	public get margins(): Margins {
 		return this._margins;
+	}
+
+	/**
+	 * Setter inputFile
+	 * @param {string} value
+	 */
+	public set inputFile(value: string) {
+		this._inputFile = value;
 	}
 
 	/**
@@ -73,10 +91,12 @@ export class Document {
 		return new Document(copy);
 	}
 	private _pages: Page[];
+	private _inputFile: string;
 	private _margins: Margins;
 
-	constructor(pages: Page[] = []) {
+	constructor(pages: Page[] = [], inputFile?: string) {
 		this.pages = pages;
+		this.inputFile = inputFile;
 		this.margins = { top: -1, left: -1, bottom: -1, right: -1 };
 	}
 
@@ -93,5 +113,43 @@ export class Document {
 	 */
 	public getElementById(id: number): Element {
 		return this.getAllElements().find(x => x.id === id);
+	}
+
+	public getElementsOfType<T extends Element>(type: new (...args: any[]) => T): T[] {
+		return this.pages.map(p => p.getElementsOfType(type)).reduce((acc, val) => acc.concat(val), []);
+	}
+
+	/**
+	 * Returns the main font of the document using the pages' basket + voting
+	 * mechanism. The most used font will be returned as a valid Font object.
+	 */
+	public getMainFont(): Font | undefined {
+		const fonts: Font[] = this.pages.map(p => p.getMainFont()).filter(f => f !== undefined);
+
+		const baskets: Font[][] = [];
+		fonts.forEach((font: Font) => {
+			let basketFound: boolean = false;
+			baskets.forEach((basket: Font[]) => {
+				if (basket.length > 0 && basket[0].isEqual(font)) {
+					basket.push(font);
+					basketFound = true;
+				}
+			});
+
+			if (!basketFound) {
+				baskets.push([font]);
+			}
+		});
+
+		baskets.sort((a, b) => {
+			return b.length - a.length;
+		});
+
+		if (baskets.length > 0 && baskets[0].length > 0) {
+			return baskets[0][0];
+		} else {
+			logger.warn(`No font found for the document`);
+			return undefined;
+		}
 	}
 }

@@ -167,12 +167,15 @@ function propertiesFromJson(propertiesObj: JsonProperties): Properties {
 	const prop: Properties = {};
 	if (propertiesObj.hasOwnProperty('titleScores')) {
 		prop.titleScores = {
+			wordHeight: propertiesObj.titleScores.wordHeight,
 			size: propertiesObj.titleScores.size,
 			weight: propertiesObj.titleScores.weight,
 			color: propertiesObj.titleScores.color,
 			name: propertiesObj.titleScores.name,
 			italic: propertiesObj.titleScores.italic,
 			underline: propertiesObj.titleScores.underline,
+			capitalCase: propertiesObj.titleScores.capitalCase,
+			titleCase: propertiesObj.titleScores.titleCase,
 		};
 	}
 	if (propertiesObj.hasOwnProperty('order')) {

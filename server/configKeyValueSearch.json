@@ -9,12 +9,14 @@
 		"out-of-page-removal",
 		"whitespace-removal",
 		"redundancy-detection",
-		"reading-order-detection",
+		"table-detection",
+		["header-footer-detection", { "maxMarginPercentage": { "value": 15 } }],
+		["reading-order-detection", { "minColumnWidthInPagePercent": { "value": 15 } }],
 		"link-detection",
-		["words-to-line", { "maximumSpaceBetweenWords": 100 }],
+		["words-to-line", { "maximumSpaceBetweenWords": { "value": 100 } }],
 		"lines-to-paragraph",
+		["page-number-detection", { "maxMarginPercentage": { "value": 15 } }],
 		"heading-detection",
-		["header-footer-detection", { "maxMarginPercentage": 15 }],
 		"hierarchy-detection",
 		[
 			"key-value-detection",
@@ -89,7 +91,28 @@
 					"Visite TYPE": ["VISIT TYPE", "Visit Type"],
 					"Visit No": ["Visit No"]
 				},
-				"threshold": 0.8
+				"thresholdRatio": 0.8
+			}
+		],
+		[
+			"regex-matcher",
+			{
+				"queries": {
+					"value": [
+						{
+							"label": "Car",
+							"regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
+						},
+						{
+							"label": "Age",
+							"regex": "(\\d+)[ -]*(ans|jarige)"
+						},
+						{
+							"label": "Percent",
+							"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
+						}
+					]
+				}
 			}
 		]
 	],

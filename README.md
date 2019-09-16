@@ -2,6 +2,8 @@
 
 # Parsr: Turn your documents into data!
 
+[中文](README_zh-cn.md)
+
 **Parsr**, is a minimal-footprint document (image, pdf) cleaning, parsing and extraction toolchain which generates readily available, organized and usable data for data scientists and developers.
 
 It provides users with clean structured and label-enriched information set for ready-to-use applications ranging from data entry and document analysis automation, archival, and many others.
@@ -58,13 +60,15 @@ Under a **Debian** based distribution:
 ```sh
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
-sudo apt-get install nodejs npm qpdf imagemagick pdf2json tesseract-ocr libtesseract-dev
+sudo apt-get install nodejs npm qpdf imagemagick pdf2json python-pdfminer tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
+pip install camelot-py
 ```
 
 Under **Arch** Linux :
 
 ```sh
-pacman -S nodejs npm qpdf imagemagick pdf2json tesseract
+pacman -S nodejs npm qpdf imagemagick pdf2json pdfminer tesseract python-pip
+pip install camelot-py
 ```
 
 #### 1.2.2. Installing Dependencies under MacOS
@@ -82,6 +86,21 @@ Next, install the required dependencies:
 brew install node qpdf imagemagick pdf2json tesseract tesseract-lang
 ```
 
+To install the python based depedencies (pdfminer and camelot), install, first install `pip`:
+
+```sh
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python get-pip.py
+```
+
+and then the dependencies:
+
+```sh
+pip install pdfminer.six
+pip install python-tk ghostscript camelot-py
+
+```
+
 #### 1.2.3. Installing Dependencies under Windows
 
 1. We recommand using [Chocolatey](https://chocolatey.org) as the package manager for installing dependencies under Windows. To install Chocolatey, [follow these instructions](https://chocolatey.org/install#installing-chocolatey).
@@ -93,6 +112,8 @@ brew install node qpdf imagemagick pdf2json tesseract tesseract-lang
    ```
 
 3. [Download and install **`node.js`**](https://nodejs.org/en/download)
+4. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install-deps.html#for-windows).
+5. For the **pdfminer** extractor for pdfs, [follow these steps](https://github.com/pdfminer/pdfminer.six#how-to-install).
 
 ##### 1.2.3.1. pdf2json
 
@@ -111,6 +132,10 @@ You can download Tesseract 4.0 64-bit for Windows or check out other available f
 
 Then, you need to add tesseract.exe to your PATH:
 If you have install it in `C:\Program Files (x86)\Tesseract-OCR`, you can either add it [using the user interface](https://docs.alfresco.com/4.2/tasks/fot-addpath.html) execute the following command in Powershell (Run as Administrator):
+
+```sh
+setx PATH "\$env:PATH;C:\Program Files (x86)\Tesseract-OCR" -m
+```
 
 ### 1.3. Optional Dependencies
 
@@ -216,10 +241,10 @@ The tool contains a pipeline of modules that process the document step by step a
 To start the web viewer demo, simply run:
 
 ```sh
-npm run start:web
+npm run start:web:vue
 ```
 
-Then, open [localhost:3000](http://localhost:3000) with your favorite browser.
+Then, open [localhost:8080](http://localhost:8080) with your favorite browser.
 
 #### 2.2.3. Command Line Usage
 
@@ -321,10 +346,11 @@ Third Party Libraries licenses :
 1. **QPDF**: Apache [http://qpdf.sourceforge.net](http://qpdf.sourceforge.net/)
 2. **ImageMagick**: Apache 2.0 [https://imagemagick.org/script/license.php](https://imagemagick.org/script/license.php)
 3. **Pdf2json**: Apache 2.0 [https://github.com/modesty/pdf2json/blob/scratch/quadf-forms/license.txt](https://github.com/modesty/pdf2json/blob/scratch/quadf-forms/license.txt)
-4. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
-5. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)
-6. **MuPDF** (Optional dependency): AGPL [https://mupdf.com/license.html](https://mupdf.com/license.html)
-7. **Pandoc** (Optional dependency): GPL [https://github.com/jgm/pandoc](https://github.com/jgm/pandoc)
+4. **Pdfminer.six**: MIT [https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE](https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE)
+5. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
+6. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)
+7. **MuPDF** (Optional dependency): AGPL [https://mupdf.com/license.html](https://mupdf.com/license.html)
+8. **Pandoc** (Optional dependency): GPL [https://github.com/jgm/pandoc](https://github.com/jgm/pandoc)
 
 ## 7. License
 
