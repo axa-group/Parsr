@@ -48,7 +48,7 @@ The cleaner array may appear unconventionnal but is really easy to use. Every it
         // The thrid module to run with some special options
         [
             "module-name-3",
-            { "option-1": 100, "option-2": true }
+            { "option-1": { value: 50, min: 0, max: 100 }, "option-2": { value: true } }
         ],
     ],
     // Output options (See section 4.)
@@ -90,8 +90,8 @@ Module can be called in the full form:
 [
 	"module",
 	{
-		"option-1": 100,
-		"option-2": true
+		"option-1": { "value": 100 },
+		"option-2": { "value": true }
 	}
 ],
 ```
@@ -122,7 +122,7 @@ The platform can export the following formats:
 - `markdown`
 - `text`
 - `csv`
-- ~~`pdf`~~ (planned)
+- `pdf` (pandoc required)
 
 ### 4.2. Granularity
 
@@ -140,21 +140,44 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 {
 	"version": 0.5,
 	"extractor": {
-		"pdf": "pdfminer",
+		"pdf": "pdf2json",
 		"img": "tesseract",
-		"language": "eng"
+		"language": ["eng", "fra"]
 	},
 	"cleaner": [
 		"out-of-page-removal",
 		"whitespace-removal",
 		"redundancy-detection",
-		"reading-order-detection",
+		"table-detection",
+		["header-footer-detection", { "maxMarginPercentage": { "value": 15 } }],
+		["reading-order-detection", { "minColumnWidthInPagePercent": { "value": 15 } }],
 		"link-detection",
-		[ "words-to-line", { "maximumSpaceBetweenWords": 100 } ],
+		["words-to-line", { "maximumSpaceBetweenWords": { "value": 100 } }],
 		"lines-to-paragraph",
+		["page-number-detection", { "maxMarginPercentage": { "value": 15 } }],
 		"heading-detection",
-		[ "header-footer-detection", { "maxMarginPercentage": 15 } ],
-		"hierarchy-detection"
+		"hierarchy-detection",
+		[
+			"regex-matcher",
+			{
+				"queries": {
+					"value": [
+						{
+							"label": "Car",
+							"regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
+						},
+						{
+							"label": "Age",
+							"regex": "(\\d+)[ -]*(ans|jarige)"
+						},
+						{
+							"label": "Percent",
+							"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
+						}
+					]
+				}
+			}
+		]
 	],
 	"output": {
 		"granularity": "word",
@@ -163,7 +186,8 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 			"json": true,
 			"text": true,
 			"csv": true,
-			"markdown": true
+			"markdown": true,
+			"pdf": false
 		}
 	}
 }

@@ -1,0 +1,15 @@
+{
+	"name": "key-value-detection",
+	"description": "Detect pairs of key-value throughout each page of a document, depending on a certain number of key-value patterns passed onto the pipeline in the configuration.",
+	"keyPatterns": {
+		"value": {}
+	},
+	"keyValueDividerChars": [":", ";"],
+	"thresholdRatio": {
+		"value": 0.2,
+		"range": {
+			"min": 0.0,
+			"max": 1.0
+		}
+	}
+}

@@ -15,7 +15,7 @@
  */
 
 import { Cleaner } from './Cleaner';
-import { Extractor } from './extractors/Extractor';
+import { Extractor } from './input/Extractor';
 import { Document } from './types/DocumentRepresentation';
 import logger from './utils/Logger';
 

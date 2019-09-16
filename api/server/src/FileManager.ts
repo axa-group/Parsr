@@ -92,7 +92,7 @@ export class FileManager {
 		}
 	}
 
-	private getBinder(docId: string): Binder {
+	public getBinder(docId: string): Binder {
 		if (this.fileSystem[docId]) {
 			return this.fileSystem[docId];
 		} else {

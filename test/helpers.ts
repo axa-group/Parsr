@@ -16,9 +16,9 @@
 
 import * as clone from 'clone';
 import { readFileSync } from 'fs';
-import { PdfJsonExtractor } from '../server/src/extractors/pdf2json/PdfJsonExtractor';
-import { PdfminerExtractor } from '../server/src/extractors/pdfminer/PdfminerExtractor';
-import { Module } from '../server/src/modules/Module';
+import { PdfJsonExtractor } from '../server/src/input/pdf2json/PdfJsonExtractor';
+import { PdfminerExtractor } from '../server/src/input/pdfminer/PdfminerExtractor';
+import { Module } from '../server/src/processing/Module';
 import { Config } from '../server/src/types/Config';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
 

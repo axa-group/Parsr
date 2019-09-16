@@ -17,7 +17,7 @@
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
-import { NumberCorrectionModule } from '../server/src/modules/NumberCorrectionModule/NumberCorrectionModule';
+import { NumberCorrectionModule } from '../server/src/processing/NumberCorrectionModule/NumberCorrectionModule';
 import {
 	BoundingBox,
 	Document,

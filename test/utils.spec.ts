@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
+import { assert, expect } from 'chai';
+import { withData } from 'leche';
+import 'mocha';
+import { BoundingBox, Font, Text, Word } from '../server/src/types/DocumentRepresentation';
 import { Line } from '../server/src/types/DocumentRepresentation/Line';
 import * as utils from '../server/src/utils';
-import { assert, expect } from 'chai';
-import 'mocha';
-import { withData } from 'leche';
-import { Word, BoundingBox, Text, Font } from '../server/src/types/DocumentRepresentation';
 
 const dummyFont = new Font('Arial', 12);
 
-let t1 = new Word(new BoundingBox(10, 5, 30, 20), 'first', dummyFont);
+const t1 = new Word(new BoundingBox(10, 5, 30, 20), 'first', dummyFont);
 t1.properties.order = 1;
 
 // We can't clone t1 as the _id_ is a read only property
 // and will inherently be different for each object on instantiation
-let t1Dup = new Word(new BoundingBox(10, 5, 30, 20), 'first', dummyFont);
+const t1Dup = new Word(new BoundingBox(10, 5, 30, 20), 'first', dummyFont);
 t1Dup.properties.order = 1;
 
-let t2 = new Word(new BoundingBox(55, 60, 30, 40), 'second', dummyFont);
+const t2 = new Word(new BoundingBox(55, 60, 30, 40), 'second', dummyFont);
 t2.properties.order = 2;
-let t2Dup = new Word(new BoundingBox(55, 60, 30, 40), 'second', dummyFont);
+const t2Dup = new Word(new BoundingBox(55, 60, 30, 40), 'second', dummyFont);
 t2Dup.properties.order = 2;
 
-let t3 = new Word(new BoundingBox(155, 160, 10, 5), 'third', dummyFont);
+const t3 = new Word(new BoundingBox(155, 160, 10, 5), 'third', dummyFont);
 t3.properties.order = 3;
-let t3Dup = new Word(new BoundingBox(155, 160, 10, 5), 'third', dummyFont);
+const t3Dup = new Word(new BoundingBox(155, 160, 10, 5), 'third', dummyFont);
 t3Dup.properties.order = 3;
 
 describe('Utils sortTextsByOrder function', () => {
@@ -50,9 +50,9 @@ describe('Utils sortTextsByOrder function', () => {
 
 describe('Utils mergeText function', () => {
 	it('should merge texts', () => {
-		let parent = new Line(null);
-		let result: Text = utils.mergeElements(parent, t3, t1, t2);
-		let resultString = (result.content as Text[]).map(e => e.content).join(' ');
+		const parent = new Line(null);
+		const result: Text = utils.mergeElements(parent, t3, t1, t2);
+		const resultString = (result.content as Text[]).map(e => e.content).join(' ');
 		expect(resultString).to.be.equal('first second third');
 		expect(result.top).to.be.equal(5);
 		expect(result.left).to.be.equal(10);
@@ -113,7 +113,7 @@ describe('Utils getPageRegex function', () => {
 				assert(utils.getPageRegex().test(text));
 			});
 			it('should have a capturing group for the page number', () => {
-				let match = text.match(utils.getPageRegex());
+				const match = text.match(utils.getPageRegex());
 				let pageNumber;
 
 				for (let i = 1; i < match.length; i++) {
