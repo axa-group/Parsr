@@ -46,6 +46,7 @@ export class ApiServer {
 	private allowedMimetypes: string[] = [
 		'application/pdf',
 		'application/xml',
+		'text/xml',
 		'image/tiff',
 		'image/png',
 		'image/jpeg',
@@ -83,6 +84,7 @@ export class ApiServer {
 		v1_0.get('/markdown/:id', this.handleGetMarkdown.bind(this));
 		v1_0.get('/xml/:id', this.handleGetXml.bind(this));
 		// TODO add every other endpoint
+		v1_0.get('/thumbnail/:id/:page', this.handleGetThumb.bind(this));
 
 		app.listen(port, () => {
 			logger.info(`Api listening on port ${port}!`);
@@ -96,6 +98,7 @@ export class ApiServer {
 	 * Status: 500 - Internal Server Error
 	 */
 	private handleGetQueue(req: Request, res: Response): void {
+		res.setHeader('Access-Control-Allow-Origin', '*');
 		const docId = req.params.id;
 		let pipelineProcess: PipelineProcess;
 
@@ -164,6 +167,8 @@ export class ApiServer {
 	}
 	*/
 	private handlePostDoc(req: Request, res: Response): void {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+
 		if (!('files' in req && 'file' in req.files && 'config' in req.files)) {
 			res.status(400).send(`Bad request: file or config not found.`);
 			return;
@@ -241,6 +246,8 @@ export class ApiServer {
 	}
 
 	private handleGetFile(req: Request, res: Response, type: SingleFileType): void {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+
 		try {
 			const file: string = this.fileManager.getFilePath(req.params.id, type);
 			res.sendFile(file);
@@ -257,6 +264,34 @@ export class ApiServer {
 			<a href="https://github.com/axa-group/Parsr/blob/develop/docs/api-guide.md">documentation</a>!
 			</p>
 		`);
+	}
+
+	private handleGetThumb(req: Request, res: Response) {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+
+		const docId: string = req.params.id;
+		const page: number = parseInt(req.params.page, 10);
+		const binder: Binder = this.fileManager.getBinder(docId);
+		const PDFImage = require('pdf-image').PDFImage;
+		const pdfImage = new PDFImage(binder.input, {
+			convertOptions: {
+				'-resize': '200x200',
+				'-colorspace': 'RGB',
+			},
+		});
+		pdfImage.convertPage(page).then(
+			(imagePath: string) => {
+				logger.info(`Thumbnail path ${imagePath}!`);
+				res.sendFile(imagePath, {
+					headers: {
+						responseType: 'blob',
+					},
+				});
+			},
+			(err: Error) => {
+				res.status(500).send(err);
+			},
+		);
 	}
 
 	private isValidDocument(doc: Express.Multer.File): boolean {

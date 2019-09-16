@@ -1,0 +1,11 @@
+{
+	"name": "remote",
+	"description": "It exports the document as [JSON](../json-output.md), call an API with it and expect a modified JSON back.",
+	"url": {
+		"value": "localhost"
+	},
+	"granularity": {
+		"value": "word",
+		"range": ["word", "character"]
+	}
+}

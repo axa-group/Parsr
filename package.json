@@ -23,10 +23,12 @@
 		"build:ts:watch": "npm run copyAssets && tsc -w --outDir ./dist",
 		"install:api": "npm install --prefix  api/server",
 		"start:web": "npm run build:ts && cd demo/web-viewer && npm run start",
+		"start:web:vue": "npm run start:api:background && cd demo/vue-viewer && npm install && npm run serve",
 		"run:debug": "ts-node server/bin/index.ts",
 		"lint": "tslint --project . && tslint --project ./api/server",
 		"lint:fix": "tslint --fix --project . && tslint --fix --project ./api/server",
-		"start:api": "npm run build:ts && npm run --prefix api/server start",
+		"start:api": "npm run build:ts && npm run install:api && npm run --prefix api/server start",
+		"start:api:background": "npm run start:api&",
 		"start:front": "cd demo/web-viewer && node index.js",
 		"start": "npm run start:api & npm run start:front",
 		"format": "prettier --write --list-different '{,!(dist|demo/web-viewer/public)/**/}*.{js,md,ts,css,scss}'"
@@ -50,6 +52,7 @@
 		}
 	},
 	"dependencies": {
+		"@google-cloud/vision": "^1.3.0",
 		"an-array-of-english-words": "^1.3.1",
 		"axios": "^0.19.0",
 		"clone": "^2.1.2",
@@ -60,6 +63,7 @@
 		"file-type": "^9.0.0",
 		"html-entities": "^1.2.1",
 		"markdown-table": "^1.1.3",
+		"pdf-image": "^2.0.0",
 		"pino": "^5.13.2",
 		"pino-pretty": "^2.6.1",
 		"request": "^2.88.0",
@@ -76,6 +80,7 @@
 		"@types/commander": "^2.12.2",
 		"@types/concaveman": "^1.1.3",
 		"@types/file-type": "^10.9.1",
+		"@types/gapi.client.vision": "^1.0.1",
 		"@types/html-entities": "^1.2.16",
 		"@types/mocha": "^5.2.7",
 		"@types/node": "^10.14.16",

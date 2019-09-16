@@ -465,6 +465,14 @@ export function toKebabCase(str: string): string {
 	return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
 
+// converts a sentence to title case
+export function toTitleCase(str: string): string {
+	return str
+		.split(' ')
+		.map(w => w[0].toUpperCase() + w.slice(1, w.length))
+		.join(' ');
+}
+
 /**
  * Generates a convex hull from vertices
  * @param vertices the list of vertices of type number[][], as [[x,y], ...]
@@ -587,4 +595,27 @@ export function findPositionsInArray<T>(array: T[], element: T): number[] {
 		}
 	});
 	return result;
+}
+
+/**
+ * returns the location of the executable locator command on the current system.
+ * on linux/unix machines, this is 'which', on windows machines, it is 'where'.
+ */
+export function getExecLocationCommandOnSystem(): string {
+	return os.platform() === 'win32' ? 'where' : 'which';
+}
+
+/**
+ * returns the location of a command on a system.
+ * @param executableName the name of the executable to be located
+ */
+export function getCommandLocationOnSystem(executableName: string): string {
+	const res: string = spawnSync(getExecLocationCommandOnSystem(), [
+		executableName,
+	]).stdout.toString();
+	if (res.slice(res.length - 1, res.length) === '\n') {
+		return res.slice(0, res.length - 1);
+	} else {
+		return res;
+	}
 }
