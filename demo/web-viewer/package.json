@@ -2,6 +2,9 @@
   "name": "web-viewer",
   "version": "1.0.0",
   "description": "",
+	"author": "AXA Group Operations S.A.",
+	"license": "Apache-2.0",
+	"private": true,
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,8 +12,6 @@
     "build:sass:watch": "node-sass -w style/style.scss public/css/compiled.css",
     "start": "npm install && npm run build:sass && node index.js"
   },
-  "author": "AXA rev",
-  "license": "Apache-2.0",
   "dependencies": {
     "@axa/web-toolkit": "^2.0.0-alpha.3",
     "bootstrap": "^4.3.1",
