@@ -1,12 +1,5 @@
 <template functional>
 	<g>
-		<component
-			:is="props.components.Paragraph"
-			v-for="element in props.element.content"
-			:key="element.id"
-			:element="element"
-			:fonts="props.fonts"
-		></component>
 		<rect
 			class="TableCell"
 			:key="props.element.id"
@@ -15,6 +8,14 @@
 			:width="props.element.box.w"
 			:height="props.element.box.h"
 		/>
+		<component
+			:is="props.components.Paragraph"
+			v-for="element in props.element.content"
+			:key="element.id"
+			:element="element"
+			:fonts="props.fonts"
+			@custom-event="listeners['custom-event']"
+		></component>
 	</g>
 </template>
 

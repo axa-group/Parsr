@@ -19,19 +19,27 @@
 				VisibleTables: isTableFilter,
 			}"
 		/>
-		<pageInspector v-if="documentFetched" :filters="inspectorFilters" />
+		<div style="border-left: solid 1px #ebebf1;">
+			<pageInspector v-if="documentFetched" :filters="inspectorFilters" />
+			<elementInspector
+				v-if="documentFetched"
+				:selectedElement="selectedElement"
+				:fonts="document.fonts"
+			/>
+		</div>
 	</div>
 </template>
 
 <script>
 import Thumbnails from '@/components/Thumbnails';
 import PageInspector from '@/components/PageInspector';
+import ElementInspector from '@/components/ElementInspector';
 import DocPreview from '@/components/DocumentPreview';
 import { docComputed } from '../vuex/helpers.js';
 import { mapState } from 'vuex';
 
 export default {
-	components: { Thumbnails, PageInspector, DocPreview },
+	components: { Thumbnails, PageInspector, DocPreview, ElementInspector },
 	computed: {
 		documentFetched() {
 			return this.document != null;
@@ -42,6 +50,7 @@ export default {
 			selectedPage: state => state.selectedPage,
 			zoom: state => state.zoom,
 			inspectorFilters: state => state.inspectorFilters,
+			selectedElement: state => state.selectedElement,
 		}),
 		...docComputed,
 		isWordFilter() {

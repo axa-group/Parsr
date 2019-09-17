@@ -12,6 +12,7 @@
 			:key="element.id"
 			:element="element"
 			:fonts="props.fonts"
+			@custom-event="listeners['custom-event']"
 		></component>
 	</g>
 </template>

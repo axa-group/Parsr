@@ -12,6 +12,7 @@ export default new Vuex.Store({
 		inputFileName: null,
 		document: null,
 		inspectorFilters: {},
+		selectedElement: null,
 		defaultConfig: {
 			version: 0.5,
 			extractor: {
@@ -165,6 +166,9 @@ export default new Vuex.Store({
 		},
 	},
 	mutations: {
+		setElementSelected(state, element) {
+			state.selectedElement = element !== state.selectedElement ? element : null;
+		},
 		setInspectorFilters(state, filters) {
 			state.inspectorFilters = filters;
 		},
@@ -215,6 +219,7 @@ export default new Vuex.Store({
 				commit('SET_DOCUMENT_ID', response.data);
 				commit('SET_DOCUMENT', null);
 				commit('setInputFileName', file.name);
+				commit('setElementSelected', null);
 				return response.data;
 			});
 		},
