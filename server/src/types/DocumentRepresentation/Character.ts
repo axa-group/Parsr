@@ -15,6 +15,7 @@
  */
 
 import { BoundingBox } from './BoundingBox';
+import { Font } from './Font';
 import { Text } from './Text';
 
 /**
@@ -23,10 +24,12 @@ import { Text } from './Text';
  */
 export class Character extends Text {
 	private _content: string;
+	private _font: Font;
 
-	constructor(boundingBox: BoundingBox, content: string = '') {
+	constructor(boundingBox: BoundingBox, content: string = '', font: Font = Font.undefinedFont) {
 		super(boundingBox);
 		this.content = content;
+		this.font = font;
 	}
 
 	/**
@@ -50,5 +53,21 @@ export class Character extends Text {
 	 */
 	public set content(value: string) {
 		this._content = value;
+	}
+
+	/**
+	 * Getter font
+	 * @return {Font}
+	 */
+	public get font(): Font {
+		return this._font;
+	}
+
+	/**
+	 * Setter font
+	 * @param {Font} value
+	 */
+	public set font(value: Font) {
+		this._font = value;
 	}
 }

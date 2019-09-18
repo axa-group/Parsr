@@ -619,3 +619,22 @@ export function getCommandLocationOnSystem(executableName: string): string {
 		return res;
 	}
 }
+
+/**
+ * Returns the grouping of consecutive numbers in an array
+ * @param theArray The input array of numbers
+ */
+export function groupConsecutiveNumbersInArray(theArray: number[]): number[][] {
+	let result: number[][] = [];
+	result = theArray
+		.sort((a, b) => a - b)
+		.reduce((r, n) => {
+			const lastSubArray = r[r.length - 1];
+			if (!lastSubArray || lastSubArray[lastSubArray.length - 1] !== n - 1) {
+				r.push([]);
+			}
+			r[r.length - 1].push(n);
+			return r;
+		}, []);
+	return result;
+}
