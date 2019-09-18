@@ -192,15 +192,6 @@ export default new Vuex.Store({
 		setInputFileName(state, name) {
 			state.inputFileName = name;
 		},
-		updateConfig(state, configItem) {
-			if (configItem.selected) {
-				state.defaultConfig.cleaner.push(configItem.item);
-			} else {
-				state.defaultConfig.cleaner = state.defaultConfig.cleaner.filter(
-					el => el !== configItem.item,
-				);
-			}
-		},
 		SET_DOCUMENT(state, document) {
 			state.document = document;
 		},
