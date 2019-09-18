@@ -24,7 +24,14 @@
 			<elementInspector
 				v-if="documentFetched"
 				:selectedElement="selectedElement"
+				:selectedParentElement="selectedParentElement"
 				:fonts="document.fonts"
+			/>
+			<wordHierarchy
+				v-if="documentFetched"
+				:selectedElement="selectedElement"
+				:fonts="document.fonts"
+				:pageElements="document.pages[selectedPage - 1].elements"
 			/>
 		</div>
 	</div>
@@ -33,13 +40,14 @@
 <script>
 import Thumbnails from '@/components/Thumbnails';
 import PageInspector from '@/components/PageInspector';
+import WordHierarchy from '@/components/WordHierarchy';
 import ElementInspector from '@/components/ElementInspector';
 import DocPreview from '@/components/DocumentPreview';
 import { docComputed } from '../vuex/helpers.js';
 import { mapState } from 'vuex';
 
 export default {
-	components: { Thumbnails, PageInspector, DocPreview, ElementInspector },
+	components: { Thumbnails, PageInspector, DocPreview, WordHierarchy, ElementInspector },
 	computed: {
 		documentFetched() {
 			return this.document != null;
@@ -51,6 +59,7 @@ export default {
 			zoom: state => state.zoom,
 			inspectorFilters: state => state.inspectorFilters,
 			selectedElement: state => state.selectedElement,
+			selectedParentElement: state => state.selectedParentElement,
 		}),
 		...docComputed,
 		isWordFilter() {

@@ -13,6 +13,7 @@ export default new Vuex.Store({
 		document: null,
 		inspectorFilters: {},
 		selectedElement: null,
+		selectedParentElement: null,
 		defaultConfig: {
 			version: 0.5,
 			extractor: {
@@ -166,8 +167,12 @@ export default new Vuex.Store({
 		},
 	},
 	mutations: {
+		setParentElementSelected(state, element) {
+			state.selectedParentElement = element !== state.selectedParentElement ? element : null;
+		},
 		setElementSelected(state, element) {
 			state.selectedElement = element !== state.selectedElement ? element : null;
+			state.selectedParentElement = null;
 		},
 		setInspectorFilters(state, filters) {
 			state.inspectorFilters = filters;
@@ -220,11 +225,11 @@ export default new Vuex.Store({
 				commit('SET_DOCUMENT', null);
 				commit('setInputFileName', file.name);
 				commit('setElementSelected', null);
+				commit('setParentElementSelected', null);
 				return response.data;
 			});
 		},
 		getDocumentStatus() {
-			//console.log(commit);
 			return DocumentService.getDocumentStatus(this.state.uuid).then(response => {
 				return response.data;
 			});

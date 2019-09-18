@@ -125,7 +125,6 @@ export default {
 	},
 	methods: {
 		elementSelected(element) {
-			console.log(element);
 			this.$store.commit('setElementSelected', element);
 		},
 		fitPageToScreen() {
