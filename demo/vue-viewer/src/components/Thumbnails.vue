@@ -67,6 +67,7 @@ export default {
 <style lang="scss" scoped>
 .Thumbnails {
 	position: relative;
+	border-right: solid 1px #ebebf1;
 }
 .Thumbnails header {
 	background-color: #ebebf1;

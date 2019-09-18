@@ -1,11 +1,12 @@
 <template functional>
-	<g>
+	<g class="WordGroup">
 		<rect
 			class="Word"
 			:x="props.element.box.l"
 			:y="props.element.box.t"
 			:width="props.element.box.w"
 			:height="props.element.box.h"
+			@click="listeners['custom-event'](props.element)"
 		/>
 		<text
 			:x="props.element.box.l"
@@ -16,6 +17,7 @@
 				fontSize: props.fonts.filter(font => font.id === props.element.font).shift().size * 0.6,
 			}"
 			:font-weight="fontWeight"
+			@click="listeners['custom-event'](props.element)"
 			>{{ props.element.content.trim() }}</text
 		>
 	</g>
@@ -26,6 +28,11 @@ import pageElementMixin from '@/mixins/pageElementMixin';
 
 export default {
 	mixins: [pageElementMixin],
+	methods: {
+		displayProps() {
+			console.log(this.props);
+		},
+	},
 	/*computed: {
 		wordStyle() {
 			console.log(this.props.element.font);

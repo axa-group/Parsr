@@ -92,8 +92,6 @@ export default {
 			return {};
 		},
 		sliderValuesForModule(module) {
-			console.log('Module Sliders');
-			console.log(module);
 			const sliders = {};
 			Object.keys(module[1]).forEach(element => {
 				switch (element) {
@@ -119,8 +117,6 @@ export default {
 			return sliders;
 		},
 		defaultValuesForModule(module) {
-			console.log('Module');
-			console.log(module);
 			const defaults = {};
 			Object.keys(module[1]).forEach(element => {
 				switch (element) {

@@ -22,18 +22,21 @@
 				:key="element.id"
 				:element="element"
 				:fonts="fonts"
+				@custom-event="elementSelected"
 			/>
 			<paragraph
 				v-for="element in elementsOfType('paragraph')"
 				:key="element.id"
 				:element="element"
 				:fonts="fonts"
+				@custom-event="elementSelected"
 			/>
 			<tableData
 				v-for="element in elementsOfType('table')"
 				:key="element.id"
 				:element="element"
 				:fonts="fonts"
+				@custom-event="elementSelected"
 			/>
 			<!--component
 				v-for="element in page.elements"
@@ -121,6 +124,9 @@ export default {
 		},
 	},
 	methods: {
+		elementSelected(element) {
+			this.$store.commit('setElementSelected', element);
+		},
 		fitPageToScreen() {
 			if (this.isPageLandscape) {
 				var maxWidth = parseFloat(window.getComputedStyle(this.scroll).width) - 40;
@@ -173,6 +179,14 @@ export default {
 }
 .Page rect {
 	fill: transparent;
+}
+.Page rect.Word,
+.Page g.WordGroup text {
+	cursor: pointer;
+}
+.Page g.WordGroup:hover text {
+	cursor: pointer;
+	fill: red;
 }
 .VisibleWords rect.Word {
 	fill: transparent;
