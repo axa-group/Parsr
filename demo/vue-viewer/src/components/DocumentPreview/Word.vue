@@ -9,6 +9,7 @@
 			@click="listeners['custom-event'](props.element)"
 		/>
 		<text
+			:id="'Word_' + props.element.id"
 			:x="props.element.box.l"
 			:y="props.element.box.t + props.element.box.h"
 			fill="black"

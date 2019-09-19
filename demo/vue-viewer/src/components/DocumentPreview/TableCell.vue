@@ -1,6 +1,7 @@
 <template functional>
 	<g>
 		<rect
+			:id="'Table-cell_' + props.element.id"
 			class="TableCell"
 			:key="props.element.id"
 			:x="props.element.box.l"

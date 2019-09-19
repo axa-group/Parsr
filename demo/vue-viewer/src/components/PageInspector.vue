@@ -122,10 +122,6 @@ div.v-expansion-panels div.v-expansion-panel {
 div.v-expansion-panels div.v-expansion-panel:before {
 	box-shadow: none;
 }
-div.v-expansion-panels {
-	_margin-left: 40px;
-	_width: 273px;
-}
 div.v-expansion-panels button.v-expansion-panel-header {
 	padding: 0;
 	min-height: 0;

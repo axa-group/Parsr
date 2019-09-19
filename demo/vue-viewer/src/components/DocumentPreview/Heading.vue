@@ -2,6 +2,7 @@
 	<g>
 		<rect
 			class="Heading"
+			:id="'Heading_' + props.element.id"
 			:key="props.element.id"
 			:x="props.element.box.l"
 			:y="props.element.box.t"
