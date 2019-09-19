@@ -14,6 +14,11 @@
 			:y="props.element.box.t + props.element.box.h"
 			fill="black"
 			:textLength="props.element.box.w"
+			:lengthAdjust="
+				props.fonts.filter(font => font.id === props.element.font).shift().size
+					? 'space'
+					: 'spacingAndGlyphs'
+			"
 			:style="{
 				fontSize: props.fonts.filter(font => font.id === props.element.font).shift().size * 0.6,
 			}"
