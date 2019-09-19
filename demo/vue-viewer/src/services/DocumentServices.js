@@ -24,6 +24,12 @@ export default {
 	getDocument(docID) {
 		return apiClient.get('/json/' + docID);
 	},
+	getDocumentText(docID) {
+		return apiClient.get('/text/' + docID);
+	},
+	getDocumentMarkdown(docID) {
+		return apiClient.get('/markdown/' + docID);
+	},
 	postDocument(file, configuration) {
 		const formData = new FormData();
 		formData.append('file', file, file.name);

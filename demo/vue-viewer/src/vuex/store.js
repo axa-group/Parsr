@@ -195,6 +195,12 @@ export default new Vuex.Store({
 		SET_DOCUMENT(state, document) {
 			state.document = document;
 		},
+		SET_DOCUMENT_TEXT(state, documentText) {
+			state.documentText = documentText;
+		},
+		SET_DOCUMENT_MARKDOWN(state, documentMarkdown) {
+			state.documentMarkdown = documentMarkdown;
+		},
 		SET_DOCUMENT_ID(state, id) {
 			state.uuid = id;
 		},
@@ -210,10 +216,23 @@ export default new Vuex.Store({
 				return response.data;
 			});
 		},
+		fetchDocumentText({ commit }) {
+			return DocumentService.getDocumentText(this.state.uuid).then(response => {
+				commit('SET_DOCUMENT_TEXT', response.data);
+				return response.data;
+			});
+		},
+		fetchDocumentMarkdown({ commit }) {
+			return DocumentService.getDocumentMarkdown(this.state.uuid).then(response => {
+				commit('SET_DOCUMENT_MARKDOWN', response.data);
+				return response.data;
+			});
+		},
 		postDocument({ commit }, { file, configuration }) {
 			return DocumentService.postDocument(file, configuration).then(response => {
 				commit('SET_DOCUMENT_ID', response.data);
 				commit('SET_DOCUMENT', null);
+				commit('SET_DOCUMENT_TEXT', null);
 				commit('setInputFileName', file.name);
 				commit('setElementSelected', null);
 				commit('setParentElementSelected', null);
