@@ -2,7 +2,7 @@
 	"name": "words-to-line",
 	"description": "Create lines from a bunch of words, according to the reading order.",
 	"lineHeightUncertainty": {
-		"value": 1.2,
+		"value": 0.2,
 		"range": { "min": 0.0, "max": 1.0 }
 	},
 	"topUncertainty": {

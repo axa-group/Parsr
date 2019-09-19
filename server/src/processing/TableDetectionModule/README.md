@@ -24,13 +24,17 @@ Following is an example of the configuration of the table-detection module:
 [
 	"table-detection",
 	{
-		"pages": "all",
-		"flavor": "lattice"
+		"pages": {
+			"value": [1, 2, 3]   // or [] for all pages
+		}
+		"flavor": {
+			"value": "lattice"
+		}
 	}
 ]
 ```
 
-- pages: Comma-separated page numbers. Example: '1,3,4' or '1,4-end' or 'all'. Default is '1'.
+- pages: List of numbers representing pages.
 - flavor: The parsing method to use ('lattice' or 'stream'). Lattice is used by default.
 
 ## Accuracy

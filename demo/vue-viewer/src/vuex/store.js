@@ -12,6 +12,8 @@ export default new Vuex.Store({
 		inputFileName: null,
 		document: null,
 		inspectorFilters: {},
+		selectedElement: null,
+		selectedParentElement: null,
 		defaultConfig: {
 			version: 0.5,
 			extractor: {
@@ -84,7 +86,7 @@ export default new Vuex.Store({
 					'words-to-line',
 					{
 						lineHeightUncertainty: {
-							value: 1.0,
+							value: 0.2,
 							range: {
 								min: 0.0,
 								max: 1.0,
@@ -165,6 +167,13 @@ export default new Vuex.Store({
 		},
 	},
 	mutations: {
+		setParentElementSelected(state, element) {
+			state.selectedParentElement = element !== state.selectedParentElement ? element : null;
+		},
+		setElementSelected(state, element) {
+			state.selectedElement = element !== state.selectedElement ? element : null;
+			state.selectedParentElement = null;
+		},
 		setInspectorFilters(state, filters) {
 			state.inspectorFilters = filters;
 		},
@@ -182,15 +191,6 @@ export default new Vuex.Store({
 		},
 		setInputFileName(state, name) {
 			state.inputFileName = name;
-		},
-		updateConfig(state, configItem) {
-			if (configItem.selected) {
-				state.defaultConfig.cleaner.push(configItem.item);
-			} else {
-				state.defaultConfig.cleaner = state.defaultConfig.cleaner.filter(
-					el => el !== configItem.item,
-				);
-			}
 		},
 		SET_DOCUMENT(state, document) {
 			state.document = document;
@@ -215,11 +215,12 @@ export default new Vuex.Store({
 				commit('SET_DOCUMENT_ID', response.data);
 				commit('SET_DOCUMENT', null);
 				commit('setInputFileName', file.name);
+				commit('setElementSelected', null);
+				commit('setParentElementSelected', null);
 				return response.data;
 			});
 		},
 		getDocumentStatus() {
-			//console.log(commit);
 			return DocumentService.getDocumentStatus(this.state.uuid).then(response => {
 				return response.data;
 			});

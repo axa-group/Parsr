@@ -1,13 +1,7 @@
 <template functional>
 	<g class="TableContainer">
-		<component
-			:is="props.components.TableRow"
-			v-for="element in props.element.content"
-			:key="element.id"
-			:element="element"
-			:fonts="props.fonts"
-		></component>
 		<rect
+			:id="'Table_' + props.element.id"
 			class="Table"
 			:key="props.element.id"
 			:x="props.element.box.l"
@@ -15,6 +9,14 @@
 			:width="props.element.box.w"
 			:height="props.element.box.h"
 		/>
+		<component
+			:is="props.components.TableRow"
+			v-for="element in props.element.content"
+			:key="element.id"
+			:element="element"
+			:fonts="props.fonts"
+			@custom-event="listeners['custom-event']"
+		></component>
 	</g>
 </template>
 
