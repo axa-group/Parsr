@@ -24,9 +24,7 @@ import {
 	Document,
 	Element,
 	Font,
-	Line,
 	Page,
-	Paragraph,
 	Word,
 } from '../../types/DocumentRepresentation';
 import { PdfminerPage } from '../../types/PdfminerPage';
@@ -121,13 +119,11 @@ function getPage(pageObj: PdfminerPage): Page {
 
 	// treat paragraphs
 	if (pageObj.textbox !== undefined) {
-		const paras: Paragraph[] = pageObj.textbox.map(para => {
-			const lines: Line[] = para.textline.map(line =>
-				breakLineIntoWords(line, ',', pageBbox.height),
-			);
-			return new Paragraph(getBoundingBox(para._attr.bbox, ',', pageBbox.height), lines);
+		pageObj.textbox.forEach(para => {
+			para.textline.map(line => {
+				elements = [...elements, ...breakLineIntoWords(line, ',', pageBbox.height)];
+			});
 		});
-		elements = [...elements, ...paras];
 	}
 	return new Page(parseFloat(pageObj._attr.id), elements, pageBbox);
 }
@@ -153,7 +149,7 @@ function breakLineIntoWords(
 	wordSeperator: string = ' ',
 	pageHeight: number,
 	scalingFactor: number = 1,
-): Line {
+): Word[] {
 	const chars: Character[] = line.text.map(char => {
 		if (char._ === undefined) {
 			return undefined;
@@ -210,7 +206,7 @@ function breakLineIntoWords(
 			);
 		}
 	}
-	return new Line(getBoundingBox(line._attr.bbox, ',', pageHeight), words);
+	return words;
 }
 
 /**
