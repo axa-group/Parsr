@@ -28,11 +28,17 @@
 			<p class="required"><span>*</span> Required fields</p>
 		</form>
 
-		<v-overlay :absolute="false" opacity="0.5" :value="processStatus.length > 0" :dark="false">
+		<v-overlay :absolute="false" opacity="0.5" :value="shouldDisplayOverlay" :dark="false">
 			<div v-if="processStatus.length > 0" class="processTracker">
 				<p v-for="status in processStatus" :key="status">
 					<span v-html="status" /> <img :src="checkIcon" />
 				</p>
+				<p v-if="processError">
+					<span style="vertical-align:middle">Process failed</span
+					><v-icon size="20" color="red" style="margin-left:10px">mdi-alert-circle</v-icon
+					><span v-html="processError" />
+				</p>
+				<v-btn v-if="processError" rounded class="submit" @click="closeProcessTrack">CLOSE</v-btn>
 				<v-progress-circular
 					v-if="loading"
 					color="#00008a"
@@ -58,6 +64,7 @@ export default {
 			loading: false,
 			processStatus: [],
 			processStatusCompleted: false,
+			processError: null,
 			customConfig: null,
 		};
 	},
@@ -66,6 +73,14 @@ export default {
 		...mapState({
 			defaultConfig: state => state.defaultConfig,
 		}),
+		modulesOrder() {
+			return this.defaultConfig.cleaner.map(el => {
+				if (Array.isArray(el)) {
+					return el[0];
+				}
+				return el;
+			});
+		},
 		isSubmitDisabled() {
 			return !this.file;
 		},
@@ -74,6 +89,9 @@ export default {
 			return new Blob([data], {
 				type: 'application/json',
 			});
+		},
+		shouldDisplayOverlay() {
+			return this.processStatus.length > 0;
 		},
 	},
 	beforeMount() {
@@ -134,11 +152,15 @@ export default {
 		},
 		configChange(configItem) {
 			if (configItem.selected) {
-				this.customConfig.cleaner.push(configItem.item);
+				let moduleName = configItem.item;
+				if (Array.isArray(configItem.item)) {
+					moduleName = configItem.item[0];
+				}
+				const index = this.modulesOrder.indexOf(moduleName);
+				this.customConfig.cleaner.splice(index, 0, configItem.item);
 			} else {
 				this.customConfig.cleaner = this.customConfig.cleaner.filter(el => el !== configItem.item);
 			}
-			//this.$store.commit('updateConfig', configItem);
 		},
 		fileChanged(event) {
 			this.file = event.target.files[0];
@@ -165,8 +187,14 @@ export default {
 						}
 					})
 					.catch(error => {
-						console.log(error.message);
+						const errorMessage = error.response.data.split('Error:');
+						this.processError =
+							"<p style='font-size:0.8em;color:#a8a8a8;text-align:left'>" +
+							errorMessage[1] +
+							'</p>';
+
 						this.loading = false;
+						clearInterval(interval);
 					});
 			}, 1000);
 		},
@@ -193,6 +221,11 @@ export default {
 				out[i] = string.charCodeAt(i);
 			}
 			return new Uint8Array(out);
+		},
+		closeProcessTrack() {
+			console.log('Close');
+			this.processStatus = [];
+			this.processError = null;
 		},
 	},
 };

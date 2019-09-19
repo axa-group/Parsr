@@ -1,5 +1,14 @@
 <template functional>
 	<g class="TableContainer">
+		<rect
+			:id="'Table_' + props.element.id"
+			class="Table"
+			:key="props.element.id"
+			:x="props.element.box.l"
+			:y="props.element.box.t"
+			:width="props.element.box.w"
+			:height="props.element.box.h"
+		/>
 		<component
 			:is="props.components.TableRow"
 			v-for="element in props.element.content"

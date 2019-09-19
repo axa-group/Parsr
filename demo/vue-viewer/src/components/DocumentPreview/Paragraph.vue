@@ -1,6 +1,7 @@
 <template functional>
 	<g>
 		<rect
+			:id="'Paragraph_' + props.element.id"
 			class="Paragraph"
 			:key="props.element.id"
 			:x="props.element.box.l"

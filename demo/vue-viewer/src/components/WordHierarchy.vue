@@ -36,6 +36,7 @@ export default {
 			items: [],
 			openItems: [],
 			activeItem: [],
+			lastParentSelected: null,
 		};
 	},
 	props: {
@@ -53,24 +54,43 @@ export default {
 		},
 	},
 	mounted() {
-		console.log('Mounted');
-		console.log(this.selectedElement);
 		if (this.selectedElement) {
 			this.populateTreeView();
 		}
+		//});
 	},
 	watch: {
 		selectedElement(element) {
 			if (!element) {
 				return;
 			}
-			console.log('SELECTED ELEMENT');
-			console.log(element);
 			this.populateTreeView();
 		},
 	},
 	methods: {
+		capitalize(string) {
+			return string.charAt(0).toUpperCase() + string.slice(1);
+		},
+		highlightSelectedElement(element) {
+			const domElement = document.getElementById(this.capitalize(element.type) + '_' + element.id);
+			if (domElement) {
+				domElement.classList.add('highlighted');
+			} else {
+				console.log('No DOM for Highlight ' + this.capitalize(element.type));
+			}
+		},
+		unHighlightSelectedElement(element) {
+			const domElement = document.getElementById(this.capitalize(element.type) + '_' + element.id);
+			if (domElement) {
+				domElement.classList.remove('highlighted');
+			} else {
+				console.log('No DOM for Highlight ' + this.capitalize(element.type));
+			}
+		},
 		onActiveUpdated(selection) {
+			if (this.lastParentSelected) {
+				this.unHighlightSelectedElement(this.lastParentSelected);
+			}
 			if (selection.length === 0) {
 				this.$store.commit('setParentElementSelected', null);
 				return;
@@ -78,6 +98,8 @@ export default {
 			const element = this.wordHierachy.filter(el => el.id === selection[0]).shift();
 			if (element) {
 				this.$store.commit('setParentElementSelected', element);
+				this.lastParentSelected = element;
+				this.highlightSelectedElement(element);
 			}
 		},
 		populateTreeView() {
