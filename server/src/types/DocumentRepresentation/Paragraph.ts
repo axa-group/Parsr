@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
 import { Font } from './Font';
@@ -45,6 +46,51 @@ export class Paragraph extends Text {
 		} else {
 			return '';
 		}
+	}
+
+	/**
+	 * Converts the entire paragraph into a string form with formatting, with spaces between words.
+	 */
+	public toMarkdown(): string {
+		const words: Word[] = this.getWords();
+		let biWordsIdx: number[][] = Array<number[]>(1).fill([]);
+		let bWordsIdx: number[][] = Array<number[]>(1).fill([]);
+		let iWordsIdx: number[][] = Array<number[]>(1).fill([]);
+		words.forEach((w, index) => {
+			if (w.font.isItalic && w.font.weight === 'bold') {
+				biWordsIdx[0].push(index);
+			} else if (!w.font.isItalic && w.font.weight === 'bold') {
+				bWordsIdx[0].push(index);
+			} else if (w.font.isItalic && w.font.weight !== 'bold') {
+				iWordsIdx[0].push(index);
+			}
+		});
+		biWordsIdx = utils.groupConsecutiveNumbersInArray(biWordsIdx[0]).filter(p => p.length !== 0);
+		bWordsIdx = utils.groupConsecutiveNumbersInArray(bWordsIdx[0]).filter(p => p.length !== 0);
+		iWordsIdx = utils.groupConsecutiveNumbersInArray(iWordsIdx[0]).filter(p => p.length !== 0);
+
+		// prepare the result
+		const result: string[] = words.map(w => w.toString());
+
+		biWordsIdx.forEach(idGroup => {
+			result[idGroup[0]] = '***' + result[idGroup[0]];
+			result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '***';
+		});
+
+		bWordsIdx.forEach(idGroup => {
+			result[idGroup[0]] = '**' + result[idGroup[0]];
+			result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '**';
+		});
+
+		iWordsIdx.forEach(idGroup => {
+			result[idGroup[0]] = '*' + result[idGroup[0]];
+			result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '*';
+		});
+
+		return result
+			.map(w => w.trim())
+			.reduce((w1, w2) => w1 + ' ' + w2, '')
+			.trim();
 	}
 
 	/**
