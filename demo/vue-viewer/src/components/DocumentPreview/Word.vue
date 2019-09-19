@@ -19,7 +19,9 @@
 			}"
 			:font-weight="fontWeight"
 			@click="listeners['custom-event'](props.element)"
-			>{{ props.element.content.trim() }}</text
+			>{{
+				!Array.isArray(props.element.content) ? props.element.content.trim() : 'Array empty'
+			}}</text
 		>
 	</g>
 </template>
