@@ -65,10 +65,6 @@ const defaultExtractor: TableExtractor = {
 			logger.debug(`python was found at ${pythonLocation}`);
 		}
 
-		logger.debug(
-			`====> executing ${__dirname} '/../../../assets/TableDetectionScript.py' ${inputFile} ${flavor} ${pages}`,
-		);
-
 		const tableExtractor = child_process.spawnSync(pythonLocation, [
 			__dirname + '/../../../assets/TableDetectionScript.py',
 			inputFile,
