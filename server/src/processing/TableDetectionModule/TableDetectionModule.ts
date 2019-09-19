@@ -15,7 +15,7 @@ import * as defaultConfig from './defaultConfig.json';
 
 export interface Options {
 	pages?: {
-		value: string;
+		value: number[];
 	};
 	flavor?: {
 		value: string;
@@ -39,8 +39,8 @@ const defaultExtractor: TableExtractor = {
 	readTables(inputFile: string, options: Options): TableExtractorResult {
 		let pages: string = 'all';
 		let flavor: string = 'lattice';
-		if (options.pages) {
-			pages = options.pages.value;
+		if (options.pages.value.length !== 0) {
+			pages = options.pages.value.toString();
 		}
 		if (options.flavor.range.indexOf(options.flavor.value) === -1) {
 			logger.warn(
@@ -64,6 +64,10 @@ const defaultExtractor: TableExtractor = {
 		} else {
 			logger.debug(`python was found at ${pythonLocation}`);
 		}
+
+		logger.debug(
+			`====> executing ${__dirname} '/../../../assets/TableDetectionScript.py' ${inputFile} ${flavor} ${pages}`,
+		);
 
 		const tableExtractor = child_process.spawnSync(pythonLocation, [
 			__dirname + '/../../../assets/TableDetectionScript.py',
