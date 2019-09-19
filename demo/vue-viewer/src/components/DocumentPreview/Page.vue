@@ -22,18 +22,21 @@
 				:key="element.id"
 				:element="element"
 				:fonts="fonts"
+				@custom-event="elementSelected"
 			/>
 			<paragraph
 				v-for="element in elementsOfType('paragraph')"
 				:key="element.id"
 				:element="element"
 				:fonts="fonts"
+				@custom-event="elementSelected"
 			/>
 			<tableData
 				v-for="element in elementsOfType('table')"
 				:key="element.id"
 				:element="element"
 				:fonts="fonts"
+				@custom-event="elementSelected"
 			/>
 			<!--component
 				v-for="element in page.elements"
@@ -61,6 +64,7 @@ export default {
 			containerSize: { width: 0, height: 0 },
 			zoomToFitPage: 1.0,
 			appeared: false,
+			lastWordSelected: null,
 		};
 	},
 	props: {
@@ -121,6 +125,20 @@ export default {
 		},
 	},
 	methods: {
+		elementSelected(element) {
+			const shouldFill =
+				(this.lastWordSelected && this.lastWordSelected.id !== element.id) ||
+				!this.lastWordSelected;
+
+			document.getElementById('Word_' + element.id).style.fill = shouldFill ? 'red' : null;
+
+			if (this.lastWordSelected) {
+				document.getElementById('Word_' + this.lastWordSelected.id).style.fill = null;
+			}
+
+			this.lastWordSelected = shouldFill ? element : null;
+			this.$store.commit('setElementSelected', element);
+		},
 		fitPageToScreen() {
 			if (this.isPageLandscape) {
 				var maxWidth = parseFloat(window.getComputedStyle(this.scroll).width) - 40;
@@ -136,6 +154,7 @@ export default {
 		this.container.style.width = parseFloat(this.containerSize.width) * this.zoom + 'px';
 	},
 	mounted: function() {
+		this.$store.commit('setElementSelected', null);
 		this.$nextTick(function() {
 			var style = window.getComputedStyle(this.scroll);
 			this.containerSize = { width: parseFloat(style.width), height: parseFloat(style.height) };
@@ -164,15 +183,20 @@ export default {
 	transform: translateY(-50%);
 }
 
-/*text {
-	font-size: 1em;
-}*/
-
 .Page text {
 	font-family: Times, serif;
 }
 .Page rect {
 	fill: transparent;
+}
+.Page rect.Word,
+.Page g.WordGroup text {
+	cursor: pointer;
+}
+.Page g.WordGroup:hover text,
+.Page text.highlighted {
+	cursor: pointer;
+	fill: red;
 }
 .VisibleWords rect.Word {
 	fill: transparent;
@@ -180,23 +204,29 @@ export default {
 	stroke-opacity: 0.5;
 	stroke-width: 1;
 }
-.VisibleParagraphs rect.Paragraph {
+.VisibleParagraphs rect.Paragraph,
+.Page rect.Paragraph.highlighted {
 	fill: transparent;
 	stroke: red;
 	stroke-width: 1;
 }
-.VisibleHeadings rect.Heading {
+.VisibleHeadings rect.Heading,
+.Page rect.Heading.highlighted {
 	fill: transparent;
 	stroke: fuchsia;
 	stroke-width: 1;
 }
-.VisibleLines line {
+.VisibleLines line,
+.Page line.highlighted {
 	stroke: rgb(0, 0, 255);
 	stroke-width: 1;
 }
 .VisibleTables rect.Table,
 .VisibleTables line.TableRow,
-.VisibleTables rect.TableCell {
+.VisibleTables rect.TableCell,
+.Page rect.TableCell.highlighted,
+.Page rect.TableRow.highlighted,
+.Page rect.Table.highlighted {
 	fill: transparent;
 	stroke: rgb(0, 204, 255);
 	stroke-width: 1;

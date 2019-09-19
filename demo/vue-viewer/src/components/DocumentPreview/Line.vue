@@ -1,6 +1,7 @@
 <template functional>
 	<g>
 		<line
+			:id="'Line_' + props.element.id"
 			:x1="props.element.box.l"
 			:y1="props.element.box.t + props.element.box.h"
 			:x2="props.element.box.l + props.element.box.w"
@@ -12,6 +13,7 @@
 			:key="element.id"
 			:element="element"
 			:fonts="props.fonts"
+			@custom-event="listeners['custom-event']"
 		></component>
 	</g>
 </template>

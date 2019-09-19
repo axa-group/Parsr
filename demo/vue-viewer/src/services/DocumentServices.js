@@ -28,7 +28,6 @@ export default {
 		const formData = new FormData();
 		formData.append('file', file, file.name);
 		formData.append('config', configuration);
-		console.log(formData);
 		return apiClient.post('/document', formData);
 	},
 	getDocumentStatus(docID) {

@@ -1,6 +1,7 @@
 <template functional>
 	<g>
 		<rect
+			:id="'Paragraph_' + props.element.id"
 			class="Paragraph"
 			:key="props.element.id"
 			:x="props.element.box.l"
@@ -14,6 +15,7 @@
 			:key="element.id"
 			:element="element"
 			:fonts="props.fonts"
+			@custom-event="listeners['custom-event']"
 		></component>
 	</g>
 </template>
