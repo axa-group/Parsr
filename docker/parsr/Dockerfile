@@ -44,7 +44,7 @@ RUN mkdir -p /opt/app-root/share/tessdata/ && \
 USER 1001
 
 
-FROM centos/nodejs-8-centos7 as engine
+FROM centos/nodejs-10-centos7 as engine
 USER root
 
 RUN yum -y update && \
