@@ -23,6 +23,11 @@ export default new Vuex.Store({
 				code: null,
 				loading: false,
 			},
+			csv: {
+				urls: null,
+				loading: false,
+				csvs: [],
+			},
 		},
 		defaultConfig: {
 			version: 0.5,
@@ -177,6 +182,9 @@ export default new Vuex.Store({
 		},
 	},
 	mutations: {
+		setCsvdownLoading(state, loading) {
+			state.outputs.csv.loading = loading;
+		},
 		setMarkdownLoading(state, loading) {
 			state.outputs.markdown.loading = loading;
 		},
@@ -217,6 +225,18 @@ export default new Vuex.Store({
 		SET_DOCUMENT_MARKDOWN(state, markDownCode) {
 			state.outputs.markdown.code = markDownCode;
 		},
+		SET_DOCUMENT_CSV_LIST(state, csvUrls) {
+			state.outputs.csv.urls = csvUrls;
+			if (!csvUrls) {
+				state.outputs.csv.csvs = [];
+			}
+		},
+		SET_DOCUMENT_CSV_ITEM(state, { index, csv }) {
+			state.outputs.csv.csvs.splice(index, 0, csv);
+			if (state.outputs.csv.csvs.length === state.outputs.csv.urls.length) {
+				state.outputs.csv.loading = false;
+			}
+		},
 		SET_DOCUMENT_ID(state, id) {
 			state.uuid = id;
 		},
@@ -248,12 +268,29 @@ export default new Vuex.Store({
 				return response.data;
 			});
 		},
+		fetchDocumentCsvList({ commit }) {
+			commit('setCsvdownLoading', true);
+			return DocumentService.getDocumentCsvs(this.state.uuid).then(response => {
+				commit('SET_DOCUMENT_CSV_LIST', response.data);
+				if (Array.isArray(response.data) && response.data.length > 0) {
+					for (const url in response.data) {
+						DocumentService.getDocumentCsv(response.data[url]).then(response => {
+							commit('SET_DOCUMENT_CSV_ITEM', { index: url, csv: response.data });
+						});
+					}
+				} else {
+					commit('setCsvdownLoading', false);
+					return response.data;
+				}
+			});
+		},
 		postDocument({ commit }, { file, configuration }) {
 			return DocumentService.postDocument(file, configuration).then(response => {
 				commit('SET_DOCUMENT_ID', response.data);
 				commit('SET_DOCUMENT', null);
 				commit('SET_DOCUMENT_TEXT', null);
 				commit('SET_DOCUMENT_MARKDOWN', null);
+				commit('SET_DOCUMENT_CSV_LIST', null);
 				commit('setInputFileName', file.name);
 				commit('setElementSelected', null);
 				commit('setParentElementSelected', null);

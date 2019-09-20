@@ -214,6 +214,7 @@ export class ApiServer {
 	}
 
 	private handleGetCsv(req: Request, res: Response) {
+		res.setHeader('Access-Control-Allow-Origin', '*');
 		const docId: string = req.params.id;
 		const page: number = parseInt(req.params.page, 10);
 		const table: number = parseInt(req.params.table, 10);
@@ -227,6 +228,7 @@ export class ApiServer {
 	}
 
 	private handleGetCsvList(req: Request, res: Response) {
+		res.setHeader('Access-Control-Allow-Origin', '*');
 		const docId: string = req.params.id;
 		const folder: string = this.fileManager.getFilePath(docId, 'csvs');
 		const paths: string[] = fs.readdirSync(folder).map(filename => {

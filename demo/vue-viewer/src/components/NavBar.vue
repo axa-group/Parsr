@@ -16,6 +16,9 @@
 		<router-link to="/viewerText">
 			Raw Text
 		</router-link>
+		<router-link to="/viewerCsv">
+			Csv
+		</router-link>
 		<nav-item text="Search" :icon="searchIcon" @clicked="searchClick" />
 		<nav-item text="Guide" :icon="guideIcon" @clicked="guideClick" />
 	</div>

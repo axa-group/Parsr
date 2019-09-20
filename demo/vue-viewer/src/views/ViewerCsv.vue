@@ -1,6 +1,10 @@
 <template>
 	<div class="main viewer">
-		<pre v-if="documentTextFetched" class="text">{{ documentText }}</pre>
+		<div v-for="(csv, index) in documentCsvs" :key="index">
+			<span class="tableIndex">- Table {{ index + 1 }}</span>
+			<pre class="text">{{ csv }}</pre>
+		</div>
+		<div v-if="noTablesDetected" class="tableEmpty">There are no tables to export as CSV</div>
 		<v-overlay :absolute="false" opacity="0.5" :value="this.loading" :dark="false">
 			<div class="overlayContent">
 				<v-progress-circular
@@ -18,21 +22,24 @@ import { mapState } from 'vuex';
 
 export default {
 	computed: {
-		documentTextFetched() {
-			return this.documentText != null;
+		documentCsvsFetched() {
+			return this.documentCsvs.length > 0;
 		},
 		uploadedDocument() {
 			return this.documentId !== null;
 		},
+		noTablesDetected() {
+			return this.uploadedDocument && this.documentCsvs.length === 0 && !this.loading;
+		},
 		...mapState({
 			documentId: state => state.uuid,
-			documentText: state => state.outputs.text.code,
-			loading: state => state.outputs.text.loading,
+			documentCsvs: state => state.outputs.csv.csvs,
+			loading: state => state.outputs.csv.loading,
 		}),
 	},
 	mounted() {
-		if (!this.documentTextFetched && this.uploadedDocument) {
-			this.$store.dispatch('fetchDocumentText').catch(error => {
+		if (!this.documentCsvsFetched && this.uploadedDocument) {
+			this.$store.dispatch('fetchDocumentCsvList').catch(error => {
 				console.log(error.message);
 			});
 		}
@@ -44,7 +51,16 @@ export default {
 .viewer {
 	background-color: #f9f9fd;
 }
-
+.tableIndex {
+	display: block;
+	margin: 20px 20px 0px 20px;
+	text-align: left;
+	font-weight: bold;
+}
+.tableEmpty {
+	margin: 20px;
+	font-weight: bold;
+}
 .text {
 	margin: 20px;
 	background-color: white;

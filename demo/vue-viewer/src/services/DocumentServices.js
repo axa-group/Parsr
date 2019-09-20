@@ -30,6 +30,12 @@ export default {
 	getDocumentMarkdown(docID) {
 		return apiClient.get('/markdown/' + docID);
 	},
+	getDocumentCsvs(docID) {
+		return apiClient.get('/csv/' + docID);
+	},
+	getDocumentCsv(url) {
+		return apiClient.get(url.replace('/api/v1', ''));
+	},
 	postDocument(file, configuration) {
 		const formData = new FormData();
 		formData.append('file', file, file.name);
