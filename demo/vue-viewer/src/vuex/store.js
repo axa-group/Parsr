@@ -8,12 +8,22 @@ export default new Vuex.Store({
 	state: {
 		selectedPage: 1,
 		zoom: 1.0,
-		uuid: '75c4bcb6d51e4e60a3f0682f858ffe',
+		uuid: null,
 		inputFileName: null,
 		document: null,
 		inspectorFilters: {},
 		selectedElement: null,
 		selectedParentElement: null,
+		outputs: {
+			markdown: {
+				code: null,
+				loading: false,
+			},
+			text: {
+				code: null,
+				loading: false,
+			},
+		},
 		defaultConfig: {
 			version: 0.5,
 			extractor: {
@@ -167,6 +177,12 @@ export default new Vuex.Store({
 		},
 	},
 	mutations: {
+		setMarkdownLoading(state, loading) {
+			state.outputs.markdown.loading = loading;
+		},
+		setTextLoading(state, loading) {
+			state.outputs.text.loading = loading;
+		},
 		setParentElementSelected(state, element) {
 			state.selectedParentElement = element !== state.selectedParentElement ? element : null;
 		},
@@ -195,11 +211,11 @@ export default new Vuex.Store({
 		SET_DOCUMENT(state, document) {
 			state.document = document;
 		},
-		SET_DOCUMENT_TEXT(state, documentText) {
-			state.documentText = documentText;
+		SET_DOCUMENT_TEXT(state, textCode) {
+			state.outputs.text.code = textCode;
 		},
-		SET_DOCUMENT_MARKDOWN(state, documentMarkdown) {
-			state.documentMarkdown = documentMarkdown;
+		SET_DOCUMENT_MARKDOWN(state, markDownCode) {
+			state.outputs.markdown.code = markDownCode;
 		},
 		SET_DOCUMENT_ID(state, id) {
 			state.uuid = id;
@@ -217,13 +233,17 @@ export default new Vuex.Store({
 			});
 		},
 		fetchDocumentText({ commit }) {
+			commit('setTextLoading', true);
 			return DocumentService.getDocumentText(this.state.uuid).then(response => {
+				commit('setTextLoading', false);
 				commit('SET_DOCUMENT_TEXT', response.data);
 				return response.data;
 			});
 		},
 		fetchDocumentMarkdown({ commit }) {
+			commit('setMarkdownLoading', true);
 			return DocumentService.getDocumentMarkdown(this.state.uuid).then(response => {
+				commit('setMarkdownLoading', false);
 				commit('SET_DOCUMENT_MARKDOWN', response.data);
 				return response.data;
 			});
@@ -233,6 +253,7 @@ export default new Vuex.Store({
 				commit('SET_DOCUMENT_ID', response.data);
 				commit('SET_DOCUMENT', null);
 				commit('SET_DOCUMENT_TEXT', null);
+				commit('SET_DOCUMENT_MARKDOWN', null);
 				commit('setInputFileName', file.name);
 				commit('setElementSelected', null);
 				commit('setParentElementSelected', null);

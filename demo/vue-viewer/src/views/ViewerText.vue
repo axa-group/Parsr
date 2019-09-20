@@ -1,6 +1,16 @@
 <template>
 	<div class="main viewer">
-		<pre class='text'>{{ documentText }}</pre>
+		<pre v-if="documentTextFetched" class="text">{{ documentText }}</pre>
+		<v-overlay :absolute="false" opacity="0.5" :value="this.loading" :dark="false">
+			<div class="overlayContent">
+				<v-progress-circular
+					v-if="loading"
+					color="#00008a"
+					indeterminate
+					size="24"
+				></v-progress-circular>
+			</div>
+		</v-overlay>
 	</div>
 </template>
 <script>
@@ -11,14 +21,22 @@ export default {
 		documentTextFetched() {
 			return this.documentText != null;
 		},
+		uploadedDocument() {
+			return this.documentId !== null;
+		},
 		...mapState({
-			inputFileName: state => state.inputFileName,
-			documentText: state => state.documentText,
+			documentId: state => state.uuid,
+			documentText: state => state.outputs.text.code,
+			loading: state => state.outputs.text.loading,
 		}),
 	},
 	mounted() {
-		if (!this.documentTextFetched) {
-			this.documentText = this.$store.dispatch('fetchDocumentText').catch(error => {
+		if (!this.documentTextFetched && this.uploadedDocument) {
+			console.log('Fetch');
+			console.log('fetchDocumentText ' + this.documentTextFetched);
+			console.log('loading ' + this.loading);
+
+			this.$store.dispatch('fetchDocumentText').catch(error => {
 				console.log(error.message);
 			});
 		}

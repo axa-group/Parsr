@@ -16,7 +16,7 @@
 			:textLength="props.element.box.w"
 			:lengthAdjust="
 				props.fonts.filter(font => font.id === props.element.font).shift().size
-					? 'space'
+					? 'spacing'
 					: 'spacingAndGlyphs'
 			"
 			:style="{
