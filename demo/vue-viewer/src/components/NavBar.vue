@@ -10,6 +10,12 @@
 		<router-link to="/viewer">
 			Document viewer
 		</router-link>
+		<router-link to="/viewerMarkdown">
+			Markdown
+		</router-link>
+		<router-link to="/viewerText">
+			Raw Text
+		</router-link>
 		<nav-item text="Search" :icon="searchIcon" @clicked="searchClick" />
 		<nav-item text="Guide" :icon="guideIcon" @clicked="guideClick" />
 	</div>
