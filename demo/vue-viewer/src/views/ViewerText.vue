@@ -50,7 +50,7 @@ export default {
 }
 
 .text {
-	margin: 62px;
+	margin: 48px 20px;
 	background-color: white;
 	border: 1px solid rgb(204, 204, 231);
 	padding: 16px;
