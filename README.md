@@ -245,6 +245,7 @@ npm run start:web:vue
 ```
 
 Then, open [localhost:8080](http://localhost:8080) with your favorite browser.
+Note that this will launch the web viewer along with the API. The API will be installed and launched in the background automatically.
 
 #### 2.2.3. Command Line Usage
 
