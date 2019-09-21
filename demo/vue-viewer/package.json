@@ -11,6 +11,7 @@
 		"axios": "^0.19.0",
 		"core-js": "^2.6.5",
 		"vue": "^2.6.10",
+		"vue-markdown": "^2.2.4",
 		"vue-router": "^3.0.3",
 		"vuetify": "^2.0.5",
 		"vuex": "^3.0.1"
@@ -24,6 +25,7 @@
 		"@vue/cli-service": "^3.9.0",
 		"@vue/eslint-config-prettier": "^4.0.1",
 		"babel-eslint": "^10.0.1",
+		"babel-core": "^6.0.0",
 		"eslint": "^5.16.0",
 		"eslint-plugin-vue": "^5.0.0",
 		"material-design-icons-iconfont": "^5.0.1",

@@ -8,6 +8,7 @@
 			:y="props.element.box.t"
 			:width="props.element.box.w"
 			:height="props.element.box.h"
+			style="fill:white;"
 		/>
 		<component
 			:is="props.components.TableRow"

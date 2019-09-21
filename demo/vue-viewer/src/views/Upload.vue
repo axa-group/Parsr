@@ -13,6 +13,23 @@
 			</fieldset>
 
 			<fieldset>
+				<legend>Extractor configuration</legend>
+				<v-select
+					:items="['pdf2json', 'pdfminer']"
+					v-model="defaultConfig.extractor.pdf"
+					:flat="true"
+					:hide-details="true"
+					background-color="transparent"
+					color="rgba(0, 0, 0, 0.54)"
+					height="20px"
+					class="selectOptionExtractor"
+					prefix="Pdf"
+					solo
+				>
+				</v-select>
+			</fieldset>
+
+			<fieldset>
 				<legend>Modules configuration</legend>
 				<configItem
 					v-for="(item, index) in defaultConfig.cleaner"
@@ -231,6 +248,32 @@ export default {
 };
 </script>
 
+<style lang="scss">
+.selectOptionExtractor div.v-input__control {
+	min-height: auto !important;
+}
+.selectOptionExtractor div.v-input__control div.v-input__slot {
+	padding: 0 !important;
+}
+.selectOptionExtractor div.v-input__control div.v-select__slot {
+	width: 100px;
+}
+.selectOptionExtractor div.v-input__control div.v-select__slot div.v-text-field__prefix {
+	min-width: 60px;
+	text-align: left;
+}
+.selectOptionExtractor div.v-input__control div.v-input__slot div.v-select__selection {
+	border: solid 1px #cccccc;
+	min-width: 90px;
+	text-align: center;
+	display: block;
+	padding: 0 5px;
+}
+.selectOptionExtractor div.v-input__control div.v-input__slot input {
+	width: 0 !important;
+	max-width: 0 !important;
+}
+</style>
 <style lang="scss" scoped>
 .main {
 	padding-top: 20px;
@@ -308,5 +351,15 @@ label span {
 .processTracker + strong {
 	margin-top: 10px;
 	font-size: 1.2em;
+}
+
+.selectOptionExtractor {
+	vertical-align: middle;
+	color: rgba(0, 0, 0, 0.54);
+	width: 300px;
+	margin: 10px auto !important;
+}
+.selectOptionExtractor div {
+	min-height: auto !important;
 }
 </style>

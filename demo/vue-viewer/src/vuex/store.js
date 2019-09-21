@@ -8,12 +8,27 @@ export default new Vuex.Store({
 	state: {
 		selectedPage: 1,
 		zoom: 1.0,
-		uuid: '75c4bcb6d51e4e60a3f0682f858ffe',
+		uuid: null,
 		inputFileName: null,
 		document: null,
 		inspectorFilters: {},
 		selectedElement: null,
 		selectedParentElement: null,
+		outputs: {
+			markdown: {
+				code: null,
+				loading: false,
+			},
+			text: {
+				code: null,
+				loading: false,
+			},
+			csv: {
+				urls: null,
+				loading: false,
+				csvs: [],
+			},
+		},
 		defaultConfig: {
 			version: 0.5,
 			extractor: {
@@ -167,6 +182,15 @@ export default new Vuex.Store({
 		},
 	},
 	mutations: {
+		setCsvdownLoading(state, loading) {
+			state.outputs.csv.loading = loading;
+		},
+		setMarkdownLoading(state, loading) {
+			state.outputs.markdown.loading = loading;
+		},
+		setTextLoading(state, loading) {
+			state.outputs.text.loading = loading;
+		},
 		setParentElementSelected(state, element) {
 			state.selectedParentElement = element !== state.selectedParentElement ? element : null;
 		},
@@ -195,6 +219,24 @@ export default new Vuex.Store({
 		SET_DOCUMENT(state, document) {
 			state.document = document;
 		},
+		SET_DOCUMENT_TEXT(state, textCode) {
+			state.outputs.text.code = textCode;
+		},
+		SET_DOCUMENT_MARKDOWN(state, markDownCode) {
+			state.outputs.markdown.code = markDownCode;
+		},
+		SET_DOCUMENT_CSV_LIST(state, csvUrls) {
+			state.outputs.csv.urls = csvUrls;
+			if (!csvUrls) {
+				state.outputs.csv.csvs = [];
+			}
+		},
+		SET_DOCUMENT_CSV_ITEM(state, { index, csv }) {
+			state.outputs.csv.csvs.splice(index, 0, csv);
+			if (state.outputs.csv.csvs.length === state.outputs.csv.urls.length) {
+				state.outputs.csv.loading = false;
+			}
+		},
 		SET_DOCUMENT_ID(state, id) {
 			state.uuid = id;
 		},
@@ -210,10 +252,45 @@ export default new Vuex.Store({
 				return response.data;
 			});
 		},
+		fetchDocumentText({ commit }) {
+			commit('setTextLoading', true);
+			return DocumentService.getDocumentText(this.state.uuid).then(response => {
+				commit('setTextLoading', false);
+				commit('SET_DOCUMENT_TEXT', response.data);
+				return response.data;
+			});
+		},
+		fetchDocumentMarkdown({ commit }) {
+			commit('setMarkdownLoading', true);
+			return DocumentService.getDocumentMarkdown(this.state.uuid).then(response => {
+				commit('setMarkdownLoading', false);
+				commit('SET_DOCUMENT_MARKDOWN', response.data);
+				return response.data;
+			});
+		},
+		fetchDocumentCsvList({ commit }) {
+			commit('setCsvdownLoading', true);
+			return DocumentService.getDocumentCsvs(this.state.uuid).then(response => {
+				commit('SET_DOCUMENT_CSV_LIST', response.data);
+				if (Array.isArray(response.data) && response.data.length > 0) {
+					for (const url in response.data) {
+						DocumentService.getDocumentCsv(response.data[url]).then(response => {
+							commit('SET_DOCUMENT_CSV_ITEM', { index: url, csv: response.data });
+						});
+					}
+				} else {
+					commit('setCsvdownLoading', false);
+					return response.data;
+				}
+			});
+		},
 		postDocument({ commit }, { file, configuration }) {
 			return DocumentService.postDocument(file, configuration).then(response => {
 				commit('SET_DOCUMENT_ID', response.data);
 				commit('SET_DOCUMENT', null);
+				commit('SET_DOCUMENT_TEXT', null);
+				commit('SET_DOCUMENT_MARKDOWN', null);
+				commit('SET_DOCUMENT_CSV_LIST', null);
 				commit('setInputFileName', file.name);
 				commit('setElementSelected', null);
 				commit('setParentElementSelected', null);
