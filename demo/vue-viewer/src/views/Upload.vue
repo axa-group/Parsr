@@ -46,7 +46,7 @@
 		</form>
 
 		<v-overlay :absolute="false" opacity="0.5" :value="shouldDisplayOverlay" :dark="false">
-			<div v-if="processStatus.length > 0" class="processTracker">
+			<div class="processTracker">
 				<p v-for="status in processStatus" :key="status">
 					<span v-html="status" /> <img :src="checkIcon" />
 				</p>
@@ -108,7 +108,7 @@ export default {
 			});
 		},
 		shouldDisplayOverlay() {
-			return this.processStatus.length > 0;
+			return this.processStatus.length > 0 || this.processError;
 		},
 	},
 	beforeMount() {
@@ -169,12 +169,17 @@ export default {
 		},
 		configChange(configItem) {
 			if (configItem.selected) {
-				let moduleName = configItem.item;
-				if (Array.isArray(configItem.item)) {
-					moduleName = configItem.item[0];
-				}
-				const index = this.modulesOrder.indexOf(moduleName);
-				this.customConfig.cleaner.splice(index, 0, configItem.item);
+				this.customConfig.cleaner.push(configItem.item);
+				const moduleName = configItem => {
+					if (Array.isArray(configItem)) {
+						return configItem[0];
+					}
+					return configItem;
+				};
+				const correctOrder = this.modulesOrder;
+				this.customConfig.cleaner.sort((a, b) => {
+					return correctOrder.indexOf(moduleName(a)) - correctOrder.indexOf(moduleName(b));
+				});
 			} else {
 				this.customConfig.cleaner = this.customConfig.cleaner.filter(el => el !== configItem.item);
 			}
@@ -228,7 +233,11 @@ export default {
 					this.trackPipeStatus();
 				})
 				.catch(error => {
-					console.log(error.message);
+					this.processError =
+						"<p style='font-size:0.8em;color:#a8a8a8;text-align:left;width:100%;'>" +
+						error.message +
+						'</p>';
+
 					this.loading = false;
 				});
 		},
