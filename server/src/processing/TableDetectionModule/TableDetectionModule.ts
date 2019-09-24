@@ -128,7 +128,7 @@ export class TableDetectionModule extends Module<Options> {
 		}
 	}
 
-	private isFalseTable(table: Table): Boolean {
+	private isFalseTable(table: Table): boolean {
 		let isFalse = false;
 		table.content.forEach((_, index) => {
 			if (!this.existAdjacentRow(index, table)) {
@@ -146,7 +146,7 @@ export class TableDetectionModule extends Module<Options> {
 		const findRowWithTop = Math.ceil(row.box.top + row.box.height);
 
 		return table.content
-			.filter(rowToFind => Math.ceil(rowToFind.box.top) == findRowWithTop)
+			.filter(rowToFind => Math.ceil(rowToFind.box.top) === findRowWithTop)
 			.shift();
 	}
 
@@ -155,7 +155,9 @@ export class TableDetectionModule extends Module<Options> {
 		const findRowWithBottom = Math.ceil(row.box.top);
 
 		return table.content
-			.filter(rowToFind => Math.ceil(rowToFind.box.top + rowToFind.box.height) == findRowWithBottom)
+			.filter(
+				rowToFind => Math.ceil(rowToFind.box.top + rowToFind.box.height) === findRowWithBottom,
+			)
 			.shift();
 	}
 
