@@ -1,17 +1,11 @@
 import axios from 'axios';
-//import NProgress from 'nprogress'
 
 const apiClient = axios.create({
-	//baseURL: 'https://images.pexels.com',
-	baseURL: 'http://localhost:3001/api/v1',
+	baseURL: process.env.VUE_APP_API
+		? process.env.VUE_APP_API + '/api/v1'
+		: 'http://localhost:3001/api/v1',
 	withCredentials: false,
-	headers: {
-		//crossdomain: true,
-		//Accept: 'application/json',
-		//'Access-Control-Allow-Origin': 'http://localhost:8080',
-		//'Content-type': 'image/png',
-		//responseType: 'blob',
-	},
+	headers: {},
 	timeout: 10000,
 });
 
