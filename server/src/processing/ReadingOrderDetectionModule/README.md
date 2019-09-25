@@ -22,11 +22,6 @@ First, the algorithm will try to find possible vertical cuts in the page between
 
 Good
 
-## Options
-
-minColumnWidthInPagePercent : The minimal column width in % of the page width
-minVerticalGapWidth : The minimal gap width in points
-
 ## Limitations
 
 - It sometimes fails if bounding boxes are too far from each others.
