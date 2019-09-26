@@ -57,11 +57,11 @@ export class MarkdownExporter extends Exporter {
 						output += '\n'.repeat(2);
 					}
 				} else if (element instanceof Paragraph) {
-					output += element.toString();
+					output += element.toMarkdown();
 					output += '\n'.repeat(2);
 				} else if (element instanceof List) {
 					element.content.forEach((para, itemNumber) => {
-						const paraText: string = para.toString();
+						const paraText: string = para.toMarkdown();
 						if (element.isOrdered) {
 							output += (itemNumber + 1).toString() + ' ';
 						} else {
