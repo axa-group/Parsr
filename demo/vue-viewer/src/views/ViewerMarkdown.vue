@@ -18,10 +18,20 @@
 			</v-tab-item>
 		</v-tabs>
 
-		<v-overlay :absolute="false" opacity="0.5" :value="this.loading" :dark="false">
+		<v-overlay :absolute="false" opacity="0.5" :value="this.loading || this.error" :dark="false">
 			<div class="overlayContent">
+				<div v-if="error" class="errorMessage">
+					<p style="text-align:center;">
+						<strong style="font-size:1em;">Error</strong
+						><v-icon size="20" color="red" style="margin-left:10px">mdi-alert-circle</v-icon>
+					</p>
+					<p style="text-align: left; padding: 0 20px;">
+						{{ error }}
+					</p>
+					<v-btn v-if="error" rounded class="submit" @click="closeOverlay">CLOSE</v-btn>
+				</div>
 				<v-progress-circular
-					v-if="loading"
+					v-if="loading && !error"
 					color="#00008a"
 					indeterminate
 					size="24"
@@ -35,6 +45,9 @@ import { mapState } from 'vuex';
 import VueMarkdown from 'vue-markdown';
 
 export default {
+	data() {
+		return { error: null };
+	},
 	components: { VueMarkdown },
 	computed: {
 		uploadedDocument() {
@@ -52,9 +65,14 @@ export default {
 	mounted() {
 		if (!this.documentMarkdownFetched && this.uploadedDocument) {
 			this.$store.dispatch('fetchDocumentMarkdown').catch(error => {
-				console.log(error.message);
+				this.error = error.response.data;
 			});
 		}
+	},
+	methods: {
+		closeOverlay() {
+			this.error = null;
+		},
 	},
 };
 </script>
@@ -91,5 +109,14 @@ export default {
 }
 .tabItem {
 	background-color: #f9f9fd !important;
+}
+.errorMessage {
+	padding: 0 10px;
+	font-size: 0.9em;
+}
+.submit {
+	margin-top: 10px;
+	background-color: #00008a !important;
+	color: #ffffff !important;
 }
 </style>
