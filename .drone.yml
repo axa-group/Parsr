@@ -22,6 +22,10 @@ steps:
       from_secret: registry_user
     password: 
       from_secret: registry_password
+  when:
+    event:
+      exclude:
+      - pull_request
 
 ---
 kind: pipeline
@@ -58,6 +62,10 @@ steps:
   image: busybox
   commands:
   - sh docker/tags.sh
+  when:
+    event:
+      exclude:
+      - pull_request
 
 - name: Build Docker API image
   image: plugins/docker
@@ -71,6 +79,10 @@ steps:
       from_secret: registry_password
     build_args:
       DEV_MODE: 'true'
+  when:
+    event:
+      exclude:
+      - pull_request
 
 depends_on:
   - baseimage

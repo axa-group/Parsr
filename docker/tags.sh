@@ -9,7 +9,7 @@ case ${DRONE_BRANCH} in
     ;;
   develop)
     echo "Add \"latest,develop\" tag"
-    echo -n lastest,develop > .tags
+    echo -n latest,develop > .tags
     ;;
   
 esac
