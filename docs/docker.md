@@ -2,22 +2,20 @@
 
 ## Prepare the Docker service
 
-In the docker installation's configuration on the host machine, increase the amount of active memory allotted for the instance to 4GB.
+In your docker installation's configuration, increase the amount of active memory allotted to the instance to 4GB.
 
-## Build the containers
+## Build Parsr
 
-As for now, 2 containers will be built using docker-compose:
+Inside the root directory of the project, launch:
 
-- Duckling
-- Parsr
+`docker-compose build`
 
-To build, them:
-
-- Clone the repository using `git clone`.
-- In the root of the repository, execute `docker-compose build`.
+This will build Parsr, along with its dependencies.
 
 ## Run Parsr
 
-- In the root of the repository, execute `docker-compose up`
+- In the root of the repository, execute:
 
-Please note a docker volume will be created at first launch so that data will be kept at containers restart
+`docker-compose up`
+
+Note: A docker volume will be created at first launch so that the data will be kept at containers restart.
