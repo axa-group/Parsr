@@ -174,6 +174,17 @@ function getMostCommonFont(theFonts: Font[]): Font {
 	}
 }
 
+/**
+ * Fetches the character a particular pdfminer's textual output represents
+ * TODO: This placeholder will accomodate the solution at https://github.com/aarohijohal/pdfminer.six/issues/1 ...
+ * TODO: ... For now, it returns a '?' when a (cid:) is encountered
+ * @param character the character value outputted by pdfminer
+ * @param font the font associated with the character  -- TODO to be taken into consideration here
+ */
+function getValidCharacter(character: string): string {
+	return RegExp(/\(cid:/gm).test(character) ? '?' : character;
+}
+
 function breakLineIntoWords(
 	line: PdfminerTextline,
 	wordSeperator: string = ' ',
@@ -184,14 +195,16 @@ function breakLineIntoWords(
 		if (char._ === undefined) {
 			return undefined;
 		} else {
+			const font: Font = new Font(char._attr.font, parseFloat(char._attr.size), {
+				weight: RegExp(/bold/gim).test(char._attr.font) ? 'bold' : 'medium',
+				isItalic: RegExp(/italic/gim).test(char._attr.font) ? true : false,
+				isUnderline: RegExp(/underline/gim).test(char._attr.font) ? true : false,
+			});
+			const charContent: string = getValidCharacter(char._);
 			return new Character(
 				getBoundingBox(char._attr.bbox, ',', pageHeight, scalingFactor),
-				char._,
-				new Font(char._attr.font, parseFloat(char._attr.size), {
-					weight: RegExp(/bold/gim).test(char._attr.font) ? 'bold' : 'medium',
-					isItalic: RegExp(/italic/gim).test(char._attr.font) ? true : false,
-					isUnderline: RegExp(/underline/gim).test(char._attr.font) ? true : false,
-				}),
+				charContent,
+				font,
 			);
 		}
 	});

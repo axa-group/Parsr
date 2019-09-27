@@ -27,10 +27,10 @@ import * as pdfminer from './pdfminer';
  */
 export class PdfminerExtractor extends Extractor {
 	public run(inputFile: string): Promise<Document> {
-		const pdf2jsonExtract: Promise<Document> = pdfminer.execute(inputFile);
+		const pdfminerExtract: Promise<Document> = pdfminer.execute(inputFile);
 
 		const extractFont = extractFonts(inputFile);
 
-		return Promise.all([pdf2jsonExtract, extractFont]).then(([doc]: [Document, void]) => doc);
+		return Promise.all([pdfminerExtract, extractFont]).then(([doc]: [Document, void]) => doc);
 	}
 }
