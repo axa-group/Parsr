@@ -262,27 +262,37 @@ export default new Vuex.Store({
 		},
 		fetchDocumentMarkdown({ commit }) {
 			commit('setMarkdownLoading', true);
-			return DocumentService.getDocumentMarkdown(this.state.uuid).then(response => {
-				commit('setMarkdownLoading', false);
-				commit('SET_DOCUMENT_MARKDOWN', response.data);
-				return response.data;
-			});
+			return DocumentService.getDocumentMarkdown(this.state.uuid)
+				.then(response => {
+					commit('setMarkdownLoading', false);
+					commit('SET_DOCUMENT_MARKDOWN', response.data);
+					return response.data;
+				})
+				.catch(error => {
+					commit('setMarkdownLoading', false);
+					throw error;
+				});
 		},
 		fetchDocumentCsvList({ commit }) {
 			commit('setCsvdownLoading', true);
-			return DocumentService.getDocumentCsvs(this.state.uuid).then(response => {
-				commit('SET_DOCUMENT_CSV_LIST', response.data);
-				if (Array.isArray(response.data) && response.data.length > 0) {
-					for (const url in response.data) {
-						DocumentService.getDocumentCsv(response.data[url]).then(response => {
-							commit('SET_DOCUMENT_CSV_ITEM', { index: url, csv: response.data });
-						});
+			return DocumentService.getDocumentCsvs(this.state.uuid)
+				.then(response => {
+					commit('SET_DOCUMENT_CSV_LIST', response.data);
+					if (Array.isArray(response.data) && response.data.length > 0) {
+						for (const url in response.data) {
+							DocumentService.getDocumentCsv(response.data[url]).then(response => {
+								commit('SET_DOCUMENT_CSV_ITEM', { index: url, csv: response.data });
+							});
+						}
+					} else {
+						commit('setCsvdownLoading', false);
+						return response.data;
 					}
-				} else {
+				})
+				.catch(error => {
 					commit('setCsvdownLoading', false);
-					return response.data;
-				}
-			});
+					throw error;
+				});
 		},
 		postDocument({ commit }, { file, configuration }) {
 			return DocumentService.postDocument(file, configuration).then(response => {

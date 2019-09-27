@@ -123,7 +123,42 @@ export class TableDetectionModule extends Module<Options> {
 		const pageHeight = page.box.height;
 		const table: Table = this.createTable(tableData, pageHeight);
 		table.content = this.createRows(tableData, page);
-		page.elements = page.elements.concat(table);
+		if (!this.isFalseTable(table)) {
+			page.elements = page.elements.concat(table);
+		}
+	}
+
+	private isFalseTable(table: Table): boolean {
+		let isFalse = false;
+		table.content.forEach((_, index) => {
+			if (!this.existAdjacentRow(index, table)) {
+				isFalse = true;
+			}
+		});
+		return isFalse;
+	}
+
+	private existAdjacentRow(rowIndex: number, table: Table): TableRow {
+		if (rowIndex + 1 === table.content.length) {
+			return this.existPreviousRow(rowIndex, table);
+		}
+		const row = table.content[rowIndex];
+		const findRowWithTop = Math.ceil(row.box.top + row.box.height);
+
+		return table.content
+			.filter(rowToFind => Math.ceil(rowToFind.box.top) === findRowWithTop)
+			.shift();
+	}
+
+	private existPreviousRow(rowIndex: number, table: Table): TableRow {
+		const row = table.content[rowIndex];
+		const findRowWithBottom = Math.ceil(row.box.top);
+
+		return table.content
+			.filter(
+				rowToFind => Math.ceil(rowToFind.box.top + rowToFind.box.height) === findRowWithBottom,
+			)
+			.shift();
 	}
 
 	private createTable(tableData: any, pageHeight: number): Table {

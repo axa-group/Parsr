@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,11 +57,11 @@ export class MarkdownExporter extends Exporter {
 						output += '\n'.repeat(2);
 					}
 				} else if (element instanceof Paragraph) {
-					output += element.toString();
+					output += element.toMarkdown();
 					output += '\n'.repeat(2);
 				} else if (element instanceof List) {
 					element.content.forEach((para, itemNumber) => {
-						const paraText: string = para.toString();
+						const paraText: string = para.toMarkdown();
 						if (element.isOrdered) {
 							output += (itemNumber + 1).toString() + ' ';
 						} else {
