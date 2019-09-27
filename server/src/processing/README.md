@@ -1,18 +1,18 @@
-# Modules
+# Processing Modules
 
-- [Modules](#modules)
-  - [1. Current Modules](#1-current-modules)
-  - [2. Create your Module](#2-create-your-module)
+- [Processing Modules](#processing-modules)
+  - [1. Current Processing Modules](#1-current-processing-modules)
+  - [2. Create your own Processing Module](#2-create-your-own-processing-module)
     - [2.1. Create a New Typescript Module](#21-create-a-new-typescript-module)
     - [2.2. Add to Register](#22-add-to-register)
     - [2.3. Add it to the Configuration](#23-add-it-to-the-configuration)
     - [2.4. Run it!](#24-run-it)
 
-Modules in Parsr perform a central role of cleaning and enriching the extracted raw output.
+The processing modules in Parsr perform a central role of cleaning and enriching the extracted raw output.
 Each module performs a particular operation on a document representation, generates a new valid Document, and then passes it on to the next module for the next treatment.
 Each module contains a set of configurable parameters, which can be consulted in the per-module documentation pages below:
 
-## 1. Current Modules
+## 1. Current Processing Modules
 
 1. [Header and Footer Detection](HeaderFooterDetectionModule/README.md)
 2. [Heading Detection](HeadingDetectionModule/README.md)
@@ -32,9 +32,9 @@ Each module contains a set of configurable parameters, which can be consulted in
 16. [Whitespace Removal](WhitespaceRemovalModule/README.md)
 17. [Words To Line](WordsToLineModule/README.md)
 
-## 2. Create your Module
+## 2. Create your own Processing Module
 
-Creating a custom module can be very useful to add some treament on the document.
+Creating a custom processing module can be very useful to add some treament on the document.
 
 You have two way to do it:
 
@@ -59,4 +59,4 @@ Simply add a line in the `cleaner` array with the name of your module, and poten
 
 ### 2.4. Run it!
 
-That's it! Your new awesome module should run and modify the document according to your needs!
+That's it! Your new awesome processing module should run and modify the document according to your needs!
