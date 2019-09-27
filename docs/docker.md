@@ -6,16 +6,20 @@ In your docker installation's configuration, increase the amount of active memor
 
 ## Build Parsr
 
-Inside the root directory of the project, launch:
+At the root of the project, launch:
 
-`docker-compose build`
+  ```
+  docker-compose build
+  ```
 
 This will build Parsr, along with its dependencies.
 
 ## Run Parsr
 
-- In the root of the repository, execute:
+In the root of the repository, launch:
 
-`docker-compose up`
+  ```
+  docker-compose up
+  ```
 
 Note: A docker volume will be created at first launch so that the data will be kept at containers restart.
