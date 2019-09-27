@@ -13,6 +13,23 @@
 			</fieldset>
 
 			<fieldset>
+				<legend>Extractor configuration</legend>
+				<v-select
+					:items="['pdf2json', 'pdfminer']"
+					v-model="defaultConfig.extractor.pdf"
+					:flat="true"
+					:hide-details="true"
+					background-color="transparent"
+					color="rgba(0, 0, 0, 0.54)"
+					height="20px"
+					class="selectOptionExtractor"
+					prefix="Pdf"
+					solo
+				>
+				</v-select>
+			</fieldset>
+
+			<fieldset>
 				<legend>Modules configuration</legend>
 				<configItem
 					v-for="(item, index) in defaultConfig.cleaner"
@@ -29,7 +46,7 @@
 		</form>
 
 		<v-overlay :absolute="false" opacity="0.5" :value="shouldDisplayOverlay" :dark="false">
-			<div v-if="processStatus.length > 0" class="processTracker">
+			<div class="processTracker">
 				<p v-for="status in processStatus" :key="status">
 					<span v-html="status" /> <img :src="checkIcon" />
 				</p>
@@ -91,7 +108,7 @@ export default {
 			});
 		},
 		shouldDisplayOverlay() {
-			return this.processStatus.length > 0;
+			return this.processStatus.length > 0 || this.processError;
 		},
 	},
 	beforeMount() {
@@ -152,12 +169,17 @@ export default {
 		},
 		configChange(configItem) {
 			if (configItem.selected) {
-				let moduleName = configItem.item;
-				if (Array.isArray(configItem.item)) {
-					moduleName = configItem.item[0];
-				}
-				const index = this.modulesOrder.indexOf(moduleName);
-				this.customConfig.cleaner.splice(index, 0, configItem.item);
+				this.customConfig.cleaner.push(configItem.item);
+				const moduleName = configItem => {
+					if (Array.isArray(configItem)) {
+						return configItem[0];
+					}
+					return configItem;
+				};
+				const correctOrder = this.modulesOrder;
+				this.customConfig.cleaner.sort((a, b) => {
+					return correctOrder.indexOf(moduleName(a)) - correctOrder.indexOf(moduleName(b));
+				});
 			} else {
 				this.customConfig.cleaner = this.customConfig.cleaner.filter(el => el !== configItem.item);
 			}
@@ -211,7 +233,11 @@ export default {
 					this.trackPipeStatus();
 				})
 				.catch(error => {
-					console.log(error.message);
+					this.processError =
+						"<p style='font-size:0.8em;color:#a8a8a8;text-align:left;width:100%;'>" +
+						error.message +
+						'</p>';
+
 					this.loading = false;
 				});
 		},
@@ -231,6 +257,32 @@ export default {
 };
 </script>
 
+<style lang="scss">
+.selectOptionExtractor div.v-input__control {
+	min-height: auto !important;
+}
+.selectOptionExtractor div.v-input__control div.v-input__slot {
+	padding: 0 !important;
+}
+.selectOptionExtractor div.v-input__control div.v-select__slot {
+	width: 100px;
+}
+.selectOptionExtractor div.v-input__control div.v-select__slot div.v-text-field__prefix {
+	min-width: 60px;
+	text-align: left;
+}
+.selectOptionExtractor div.v-input__control div.v-input__slot div.v-select__selection {
+	border: solid 1px #cccccc;
+	min-width: 90px;
+	text-align: center;
+	display: block;
+	padding: 0 5px;
+}
+.selectOptionExtractor div.v-input__control div.v-input__slot input {
+	width: 0 !important;
+	max-width: 0 !important;
+}
+</style>
 <style lang="scss" scoped>
 .main {
 	padding-top: 20px;
@@ -308,5 +360,15 @@ label span {
 .processTracker + strong {
 	margin-top: 10px;
 	font-size: 1.2em;
+}
+
+.selectOptionExtractor {
+	vertical-align: middle;
+	color: rgba(0, 0, 0, 0.54);
+	width: 300px;
+	margin: 10px auto !important;
+}
+.selectOptionExtractor div {
+	min-height: auto !important;
 }
 </style>

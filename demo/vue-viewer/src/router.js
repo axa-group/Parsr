@@ -3,6 +3,9 @@ import Router from 'vue-router';
 import Upload from './views/Upload.vue';
 import Home from './views/Home';
 import Viewer from './views/Viewer.vue';
+import ViewerText from './views/ViewerText.vue';
+import ViewerMarkdown from './views/ViewerMarkdown.vue';
+import ViewerCsv from './views/ViewerCsv.vue';
 
 Vue.use(Router);
 
@@ -24,6 +27,21 @@ export default new Router({
 			path: '/viewer',
 			name: 'viewer',
 			component: Viewer,
+		},
+		{
+			path: '/viewerText',
+			name: 'viewerText',
+			component: ViewerText,
+		},
+		{
+			path: '/viewerMarkdown',
+			name: 'viewerMarkdown',
+			component: ViewerMarkdown,
+		},
+		{
+			path: '/viewerCsv',
+			name: 'viewerCsv',
+			component: ViewerCsv,
 		},
 		{
 			path: '*',

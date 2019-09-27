@@ -9,7 +9,7 @@
 		/>
 		<component
 			:is="props.components.Word"
-			v-for="element in props.element.content"
+			v-for="element in props.element.content.filter(el => el.type === 'word')"
 			:key="element.id"
 			:element="element"
 			:fonts="props.fonts"
