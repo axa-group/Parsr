@@ -2,30 +2,40 @@ version: '3.3'
 
 services:
   duckling:
-    build:
-      context: docker/duckling
-      args:
-        DUCKLING_RELEASE: 'v0.1.6.1'
     ports:
       - 8000:8000
-    image: duckling
+    image: axarev/duckling
+
+  parsr-base:
+    image: axarev/parsr-base
+    build:
+      context: .
+      dockerfile: docker/parsr-base/Dockerfile
 
   parsr:
+    image: axarev/parsr
     build:
       context: .
       dockerfile: docker/parsr/Dockerfile
       args:
         DEV_MODE: 'true'
     ports:
-      - 8080:3000
       - 3001:3001
     environment:
-      DUCKLING_HOST: http://duckling:8000
+      DUCKLING_HOST: http://localhost:8000
       ABBYY_SERVER_URL:
-    #      NPM_RUN: start:all
-    image: parsr
     volumes:
       - ./pipeline/:/opt/app-root/src/demo/web-viewer/pipeline/
+
+  parsr-ui:
+    image: parsr-ui
+    build: 
+      context: .
+      dockerfile: docker/parsr-ui/Dockerfile
+      args:
+        VUE_APP_API: ${VUE_APP_API:-http://localhost:3001}
+    ports:
+      - 8080:80
 
 volumes:
   pipeline:
