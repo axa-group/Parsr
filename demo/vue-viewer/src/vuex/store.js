@@ -124,8 +124,9 @@ export default new Vuex.Store({
 						mergeTableElements: { value: false, range: [true, false] },
 					},
 				],
+				'lines-to-paragraph',
 				[
-					'lines-to-paragraph',
+					'lines-to-paragraph-old',
 					{
 						addNewline: { value: true, range: [true, false] },
 						alignUncertainty: {
