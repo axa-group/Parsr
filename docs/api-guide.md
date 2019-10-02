@@ -53,8 +53,8 @@ First of all, you need to do a POST request to send the document to Parsr. Along
 curl -X POST \
   http://localhost:3001/api/v1/document \
   -H 'Content-Type: multipart/form-data' \
-  -F file='@/path/to/file.pdf;type=application/pdf' \
-  -F config='@/path/to/config.json;type=application/json'
+  -F 'file=@/path/to/file.pdf;type=application/pdf' \
+  -F 'config=@/path/to/config.json;type=application/json'
 ```
 
 ### Status: 202 - Accepted
