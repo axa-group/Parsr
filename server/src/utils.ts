@@ -252,6 +252,17 @@ export function isAlignedLeft(
 	return true;
 }
 
+export function findElementIDInPageBySameBoundingBox(element: Element, page: Page): number {
+	let elementID: number = -1;
+	const elements: Element[] = page.getAllElements();
+	elements.forEach(e => {
+		if (BoundingBox.isEqual(e.box, element.box)) {
+			elementID = e.id;
+		}
+	});
+	return elementID;
+}
+
 export function isAlignedRight(texts: Text[], alignUncertainty: number = 0): boolean {
 	for (let i = 0; i < texts.length - 1; i++) {
 		const t1 = texts[i];

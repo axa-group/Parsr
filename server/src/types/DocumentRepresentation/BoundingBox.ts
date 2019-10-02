@@ -21,6 +21,17 @@
  */
 export class BoundingBox {
 	/**
+	 * Returns true if two bounding boxes are equal
+	 * @param b1 first bbox
+	 * @param b2 second bbox
+	 */
+	public static isEqual(b1: BoundingBox, b2: BoundingBox): boolean {
+		return (
+			b1.height === b2.height && b1.width === b2.width && b1.top === b2.top && b1.left === b2.left
+		);
+	}
+
+	/**
 	 * Getter left
 	 * @return {number}
 	 */

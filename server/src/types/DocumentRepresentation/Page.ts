@@ -189,6 +189,23 @@ export class Page {
 	}
 
 	/**
+	 * Removes an element by ID
+	 * TODO: find a way to remove deeper elements
+	 * @param id The element's ID which is to be removed
+	 */
+	public removeElementById(id: number) {
+		const e: Element = this.elements.filter(elem => elem.id === id)[0];
+		const index: number = this.elements.indexOf(e, 0);
+		if (index > -1 || e !== undefined) {
+			this.elements.splice(index, 1);
+		} else {
+			logger.debug(
+				`Could not remove element id "${id}" in first level elements on page ${this.pageNumber}; it might be located deeper`,
+			);
+		}
+	}
+
+	/**
 	 * Getter horizontalOccupancy
 	 * @return {boolean[]}
 	 */
