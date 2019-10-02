@@ -99,7 +99,7 @@ and then the dependencies:
 
 ```sh
 pip install pdfminer.six
-pip install python-tk ghostscript camelot-py
+pip install ghostscript camelot-py
 
 ```
 
