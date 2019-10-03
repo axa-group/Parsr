@@ -202,14 +202,17 @@ function breakLineIntoWords(
 		chars.splice(chars.length - 1, chars.length);
 	}
 
-	let sepLocs = chars
-		.filter(char => char !== undefined)
-		.reduce((a, e, i) => (e.content === wordSeperator ? a.concat(i) : a), []); // fill with spaces
-
-	sepLocs = [
-		...sepLocs,
-		...chars.reduce((a, e, i) => (e === undefined ? a.concat(i) : a), []), // fill with undefs
-	].sort((a, b) => a - b);
+	const sepLocs: number[] = chars
+		.map((c, i) => {
+			if (c === undefined) {
+				return i;
+			} else {
+				return undefined;
+			}
+		})
+		.filter(l => l !== undefined)
+		.filter(l => l !== 0)
+		.filter(l => l !== chars.length);
 
 	const words: Word[] = [];
 	if (sepLocs.length === 0) {
