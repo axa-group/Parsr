@@ -276,18 +276,6 @@ export function isAlignedRight(texts: Text[], alignUncertainty: number = 0): boo
 	return true;
 }
 
-export function isAlignedAndOverlapVertically(texts: Text[]): boolean {
-	if (texts.length === 0) {
-		return true;
-	}
-
-	return (
-		(isAligned(texts) || isAlignedCenter(texts)) &&
-		texts.every(t => t.top === texts[0].top) &&
-		texts.every(t => t.height === texts[0].height)
-	);
-}
-
 /**
  * Check if an element is contained inside a bounding box
  * @param element Element that'll be checked
