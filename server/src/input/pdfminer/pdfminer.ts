@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,17 +46,35 @@ export function execute(pdfInputFile: string): Promise<Document> {
 	return new Promise<Document>((resolveDocument, rejectDocument) => {
 		return repairPdf(pdfInputFile).then(repairedPdf => {
 			const xmlOutputFile: string = utils.getTemporaryFile('.xml');
+			let pdf2txtLocation: string = utils.getCommandLocationOnSystem('pdf2txt.py');
+			if (pdf2txtLocation === '') {
+				pdf2txtLocation = utils.getCommandLocationOnSystem('pdf2txt');
+			}
+			if (pdf2txtLocation === '') {
+				logger.debug(
+					`Unable to find pdf2txt, the pdfminer executable on the system. Are you sure it is installed?`,
+				);
+			} else {
+				logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
+			}
 			logger.debug(
-				`pdf2txt.py ${['-c', 'utf-8', '-A', '-t', 'xml', '-o', xmlOutputFile, repairedPdf].join(
-					' ',
-				)}`,
+				`${pdf2txtLocation} ${[
+					'-c',
+					'utf-8',
+					'-A',
+					'-t',
+					'xml',
+					'-o',
+					xmlOutputFile,
+					repairedPdf,
+				].join(' ')}`,
 			);
 
 			if (!fs.existsSync(xmlOutputFile)) {
 				fs.appendFileSync(xmlOutputFile, '');
 			}
 
-			const pdfminer = spawn('pdf2txt.py', [
+			const pdfminer = spawn(pdf2txtLocation, [
 				'-c',
 				'utf-8',
 				'-A',
