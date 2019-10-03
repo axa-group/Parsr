@@ -36,7 +36,6 @@
 									</li>
 								</ul>
 							</li>
-							<li><span>Box:</span> {{ currentElement.box }}</li>
 						</ul>
 					</div>
 				</v-expansion-panel-content>
