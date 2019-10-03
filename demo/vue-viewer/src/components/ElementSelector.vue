@@ -55,15 +55,18 @@ export default {
 		buildID(element) {
 			return this.capitalize(element.type).concat('_', element.id);
 		},
-		contentMapper(element) {
-			if (Array.isArray(element.content)) {
-				return [
-					...element.content.map(this.contentMapper),
-					{ text: this.buildID(element), value: element },
-				];
-			} else {
-				return [{ text: this.buildID(element), value: element }];
-			}
+		flatten(element) {
+			var flattend = [];
+			!(function flat(element, buildID) {
+				flattend.push({ text: buildID(element), value: element });
+				element.content.forEach(function(el) {
+					flattend.push({ text: buildID(el), value: el });
+					if (Array.isArray(el.content)) {
+						flat(el, buildID);
+					}
+				});
+			})(element, this.buildID);
+			return flattend;
 		},
 		sortFunction({ value: elementA }, { value: elementB }) {
 			if (elementA.type === elementB.type) {
@@ -76,8 +79,8 @@ export default {
 	computed: {
 		items() {
 			return this.pageElements
-				.map(this.contentMapper)
-				.flat(3)
+				.map(this.flatten)
+				.reduce((prev, curr) => prev.concat(curr))
 				.sort(this.sortFunction);
 		},
 	},
