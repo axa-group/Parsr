@@ -10,8 +10,9 @@
 				<v-expansion-panel-content>
 					<div class="ElementSelectorContainer">
 						<v-autocomplete
-							label="Element"
+							label="Element Type with ID"
 							:clearable="true"
+							color="#00008a"
 							:auto-select-first="true"
 							:items="items"
 							@change="selectedElement"
