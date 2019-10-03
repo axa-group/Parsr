@@ -71,6 +71,10 @@ export class LinesToParagraphModule extends Module {
 			}
 			const paragraphs: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
 			page.elements = otherElements.concat(paragraphs);
+			//this.getPageParagraphs(page).map(paragraph => {
+			//console.log('Paragraph ' + paragraph.id + ' order ' + paragraph.properties.order);
+			//TODO: Set fine paragraph order
+			//});
 			return page;
 		});
 
@@ -120,6 +124,9 @@ export class LinesToParagraphModule extends Module {
 	private getPageLines(page: Page): Line[] {
 		return page.getElementsOfType<Line>(Line, false).sort(utils.sortElementsByOrder);
 	}
+	/*rivate getPageParagraphs(page: Page): Paragraph[] {
+		return page.getElementsOfType<Paragraph>(Paragraph, true).sort(utils.sortElementsByOrder);
+	}*/
 
 	private joinLinesWithSpaces(lines: Line[], lineSpaces: LineSpace[]): Line[][] {
 		const toBeMerged: Line[][] = [];
@@ -304,13 +311,13 @@ export class LinesToParagraphModule extends Module {
 	}
 
 	private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
-		let newOrder = 0;
 		return joinedLines.map((group: Line[]) => {
 			const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
 				new Paragraph(new BoundingBox(0, 0, 0, 0)),
 				...group,
 			);
-			paragraph.properties.order = newOrder++;
+
+			paragraph.properties.order = group[0].properties.order;
 			return paragraph;
 		});
 	}
