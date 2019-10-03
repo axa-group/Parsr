@@ -88,8 +88,8 @@ export default {
 	text-align: center;
 	display: block;
 }
-.ElementSelectorContainerv {
-	padding: 0 10px;
+.ElementSelectorContainer {
+	padding-left: 10px;
 }
 .ElementSelector header {
 	background-color: #ebebf1;
