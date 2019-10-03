@@ -37,7 +37,7 @@ describe('Paragraph merge function', () => {
 				new ReadingOrderDetectionModule(),
 				new WordsToLineModule(),
 				new WhitespaceRemovalModule(),
-				new LinesToParagraphModule({ addNewline: false }),
+				new LinesToParagraphModule(),
 			]);
 		}
 

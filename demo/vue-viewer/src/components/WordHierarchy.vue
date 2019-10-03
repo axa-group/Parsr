@@ -96,10 +96,13 @@ export default {
 				return;
 			}
 			const element = this.wordHierachy.filter(el => el.id === selection[0]).shift();
-			if (element) {
+			if (element && element.id != this.selectedElement.id) {
 				this.$store.commit('setParentElementSelected', element);
 				this.lastParentSelected = element;
 				this.highlightSelectedElement(element);
+			} else {
+				this.$store.commit('setParentElementSelected', null);
+				this.lastParentSelected = null;
 			}
 		},
 		populateTreeView() {

@@ -130,13 +130,18 @@ export default {
 				(this.lastWordSelected && this.lastWordSelected.id !== element.id) ||
 				!this.lastWordSelected;
 
-			document.getElementById('Word_' + element.id).style.fill = shouldFill ? 'red' : null;
-
 			if (this.lastWordSelected) {
-				document.getElementById('Word_' + this.lastWordSelected.id).style.fill = null;
+				document.getElementById('Word_' + this.lastWordSelected.id).classList.remove('highlighted');
 			}
 
-			this.lastWordSelected = shouldFill ? element : null;
+			if (shouldFill) {
+				document.getElementById('Word_' + element.id).classList.add('highlighted');
+				this.lastWordSelected = element;
+			} else {
+				document.getElementById('Word_' + element.id).classList.remove('highlighted');
+				this.lastWordSelected = null;
+			}
+
 			this.$store.commit('setElementSelected', element);
 		},
 		fitPageToScreen() {

@@ -286,7 +286,9 @@ export class Table extends Element {
 
 					for (let c = 0; c < cell.colspan; c++) {
 						for (let r = 0; r < cell.rowspan; r++) {
-							arr[i + r][j + c] = null;
+							if (i + r < arr.length && j + c < arr[i].length) {
+								arr[i + r][j + c] = null;
+							}
 						}
 					}
 

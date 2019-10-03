@@ -14,12 +14,19 @@
 			:y="props.element.box.t + props.element.box.h"
 			fill="black"
 			:textLength="props.element.box.w"
+			:lengthAdjust="
+				props.fonts.filter(font => font.id === props.element.font).shift().size
+					? 'spacing'
+					: 'spacingAndGlyphs'
+			"
 			:style="{
 				fontSize: props.fonts.filter(font => font.id === props.element.font).shift().size * 0.6,
 			}"
 			:font-weight="fontWeight"
 			@click="listeners['custom-event'](props.element)"
-			>{{ props.element.content.trim() }}</text
+			>{{
+				!Array.isArray(props.element.content) ? props.element.content.trim() : 'Array empty'
+			}}</text
 		>
 	</g>
 </template>
