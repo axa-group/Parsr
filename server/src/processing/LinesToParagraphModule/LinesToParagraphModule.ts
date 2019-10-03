@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-import { BoundingBox, Document, Line, Page, Paragraph } from '../../types/DocumentRepresentation';
+import {
+	BoundingBox,
+	Document,
+	Line,
+	Page,
+	Paragraph,
+	Element,
+} from '../../types/DocumentRepresentation';
+
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
@@ -47,7 +55,7 @@ export class LinesToParagraphModule extends Module {
 			const lines = this.getPageLines(page);
 			const interLinesSpaces = this.getInterLinesSpace(lines);
 			const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
-
+			const otherElements = this.getPageElements(page, lines);
 			// Clean the properties.cr  information as it is not usefull down the line
 			for (const theseLines of joinedLines) {
 				for (const thisLine of theseLines) {
@@ -60,11 +68,17 @@ export class LinesToParagraphModule extends Module {
 				}
 			}
 			const paragraphs: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
-			page.elements = paragraphs;
+			page.elements = otherElements.concat(paragraphs);
 			return page;
 		});
 
 		return doc;
+	}
+
+	private getPageElements(page: Page, excludeLines: Line[]): Element[] {
+		return page.elements.filter(
+			element => !(element instanceof Line) || !excludeLines.includes(element),
+		);
 	}
 
 	private getPageLines(page: Page): Line[] {
