@@ -26,6 +26,8 @@ It provides users with clean structured and label-enriched information set for r
     - [2.2. Run](#22-run)
       - [2.2.1. Configuration](#221-configuration)
       - [2.2.2. Demo: Web Viewer](#222-demo-web-viewer)
+        - [2.2.2.1. Under Linux/MacOS:](#2221-under-linuxmacos)
+        - [2.2.2.2. Under Windows:](#2222-under-windows)
       - [2.2.3. Command Line Usage](#223-command-line-usage)
     - [2.3. API](#23-api)
     - [2.4. Test](#24-test)
@@ -240,11 +242,27 @@ The tool contains a pipeline of modules that process the document step by step a
 
 To start the web viewer demo, simply run:
 
+##### 2.2.2.1. Under Linux/MacOS:
+
 ```sh
 npm run start:web:vue
 ```
 
-Then, open [localhost:8080](http://localhost:8080) with your favorite browser.
+##### 2.2.2.2. Under Windows:
+
+In two different terminals, first:
+
+```sh
+npm run start:api
+```
+
+then in the other one:
+
+```sh
+cd demo/vue-viewer && npm install && npm run serve
+```
+
+Open [localhost:8080](http://localhost:8080) with your favorite browser to use the GUI.
 
 #### 2.2.3. Command Line Usage
 

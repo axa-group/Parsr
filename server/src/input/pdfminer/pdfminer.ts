@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,17 +44,35 @@ export function execute(pdfInputFile: string): Promise<Document> {
 	return new Promise<Document>((resolveDocument, rejectDocument) => {
 		return repairPdf(pdfInputFile).then(repairedPdf => {
 			const xmlOutputFile: string = utils.getTemporaryFile('.xml');
+			let pdf2txtLocation: string = utils.getCommandLocationOnSystem('pdf2txt.py');
+			if (pdf2txtLocation === '') {
+				pdf2txtLocation = utils.getCommandLocationOnSystem('pdf2txt');
+			}
+			if (pdf2txtLocation === '') {
+				logger.debug(
+					`Unable to find pdf2txt, the pdfminer executable on the system. Are you sure it is installed?`,
+				);
+			} else {
+				logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
+			}
 			logger.debug(
-				`pdf2txt.py ${['-c', 'utf-8', '-A', '-t', 'xml', '-o', xmlOutputFile, repairedPdf].join(
-					' ',
-				)}`,
+				`${pdf2txtLocation} ${[
+					'-c',
+					'utf-8',
+					'-A',
+					'-t',
+					'xml',
+					'-o',
+					xmlOutputFile,
+					repairedPdf,
+				].join(' ')}`,
 			);
 
 			if (!fs.existsSync(xmlOutputFile)) {
 				fs.appendFileSync(xmlOutputFile, '');
 			}
 
-			const pdfminer = spawn('pdf2txt.py', [
+			const pdfminer = spawn(pdf2txtLocation, [
 				'-c',
 				'utf-8',
 				'-A',
@@ -174,6 +192,17 @@ function getMostCommonFont(theFonts: Font[]): Font {
 	}
 }
 
+/**
+ * Fetches the character a particular pdfminer's textual output represents
+ * TODO: This placeholder will accomodate the solution at https://github.com/aarohijohal/pdfminer.six/issues/1 ...
+ * TODO: ... For now, it returns a '?' when a (cid:) is encountered
+ * @param character the character value outputted by pdfminer
+ * @param font the font associated with the character  -- TODO to be taken into consideration here
+ */
+function getValidCharacter(character: string): string {
+	return RegExp(/\(cid:/gm).test(character) ? '?' : character;
+}
+
 function breakLineIntoWords(
 	line: PdfminerTextline,
 	wordSeperator: string = ' ',
@@ -184,14 +213,16 @@ function breakLineIntoWords(
 		if (char._ === undefined) {
 			return undefined;
 		} else {
+			const font: Font = new Font(char._attr.font, parseFloat(char._attr.size), {
+				weight: RegExp(/bold/gim).test(char._attr.font) ? 'bold' : 'medium',
+				isItalic: RegExp(/italic/gim).test(char._attr.font) ? true : false,
+				isUnderline: RegExp(/underline/gim).test(char._attr.font) ? true : false,
+			});
+			const charContent: string = getValidCharacter(char._);
 			return new Character(
 				getBoundingBox(char._attr.bbox, ',', pageHeight, scalingFactor),
-				char._,
-				new Font(char._attr.font, parseFloat(char._attr.size), {
-					weight: RegExp(/bold/gim).test(char._attr.font) ? 'bold' : 'medium',
-					isItalic: RegExp(/italic/gim).test(char._attr.font) ? true : false,
-					isUnderline: RegExp(/underline/gim).test(char._attr.font) ? true : false,
-				}),
+				charContent,
+				font,
 			);
 		}
 	});

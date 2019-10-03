@@ -5,10 +5,20 @@
 			<pre class="text">{{ csv }}</pre>
 		</div>
 		<div v-if="noTablesDetected" class="tableEmpty">There are no tables to export as CSV</div>
-		<v-overlay :absolute="false" opacity="0.5" :value="this.loading" :dark="false">
+		<v-overlay :absolute="false" opacity="0.5" :value="this.loading || this.error" :dark="false">
 			<div class="overlayContent">
+				<div v-if="error" class="errorMessage">
+					<p style="text-align:center;">
+						<strong style="font-size:1em;">Error</strong
+						><v-icon size="20" color="red" style="margin-left:10px">mdi-alert-circle</v-icon>
+					</p>
+					<p style="text-align: left; padding: 0 20px;">
+						{{ error }}
+					</p>
+					<v-btn v-if="error" rounded class="submit" @click="closeOverlay">CLOSE</v-btn>
+				</div>
 				<v-progress-circular
-					v-if="loading"
+					v-if="loading && !error"
 					color="#00008a"
 					indeterminate
 					size="24"
@@ -21,6 +31,9 @@
 import { mapState } from 'vuex';
 
 export default {
+	data() {
+		return { error: null, errorThrown: false };
+	},
 	computed: {
 		documentCsvsFetched() {
 			return this.documentCsvs.length > 0;
@@ -29,7 +42,12 @@ export default {
 			return this.documentId !== null;
 		},
 		noTablesDetected() {
-			return this.uploadedDocument && this.documentCsvs.length === 0 && !this.loading;
+			return (
+				this.uploadedDocument &&
+				this.documentCsvs.length === 0 &&
+				!this.loading &&
+				!this.errorThrown
+			);
 		},
 		...mapState({
 			documentId: state => state.uuid,
@@ -40,14 +58,29 @@ export default {
 	mounted() {
 		if (!this.documentCsvsFetched && this.uploadedDocument) {
 			this.$store.dispatch('fetchDocumentCsvList').catch(error => {
-				console.log(error.message);
+				this.errorThrown = true;
+				this.error = error.response.data;
 			});
 		}
+	},
+	methods: {
+		closeOverlay() {
+			this.error = null;
+		},
 	},
 };
 </script>
 
 <style lang="scss" scoped>
+.overlayContent {
+	background-color: white;
+	border-radius: 10px;
+	min-width: 600px;
+	max-width: 50%;
+	margin: 0 auto;
+	padding: 10px 0px;
+}
+
 .viewer {
 	background-color: #f9f9fd;
 }
@@ -73,5 +106,14 @@ export default {
 	white-space: -o-pre-wrap;
 	word-wrap: break-word;
 	text-align: left;
+}
+.errorMessage {
+	padding: 0 10px;
+	font-size: 0.9em;
+}
+.submit {
+	margin-top: 10px;
+	background-color: #00008a !important;
+	color: #ffffff !important;
 }
 </style>
