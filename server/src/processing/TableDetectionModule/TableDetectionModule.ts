@@ -209,7 +209,7 @@ export class TableDetectionModule extends Module<Options> {
 	}
 
 	private wordsInCellBox(cellBounds: BoundingBox, pageWords: Word[]): Word[] {
-		return pageWords.filter(word => utils.isInBox(word.box, cellBounds, false));
+		return pageWords.filter(word => utils.isInBox(word, cellBounds, false));
 	}
 
 	private removeWordsUsedInCells(document: Document) {

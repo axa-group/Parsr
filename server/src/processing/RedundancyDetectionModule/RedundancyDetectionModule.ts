@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { Document, Page, Text, Word } from '../../types/DocumentRepresentation';
-import * as utils from '../../utils';
+import { BoundingBox, Document, Page, Text, Word } from '../../types/DocumentRepresentation';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
@@ -61,21 +60,50 @@ export class RedundancyDetectionModule extends Module<Options> {
 		return doc;
 	}
 
-	// FIXME this function is super slow... (36s on t6.pdf)
+	/**
+	 * Returns groups of texts which are the same and have a sufficient overlap to be
+	 * potential duplicates
+	 * @param texts a group of texts
+	 */
 	private regroupTextsByLocation(texts: Text[]): Text[][] {
-		const groups: Text[][] = [];
+		const resultGroups: Text[][] = [];
 
-		texts.forEach(text => {
-			for (const group of groups) {
-				if (utils.isAlignedAndOverlapVertically(group.concat(text))) {
-					group.push(text);
+		texts.forEach(element => {
+			for (const group of resultGroups) {
+				if (this.checkGroupOverlapWithNewElement(group, element)) {
+					group.push(element);
 					return;
 				}
 			}
-			groups.push([text]);
+			resultGroups.push([element]);
 		});
+		return resultGroups;
+	}
 
-		return groups;
+	/**
+	 * Decides if a new element can be added to a group depending on weather if it has sufficient overlap,
+	 * and if it has the same text
+	 * @param group group of texts to be compared against
+	 * @param newElement the new element to be compared with the group
+	 */
+	private checkGroupOverlapWithNewElement(group: Text[], newElement: Text): boolean {
+		let decision: boolean = true;
+		if (group.length === 0) {
+			decision = false;
+		} else {
+			if (group[0].toString() !== newElement.toString()) {
+				decision = false;
+			} else {
+				for (const e of group) {
+					const overlap: number = BoundingBox.getOverlap(e.box, newElement.box);
+					if (!(overlap >= this.options.minOverlap.value)) {
+						decision = false;
+						break;
+					}
+				}
+			}
+		}
+		return decision;
 	}
 
 	/**
@@ -86,39 +114,12 @@ export class RedundancyDetectionModule extends Module<Options> {
 	 */
 	private removeDuplicateElements(page: Page, groups: Text[][]) {
 		groups.forEach(group => {
-			const firstText: Text = group[0];
 			logger.debug(
-				`${group.length} duplicate words with text ${firstText.toString()} found on page ${
+				`--> ${group.length} duplicate words with text ${group[0].toString()} found on page ${
 					page.pageNumber
 				}`,
 			);
-			group
-				.slice(1, group.length)
-				.filter(e => this.isDuplicate(e, firstText))
-				.forEach(e => page.removeElementById(e.id));
+			group.slice(1, group.length).forEach(e => page.removeElement(e));
 		});
-	}
-
-	private isDuplicate(elem1: Text, elem2: Text): boolean {
-		let isDuplicate: boolean;
-		// TODO check same font ('font' in elem1 && 'font' in elem2 && elem1['font'].isEqual(elem2['font']))
-		// coordinates of the intersection rectangle
-		const intLeft: number = Math.max(elem1.left, elem2.left);
-		const intRight: number = Math.min(elem1.right, elem2.right);
-		const intBottom: number = Math.min(elem1.bottom, elem2.bottom);
-		const intTop: number = Math.max(elem1.top, elem2.top);
-
-		if (intLeft < intRight && intBottom < intTop) {
-			isDuplicate = false; // no intersection at all
-		} else {
-			const elem1Area: number = elem1.height * elem1.width;
-			const elem2Area: number = elem2.height * elem2.width;
-			const intArea: number = (intRight - intLeft) * (intBottom - intTop);
-			const commonArea: number = elem1Area + elem2Area - intArea;
-
-			isDuplicate = intArea / commonArea >= this.options.minOverlap.value;
-		}
-
-		return isDuplicate;
 	}
 }

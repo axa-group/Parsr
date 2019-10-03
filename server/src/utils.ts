@@ -294,20 +294,20 @@ export function isAlignedAndOverlapVertically(texts: Text[]): boolean {
  * @param box Containing box
  * @param strict Will check if the element can stay strictly in the box without overstepping (Default: `true`)
  */
-export function isInBox(element: BoundingBox, box: BoundingBox, strict: boolean = true): boolean {
+export function isInBox(element: Element, box: BoundingBox, strict: boolean = true): boolean {
 	if (strict) {
 		return (
-			element.top >= box.top &&
-			element.top + element.height <= box.top + box.height &&
-			element.left >= box.left &&
-			element.left + element.width <= box.left + box.width
+			element.box.top >= box.top &&
+			element.box.top + element.box.height <= box.top + box.height &&
+			element.box.left >= box.left &&
+			element.box.left + element.box.width <= box.left + box.width
 		);
 	} else {
 		return (
-			element.top < box.top + box.height &&
-			element.top + element.height > box.top &&
-			element.left < box.left + box.width &&
-			element.left + element.width > box.left
+			element.box.top < box.top + box.height &&
+			element.box.top + element.box.height > box.top &&
+			element.box.left < box.left + box.width &&
+			element.box.left + element.box.width > box.left
 		);
 	}
 }

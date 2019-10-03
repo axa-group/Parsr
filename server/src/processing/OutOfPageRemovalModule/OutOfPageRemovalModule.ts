@@ -29,7 +29,7 @@ export class OutOfPageRemovalModule extends Module {
 	public main(doc: Document): Document {
 		doc.pages.forEach((page: Page) => {
 			page.elements = page.elements.filter((element: Element) => {
-				return !(element instanceof Text) || utils.isInBox(element.box, page.box);
+				return !(element instanceof Text) || utils.isInBox(element, page.box);
 			});
 		});
 
