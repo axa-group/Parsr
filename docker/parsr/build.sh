@@ -21,3 +21,9 @@ echo
 
 echo "Building parsr API"
 npm run --prefix api/server build
+
+echo
+
+echo "Creating directory api/server/dist/output"
+mkdir -p api/server/dist/output
+chmod g+w api/server/dist/output
