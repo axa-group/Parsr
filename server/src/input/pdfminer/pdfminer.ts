@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { spawn, spawnSync } from 'child_process';
+import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as os from 'os';
 import { parseString } from 'xml2js';
@@ -46,17 +46,35 @@ export function execute(pdfInputFile: string): Promise<Document> {
 	return new Promise<Document>((resolveDocument, rejectDocument) => {
 		return repairPdf(pdfInputFile).then(repairedPdf => {
 			const xmlOutputFile: string = utils.getTemporaryFile('.xml');
+			let pdf2txtLocation: string = utils.getCommandLocationOnSystem('pdf2txt.py');
+			if (pdf2txtLocation === '') {
+				pdf2txtLocation = utils.getCommandLocationOnSystem('pdf2txt');
+			}
+			if (pdf2txtLocation === '') {
+				logger.debug(
+					`Unable to find pdf2txt, the pdfminer executable on the system. Are you sure it is installed?`,
+				);
+			} else {
+				logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
+			}
 			logger.debug(
-				`pdf2txt.py ${['-c', 'utf-8', '-A', '-t', 'xml', '-o', xmlOutputFile, repairedPdf].join(
-					' ',
-				)}`,
+				`${pdf2txtLocation} ${[
+					'-c',
+					'utf-8',
+					'-A',
+					'-t',
+					'xml',
+					'-o',
+					xmlOutputFile,
+					repairedPdf,
+				].join(' ')}`,
 			);
 
 			if (!fs.existsSync(xmlOutputFile)) {
 				fs.appendFileSync(xmlOutputFile, '');
 			}
 
-			const pdfminer = spawn('pdf2txt.py', [
+			const pdfminer = spawn(pdf2txtLocation, [
 				'-c',
 				'utf-8',
 				'-A',
@@ -148,6 +166,36 @@ function getBoundingBox(
 	return new BoundingBox(left, top, width, height);
 }
 
+function getMostCommonFont(theFonts: Font[]): Font {
+	const fonts: Font[] = theFonts.reduce((a, b) => a.concat(b), []);
+
+	const baskets: Font[][] = [];
+
+	fonts.forEach((font: Font) => {
+		let basketFound: boolean = false;
+		baskets.forEach((basket: Font[]) => {
+			if (basket.length > 0 && basket[0].isEqual(font)) {
+				basket.push(font);
+				basketFound = true;
+			}
+		});
+
+		if (!basketFound) {
+			baskets.push([font]);
+		}
+	});
+
+	baskets.sort((a, b) => {
+		return b.length - a.length;
+	});
+
+	if (baskets.length > 0 && baskets[0].length > 0) {
+		return baskets[0][0];
+	} else {
+		return Font.undefinedFont;
+	}
+}
+
 function breakLineIntoWords(
 	line: PdfminerTextline,
 	wordSeperator: string = ' ',
@@ -158,7 +206,15 @@ function breakLineIntoWords(
 		if (char._ === undefined) {
 			return undefined;
 		} else {
-			return new Character(getBoundingBox(char._attr.bbox, ',', pageHeight, scalingFactor), char._);
+			return new Character(
+				getBoundingBox(char._attr.bbox, ',', pageHeight, scalingFactor),
+				char._,
+				new Font(char._attr.font, parseFloat(char._attr.size), {
+					weight: RegExp(/bold/gim).test(char._attr.font) ? 'bold' : 'medium',
+					isItalic: RegExp(/italic/gim).test(char._attr.font) ? true : false,
+					isUnderline: RegExp(/underline/gim).test(char._attr.font) ? true : false,
+				}),
+			);
 		}
 	});
 	if (chars[0] === undefined || chars[0].content === wordSeperator) {
@@ -167,18 +223,6 @@ function breakLineIntoWords(
 	if (chars[chars.length - 1] === undefined || chars[chars.length - 1].content === wordSeperator) {
 		chars.splice(chars.length - 1, chars.length);
 	}
-	const mostCommonFont: Font = new Font(
-		findMode(
-			line.text
-				.filter(char => char !== undefined && char._attr !== undefined)
-				.map(char => char._attr.font),
-		)[0],
-		findMode(
-			line.text
-				.filter(char => char !== undefined && char._attr !== undefined)
-				.map(char => char._attr.size),
-		)[0],
-	);
 
 	let sepLocs = chars
 		.filter(char => char !== undefined)
@@ -191,10 +235,22 @@ function breakLineIntoWords(
 
 	const words: Word[] = [];
 	if (sepLocs.length === 0) {
-		words.push(new Word(BoundingBox.merge(chars.map(c => c.box)), chars, mostCommonFont));
+		words.push(
+			new Word(
+				BoundingBox.merge(chars.map(c => c.box)),
+				chars,
+				getMostCommonFont(chars.map(c => c.font)),
+			),
+		);
 	} else {
 		const firstSel: Character[] = chars.slice(0, sepLocs[0]);
-		words.push(new Word(BoundingBox.merge(firstSel.map(c => c.box)), firstSel, mostCommonFont));
+		words.push(
+			new Word(
+				BoundingBox.merge(firstSel.map(c => c.box)),
+				firstSel,
+				getMostCommonFont(firstSel.map(c => c.font)),
+			),
+		);
 		for (let i = 0; i !== sepLocs.length; ++i) {
 			let from: number;
 			let to: number;
@@ -206,7 +262,11 @@ function breakLineIntoWords(
 			}
 			const charSelection: Character[] = chars.slice(from, to);
 			words.push(
-				new Word(BoundingBox.merge(charSelection.map(c => c.box)), charSelection, mostCommonFont),
+				new Word(
+					BoundingBox.merge(charSelection.map(c => c.box)),
+					charSelection,
+					getMostCommonFont(charSelection.map(c => c.font)),
+				),
 			);
 		}
 	}
@@ -219,7 +279,7 @@ function breakLineIntoWords(
  */
 function repairPdf(filePath: string) {
 	return new Promise<string>(resolve => {
-		const mutoolPath = spawnSync('which', ['mutool']).output.join('');
+		const mutoolPath = utils.getCommandLocationOnSystem('mutool');
 		if (mutoolPath === '' || (/^win/i.test(os.platform()) && /no mutool in/.test(mutoolPath))) {
 			logger.warn('MuPDF not installed !! Skip clean PDF.');
 			resolve(filePath);
@@ -233,31 +293,4 @@ function repairPdf(filePath: string) {
 			});
 		}
 	});
-}
-
-/** find the most common element in an array */
-function findMode(collection) {
-	if (collection.length === 0) {
-		return null;
-	}
-	const modeMap = {};
-	let maxCount = 1;
-	let modes = [];
-
-	collection.forEach(el => {
-		if (modeMap[el] === null) {
-			modeMap[el] = 1;
-		} else {
-			modeMap[el]++;
-		}
-
-		if (modeMap[el] > maxCount) {
-			modes = [el];
-			maxCount = modeMap[el];
-		} else if (modeMap[el] === maxCount) {
-			modes.push(el);
-			maxCount = modeMap[el];
-		}
-	});
-	return modes;
 }

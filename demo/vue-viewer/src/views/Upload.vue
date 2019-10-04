@@ -13,6 +13,23 @@
 			</fieldset>
 
 			<fieldset>
+				<legend>Extractor configuration</legend>
+				<v-select
+					:items="['pdf2json', 'pdfminer']"
+					v-model="defaultConfig.extractor.pdf"
+					:flat="true"
+					:hide-details="true"
+					background-color="transparent"
+					color="rgba(0, 0, 0, 0.54)"
+					height="20px"
+					class="selectOptionExtractor"
+					prefix="Pdf"
+					solo
+				>
+				</v-select>
+			</fieldset>
+
+			<fieldset>
 				<legend>Modules configuration</legend>
 				<configItem
 					v-for="(item, index) in defaultConfig.cleaner"
@@ -28,11 +45,17 @@
 			<p class="required"><span>*</span> Required fields</p>
 		</form>
 
-		<v-overlay :absolute="false" opacity="0.5" :value="processStatus.length > 0" :dark="false">
-			<div v-if="processStatus.length > 0" class="processTracker">
+		<v-overlay :absolute="false" opacity="0.5" :value="shouldDisplayOverlay" :dark="false">
+			<div class="processTracker">
 				<p v-for="status in processStatus" :key="status">
 					<span v-html="status" /> <img :src="checkIcon" />
 				</p>
+				<p v-if="processError">
+					<span style="vertical-align:middle">Process failed</span
+					><v-icon size="20" color="red" style="margin-left:10px">mdi-alert-circle</v-icon
+					><span v-html="processError" />
+				</p>
+				<v-btn v-if="processError" rounded class="submit" @click="closeProcessTrack">CLOSE</v-btn>
 				<v-progress-circular
 					v-if="loading"
 					color="#00008a"
@@ -58,6 +81,7 @@ export default {
 			loading: false,
 			processStatus: [],
 			processStatusCompleted: false,
+			processError: null,
 			customConfig: null,
 		};
 	},
@@ -66,6 +90,14 @@ export default {
 		...mapState({
 			defaultConfig: state => state.defaultConfig,
 		}),
+		modulesOrder() {
+			return this.defaultConfig.cleaner.map(el => {
+				if (Array.isArray(el)) {
+					return el[0];
+				}
+				return el;
+			});
+		},
 		isSubmitDisabled() {
 			return !this.file;
 		},
@@ -74,6 +106,9 @@ export default {
 			return new Blob([data], {
 				type: 'application/json',
 			});
+		},
+		shouldDisplayOverlay() {
+			return this.processStatus.length > 0 || this.processError;
 		},
 	},
 	beforeMount() {
@@ -92,8 +127,6 @@ export default {
 			return {};
 		},
 		sliderValuesForModule(module) {
-			console.log('Module Sliders');
-			console.log(module);
 			const sliders = {};
 			Object.keys(module[1]).forEach(element => {
 				switch (element) {
@@ -119,8 +152,6 @@ export default {
 			return sliders;
 		},
 		defaultValuesForModule(module) {
-			console.log('Module');
-			console.log(module);
 			const defaults = {};
 			Object.keys(module[1]).forEach(element => {
 				switch (element) {
@@ -139,10 +170,19 @@ export default {
 		configChange(configItem) {
 			if (configItem.selected) {
 				this.customConfig.cleaner.push(configItem.item);
+				const moduleName = configItem => {
+					if (Array.isArray(configItem)) {
+						return configItem[0];
+					}
+					return configItem;
+				};
+				const correctOrder = this.modulesOrder;
+				this.customConfig.cleaner.sort((a, b) => {
+					return correctOrder.indexOf(moduleName(a)) - correctOrder.indexOf(moduleName(b));
+				});
 			} else {
 				this.customConfig.cleaner = this.customConfig.cleaner.filter(el => el !== configItem.item);
 			}
-			//this.$store.commit('updateConfig', configItem);
 		},
 		fileChanged(event) {
 			this.file = event.target.files[0];
@@ -169,8 +209,14 @@ export default {
 						}
 					})
 					.catch(error => {
-						console.log(error.message);
+						const errorMessage = error.response.data.split('Error:');
+						this.processError =
+							"<p style='font-size:0.8em;color:#a8a8a8;text-align:left'>" +
+							errorMessage[1] +
+							'</p>';
+
 						this.loading = false;
+						clearInterval(interval);
 					});
 			}, 1000);
 		},
@@ -187,7 +233,11 @@ export default {
 					this.trackPipeStatus();
 				})
 				.catch(error => {
-					console.log(error.message);
+					this.processError =
+						"<p style='font-size:0.8em;color:#a8a8a8;text-align:left;width:100%;'>" +
+						error.message +
+						'</p>';
+
 					this.loading = false;
 				});
 		},
@@ -198,10 +248,41 @@ export default {
 			}
 			return new Uint8Array(out);
 		},
+		closeProcessTrack() {
+			console.log('Close');
+			this.processStatus = [];
+			this.processError = null;
+		},
 	},
 };
 </script>
 
+<style lang="scss">
+.selectOptionExtractor div.v-input__control {
+	min-height: auto !important;
+}
+.selectOptionExtractor div.v-input__control div.v-input__slot {
+	padding: 0 !important;
+}
+.selectOptionExtractor div.v-input__control div.v-select__slot {
+	width: 100px;
+}
+.selectOptionExtractor div.v-input__control div.v-select__slot div.v-text-field__prefix {
+	min-width: 60px;
+	text-align: left;
+}
+.selectOptionExtractor div.v-input__control div.v-input__slot div.v-select__selection {
+	border: solid 1px #cccccc;
+	min-width: 90px;
+	text-align: center;
+	display: block;
+	padding: 0 5px;
+}
+.selectOptionExtractor div.v-input__control div.v-input__slot input {
+	width: 0 !important;
+	max-width: 0 !important;
+}
+</style>
 <style lang="scss" scoped>
 .main {
 	padding-top: 20px;
@@ -279,5 +360,15 @@ label span {
 .processTracker + strong {
 	margin-top: 10px;
 	font-size: 1.2em;
+}
+
+.selectOptionExtractor {
+	vertical-align: middle;
+	color: rgba(0, 0, 0, 0.54);
+	width: 300px;
+	margin: 10px auto !important;
+}
+.selectOptionExtractor div {
+	min-height: auto !important;
 }
 </style>

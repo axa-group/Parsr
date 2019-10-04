@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -158,7 +158,8 @@ export class WordsToLineModule extends Module<Options> {
 
 				if (
 					Math.abs(prev.top - curr.top) <= prev.height * opt.topUncertainty.value &&
-					Math.abs(prev.height - curr.height) <= prev.height * opt.lineHeightUncertainty.value &&
+					Math.abs(prev.height - curr.height) <=
+						prev.height * (1 + opt.lineHeightUncertainty.value) &&
 					curr.left - (prev.left + prev.width) <= opt.maximumSpaceBetweenWords.value &&
 					// FIXME element cannot be a Heading since it is a Word
 					// (prev instanceof Heading) === (curr instanceof Heading) &&

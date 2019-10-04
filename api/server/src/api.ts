@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -214,6 +214,7 @@ export class ApiServer {
 	}
 
 	private handleGetCsv(req: Request, res: Response) {
+		res.setHeader('Access-Control-Allow-Origin', '*');
 		const docId: string = req.params.id;
 		const page: number = parseInt(req.params.page, 10);
 		const table: number = parseInt(req.params.table, 10);
@@ -227,14 +228,19 @@ export class ApiServer {
 	}
 
 	private handleGetCsvList(req: Request, res: Response) {
+		res.setHeader('Access-Control-Allow-Origin', '*');
 		const docId: string = req.params.id;
-		const folder: string = this.fileManager.getFilePath(docId, 'csvs');
-		const paths: string[] = fs.readdirSync(folder).map(filename => {
-			const match = filename.match(/-(\d+)-(\d+)\.csv$/);
-			return `${req.baseUrl}/csv/${docId}/${match[1]}/${match[2]}`;
-		});
+		try {
+			const folder: string = this.fileManager.getFilePath(docId, 'csvs');
+			const paths: string[] = fs.readdirSync(folder).map(filename => {
+				const match = filename.match(/-(\d+)-(\d+)\.csv$/);
+				return `${req.baseUrl}/csv/${docId}/${match[1]}/${match[2]}`;
+			});
 
-		res.json(paths);
+			res.json(paths);
+		} catch (err) {
+			res.status(404).send(err.stack);
+		}
 	}
 
 	private handleGetMarkdown(req: Request, res: Response) {
@@ -252,7 +258,7 @@ export class ApiServer {
 			const file: string = this.fileManager.getFilePath(req.params.id, type);
 			res.sendFile(file);
 		} catch (err) {
-			res.status(404).send(err);
+			res.status(404).send(err.stack);
 		}
 	}
 

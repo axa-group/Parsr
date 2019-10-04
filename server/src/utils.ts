@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -618,4 +618,23 @@ export function getCommandLocationOnSystem(executableName: string): string {
 	} else {
 		return res;
 	}
+}
+
+/**
+ * Returns the grouping of consecutive numbers in an array
+ * @param theArray The input array of numbers
+ */
+export function groupConsecutiveNumbersInArray(theArray: number[]): number[][] {
+	let result: number[][] = [];
+	result = theArray
+		.sort((a, b) => a - b)
+		.reduce((r, n) => {
+			const lastSubArray = r[r.length - 1];
+			if (!lastSubArray || lastSubArray[lastSubArray.length - 1] !== n - 1) {
+				r.push([]);
+			}
+			r[r.length - 1].push(n);
+			return r;
+		}, []);
+	return result;
 }

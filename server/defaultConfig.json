@@ -1,7 +1,7 @@
 {
 	"version": 0.5,
 	"extractor": {
-		"pdf": "pdfminer",
+		"pdf": "pdf2json",
 		"img": "tesseract",
 		"language": ["eng", "fra"]
 	},

@@ -1,17 +1,11 @@
 import axios from 'axios';
-//import NProgress from 'nprogress'
 
 const apiClient = axios.create({
-	//baseURL: 'https://images.pexels.com',
-	baseURL: 'http://localhost:3001/api/v1',
+	baseURL: process.env.VUE_APP_API
+		? process.env.VUE_APP_API + '/api/v1'
+		: 'http://localhost:3001/api/v1',
 	withCredentials: false,
-	headers: {
-		//crossdomain: true,
-		//Accept: 'application/json',
-		//'Access-Control-Allow-Origin': 'http://localhost:8080',
-		//'Content-type': 'image/png',
-		//responseType: 'blob',
-	},
+	headers: {},
 	timeout: 10000,
 });
 
@@ -24,11 +18,22 @@ export default {
 	getDocument(docID) {
 		return apiClient.get('/json/' + docID);
 	},
+	getDocumentText(docID) {
+		return apiClient.get('/text/' + docID);
+	},
+	getDocumentMarkdown(docID) {
+		return apiClient.get('/markdown/' + docID);
+	},
+	getDocumentCsvs(docID) {
+		return apiClient.get('/csv/' + docID);
+	},
+	getDocumentCsv(url) {
+		return apiClient.get(url.replace('/api/v1', ''));
+	},
 	postDocument(file, configuration) {
 		const formData = new FormData();
 		formData.append('file', file, file.name);
 		formData.append('config', configuration);
-		console.log(formData);
 		return apiClient.post('/document', formData);
 	},
 	getDocumentStatus(docID) {

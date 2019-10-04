@@ -24,6 +24,10 @@ export default {
 		LineElement: () => import('../components/DocumentPreview/Line.vue'),
 	},
 	computed: {
+		trace() {
+			console.log('trace');
+			return;
+		},
 		elementComponent() {
 			if (this.element.type === 'paragraph') {
 				return 'Paragraph';

@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,11 @@ export class Module<T = undefined> {
 	public static moduleName: string = '';
 	public static dependencies: Array<typeof Module> = [];
 	private _options: any = {};
+	private _extraOptions: any = {};
 
-	constructor(options?: T, defaultOptions?: T) {
+	constructor(options?: T, defaultOptions?: T, extraOptions?: T) {
 		this._options = { ...defaultOptions, ...options };
+		this._extraOptions = extraOptions;
 	}
 
 	public run(document: Document): Promise<Document> {
@@ -48,6 +50,22 @@ export class Module<T = undefined> {
 	 */
 	public set options(value: any) {
 		this._options = value;
+	}
+
+	/**
+	 * Getter extraOptions
+	 * @return {any }
+	 */
+	public get extraOptions(): any {
+		return this._extraOptions;
+	}
+
+	/**
+	 * Setter extraOptions
+	 * @param {any } value
+	 */
+	public set extraOptions(value: any) {
+		this._extraOptions = value;
 	}
 
 	protected main(document: Document): Document | Promise<Document> {

@@ -2,6 +2,7 @@
 	<g>
 		<rect
 			class="Heading"
+			:id="'Heading_' + props.element.id"
 			:key="props.element.id"
 			:x="props.element.box.l"
 			:y="props.element.box.t"
@@ -14,6 +15,7 @@
 			:key="element.id"
 			:element="element"
 			:fonts="props.fonts"
+			@custom-event="listeners['custom-event']"
 		></component>
 	</g>
 </template>

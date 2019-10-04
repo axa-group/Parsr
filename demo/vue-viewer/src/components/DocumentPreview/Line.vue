@@ -1,6 +1,7 @@
 <template functional>
 	<g>
 		<line
+			:id="'Line_' + props.element.id"
 			:x1="props.element.box.l"
 			:y1="props.element.box.t + props.element.box.h"
 			:x2="props.element.box.l + props.element.box.w"
@@ -8,10 +9,11 @@
 		/>
 		<component
 			:is="props.components.Word"
-			v-for="element in props.element.content"
+			v-for="element in props.element.content.filter(el => el.type === 'word')"
 			:key="element.id"
 			:element="element"
 			:fonts="props.fonts"
+			@custom-event="listeners['custom-event']"
 		></component>
 	</g>
 </template>
