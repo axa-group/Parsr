@@ -15,7 +15,8 @@
 							color="#00008a"
 							:auto-select-first="true"
 							:items="items"
-							@change="selectedElement"
+							:value="selectedElement"
+							@change="selectedElementEvent"
 						/>
 					</div>
 				</v-expansion-panel-content>
@@ -24,11 +25,8 @@
 	</div>
 </template>
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 export default {
-	data: () => ({
-		lastSelectedElement: null,
-	}),
 	props: {
 		pageElements: {
 			type: Array,
@@ -37,17 +35,17 @@ export default {
 	},
 	methods: {
 		...mapMutations(['setElementSelected']),
-		selectedElement(element) {
-			if (this.lastSelectedElement) {
-				document
-					.getElementById(this.buildID(this.lastSelectedElement))
-					.classList.remove('highlighted');
-			}
+		selectedElementEvent(element) {
+			// removes all other highlighted elements when this selector is used
+			const highlightedElements = document.getElementsByClassName('highlighted');
+			Array.from(highlightedElements || []).forEach(element => {
+				element.classList.remove('highlighted');
+			});
 
 			if (element) {
 				document.getElementById(this.buildID(element)).classList.add('highlighted');
 			}
-			this.lastSelectedElement = element;
+
 			this.setElementSelected(element);
 		},
 		capitalize(string) {
@@ -78,6 +76,7 @@ export default {
 		},
 	},
 	computed: {
+		...mapState(['selectedElement']),
 		items() {
 			return this.pageElements
 				.map(this.flatten)
