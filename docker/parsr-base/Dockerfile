@@ -23,8 +23,6 @@ WORKDIR /opt/app-root/src
 RUN chown 1001:0 /opt/app-root/src
 
 COPY --from=builder /opt/pdf2json /opt/pdf2json
-COPY --chown=1001:0 . /opt/app-root/src
- 
 
 ENV PATH $PATH:/opt/app-root/src/node_modules/.bin:/opt/pdf2json/bin
 ENV HOME /opt/app-root/src
