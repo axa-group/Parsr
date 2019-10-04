@@ -17,10 +17,10 @@
 import {
 	BoundingBox,
 	Document,
+	Element,
 	Line,
 	Page,
 	Paragraph,
-	Element,
 } from '../../types/DocumentRepresentation';
 
 import * as utils from '../../utils';
@@ -30,10 +30,10 @@ import { ReadingOrderDetectionModule } from '../ReadingOrderDetectionModule/Read
 import { WordsToLineModule } from '../WordsToLineModule/WordsToLineModule';
 
 type LineSpace = {
-	distance: Number;
-	usageRatio: Number;
-	distanceHeightRatio: Number;
-	totalHeight: Number;
+	distance: number;
+	usageRatio: number;
+	distanceHeightRatio: number;
+	totalHeight: number;
 	lines: Line[];
 };
 /**
@@ -71,10 +71,10 @@ export class LinesToParagraphModule extends Module {
 			}
 			const paragraphs: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
 			page.elements = otherElements.concat(paragraphs);
-			//this.getPageParagraphs(page).map(paragraph => {
-			//console.log('Paragraph ' + paragraph.id + ' order ' + paragraph.properties.order);
-			//TODO: Set fine paragraph order
-			//});
+			// this.getPageParagraphs(page).map(paragraph => {
+			// console.log('Paragraph ' + paragraph.id + ' order ' + paragraph.properties.order);
+			// TODO: Set fine paragraph order
+			// });
 			return page;
 		});
 
@@ -143,7 +143,7 @@ export class LinesToParagraphModule extends Module {
 
 		lineSpaces.forEach(space => {
 			lines.forEach((line, index) => {
-				let nextLine = this.getNextLine(index, lines);
+				const nextLine = this.getNextLine(index, lines);
 				let currentLineDistance = this.getInterLineDistance(line, nextLine);
 
 				if (this.shouldAdjustLineDistance(currentLineDistance, lineSpaces)) {
@@ -178,14 +178,14 @@ export class LinesToParagraphModule extends Module {
 			});
 		});
 
-		if (lines.length == 1 && lineSpaces.length == 0) {
+		if (lines.length === 1 && lineSpaces.length === 0) {
 			toBeMerged.push(lines);
 		}
 		return toBeMerged;
 	}
 
-	private findAccuratedDistance(distance: Number, lineSpaces: LineSpace[]): Number {
-		let accurated = lineSpaces
+	private findAccuratedDistance(distance: number, lineSpaces: LineSpace[]): number {
+		const accurated = lineSpaces
 			.map(space => {
 				return {
 					distance: space.distance,
@@ -200,11 +200,11 @@ export class LinesToParagraphModule extends Module {
 		return distance;
 	}
 
-	private shouldAdjustLineDistance(distance: Number, lineSpaces: LineSpace[]): Boolean {
+	private shouldAdjustLineDistance(distance: number, lineSpaces: LineSpace[]): boolean {
 		if (distance == null) {
 			return false;
 		}
-		return lineSpaces.filter(space => space.distance == distance).shift() == null;
+		return lineSpaces.filter(space => space.distance === distance).shift() == null;
 	}
 
 	private getNextLine(index: number, inLines: Line[]): Line {
@@ -222,7 +222,7 @@ export class LinesToParagraphModule extends Module {
 	}
 
 	private getInterLinesSpace(lines: Line[]): LineSpace[] {
-		let interLineSpaces = this.getPercentagedLineSpaces(lines);
+		const interLineSpaces = this.getPercentagedLineSpaces(lines);
 		return this.removeMinorDistancesChanges(interLineSpaces);
 	}
 
@@ -230,16 +230,16 @@ export class LinesToParagraphModule extends Module {
 		const sortedByDistance = lines.sort((a, b) => {
 			return a.distance.valueOf() - b.distance.valueOf();
 		});
-		//.filter(space => space.distance >= 0);
+		// .filter(space => space.distance >= 0);
 
-		let mergedDistances: LineSpace[] = [];
+		const mergedDistances: LineSpace[] = [];
 		sortedByDistance.forEach((distance, index) => {
 			if (
 				index > 0 &&
 				distance.distanceHeightRatio.valueOf() < 0.25
-				//distance.distanceHeightRatio.valueOf() -
-				//	sortedByDistance[index - 1].distanceHeightRatio.valueOf() <
-				//	0.1
+				// distance.distanceHeightRatio.valueOf() -
+				// 	sortedByDistance[index - 1].distanceHeightRatio.valueOf() <
+				// 	0.1
 			) {
 				const mergedTotalHeight =
 					mergedDistances[mergedDistances.length - 1].totalHeight.valueOf() +
@@ -266,16 +266,16 @@ export class LinesToParagraphModule extends Module {
 		return mergedDistances.sort((a, b) => {
 			return b.usageRatio.valueOf() - a.usageRatio.valueOf();
 		});
-		//.filter(space => space.distance >= 0);
+		// .filter(space => space.distance >= 0);
 	}
 
 	private getPercentagedLineSpaces(lines: Line[]): LineSpace[] {
-		let linesSpaces = [];
+		const linesSpaces = [];
 		lines.forEach((line, index) => {
-			let nextLine = index + 1 < lines.length ? lines[index + 1] : null;
-			let distance = this.getInterLineDistance(line, nextLine);
+			const nextLine = index + 1 < lines.length ? lines[index + 1] : null;
+			const distance = this.getInterLineDistance(line, nextLine);
 			if (distance != null) {
-				const existingDistance = linesSpaces.filter(space => space.distance == distance).shift();
+				const existingDistance = linesSpaces.filter(space => space.distance === distance).shift();
 				if (existingDistance) {
 					existingDistance.lines.push(line.id);
 					existingDistance.usageRatio = Number(
@@ -284,7 +284,7 @@ export class LinesToParagraphModule extends Module {
 					existingDistance.totalHeight += line.height;
 				} else {
 					linesSpaces.push({
-						distance: distance,
+						distance,
 						usageRatio: Number((1 / lines.length).toPrecision(3)),
 						lines: [line.id],
 						totalHeight: line.height,
@@ -302,7 +302,7 @@ export class LinesToParagraphModule extends Module {
 		});
 	}
 
-	private getInterLineDistance(line: Line, nextLine: Line): Number {
+	private getInterLineDistance(line: Line, nextLine: Line): number {
 		if (!nextLine) {
 			return null;
 		}
