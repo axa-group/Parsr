@@ -248,7 +248,7 @@ export default new Vuex.Store({
 		},
 		fetchDocument({ commit }) {
 			return DocumentService.getDocument(this.state.uuid).then(response => {
-				commit('SET_DOCUMENT', response.data);
+				commit('SET_DOCUMENT', DocumentService.normalizeWordsSpace(response.data));
 				return response.data;
 			});
 		},
