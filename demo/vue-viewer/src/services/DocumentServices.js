@@ -36,8 +36,6 @@ export default {
 				}
 			});
 		});
-		var words = lines.map(line => line.content);
-		console.log(words);
 		return document;
 	},
 	getThumbnail(docID, page) {
