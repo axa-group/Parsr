@@ -236,10 +236,9 @@ export class LinesToParagraphModule extends Module {
 		sortedByDistance.forEach((distance, index) => {
 			if (
 				index > 0 &&
-				distance.distanceHeightRatio.valueOf() < 0.25
-				//distance.distanceHeightRatio.valueOf() -
-				//	sortedByDistance[index - 1].distanceHeightRatio.valueOf() <
-				//	0.1
+				distance.distanceHeightRatio.valueOf() -
+					sortedByDistance[index - 1].distanceHeightRatio.valueOf() <
+					0.25
 			) {
 				const mergedTotalHeight =
 					mergedDistances[mergedDistances.length - 1].totalHeight.valueOf() +
