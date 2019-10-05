@@ -22,6 +22,11 @@ import { Line } from './Line';
 import { Text } from './Text';
 import { Word } from './Word';
 
+type LineSpace = {
+	line: Line;
+	lineBreak: Boolean;
+};
+
 /**
  * The Paragraph class represents a collection of lines, fused together to represent a block of text
  * which potentially represents a symantic grouping.
@@ -52,7 +57,24 @@ export class Paragraph extends Text {
 	 * Converts the entire paragraph into a string form with formatting, with spaces between words.
 	 */
 	public toMarkdown(): string {
-		const words: Word[] = this.getWords();
+		const lines: LineSpace[] = this.getLinesWithAvailableSpace();
+		/*console.log(
+			lines.filter(line => line.lineBreak).map(l => l.line.id + ' lineBreak ' + l.lineBreak),
+		);*/
+		let output: string = '';
+		lines.forEach(line => {
+			output += this.lineToMarkDown(line.line);
+			if (line.lineBreak) {
+				output += '  \n';
+			} else {
+				output += ' ';
+			}
+		});
+		return output;
+	}
+
+	private lineToMarkDown(line: Line) {
+		const words: Word[] = line.content;
 		let biWordsIdx: number[][] = Array<number[]>(1).fill([]);
 		let bWordsIdx: number[][] = Array<number[]>(1).fill([]);
 		let iWordsIdx: number[][] = Array<number[]>(1).fill([]);
@@ -100,6 +122,21 @@ export class Paragraph extends Text {
 		return this.content.map(l => l.content).reduce((a, b) => [...a, ...b]);
 	}
 
+	private getLinesWithAvailableSpace(): LineSpace[] {
+		return this.content.map((l, index) => {
+			return { line: l, lineBreak: this.isLineBreak(index) };
+		});
+	}
+
+	private isLineBreak(index: number): Boolean {
+		if (index + 1 >= this.content.length) {
+			return false;
+		}
+		const line: Line = this.content[index];
+		const nextLine: Line = this.content[index + 1];
+		const availableSpace = this.width - line.width;
+		return availableSpace >= nextLine.content[0].width;
+	}
 	/**
 	 * Get every words that compose a paragrah's substring.
 	 * @param start Begining of the string
