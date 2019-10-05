@@ -23,7 +23,7 @@
 								<span>{{ fontInfo(currentElement.font) }}</span>
 							</li>
 							<li v-if="!Array.isArray(currentElement.content)">
-								<span>Content:</span> {{ currentElement.content }}
+								<span>Content:</span> <span class="wordContent">{{ currentElement.content }}</span>
 							</li>
 							<li v-if="Object.keys(currentElement.properties).length > 0">
 								<span>Properties:</span>
@@ -32,7 +32,8 @@
 										v-for="(option, index) in Object.keys(currentElement.properties)"
 										:key="'Item_' + index"
 									>
-										<span>{{ option }}:</span> {{ currentElement.properties[option] }}
+										<span>{{ option }}:</span>
+										<span class="wordContent">{{ currentElement.properties[option] }}</span>
 									</li>
 								</ul>
 							</li>
@@ -123,6 +124,15 @@ export default {
 	border: 0;
 	padding: 0;
 }
+
+.PageInspectorContainer span.wordContent {
+	display: inline-block;
+	max-width: 200px;
+	word-break: break-all;
+	vertical-align: top;
+	margin-left: 10px;
+}
+
 div.v-expansion-panels div.v-expansion-panel {
 	background-color: transparent;
 }
