@@ -126,34 +126,6 @@ export default new Vuex.Store({
 				],
 				'lines-to-paragraph',
 				[
-					'lines-to-paragraph-old',
-					{
-						addNewline: { value: true, range: [true, false] },
-						alignUncertainty: {
-							value: 3,
-							range: {
-								min: 0,
-								max: 100,
-							},
-						},
-						checkFont: { value: false, range: [true, false] },
-						maxInterline: {
-							value: 0.3,
-							range: {
-								min: 0.0,
-								max: 1.0,
-							},
-						},
-						lineLengthUncertainty: {
-							value: 0.25,
-							range: {
-								min: 0.0,
-								max: 1.0,
-							},
-						},
-					},
-				],
-				[
 					'page-number-detection',
 					{
 						maxMarginPercentage: {
