@@ -21,6 +21,10 @@
 		/>
 		<div style="border-left: solid 1px #ebebf1;">
 			<pageInspector v-if="documentFetched" :filters="inspectorFilters" />
+			<ElementSelector
+				v-if="documentFetched"
+				:pageElements="document.pages[selectedPage - 1].elements"
+			/>
 			<elementInspector
 				v-if="documentFetched"
 				:selectedElement="selectedElement"
@@ -42,12 +46,20 @@ import Thumbnails from '@/components/Thumbnails';
 import PageInspector from '@/components/PageInspector';
 import WordHierarchy from '@/components/WordHierarchy';
 import ElementInspector from '@/components/ElementInspector';
+import ElementSelector from '@/components/ElementSelector';
 import DocPreview from '@/components/DocumentPreview';
 import { docComputed } from '../vuex/helpers.js';
 import { mapState } from 'vuex';
 
 export default {
-	components: { Thumbnails, PageInspector, DocPreview, WordHierarchy, ElementInspector },
+	components: {
+		Thumbnails,
+		PageInspector,
+		DocPreview,
+		WordHierarchy,
+		ElementInspector,
+		ElementSelector,
+	},
 	computed: {
 		documentFetched() {
 			return this.document != null;
