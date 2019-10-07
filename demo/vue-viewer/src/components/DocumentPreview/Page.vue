@@ -126,13 +126,15 @@ export default {
 	},
 	methods: {
 		elementSelected(element) {
+			// if a Word is clicked, I make sure to remove all remaining highlighted elements instead of just the last clicked element
+			const highlightedWords = document.getElementsByClassName('highlighted');
+			Array.from(highlightedWords || []).forEach(element => {
+				element.classList.remove('highlighted');
+			});
+
 			const shouldFill =
 				(this.lastWordSelected && this.lastWordSelected.id !== element.id) ||
 				!this.lastWordSelected;
-
-			if (this.lastWordSelected) {
-				document.getElementById('Word_' + this.lastWordSelected.id).classList.remove('highlighted');
-			}
 
 			if (shouldFill) {
 				document.getElementById('Word_' + element.id).classList.add('highlighted');
@@ -201,7 +203,7 @@ export default {
 .Page g.WordGroup:hover text,
 .Page text.highlighted {
 	cursor: pointer;
-	fill: red;
+	fill: red !important;
 }
 .VisibleWords rect.Word {
 	fill: transparent;

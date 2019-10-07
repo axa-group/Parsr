@@ -1,12 +1,12 @@
 <template>
 	<div class="v-application v-application--is-ltr PageInspector">
-		<v-expansion-panels :value="0">
+		<v-expansion-panels v-model="pageInspectorSwitch">
 			<v-expansion-panel>
-				<v-expansion-panel-header
-					><header>
+				<v-expansion-panel-header>
+					<header>
 						<h1>Visibility Filters</h1>
-					</header></v-expansion-panel-header
-				>
+					</header>
+				</v-expansion-panel-header>
 				<v-expansion-panel-content>
 					<div class="PageInspectorContainer">
 						<v-switch
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from 'vuex';
 export default {
 	data() {
 		return {
@@ -73,7 +74,19 @@ export default {
 			required: true,
 		},
 	},
+	computed: {
+		...mapGetters(['pageInspectorSwitchState']),
+		pageInspectorSwitch: {
+			get() {
+				return this.pageInspectorSwitchState;
+			},
+			set(value) {
+				this.switchExpansionPanel({ panel: 'pageInspector', value });
+			},
+		},
+	},
 	methods: {
+		...mapMutations(['switchExpansionPanel']),
 		swapFilters() {
 			const newFilters = {
 				words: this.wordsFilter,

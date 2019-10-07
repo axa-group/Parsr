@@ -1,34 +1,43 @@
 <template>
-	<div v-if="selectedElement" class="PageInspector">
-		<header>
-			<h1>Word hierarchy</h1>
-		</header>
-		<div class="PageInspectorContainer">
-			<v-treeview
-				v-if="selectedElement"
-				:items="items"
-				:open="openItems"
-				:active="activeItem"
-				:dense="true"
-				:transition="true"
-				style="text-align:left"
-				:open-all="true"
-				activatable
-				color="f9f9fd"
-				@update:active="onActiveUpdated"
-			>
-				<!--template v-slot:label="{ item, active }">
+	<div v-if="selectedElement" class="v-application v-application--is-ltr PageInspector">
+		<v-expansion-panels v-model="wordHierarchySwitch">
+			<v-expansion-panel>
+				<v-expansion-panel-header>
+					<header>
+						<h1>Word hierarchy</h1>
+					</header>
+				</v-expansion-panel-header>
+				<v-expansion-panel-content>
+					<div class="PageInspectorContainer">
+						<v-treeview
+							v-if="selectedElement"
+							:items="items"
+							:open="openItems"
+							:active="activeItem"
+							:dense="true"
+							:transition="true"
+							style="text-align:left"
+							:open-all="true"
+							activatable
+							color="f9f9fd"
+							@update:active="onActiveUpdated"
+						>
+							<!--template v-slot:label="{ item, active }">
 					<span>{{ item.name }}</span>
 					<v-icon v-if="active" size="20" style="margin-left:10px" title="Inspected">
 						mdi-crosshairs
 					</v-icon>
-				</template-->
-			</v-treeview>
-		</div>
+							</template-->
+						</v-treeview>
+					</div>
+				</v-expansion-panel-content>
+			</v-expansion-panel>
+		</v-expansion-panels>
 	</div>
 </template>
 
 <script>
+import { mapGetters, mapMutations } from 'vuex';
 export default {
 	data() {
 		return {
@@ -68,6 +77,7 @@ export default {
 		},
 	},
 	methods: {
+		...mapMutations(['switchExpansionPanel']),
 		capitalize(string) {
 			return string.charAt(0).toUpperCase() + string.slice(1);
 		},
@@ -153,9 +163,19 @@ export default {
 			return null;
 		},
 	},
+	computed: {
+		...mapGetters(['wordHierarchySwitchState']),
+		wordHierarchySwitch: {
+			get() {
+				return this.wordHierarchySwitchState;
+			},
+			set(value) {
+				this.switchExpansionPanel({ panel: 'wordHierarchy', value });
+			},
+		},
+	},
 };
 </script>
-
 <style lang="scss" scoped>
 .PageInspector {
 	text-align: center;
@@ -165,6 +185,7 @@ export default {
 	background-color: #ebebf1;
 	color: #2c3034;
 	text-align: left;
+	padding: 5px 0px;
 }
 .PageInspector header h1 {
 	font-size: 1em;
@@ -176,25 +197,33 @@ export default {
 	display: inline-block;
 	vertical-align: middle;
 }
-.PageInspectorContainer span.noSelection {
-	display: block;
-	margin: 10px 20px;
-}
-.PageInspectorContainer .elementProperties {
-	list-style-type: none;
-	padding-left: 0;
+
+.switch {
+	border-bottom: 1px solid #ebebf1;
 	margin: 0;
+	padding: 10px;
 }
-.PageInspectorContainer .elementProperties li {
-	text-align: left;
-	border-bottom: solid 1px #ebebf1;
-	padding: 8px 0 8px 8px;
+
+div.v-expansion-panels div.v-expansion-panel {
+	background-color: transparent;
 }
-.PageInspectorContainer .elementProperties li span {
-	color: #6c6c6c;
+div.v-expansion-panels div.v-expansion-panel:before {
+	box-shadow: none;
 }
-.PageInspectorContainer .elementProperties li ul li {
-	border: 0;
+div.v-expansion-panels button.v-expansion-panel-header {
+	padding: 0;
+	min-height: 0;
+	color: rgba(0, 0, 0, 0.54);
+	background-color: #ebebf1;
+	border-radius: 0;
+}
+
+div.v-expansion-panels button.v-expansion-panel-header .v-icon {
+	color: rgba(0, 0, 0, 0.24) !important;
+}
+</style>
+<style lang="scss">
+.PageInspector div.v-expansion-panels div.v-expansion-panel-content__wrap {
 	padding: 0;
 }
 </style>
