@@ -12,6 +12,13 @@ export default new Vuex.Store({
 		inputFileName: null,
 		document: null,
 		inspectorFilters: {},
+		expansionPanels: {
+			// 0: panel opened, undefined: panel closed
+			pageInspector: 0,
+			elementSelector: 0,
+			elementInspector: 0,
+			wordHierarchy: 0,
+		},
 		selectedElement: null,
 		selectedParentElement: null,
 		outputs: {
@@ -213,6 +220,9 @@ export default new Vuex.Store({
 		SET_DOCUMENT_ID(state, id) {
 			state.uuid = id;
 		},
+		switchExpansionPanel(state, { panel, value }) {
+			state.expansionPanels[panel] = value;
+		},
 	},
 	actions: {
 		fetchThumbnail({ commit }, { page }) {
@@ -293,6 +303,18 @@ export default new Vuex.Store({
 		},
 		wordFont: state => fontId => {
 			return state.document.fonts.filter(font => font.id === fontId).shift();
+		},
+		pageInspectorSwitchState(state) {
+			return state.expansionPanels.pageInspector;
+		},
+		elementSelectorSwitchState(state) {
+			return state.expansionPanels.elementSelector;
+		},
+		elementInspectorSwitchState(state) {
+			return state.expansionPanels.elementInspector;
+		},
+		wordHierarchySwitchState(state) {
+			return state.expansionPanels.wordHierarchy;
 		},
 	},
 });
