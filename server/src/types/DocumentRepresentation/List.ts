@@ -27,11 +27,18 @@ export class List extends Element {
 	private _content: Paragraph[];
 	private _isOrdered: boolean;
 	private _level: number;
+	private _firstItemNumber: number;
 
-	constructor(boundingBox: BoundingBox, content?: Paragraph[], isOrdered?: boolean) {
+	constructor(
+		boundingBox: BoundingBox,
+		content?: Paragraph[],
+		isOrdered?: boolean,
+		firstItemNumber: number = 1,
+	) {
 		super(boundingBox);
 		this._content = content;
 		this._isOrdered = isOrdered;
+		this.firstItemNumber = firstItemNumber;
 	}
 
 	public addParagraph(paragraph: Paragraph) {
@@ -85,5 +92,21 @@ export class List extends Element {
 	 */
 	public set level(value: number) {
 		this._level = value;
+	}
+
+	/**
+	 * Getter firstItemNumber
+	 * @return {number}
+	 */
+	public get firstItemNumber(): number {
+		return this._firstItemNumber;
+	}
+
+	/**
+	 * Setter firstItemNumber
+	 * @param {number} value
+	 */
+	public set firstItemNumber(value: number) {
+		this._firstItemNumber = value;
 	}
 }
