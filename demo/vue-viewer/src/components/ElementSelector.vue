@@ -1,6 +1,6 @@
 <template>
 	<div class="v-application v-application--is-ltr ElementSelector">
-		<v-expansion-panels :value="0">
+		<v-expansion-panels v-model="elementSelectorSwitch">
 			<v-expansion-panel>
 				<v-expansion-panel-header>
 					<header>
@@ -25,7 +25,7 @@
 	</div>
 </template>
 <script>
-import { mapMutations, mapState } from 'vuex';
+import { mapMutations, mapState, mapGetters } from 'vuex';
 export default {
 	props: {
 		pageElements: {
@@ -34,7 +34,7 @@ export default {
 		},
 	},
 	methods: {
-		...mapMutations(['setElementSelected']),
+		...mapMutations(['setElementSelected', 'switchExpansionPanel']),
 		selectedElementEvent(element) {
 			// removes all other highlighted elements when this selector is used
 			const highlightedElements = document.getElementsByClassName('highlighted');
@@ -77,6 +77,15 @@ export default {
 	},
 	computed: {
 		...mapState(['selectedElement']),
+		...mapGetters(['elementSelectorSwitchState']),
+		elementSelectorSwitch: {
+			get() {
+				return this.elementSelectorSwitchState;
+			},
+			set(value) {
+				this.switchExpansionPanel({ panel: 'elementSelector', value });
+			},
+		},
 		items() {
 			return this.pageElements
 				.map(this.flatten)
