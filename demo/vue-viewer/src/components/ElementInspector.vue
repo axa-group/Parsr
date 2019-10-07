@@ -1,5 +1,5 @@
 <template>
-	<div class="PageInspector">
+	<div class="v-application v-application--is-ltr PageInspector">
 		<v-expansion-panels :value="0">
 			<v-expansion-panel>
 				<v-expansion-panel-header
