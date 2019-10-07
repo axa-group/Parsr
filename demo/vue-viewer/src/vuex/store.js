@@ -304,6 +304,7 @@ export default new Vuex.Store({
 				commit('setInputFileName', file.name);
 				commit('setElementSelected', null);
 				commit('setParentElementSelected', null);
+				commit('setSelectedPage', 1);
 				return response.data;
 			});
 		},
