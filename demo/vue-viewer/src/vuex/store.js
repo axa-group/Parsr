@@ -124,34 +124,7 @@ export default new Vuex.Store({
 						mergeTableElements: { value: false, range: [true, false] },
 					},
 				],
-				[
-					'lines-to-paragraph',
-					{
-						addNewline: { value: true, range: [true, false] },
-						alignUncertainty: {
-							value: 3,
-							range: {
-								min: 0,
-								max: 100,
-							},
-						},
-						checkFont: { value: false, range: [true, false] },
-						maxInterline: {
-							value: 0.3,
-							range: {
-								min: 0.0,
-								max: 1.0,
-							},
-						},
-						lineLengthUncertainty: {
-							value: 0.25,
-							range: {
-								min: 0.0,
-								max: 1.0,
-							},
-						},
-					},
-				],
+				'lines-to-paragraph',
 				[
 					'page-number-detection',
 					{

@@ -35,6 +35,15 @@
 			:fonts="props.fonts"
 			@custom-event="listeners['custom-event']"
 		></component>
+
+		<component
+			:is="props.components.Line"
+			v-for="element in props.element.content.filter(el => el.type === 'line')"
+			:key="element.id"
+			:element="element"
+			:fonts="props.fonts"
+			@custom-event="listeners['custom-event']"
+		></component>
 	</g>
 </template>
 
@@ -42,6 +51,7 @@
 import pageElementMixin from '@/mixins/pageElementMixin';
 import Paragraph from '@/components/DocumentPreview/Paragraph';
 import Word from '@/components/DocumentPreview/Word';
+import Line from '@/components/DocumentPreview/Line';
 import Heading from '@/components/DocumentPreview/Heading';
 
 export default {
@@ -53,6 +63,7 @@ export default {
 					Paragraph,
 					Word,
 					Heading,
+					Line,
 				};
 			},
 		},
