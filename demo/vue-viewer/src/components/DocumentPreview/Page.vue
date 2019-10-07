@@ -203,7 +203,7 @@ export default {
 .Page g.WordGroup:hover text,
 .Page text.highlighted {
 	cursor: pointer;
-	fill: red;
+	fill: red !important;
 }
 .VisibleWords rect.Word {
 	fill: transparent;
