@@ -80,7 +80,7 @@ export default {
 		items() {
 			return this.pageElements
 				.map(this.flatten)
-				.reduce((prev, curr) => prev.concat(curr))
+				.reduce((prev, curr) => prev.concat(curr), [])
 				.sort(this.sortFunction);
 		},
 	},
