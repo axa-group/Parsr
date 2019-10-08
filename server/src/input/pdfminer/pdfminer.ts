@@ -24,9 +24,7 @@ import {
 	Document,
 	Element,
 	Font,
-	Line,
 	Page,
-	Paragraph,
 	Word,
 } from '../../types/DocumentRepresentation';
 import { PdfminerPage } from '../../types/PdfminerPage';
@@ -139,13 +137,11 @@ function getPage(pageObj: PdfminerPage): Page {
 
 	// treat paragraphs
 	if (pageObj.textbox !== undefined) {
-		const paras: Paragraph[] = pageObj.textbox.map(para => {
-			const lines: Line[] = para.textline.map(line =>
-				breakLineIntoWords(line, ',', pageBbox.height),
-			);
-			return new Paragraph(getBoundingBox(para._attr.bbox, ',', pageBbox.height), lines);
+		pageObj.textbox.forEach(para => {
+			para.textline.map(line => {
+				elements = [...elements, ...breakLineIntoWords(line, ',', pageBbox.height)];
+			});
 		});
-		elements = [...elements, ...paras];
 	}
 	return new Page(parseFloat(pageObj._attr.id), elements, pageBbox);
 }
@@ -196,24 +192,37 @@ function getMostCommonFont(theFonts: Font[]): Font {
 	}
 }
 
+/**
+ * Fetches the character a particular pdfminer's textual output represents
+ * TODO: This placeholder will accomodate the solution at https://github.com/aarohijohal/pdfminer.six/issues/1 ...
+ * TODO: ... For now, it returns a '?' when a (cid:) is encountered
+ * @param character the character value outputted by pdfminer
+ * @param font the font associated with the character  -- TODO to be taken into consideration here
+ */
+function getValidCharacter(character: string): string {
+	return RegExp(/\(cid:/gm).test(character) ? '?' : character;
+}
+
 function breakLineIntoWords(
 	line: PdfminerTextline,
 	wordSeperator: string = ' ',
 	pageHeight: number,
 	scalingFactor: number = 1,
-): Line {
+): Word[] {
 	const chars: Character[] = line.text.map(char => {
 		if (char._ === undefined) {
 			return undefined;
 		} else {
+			const font: Font = new Font(char._attr.font, parseFloat(char._attr.size), {
+				weight: RegExp(/bold/gim).test(char._attr.font) ? 'bold' : 'medium',
+				isItalic: RegExp(/italic/gim).test(char._attr.font) ? true : false,
+				isUnderline: RegExp(/underline/gim).test(char._attr.font) ? true : false,
+			});
+			const charContent: string = getValidCharacter(char._);
 			return new Character(
 				getBoundingBox(char._attr.bbox, ',', pageHeight, scalingFactor),
-				char._,
-				new Font(char._attr.font, parseFloat(char._attr.size), {
-					weight: RegExp(/bold/gim).test(char._attr.font) ? 'bold' : 'medium',
-					isItalic: RegExp(/italic/gim).test(char._attr.font) ? true : false,
-					isUnderline: RegExp(/underline/gim).test(char._attr.font) ? true : false,
-				}),
+				charContent,
+				font,
 			);
 		}
 	});
@@ -224,14 +233,17 @@ function breakLineIntoWords(
 		chars.splice(chars.length - 1, chars.length);
 	}
 
-	let sepLocs = chars
-		.filter(char => char !== undefined)
-		.reduce((a, e, i) => (e.content === wordSeperator ? a.concat(i) : a), []); // fill with spaces
-
-	sepLocs = [
-		...sepLocs,
-		...chars.reduce((a, e, i) => (e === undefined ? a.concat(i) : a), []), // fill with undefs
-	].sort((a, b) => a - b);
+	const sepLocs: number[] = chars
+		.map((c, i) => {
+			if (c === undefined) {
+				return i;
+			} else {
+				return undefined;
+			}
+		})
+		.filter(l => l !== undefined)
+		.filter(l => l !== 0)
+		.filter(l => l !== chars.length);
 
 	const words: Word[] = [];
 	if (sepLocs.length === 0) {
@@ -270,7 +282,7 @@ function breakLineIntoWords(
 			);
 		}
 	}
-	return new Line(getBoundingBox(line._attr.bbox, ',', pageHeight), words);
+	return words;
 }
 
 /**
