@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-import { BoundingBox, Document, Line, Page, Paragraph } from '../../types/DocumentRepresentation';
+import {
+	BoundingBox,
+	Document,
+	Element,
+	Line,
+	Page,
+	Paragraph,
+} from '../../types/DocumentRepresentation';
+
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
@@ -22,10 +30,10 @@ import { ReadingOrderDetectionModule } from '../ReadingOrderDetectionModule/Read
 import { WordsToLineModule } from '../WordsToLineModule/WordsToLineModule';
 
 type LineSpace = {
-	distance: Number;
-	usageRatio: Number;
-	distanceHeightRatio: Number;
-	totalHeight: Number;
+	distance: number;
+	usageRatio: number;
+	distanceHeightRatio: number;
+	totalHeight: number;
 	lines: Line[];
 };
 /**
@@ -47,6 +55,8 @@ export class LinesToParagraphModule extends Module {
 			const lines = this.getPageLines(page);
 			const interLinesSpaces = this.getInterLinesSpace(lines);
 			const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
+			let otherElements = this.getPageElements(page, lines);
+			otherElements = this.joinLinesInElements(otherElements);
 
 			// Clean the properties.cr  information as it is not usefull down the line
 			for (const theseLines of joinedLines) {
@@ -60,16 +70,63 @@ export class LinesToParagraphModule extends Module {
 				}
 			}
 			const paragraphs: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
-			page.elements = paragraphs;
+			page.elements = otherElements.concat(paragraphs);
+			// this.getPageParagraphs(page).map(paragraph => {
+			// console.log('Paragraph ' + paragraph.id + ' order ' + paragraph.properties.order);
+			// TODO: Set fine paragraph order
+			// });
 			return page;
 		});
 
 		return doc;
 	}
 
+	private joinLinesInElements(elements: Element[]): Element[] {
+		const withLines: Element[] = [];
+		this.getElementsWithLines(elements, withLines);
+		withLines.forEach(element => {
+			const lines = this.getLinesInElement(element);
+			const interLinesSpaces = this.getInterLinesSpace(lines);
+			const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
+			element.content = this.mergeLinesIntoParagraphs(joinedLines);
+		});
+		return elements;
+	}
+
+	private getLinesInElement(element: Element): Line[] {
+		if (Array.isArray(element.content)) {
+			const lines = element.content;
+			return lines.filter(item => item instanceof Line).map(line => line as Line);
+		}
+		return [];
+	}
+
+	private getElementsWithLines(elements: Element[], withLines: Element[]) {
+		elements.forEach(element => {
+			const lines = this.getLinesInElement(element);
+			if (lines.length > 0) {
+				withLines.push(element);
+			} else if (element.content as Element[]) {
+				const children = element.content as Element[];
+				children.forEach(child => {
+					this.getElementsWithLines(child.content as Element[], withLines);
+				});
+			}
+		});
+	}
+
+	private getPageElements(page: Page, excludeLines: Line[]): Element[] {
+		return page.elements.filter(
+			element => !(element instanceof Line) || !excludeLines.includes(element),
+		);
+	}
+
 	private getPageLines(page: Page): Line[] {
 		return page.getElementsOfType<Line>(Line, false).sort(utils.sortElementsByOrder);
 	}
+	/*rivate getPageParagraphs(page: Page): Paragraph[] {
+		return page.getElementsOfType<Paragraph>(Paragraph, true).sort(utils.sortElementsByOrder);
+	}*/
 
 	private joinLinesWithSpaces(lines: Line[], lineSpaces: LineSpace[]): Line[][] {
 		const toBeMerged: Line[][] = [];
@@ -86,7 +143,7 @@ export class LinesToParagraphModule extends Module {
 
 		lineSpaces.forEach(space => {
 			lines.forEach((line, index) => {
-				let nextLine = this.getNextLine(index, lines);
+				const nextLine = this.getNextLine(index, lines);
 				let currentLineDistance = this.getInterLineDistance(line, nextLine);
 
 				if (this.shouldAdjustLineDistance(currentLineDistance, lineSpaces)) {
@@ -121,14 +178,14 @@ export class LinesToParagraphModule extends Module {
 			});
 		});
 
-		if (lines.length == 1 && lineSpaces.length == 0) {
+		if (lines.length === 1 && lineSpaces.length === 0) {
 			toBeMerged.push(lines);
 		}
 		return toBeMerged;
 	}
 
-	private findAccuratedDistance(distance: Number, lineSpaces: LineSpace[]): Number {
-		let accurated = lineSpaces
+	private findAccuratedDistance(distance: number, lineSpaces: LineSpace[]): number {
+		const accurated = lineSpaces
 			.map(space => {
 				return {
 					distance: space.distance,
@@ -143,11 +200,11 @@ export class LinesToParagraphModule extends Module {
 		return distance;
 	}
 
-	private shouldAdjustLineDistance(distance: Number, lineSpaces: LineSpace[]): Boolean {
+	private shouldAdjustLineDistance(distance: number, lineSpaces: LineSpace[]): boolean {
 		if (distance == null) {
 			return false;
 		}
-		return lineSpaces.filter(space => space.distance == distance).shift() == null;
+		return lineSpaces.filter(space => space.distance === distance).shift() == null;
 	}
 
 	private getNextLine(index: number, inLines: Line[]): Line {
@@ -165,7 +222,7 @@ export class LinesToParagraphModule extends Module {
 	}
 
 	private getInterLinesSpace(lines: Line[]): LineSpace[] {
-		let interLineSpaces = this.getPercentagedLineSpaces(lines);
+		const interLineSpaces = this.getPercentagedLineSpaces(lines);
 		return this.removeMinorDistancesChanges(interLineSpaces);
 	}
 
@@ -173,16 +230,15 @@ export class LinesToParagraphModule extends Module {
 		const sortedByDistance = lines.sort((a, b) => {
 			return a.distance.valueOf() - b.distance.valueOf();
 		});
-		//.filter(space => space.distance >= 0);
+		// .filter(space => space.distance >= 0);
 
-		let mergedDistances: LineSpace[] = [];
+		const mergedDistances: LineSpace[] = [];
 		sortedByDistance.forEach((distance, index) => {
 			if (
 				index > 0 &&
-				distance.distanceHeightRatio.valueOf() < 0.25
-				//distance.distanceHeightRatio.valueOf() -
-				//	sortedByDistance[index - 1].distanceHeightRatio.valueOf() <
-				//	0.1
+				distance.distanceHeightRatio.valueOf() -
+					sortedByDistance[index - 1].distanceHeightRatio.valueOf() <
+					0.25
 			) {
 				const mergedTotalHeight =
 					mergedDistances[mergedDistances.length - 1].totalHeight.valueOf() +
@@ -209,16 +265,16 @@ export class LinesToParagraphModule extends Module {
 		return mergedDistances.sort((a, b) => {
 			return b.usageRatio.valueOf() - a.usageRatio.valueOf();
 		});
-		//.filter(space => space.distance >= 0);
+		// .filter(space => space.distance >= 0);
 	}
 
 	private getPercentagedLineSpaces(lines: Line[]): LineSpace[] {
-		let linesSpaces = [];
+		const linesSpaces = [];
 		lines.forEach((line, index) => {
-			let nextLine = index + 1 < lines.length ? lines[index + 1] : null;
-			let distance = this.getInterLineDistance(line, nextLine);
+			const nextLine = index + 1 < lines.length ? lines[index + 1] : null;
+			const distance = this.getInterLineDistance(line, nextLine);
 			if (distance != null) {
-				const existingDistance = linesSpaces.filter(space => space.distance == distance).shift();
+				const existingDistance = linesSpaces.filter(space => space.distance === distance).shift();
 				if (existingDistance) {
 					existingDistance.lines.push(line.id);
 					existingDistance.usageRatio = Number(
@@ -227,7 +283,7 @@ export class LinesToParagraphModule extends Module {
 					existingDistance.totalHeight += line.height;
 				} else {
 					linesSpaces.push({
-						distance: distance,
+						distance,
 						usageRatio: Number((1 / lines.length).toPrecision(3)),
 						lines: [line.id],
 						totalHeight: line.height,
@@ -245,7 +301,7 @@ export class LinesToParagraphModule extends Module {
 		});
 	}
 
-	private getInterLineDistance(line: Line, nextLine: Line): Number {
+	private getInterLineDistance(line: Line, nextLine: Line): number {
 		if (!nextLine) {
 			return null;
 		}
@@ -254,13 +310,13 @@ export class LinesToParagraphModule extends Module {
 	}
 
 	private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
-		let newOrder = 0;
 		return joinedLines.map((group: Line[]) => {
 			const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
 				new Paragraph(new BoundingBox(0, 0, 0, 0)),
 				...group,
 			);
-			paragraph.properties.order = newOrder++;
+
+			paragraph.properties.order = group[0].properties.order;
 			return paragraph;
 		});
 	}
