@@ -98,15 +98,23 @@ trigger:
   branch:
   - master
   - develop
-  event:
-    exclude:
-    - pull_request
 
 steps:
+- name: Build UI
+  image: registry.access.redhat.com/ubi8/nodejs-10
+  environment:
+    NODE_ENV: development
+  commands:
+  - docker/parsr-ui/build.sh
+
 - name: Docker tag
   image: busybox
   commands:
   - sh docker/tags.sh
+  when:
+    event:
+      exclude:
+      - pull_request
 
 - name: Build UI Docker image
   image: plugins/docker
@@ -120,3 +128,7 @@ steps:
       from_secret: registry_password
     build_args:
       VUE_APP_API: http://localhost:3001
+  when:
+    event:
+      exclude:
+      - pull_request
