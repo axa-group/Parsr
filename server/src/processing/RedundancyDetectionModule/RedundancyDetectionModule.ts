@@ -72,6 +72,7 @@ export class RedundancyDetectionModule extends Module<Options> {
 			for (const group of resultGroups) {
 				if (this.checkGroupOverlapWithNewElement(group, element)) {
 					group.push(element);
+					group.sort((a, b) => b.content.length - a.content.length);
 					return;
 				}
 			}
@@ -91,7 +92,15 @@ export class RedundancyDetectionModule extends Module<Options> {
 		if (group.length === 0) {
 			decision = false;
 		} else {
-			if (group[0].toString() !== newElement.toString()) {
+			const refString: string =
+				group[0].toString().length >= newElement.toString().length
+					? group[0].toString()
+					: newElement.toString();
+			const newString: string =
+				group[0].toString().length < newElement.toString().length
+					? group[0].toString()
+					: newElement.toString();
+			if (!refString.includes(newString)) {
 				decision = false;
 			} else {
 				for (const e of group) {

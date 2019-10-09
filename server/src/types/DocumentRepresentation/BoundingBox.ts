@@ -142,7 +142,7 @@ export class BoundingBox {
 		const intintersectionRectangleTop: number = Math.max(box1.top, box2.top);
 
 		if (
-			intersectionRectangleLeft < intersectionRectangleRight &&
+			intersectionRectangleRight < intersectionRectangleLeft &&
 			intersectionRectangleBottom < intintersectionRectangleTop
 		) {
 			overlapValue = 0.0; // no intersectionRectangle at all
@@ -180,15 +180,6 @@ export class BoundingBox {
 		return new BoundingBox(left, top, width, height);
 	}
 
-	/**
-	 * Checks if the area of a bounding box is empty, by checking if either the height or the width
-	 * of the bounding box is equal to 0.
-	 * @returns true or false depending on weather the area of the bounding box is zero or not, respectively.
-	 */
-	public areaIsEmpty(): boolean {
-		return this.height === 0 || this.width === 0;
-	}
-
 	private _left: number;
 	private _top: number;
 	private _width: number;
@@ -199,5 +190,14 @@ export class BoundingBox {
 		this.top = top;
 		this.width = width;
 		this.height = height;
+	}
+
+	/**
+	 * Checks if the area of a bounding box is empty, by checking if either the height or the width
+	 * of the bounding box is equal to 0.
+	 * @returns true or false depending on weather the area of the bounding box is zero or not, respectively.
+	 */
+	public areaIsEmpty(): boolean {
+		return this.height === 0 || this.width === 0;
 	}
 }
