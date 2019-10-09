@@ -10,6 +10,9 @@ trigger:
   branch:
   - master
   - develop
+  event:
+    exclude:
+    - pull_request
 
 steps:
 - name: Build Docker baseimage
@@ -22,10 +25,6 @@ steps:
       from_secret: registry_user
     password: 
       from_secret: registry_password
-  when:
-    event:
-      exclude:
-      - pull_request
 
 ---
 kind: pipeline
@@ -62,10 +61,6 @@ steps:
   image: busybox
   commands:
   - sh docker/tags.sh
-  when:
-    event:
-      exclude:
-      - pull_request
 
 - name: Build Docker API image
   image: plugins/docker
@@ -79,10 +74,6 @@ steps:
       from_secret: registry_password
     build_args:
       DEV_MODE: 'true'
-  when:
-    event:
-      exclude:
-      - pull_request
 
 depends_on:
   - baseimage
@@ -101,14 +92,20 @@ trigger:
   - develop
 
 steps:
-- name: Change file ownership
-  image: alpine:latest
+- name: Docker tag
+  image: busybox
   commands:
-  - chown -R 1001:0 /drone/src
+  - sh docker/tags.sh
 
-- name: Build UI
-  image: registry.access.redhat.com/ubi8/nodejs-10
-  environment:
-    NODE_ENV: development
-  commands:
-  - docker/parsr-ui/build.sh
+- name: Build UI Docker image
+  image: plugins/docker
+  settings:
+    repo: axarev/parsr-ui-localhost
+    context: .
+    dockerfile: docker/parsr-ui/Dockerfile
+    username: 
+      from_secret: registry_user
+    password: 
+      from_secret: registry_password
+    build_args:
+      VUE_APP_API: http://localhost:3001
