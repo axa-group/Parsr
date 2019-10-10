@@ -19,6 +19,7 @@ import { HeadingDetectionModule } from './processing/HeadingDetectionModule/Head
 import { HierarchyDetectionModule } from './processing/HierarchyDetectionModule/HierarchyDetectionModule';
 import { KeyValueDetectionModule } from './processing/KeyValueDetectionModule/KeyValueDetectionModule';
 import { LinesToParagraphModule } from './processing/LinesToParagraphModule/LinesToParagraphModule';
+import { LinesToParagraphModuleOld } from './processing/LinesToParagraphOldModule/LinesToParagraphModule';
 import { LinkDetectionModule } from './processing/LinkDetectionModule/LinkDetectionModule';
 import { Module } from './processing/Module';
 import { NumberCorrectionModule } from './processing/NumberCorrectionModule/NumberCorrectionModule';
@@ -52,6 +53,7 @@ export class Cleaner {
 		WordsToLineModule,
 		KeyValueDetectionModule,
 		LinesToParagraphModule,
+		LinesToParagraphModuleOld,
 		HierarchyDetectionModule,
 		LinkDetectionModule,
 		HeaderFooterDetectionModule,
