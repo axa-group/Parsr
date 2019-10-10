@@ -34,8 +34,8 @@ export function extractFonts(pdfInputFile: string): Promise<void> {
 			logger.warn('MuPDF not installed !! Skip fonts extraction.');
 			resolve();
 		} else {
-			logger.info('Extracting fonts...');
 			const folder = utils.getMutoolExtractionFolder();
+			logger.info(`Extracting fonts to ${folder}...`);
 			const command = `mutool extract '${pdfInputFile}'`;
 			logger.debug(command);
 			const ret = spawnSync('mutool', ['extract', pdfInputFile], { cwd: folder });
