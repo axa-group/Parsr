@@ -57,10 +57,6 @@ export default {
 			type: Object,
 			required: false,
 		},
-		fonts: {
-			type: Array,
-			required: false,
-		},
 	},
 	mounted() {
 		if (this.selectedElement) {
@@ -154,13 +150,6 @@ export default {
 			} else {
 				return false;
 			}
-		},
-		fontInfo(fontId) {
-			const font = this.fonts.filter(font => font.id === fontId).shift();
-			if (font) {
-				return '(' + font.name + ', ' + font.weight + ', size ' + font.size + ')';
-			}
-			return null;
 		},
 	},
 	computed: {
