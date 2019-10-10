@@ -21,45 +21,74 @@ import { PdfminerExtractor } from '../server/src/input/pdfminer/PdfminerExtracto
 import { Module } from '../server/src/processing/Module';
 import { Config } from '../server/src/types/Config';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
+import {
+	TableExtractor,
+	TableExtractorResult,
+	Options,
+} from '../server/src/processing/TableDetectionModule/TableDetectionModule';
+
+export class TableExtractorStub implements TableExtractor {
+	private status: number;
+	private stderr: string;
+	private stdout: string;
+
+	constructor(status: number = 0, stderr: string = '', stdout: string = '[]') {
+		this.status = status;
+		this.stderr = stderr;
+		this.stdout = stdout;
+	}
+
+	readTables(_: string, _options: Options): TableExtractorResult {
+		return {
+			stdout: this.stdout,
+			stderr: this.stderr,
+			status: this.status,
+		};
+	}
+}
 
 export function getPdfUsingPdfMiner(
 	func: (doc: Document) => Promise<Document>,
 	filename: string,
 ): Promise<[Document, Document]> {
-	const config: Config = JSON.parse(readFileSync(`${__dirname}/../server/defaultConfig.json`, 'utf8'));
+	const config: Config = JSON.parse(
+		readFileSync(`${__dirname}/../server/defaultConfig.json`, 'utf8'),
+	);
 
 	let docBefore: Document;
 
 	return new PdfminerExtractor(config)
-	.run(`${__dirname}/assets/${filename}`)
-	.then((doc: Document) => {
-		docBefore = clone(doc);
-		const docAfterPromise: Promise<Document> = func(doc);
-		return docAfterPromise;
-	})
-	.then(docAfter => {
-		return [docBefore, docAfter] as [Document, Document]; // required because TS doesn't handle tuples correctly
-	});
+		.run(`${__dirname}/assets/${filename}`)
+		.then((doc: Document) => {
+			docBefore = clone(doc);
+			const docAfterPromise: Promise<Document> = func(doc);
+			return docAfterPromise;
+		})
+		.then(docAfter => {
+			return [docBefore, docAfter] as [Document, Document]; // required because TS doesn't handle tuples correctly
+		});
 }
 
 export function getPdf(
 	func: (doc: Document) => Promise<Document>,
 	filename: string,
 ): Promise<[Document, Document]> {
-	const config: Config = JSON.parse(readFileSync(`${__dirname}/../server/defaultConfig.json`, 'utf8'));
+	const config: Config = JSON.parse(
+		readFileSync(`${__dirname}/../server/defaultConfig.json`, 'utf8'),
+	);
 
 	let docBefore: Document;
 
 	return new PdfJsonExtractor(config)
-	.run(`${__dirname}/assets/${filename}`)
-	.then((doc: Document) => {
-		docBefore = clone(doc);
-		const docAfterPromise: Promise<Document> = func(doc);
-		return docAfterPromise;
-	})
-	.then(docAfter => {
-		return [docBefore, docAfter] as [Document, Document]; // required because TS doesn't handle tuples correctly
-	});
+		.run(`${__dirname}/assets/${filename}`)
+		.then((doc: Document) => {
+			docBefore = clone(doc);
+			const docAfterPromise: Promise<Document> = func(doc);
+			return docAfterPromise;
+		})
+		.then(docAfter => {
+			return [docBefore, docAfter] as [Document, Document]; // required because TS doesn't handle tuples correctly
+		});
 }
 
 export function runModules(originalDocument: Document, modules: Module[]): Promise<Document> {
