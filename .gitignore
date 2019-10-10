@@ -106,3 +106,7 @@ pipeline
 # python / jupyter ignores
 .ipynb_checkpoints
 __pycache__
+
+# drone
+.drone-secret*
+.tags
