@@ -38,17 +38,20 @@ export class LinkDetectionModule extends Module {
 		const actionRegex = /(.*)(actionGoToR|actionLaunch|actionNamed|actionMovie|actionUnknown)(.*)/;
 
 		doc.pages.forEach((page: Page) => {
-			page.getElementsOfType<Word>(Word).forEach(word => {
+			page.getElementsOfType<Word>(Word, true).forEach(word => {
 				let match = [];
 				if (typeof word.content !== 'string') {
 					return;
 				}
 				// tslint:disable-next-line:no-conditional-assignment
 				if ((match = word.content.match(actionUriRegex))) {
-					word.content = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
+					//word.content = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
+					word.content = match[3];
+					word.properties.link = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
 					// tslint:disable-next-line:no-conditional-assignment
 				} else if ((match = word.content.match(actionGoToRegex))) {
-					word.content = match[1] + match[3];
+					word.content = match[3];
+					word.properties.link = match[1] + match[3];
 					// tslint:disable-next-line:no-conditional-assignment
 				} else if ((match = word.content.match(actionRegex))) {
 					logger.debug('Unknown action: %s', word.content);

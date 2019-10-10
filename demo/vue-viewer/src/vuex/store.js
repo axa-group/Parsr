@@ -12,6 +12,13 @@ export default new Vuex.Store({
 		inputFileName: null,
 		document: null,
 		inspectorFilters: {},
+		expansionPanels: {
+			// 0: panel opened, undefined: panel closed
+			pageInspector: 0,
+			elementSelector: 0,
+			elementInspector: 0,
+			wordHierarchy: 0,
+		},
 		selectedElement: null,
 		selectedParentElement: null,
 		outputs: {
@@ -124,34 +131,7 @@ export default new Vuex.Store({
 						mergeTableElements: { value: false, range: [true, false] },
 					},
 				],
-				[
-					'lines-to-paragraph',
-					{
-						addNewline: { value: true, range: [true, false] },
-						alignUncertainty: {
-							value: 3,
-							range: {
-								min: 0,
-								max: 100,
-							},
-						},
-						checkFont: { value: false, range: [true, false] },
-						maxInterline: {
-							value: 0.3,
-							range: {
-								min: 0.0,
-								max: 1.0,
-							},
-						},
-						lineLengthUncertainty: {
-							value: 0.25,
-							range: {
-								min: 0.0,
-								max: 1.0,
-							},
-						},
-					},
-				],
+				'lines-to-paragraph',
 				[
 					'page-number-detection',
 					{
@@ -240,6 +220,9 @@ export default new Vuex.Store({
 		SET_DOCUMENT_ID(state, id) {
 			state.uuid = id;
 		},
+		switchExpansionPanel(state, { panel, value }) {
+			state.expansionPanels[panel] = value;
+		},
 	},
 	actions: {
 		fetchThumbnail({ commit }, { page }) {
@@ -248,7 +231,7 @@ export default new Vuex.Store({
 		},
 		fetchDocument({ commit }) {
 			return DocumentService.getDocument(this.state.uuid).then(response => {
-				commit('SET_DOCUMENT', response.data);
+				commit('SET_DOCUMENT', DocumentService.normalizeWordsSpace(response.data));
 				return response.data;
 			});
 		},
@@ -304,6 +287,7 @@ export default new Vuex.Store({
 				commit('setInputFileName', file.name);
 				commit('setElementSelected', null);
 				commit('setParentElementSelected', null);
+				commit('setSelectedPage', 1);
 				return response.data;
 			});
 		},
@@ -319,6 +303,18 @@ export default new Vuex.Store({
 		},
 		wordFont: state => fontId => {
 			return state.document.fonts.filter(font => font.id === fontId).shift();
+		},
+		pageInspectorSwitchState(state) {
+			return state.expansionPanels.pageInspector;
+		},
+		elementSelectorSwitchState(state) {
+			return state.expansionPanels.elementSelector;
+		},
+		elementInspectorSwitchState(state) {
+			return state.expansionPanels.elementInspector;
+		},
+		wordHierarchySwitchState(state) {
+			return state.expansionPanels.wordHierarchy;
 		},
 	},
 });
