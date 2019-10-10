@@ -34,7 +34,6 @@
 			<wordHierarchy
 				v-if="documentFetched"
 				:selectedElement="selectedElement"
-				:fonts="document.fonts"
 				:pageElements="document.pages[selectedPage - 1].elements"
 			/>
 		</div>
