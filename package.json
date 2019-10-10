@@ -31,7 +31,7 @@
 		"start:api:background": "npm run start:api&",
 		"start:front": "cd demo/web-viewer && node index.js",
 		"start": "npm run start:api & npm run start:front",
-		"format": "prettier --write --list-different '{,!(dist|demo/web-viewer/public)/**/}*.{js,md,ts,css,scss}'"
+		"format": "prettier --write --list-different \"{,!(dist|demo/web-viewer/public)/**/}*.{js,md,ts,css,scss}\""
 	},
 	"husky": {
 		"hooks": {
