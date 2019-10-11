@@ -17,6 +17,8 @@
 		"test": "test"
 	},
 	"scripts": {
+		"doc:build": "docsify init .",
+		"doc:serve": "docsify serve .",
 		"test": "mocha -r ts-node/register **/*.spec.ts",
 		"copyAssets": "copyfiles -u 2 \"./server/assets/*\" \"./dist/assets/\"",
 		"build:ts": "npm run copyAssets && tsc --outDir ./dist",
@@ -60,6 +62,7 @@
 		"concaveman": "^1.1.1",
 		"copyfiles": "^2.1.1",
 		"csv-stringify": "^5.3.3",
+		"docsify-cli-patched": "^4.3.1",
 		"file-type": "^9.0.0",
 		"html-entities": "^1.2.1",
 		"markdown-table": "^1.1.3",
