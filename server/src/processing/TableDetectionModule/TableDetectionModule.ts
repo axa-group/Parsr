@@ -42,7 +42,7 @@ const defaultExtractor: TableExtractor = {
 		if (options.pages.value.length !== 0) {
 			pages = options.pages.value.toString();
 		}
-		if (options.flavor.range.indexOf(options.flavor.value) === -1) {
+		if (!options.flavor.value.includes(options.flavor.value)) {
 			logger.warn(
 				`table detection flavor asked for: ${options.flavor.value} is not a possibility. defaulting to 'lattice'`,
 			);
@@ -99,6 +99,12 @@ export class TableDetectionModule extends Module<Options> {
 
 	public main(doc: Document): Document {
 		const options: Options = { ...defaultOptions, ...this.options };
+		if (doc.getElementsOfType<Table>(Table).length > 0) {
+			logger.warn(
+				'Warning: document already has tables extracted by the extractor. Not performing table detection.',
+			);
+			return doc;
+		}
 		const tableExtractor = this.extractor.readTables(doc.inputFile, options);
 
 		if (tableExtractor.status !== 0) {
@@ -209,7 +215,7 @@ export class TableDetectionModule extends Module<Options> {
 	}
 
 	private wordsInCellBox(cellBounds: BoundingBox, pageWords: Word[]): Word[] {
-		return pageWords.filter(word => utils.isInBox(word.box, cellBounds, false));
+		return pageWords.filter(word => utils.isInBox(word, cellBounds, false));
 	}
 
 	private removeWordsUsedInCells(document: Document) {
