@@ -76,7 +76,7 @@ export class MarkdownExporter extends Exporter {
 				}
 			});
 			// end of page
-			//output += '\n'.repeat(10);
+			// output += '\n'.repeat(10);
 		});
 		return output;
 	}

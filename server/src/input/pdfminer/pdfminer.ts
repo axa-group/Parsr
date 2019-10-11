@@ -209,6 +209,7 @@ function breakLineIntoWords(
 	pageHeight: number,
 	scalingFactor: number = 1,
 ): Word[] {
+	const words: Word[] = [];
 	const chars: Character[] = line.text.map(char => {
 		if (char._ === undefined) {
 			return undefined;
@@ -233,6 +234,10 @@ function breakLineIntoWords(
 		chars.splice(chars.length - 1, chars.length);
 	}
 
+	if (chars.length === 0 || (chars.length === 1 && chars[0] === undefined)) {
+		return words;
+	}
+
 	const sepLocs: number[] = chars
 		.map((c, i) => {
 			if (c === undefined) {
@@ -245,7 +250,6 @@ function breakLineIntoWords(
 		.filter(l => l !== 0)
 		.filter(l => l !== chars.length);
 
-	const words: Word[] = [];
 	if (sepLocs.length === 0) {
 		words.push(
 			new Word(

@@ -123,9 +123,6 @@ export class LinesToParagraphModule extends Module {
 	private getPageLines(page: Page): Line[] {
 		return page.getElementsOfType<Line>(Line, false).sort(utils.sortElementsByOrder);
 	}
-	/*rivate getPageParagraphs(page: Page): Paragraph[] {
-		return page.getElementsOfType<Paragraph>(Paragraph, true).sort(utils.sortElementsByOrder);
-	}*/
 
 	private joinLinesWithSpaces(lines: Line[], lineSpaces: LineSpace[]): Line[][] {
 		const toBeMerged: Line[][] = [];

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { Document, Page, Text } from '../../types/DocumentRepresentation';
-import * as utils from '../../utils';
+import { BoundingBox, Document, Page, Text, Word } from '../../types/DocumentRepresentation';
+import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	percentageOfRedondancy?: {
+	minOverlap?: {
 		value: number;
 		range: {
 			min: number;
@@ -34,8 +34,11 @@ interface Options {
 
 const defaultOptions = (defaultConfig as any) as Options;
 
-// TODO Idea split large document every 100 pages or so.
 /**
+ * Blocks that have the same bounding boxes on a lot of pages
+ * With a very similar content
+ * With the same font
+ * TODO Idea split large document every 100 pages or so.
  * Stability: Unstable
  * Detect items that are redundant on a certain amount of pages (i.e. 20% of every pages has the same element).
  * Also remove duplicated elements.
@@ -49,78 +52,83 @@ export class RedundancyDetectionModule extends Module<Options> {
 	}
 
 	public main(doc: Document): Document {
-		// Blocks that have the same bounding boxes on a lot of pages
-		// With a very similar content
-		// With the same font
-
-		// let texts: Text[] = doc.pages.map(page => page.getTexts()).reduce((a, b) => a.concat(b), []);
 		doc.pages.forEach(page => {
-			const groups: Text[][] = regroupTextsByLocation(page.getTexts());
-			removeDuplicateElements(page, groups);
-			// let redundants: Text[][] = tagRedundant(groups);
+			const groups: Text[][] = this.regroupTextsByLocation(page.getElementsOfType(Word));
+			this.removeDuplicateElements(page, groups.filter(g => g.length !== 1));
 		});
 
 		return doc;
+	}
 
-		// FIXME this function is super slow... (36s on t6.pdf)
-		function regroupTextsByLocation(texts: Text[]): Text[][] {
-			const groups: Text[][] = [];
+	/**
+	 * Returns groups of texts which are the same and have a sufficient overlap to be
+	 * potential duplicates
+	 * @param texts a group of texts
+	 */
+	private regroupTextsByLocation(texts: Text[]): Text[][] {
+		const resultGroups: Text[][] = [];
 
-			texts.forEach(text => {
-				for (const group of groups) {
-					if (utils.isAlignedAndOverlapVertically(group.concat(text))) {
-						group.push(text);
-						return;
+		texts.forEach(element => {
+			for (const group of resultGroups) {
+				if (this.checkGroupOverlapWithNewElement(group, element)) {
+					group.push(element);
+					group.sort((a, b) => b.content.length - a.content.length);
+					return;
+				}
+			}
+			resultGroups.push([element]);
+		});
+		return resultGroups;
+	}
+
+	/**
+	 * Decides if a new element can be added to a group depending on weather if it has sufficient overlap,
+	 * and if it has the same text
+	 * @param group group of texts to be compared against
+	 * @param newElement the new element to be compared with the group
+	 */
+	private checkGroupOverlapWithNewElement(group: Text[], newElement: Text): boolean {
+		let decision: boolean = true;
+		if (group.length === 0) {
+			decision = false;
+		} else {
+			const refString: string =
+				group[0].toString().length >= newElement.toString().length
+					? group[0].toString()
+					: newElement.toString();
+			const newString: string =
+				group[0].toString().length < newElement.toString().length
+					? group[0].toString()
+					: newElement.toString();
+			if (!refString.includes(newString)) {
+				decision = false;
+			} else {
+				for (const e of group) {
+					const overlap: number = BoundingBox.getOverlap(e.box, newElement.box);
+					if (!(overlap >= this.options.minOverlap.value)) {
+						decision = false;
+						break;
 					}
 				}
-				groups.push([text]);
-			});
-
-			return groups;
+			}
 		}
+		return decision;
+	}
 
-		function removeDuplicateElements(page: Page, groups: Text[][]) {
-			groups.forEach(group => {
-				const firstText: Text = group[0];
-
-				for (let i = 1; i < group.length; i++) {
-					if (isDuplicate(group[i], firstText)) {
-						const index: number = page.elements.indexOf(group[i], 0);
-
-						if (index > -1) {
-							page.elements.splice(index, 1);
-						}
-					}
-				}
-			});
-		}
-
-		function isDuplicate(elem1: Text, elem2: Text): boolean {
-			return (
-				elem1.toString() === elem2.toString() &&
-				elem1.left === elem2.left &&
-				elem1.top === elem2.top &&
-				elem1.width === elem2.width &&
-				elem1.height === elem2.height
-				// TODO check same font ('font' in elem1 && 'font' in elem2 && elem1['font'].isEqual(elem2['font']))
+	/**
+	 * Keeps one from a group of texts, removes the others.
+	 * TODO: promote candidates which will favor a better wordsToLine performance later on
+	 * @param page the page in question
+	 * @param groups groups of text from which only one is to be kept
+	 */
+	private removeDuplicateElements(page: Page, groups: Text[][]) {
+		groups.forEach(group => {
+			logger.debug(
+				`--> ${group.length} duplicate words with text ${group[0].toString()} found on page ${
+					page.pageNumber
+				}`,
 			);
-		}
-
-		/*
-		function tagRedundant(groups: Text[][]): Text[][] {
-			const redundant: Text[][] = [];
-			groups.forEach(group => {
-				if (
-					group.length > doc.pages.length * opt.percentageOfRedondancy.value &&
-					doc.pages.length > opt.minimumPages.value
-				) {
-					group.forEach(t => (t.properties.isRedundant = true));
-					redundant.push(group);
-				}
-			});
-
-			return redundant;
-		}
-		*/
+			group.slice(1, group.length).forEach(e => page.removeElement(e));
+		});
 	}
 }

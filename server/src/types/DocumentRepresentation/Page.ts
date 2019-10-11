@@ -116,9 +116,7 @@ export class Page {
 	 * @param textOnly Elements of the subset should only be the textual elements.
 	 */
 	public getElementsSubset(box: BoundingBox, textOnly: boolean = false): Element[] {
-		return this.elements
-			.filter(e => e instanceof Text || textOnly)
-			.filter(e => isInBox(e.box, box));
+		return this.elements.filter(e => e instanceof Text || textOnly).filter(e => isInBox(e, box));
 	}
 
 	/**
@@ -185,6 +183,21 @@ export class Page {
 			) {
 				stack = stack.concat(element.content);
 			}
+		}
+	}
+
+	/**
+	 * Removes an element from the page
+	 * @param e The element which is to be removed
+	 */
+	public removeElement(e: Element) {
+		const index: number = this.elements.indexOf(e, 0);
+		if (index > -1 || e !== undefined) {
+			this.elements.splice(index, 1);
+		} else {
+			logger.debug(
+				`--> Could not remove element id "${e.id}" in first level elements on page ${this.pageNumber}; it might be located deeper`,
+			);
 		}
 	}
 

@@ -252,6 +252,17 @@ export function isAlignedLeft(
 	return true;
 }
 
+export function findElementIDInPageBySameBoundingBox(element: Element, page: Page): number {
+	let elementID: number = -1;
+	const elements: Element[] = page.getAllElements();
+	elements.forEach(e => {
+		if (BoundingBox.isEqual(e.box, element.box)) {
+			elementID = e.id;
+		}
+	});
+	return elementID;
+}
+
 export function isAlignedRight(texts: Text[], alignUncertainty: number = 0): boolean {
 	for (let i = 0; i < texts.length - 1; i++) {
 		const t1 = texts[i];
@@ -265,38 +276,26 @@ export function isAlignedRight(texts: Text[], alignUncertainty: number = 0): boo
 	return true;
 }
 
-export function isAlignedAndOverlapVertically(texts: Text[]): boolean {
-	if (texts.length === 0) {
-		return true;
-	}
-
-	return (
-		(isAligned(texts) || isAlignedCenter(texts)) &&
-		texts.every(t => t.top === texts[0].top) &&
-		texts.every(t => t.height === texts[0].height)
-	);
-}
-
 /**
  * Check if an element is contained inside a bounding box
  * @param element Element that'll be checked
  * @param box Containing box
  * @param strict Will check if the element can stay strictly in the box without overstepping (Default: `true`)
  */
-export function isInBox(element: BoundingBox, box: BoundingBox, strict: boolean = true): boolean {
+export function isInBox(element: Element, box: BoundingBox, strict: boolean = true): boolean {
 	if (strict) {
 		return (
-			element.top >= box.top &&
-			element.top + element.height <= box.top + box.height &&
-			element.left >= box.left &&
-			element.left + element.width <= box.left + box.width
+			element.box.top >= box.top &&
+			element.box.top + element.box.height <= box.top + box.height &&
+			element.box.left >= box.left &&
+			element.box.left + element.box.width <= box.left + box.width
 		);
 	} else {
 		return (
-			element.top < box.top + box.height &&
-			element.top + element.height > box.top &&
-			element.left < box.left + box.width &&
-			element.left + element.width > box.left
+			element.box.top < box.top + box.height &&
+			element.box.top + element.box.height > box.top &&
+			element.box.left < box.left + box.width &&
+			element.box.left + element.box.width > box.left
 		);
 	}
 }
