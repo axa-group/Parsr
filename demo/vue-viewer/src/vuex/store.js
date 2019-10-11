@@ -133,34 +133,6 @@ export default new Vuex.Store({
 				],
 				'lines-to-paragraph',
 				[
-					'lines-to-paragraph-old',
-					{
-						addNewline: { value: true, range: [true, false] },
-						alignUncertainty: {
-							value: 3,
-							range: {
-								min: 0,
-								max: 100,
-							},
-						},
-						checkFont: { value: false, range: [true, false] },
-						maxInterline: {
-							value: 0.3,
-							range: {
-								min: 0.0,
-								max: 1.0,
-							},
-						},
-						lineLengthUncertainty: {
-							value: 0.25,
-							range: {
-								min: 0.0,
-								max: 1.0,
-							},
-						},
-					},
-				],
-				[
 					'page-number-detection',
 					{
 						maxMarginPercentage: {
@@ -249,7 +221,7 @@ export default new Vuex.Store({
 			state.uuid = id;
 		},
 		switchExpansionPanel(state, { panel, value }) {
-			state.expansionPanels[panel] = value;
+			Vue.set(state.expansionPanels, panel, value);
 		},
 	},
 	actions: {
@@ -326,6 +298,9 @@ export default new Vuex.Store({
 		},
 	},
 	getters: {
+		fonts(state) {
+			return state.document.fonts;
+		},
 		documentPages(state) {
 			return state.document ? state.document.pages.length : 0;
 		},
@@ -343,6 +318,9 @@ export default new Vuex.Store({
 		},
 		wordHierarchySwitchState(state) {
 			return state.expansionPanels.wordHierarchy;
+		},
+		fontInspectorSwitchState(state) {
+			return state.expansionPanels.fontInspector;
 		},
 	},
 });

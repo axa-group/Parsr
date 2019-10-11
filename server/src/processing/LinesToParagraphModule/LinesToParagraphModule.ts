@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 
-import { BoundingBox, Document, Line, Page, Paragraph } from '../../types/DocumentRepresentation';
+import {
+	BoundingBox,
+	Document,
+	Element,
+	Line,
+	Page,
+	Paragraph,
+} from '../../types/DocumentRepresentation';
+
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
@@ -47,6 +55,8 @@ export class LinesToParagraphModule extends Module {
 			const lines = this.getPageLines(page);
 			const interLinesSpaces = this.getInterLinesSpace(lines);
 			const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
+			let otherElements = this.getPageElements(page, lines);
+			otherElements = this.joinLinesInElements(otherElements);
 
 			// Clean the properties.cr  information as it is not usefull down the line
 			for (const theseLines of joinedLines) {
@@ -60,11 +70,54 @@ export class LinesToParagraphModule extends Module {
 				}
 			}
 			const paragraphs: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
-			page.elements = paragraphs;
+			page.elements = otherElements.concat(paragraphs);
+			// this.getPageParagraphs(page).map(paragraph => {
+			// console.log('Paragraph ' + paragraph.id + ' order ' + paragraph.properties.order);
+			// TODO: Set fine paragraph order
+			// });
 			return page;
 		});
 
 		return doc;
+	}
+
+	private joinLinesInElements(elements: Element[]): Element[] {
+		const withLines: Element[] = [];
+		this.getElementsWithLines(elements, withLines);
+		withLines.forEach(element => {
+			const lines = this.getLinesInElement(element);
+			const interLinesSpaces = this.getInterLinesSpace(lines);
+			const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
+			element.content = this.mergeLinesIntoParagraphs(joinedLines);
+		});
+		return elements;
+	}
+
+	private getLinesInElement(element: Element): Line[] {
+		if (Array.isArray(element.content)) {
+			const lines = element.content;
+			return lines.filter(item => item instanceof Line).map(line => line as Line);
+		}
+		return [];
+	}
+
+	private getElementsWithLines(elements: Element[], withLines: Element[]) {
+		elements.forEach(element => {
+			const lines = this.getLinesInElement(element);
+			if (lines.length > 0) {
+				withLines.push(element);
+			} else if (Array.isArray(element.content)) {
+				element.content.forEach(child => {
+					this.getElementsWithLines(child.content as Element[], withLines);
+				});
+			}
+		});
+	}
+
+	private getPageElements(page: Page, excludeLines: Line[]): Element[] {
+		return page.elements.filter(
+			element => !(element instanceof Line) || !excludeLines.includes(element),
+		);
 	}
 
 	private getPageLines(page: Page): Line[] {
@@ -179,10 +232,9 @@ export class LinesToParagraphModule extends Module {
 		sortedByDistance.forEach((distance, index) => {
 			if (
 				index > 0 &&
-				distance.distanceHeightRatio.valueOf() < 0.25
-				// distance.distanceHeightRatio.valueOf() -
-				// 	sortedByDistance[index - 1].distanceHeightRatio.valueOf() <
-				// 	0.1
+				distance.distanceHeightRatio.valueOf() -
+					sortedByDistance[index - 1].distanceHeightRatio.valueOf() <
+					0.25
 			) {
 				const mergedTotalHeight =
 					mergedDistances[mergedDistances.length - 1].totalHeight.valueOf() +
@@ -254,13 +306,13 @@ export class LinesToParagraphModule extends Module {
 	}
 
 	private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
-		let newOrder = 0;
 		return joinedLines.map((group: Line[]) => {
 			const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
 				new Paragraph(new BoundingBox(0, 0, 0, 0)),
 				...group,
 			);
-			paragraph.properties.order = newOrder++;
+
+			paragraph.properties.order = group[0].properties.order;
 			return paragraph;
 		});
 	}
