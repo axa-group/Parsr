@@ -15,7 +15,6 @@
 		"link-detection",
 		["words-to-line", { "maximumSpaceBetweenWords": { "value": 100 } }],
 		"lines-to-paragraph",
-		"lines-to-paragraph-old",
 		["page-number-detection", { "maxMarginPercentage": { "value": 15 } }],
 		"heading-detection",
 		"hierarchy-detection",
