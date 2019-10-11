@@ -66,9 +66,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
 							.map(pdfText => pdfTextToWord(pdfText, pdfFonts, fonts, RATIO, xmlEntities))
 							.filter(word => {
 								// This can append sometimes with pdf2json
-								return (
-									(word.box.width >= 0 && word.box.height >= 0) || word.toString().trim() !== ''
-								);
+								return word.box.width > 0 && word.box.height > 0 && word.toString().trim() !== '';
 							})
 							.map(word => {
 								word.box.width = Math.max(word.box.width, 0);
