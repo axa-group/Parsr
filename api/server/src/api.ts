@@ -90,6 +90,8 @@ export class ApiServer {
 
 		// server info endpoints
 		v1_0.get('/default-config', this.handleGetDefaultConfig.bind(this));
+		v1_0.get('/modules', this.handleGetModules.bind(this));
+		v1_0.get('/module-config/:modulename', this.handleGetModuleConfig.bind(this));
 
 		app.listen(port, () => {
 			logger.info(`Api listening on port ${port}!`);
@@ -113,6 +115,46 @@ export class ApiServer {
 		}
 		logger.info(`Returning the default server settings...`);
 		res.status(200).json(defaultConfig);
+	}
+
+	/**
+	 * Status: 200 - Ok. Returns the list of all the modules on the server
+	 * Status: 404 - Not Found - the list of modules could not be obtained
+	 */
+	private handleGetModules(req: Request, res: Response): void {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+
+		let modules: object;
+		try {
+			modules = this.serverManager.getModules();
+		} catch (err) {
+			logger.warn(`Cannot get the module names: ${err}`);
+			res.sendStatus(404);
+			return;
+		}
+		logger.info(`Returning the modules on the server...`);
+		res.status(200).json(modules);
+	}
+
+	/**
+	 * Status: 200 - Ok. Returns the default config of the module
+	 * Status: 404 - Not Found - the configuration of the module could not be obtained
+	 * Status: 500 - Internal Server Error
+	 */
+	private handleGetModuleConfig(req: Request, res: Response): void {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+		const moduleName = req.params.modulename;
+
+		let moduleConfig: object;
+		try {
+			moduleConfig = this.serverManager.getModuleConfig(moduleName);
+		} catch (err) {
+			logger.warn(`Cannot get the module config for module ${moduleName} ${err}`);
+			res.sendStatus(404);
+			return;
+		}
+		logger.info(`Returning the default module config for module ${moduleName}...`);
+		res.status(200).json(moduleConfig);
 	}
 
 	/**

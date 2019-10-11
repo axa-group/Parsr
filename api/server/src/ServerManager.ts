@@ -14,12 +14,45 @@
  * limitations under the License.
  */
 
-import fs from 'fs';
+import { readdirSync, readFileSync } from 'fs';
 
 export class ServerManager {
+	private defaultConfigPath: string = `../../server/defaultConfig.json`;
+	private defaultModulesFolder: string = `../../server/src/processing`;
+
+	/**
+	 * Returns the default configuration of the server
+	 */
 	public getDefaultConfig(): object {
-		const configPath: string = `../../server/defaultConfig.json`;
-		const defaultConfig: object = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-		return defaultConfig;
+		return JSON.parse(readFileSync(this.defaultConfigPath, 'utf-8'));
+	}
+
+	/**
+	 * Returns all the modules on the server
+	 */
+	public getModules(): string[] {
+		return readdirSync(this.defaultModulesFolder, { withFileTypes: true })
+			.filter(dirent => dirent.isDirectory())
+			.map(dirent => dirent.name)
+			.map(d => d.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase())
+			.map(d => d.replace(/-module/g, ''));
+	}
+
+	/**
+	 * Returns the defaultConfig of the module asked for
+	 * @param moduleName the name of the module in snake-case
+	 */
+	public getModuleConfig(moduleName: string): object {
+		moduleName += '-module';
+		const moduleFolderName = moduleName
+			.split('-')
+			.map(w => w[0].toUpperCase() + w.substr(1).toLowerCase())
+			.join('');
+		return JSON.parse(
+			readFileSync(
+				this.defaultModulesFolder + '/' + moduleFolderName + '/defaultConfig.json',
+				'utf-8',
+			),
+		);
 	}
 }
