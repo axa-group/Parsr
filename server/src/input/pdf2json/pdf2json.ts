@@ -71,6 +71,9 @@ export function execute(pdfInputFile: string): Promise<Document> {
 							.map(word => {
 								word.box.width = Math.max(word.box.width, 0);
 								word.box.height = Math.max(word.box.height, 0);
+								if (word.content as String) {
+									word.content = (word.content as String).trim();
+								}
 								return word;
 							});
 
