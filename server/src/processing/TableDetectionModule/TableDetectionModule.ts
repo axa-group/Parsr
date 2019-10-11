@@ -99,6 +99,12 @@ export class TableDetectionModule extends Module<Options> {
 
 	public main(doc: Document): Document {
 		const options: Options = { ...defaultOptions, ...this.options };
+		if (doc.getElementsOfType<Table>(Table).length > 0) {
+			logger.warn(
+				'Warning: document already has tables extracted by the extractor. Not performing table detection.',
+			);
+			return doc;
+		}
 		const tableExtractor = this.extractor.readTables(doc.inputFile, options);
 
 		if (tableExtractor.status !== 0) {
