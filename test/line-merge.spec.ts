@@ -25,7 +25,7 @@ import { getPdf, runModules } from './helpers';
 describe('Line merge function', () => {
 	withData(
 		{
-			'one line': ['line-merge.pdf', 'I’m a sentence with multiple words. '],
+			'one line': ['line-merge.pdf', 'I’m a sentence with multiple words.'],
 			'justified text': [
 				'line-merge-2.pdf',
 				'Lorem ipsum, sagittis a, dolor. Nullam turpis lacus.',
@@ -53,7 +53,7 @@ describe('Line merge function', () => {
 
 			it('should not alter the content', () => {
 				expect(
-					(pdfAfter.pages[0].elements[0].content as Element[]).map(t => t.content).join(''),
+					(pdfAfter.pages[0].elements[0].content as Element[]).map(t => t.content).join(' '),
 				).to.be.equal(text);
 			});
 
