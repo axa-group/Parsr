@@ -106,9 +106,8 @@ export class LinesToParagraphModule extends Module {
 			const lines = this.getLinesInElement(element);
 			if (lines.length > 0) {
 				withLines.push(element);
-			} else if (element.content as Element[]) {
-				const children = element.content as Element[];
-				children.forEach(child => {
+			} else if (Array.isArray(element.content)) {
+				element.content.forEach(child => {
 					this.getElementsWithLines(child.content as Element[], withLines);
 				});
 			}
