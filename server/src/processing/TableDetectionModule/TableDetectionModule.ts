@@ -42,7 +42,7 @@ const defaultExtractor: TableExtractor = {
 		if (options.pages.value.length !== 0) {
 			pages = options.pages.value.toString();
 		}
-		if (options.flavor.range.indexOf(options.flavor.value) === -1) {
+		if (!options.flavor.value.includes(options.flavor.value)) {
 			logger.warn(
 				`table detection flavor asked for: ${options.flavor.value} is not a possibility. defaulting to 'lattice'`,
 			);
