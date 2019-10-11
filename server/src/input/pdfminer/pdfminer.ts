@@ -55,6 +55,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
 			} else {
 				logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
 			}
+			logger.info(`Extracting PDF contents using pdfminer...`);
 			logger.debug(
 				`${pdf2txtLocation} ${[
 					'-c',
@@ -238,6 +239,15 @@ function breakLineIntoWords(
 		return words;
 	}
 
+	if (
+		chars
+			.filter(c => c !== undefined)
+			.map(c => c.content.length)
+			.filter(l => l > 1).length > 0
+	) {
+		logger.debug(`pdfminer returned some characters of size > 1`);
+	}
+
 	const sepLocs: number[] = chars
 		.map((c, i) => {
 			if (c === undefined) {
@@ -250,23 +260,27 @@ function breakLineIntoWords(
 		.filter(l => l !== 0)
 		.filter(l => l !== chars.length);
 
+	let charSelection: Character[] = [];
 	if (sepLocs.length === 0) {
+		charSelection = chars.filter(c => c !== undefined);
 		words.push(
 			new Word(
-				BoundingBox.merge(chars.map(c => c.box)),
-				chars,
-				getMostCommonFont(chars.map(c => c.font)),
+				BoundingBox.merge(charSelection.map(c => c.box)),
+				charSelection,
+				getMostCommonFont(charSelection.map(c => c.font)),
 			),
 		);
 	} else {
-		const firstSel: Character[] = chars.slice(0, sepLocs[0]);
-		words.push(
-			new Word(
-				BoundingBox.merge(firstSel.map(c => c.box)),
-				firstSel,
-				getMostCommonFont(firstSel.map(c => c.font)),
-			),
-		);
+		charSelection = chars.slice(0, sepLocs[0]).filter(c => c !== undefined);
+		if (charSelection.length > 0) {
+			words.push(
+				new Word(
+					BoundingBox.merge(charSelection.map(c => c.box)),
+					charSelection,
+					getMostCommonFont(charSelection.map(c => c.font)),
+				),
+			);
+		}
 		for (let i = 0; i !== sepLocs.length; ++i) {
 			let from: number;
 			let to: number;
@@ -276,14 +290,16 @@ function breakLineIntoWords(
 			} else {
 				to = chars.length;
 			}
-			const charSelection: Character[] = chars.slice(from, to);
-			words.push(
-				new Word(
-					BoundingBox.merge(charSelection.map(c => c.box)),
-					charSelection,
-					getMostCommonFont(charSelection.map(c => c.font)),
-				),
-			);
+			charSelection = chars.slice(from, to).filter(c => c !== undefined);
+			if (charSelection.length > 0) {
+				words.push(
+					new Word(
+						BoundingBox.merge(charSelection.map(c => c.box)),
+						charSelection,
+						getMostCommonFont(charSelection.map(c => c.font)),
+					),
+				);
+			}
 		}
 	}
 	return words;
