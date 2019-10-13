@@ -21,6 +21,7 @@
 		/>
 		<div style="border-left: solid 1px #ebebf1;">
 			<pageInspector v-if="documentFetched" :filters="inspectorFilters" />
+			<fontInspector v-if="documentFetched" />
 			<ElementSelector
 				v-if="documentFetched"
 				:pageElements="document.pages[selectedPage - 1].elements"
@@ -34,7 +35,6 @@
 			<wordHierarchy
 				v-if="documentFetched"
 				:selectedElement="selectedElement"
-				:fonts="document.fonts"
 				:pageElements="document.pages[selectedPage - 1].elements"
 			/>
 		</div>
@@ -47,6 +47,7 @@ import PageInspector from '@/components/PageInspector';
 import WordHierarchy from '@/components/WordHierarchy';
 import ElementInspector from '@/components/ElementInspector';
 import ElementSelector from '@/components/ElementSelector';
+import FontInspector from '@/components/FontInspector';
 import DocPreview from '@/components/DocumentPreview';
 import { docComputed } from '../vuex/helpers.js';
 import { mapState } from 'vuex';
@@ -59,6 +60,7 @@ export default {
 		WordHierarchy,
 		ElementInspector,
 		ElementSelector,
+		FontInspector,
 	},
 	computed: {
 		documentFetched() {

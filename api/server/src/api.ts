@@ -24,12 +24,14 @@ import * as path from 'path';
 import { FileManager } from './FileManager';
 import logger from './Logger';
 import { ProcessManager } from './ProcessManager';
+import { ServerManager } from './ServerManager';
 import { Binder, PipelineProcess, QueueStatus, SingleFileType } from './types';
 
 export class ApiServer {
 	private outputDir: string = path.resolve(`${__dirname}/output`);
 	private fileManager: FileManager = new FileManager();
 	private processManager: ProcessManager = new ProcessManager();
+	private serverManager: ServerManager = new ServerManager();
 
 	private upload = multer({
 		storage: multer.diskStorage({
@@ -86,9 +88,73 @@ export class ApiServer {
 		// TODO add every other endpoint
 		v1_0.get('/thumbnail/:id/:page', this.handleGetThumb.bind(this));
 
+		// server info endpoints
+		v1_0.get('/default-config', this.handleGetDefaultConfig.bind(this));
+		v1_0.get('/modules', this.handleGetModules.bind(this));
+		v1_0.get('/module-config/:modulename', this.handleGetModuleConfig.bind(this));
+
 		app.listen(port, () => {
 			logger.info(`Api listening on port ${port}!`);
 		});
+	}
+
+	/**
+	 * Status: 200 - Ok. Returns the default config of the server
+	 * Status: 404 - Not Found - the default server config was not found in the pre-set location
+	 */
+	private handleGetDefaultConfig(req: Request, res: Response): void {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+
+		let defaultConfig: object;
+		try {
+			defaultConfig = this.serverManager.getDefaultConfig();
+		} catch (err) {
+			logger.warn(`Cannot get default server settings: ${err}`);
+			res.sendStatus(404);
+			return;
+		}
+		logger.info(`Returning the default server settings...`);
+		res.status(200).json(defaultConfig);
+	}
+
+	/**
+	 * Status: 200 - Ok. Returns the list of all the modules on the server
+	 * Status: 404 - Not Found - the list of modules could not be obtained
+	 */
+	private handleGetModules(req: Request, res: Response): void {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+
+		let modules: object;
+		try {
+			modules = this.serverManager.getModules();
+		} catch (err) {
+			logger.warn(`Cannot get the module names: ${err}`);
+			res.sendStatus(404);
+			return;
+		}
+		logger.info(`Returning the modules on the server...`);
+		res.status(200).json(modules);
+	}
+
+	/**
+	 * Status: 200 - Ok. Returns the default config of the module
+	 * Status: 404 - Not Found - the configuration of the module could not be obtained
+	 * Status: 500 - Internal Server Error
+	 */
+	private handleGetModuleConfig(req: Request, res: Response): void {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+		const moduleName = req.params.modulename;
+
+		let moduleConfig: object;
+		try {
+			moduleConfig = this.serverManager.getModuleConfig(moduleName);
+		} catch (err) {
+			logger.warn(`Cannot get the module config for module ${moduleName} ${err}`);
+			res.sendStatus(404);
+			return;
+		}
+		logger.info(`Returning the default module config for module ${moduleName}...`);
+		res.status(200).json(moduleConfig);
 	}
 
 	/**

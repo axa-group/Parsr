@@ -109,7 +109,13 @@ export class WordsToLineModule extends Module<Options> {
 	}
 
 	private joinWordsFromElement(element: Element, options: Options): Word {
-		if (element.content && typeof element.content !== 'string' && element.content.length !== 0) {
+		if (element instanceof Word) {
+			return element;
+		} else if (
+			element.content &&
+			typeof element.content !== 'string' &&
+			element.content.length !== 0
+		) {
 			const containedWords: Word[] = [];
 			element.content.forEach(el => {
 				const containedWord = this.joinWordsFromElement(el, options);
@@ -120,8 +126,6 @@ export class WordsToLineModule extends Module<Options> {
 			if (containedWords.length > 0) {
 				this.updateElementContents(element, containedWords, options);
 			}
-		} else if (element instanceof Word) {
-			return element;
 		}
 		return null;
 	}

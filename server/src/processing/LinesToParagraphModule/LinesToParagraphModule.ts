@@ -106,9 +106,8 @@ export class LinesToParagraphModule extends Module {
 			const lines = this.getLinesInElement(element);
 			if (lines.length > 0) {
 				withLines.push(element);
-			} else if (element.content as Element[]) {
-				const children = element.content as Element[];
-				children.forEach(child => {
+			} else if (Array.isArray(element.content)) {
+				element.content.forEach(child => {
 					this.getElementsWithLines(child.content as Element[], withLines);
 				});
 			}
@@ -124,9 +123,6 @@ export class LinesToParagraphModule extends Module {
 	private getPageLines(page: Page): Line[] {
 		return page.getElementsOfType<Line>(Line, false).sort(utils.sortElementsByOrder);
 	}
-	/*rivate getPageParagraphs(page: Page): Paragraph[] {
-		return page.getElementsOfType<Paragraph>(Paragraph, true).sort(utils.sortElementsByOrder);
-	}*/
 
 	private joinLinesWithSpaces(lines: Line[], lineSpaces: LineSpace[]): Line[][] {
 		const toBeMerged: Line[][] = [];
