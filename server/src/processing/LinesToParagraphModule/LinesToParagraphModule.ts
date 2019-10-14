@@ -18,6 +18,7 @@ import {
 	BoundingBox,
 	Document,
 	Element,
+	Font,
 	Line,
 	Page,
 	Paragraph,
@@ -69,6 +70,10 @@ export class LinesToParagraphModule extends Module {
 					}
 				}
 			}
+
+			this.accountForPotentialHeadings(joinedLines);
+			// this.accountForPotentialLists(joinedLines);
+
 			const paragraphs: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
 			page.elements = otherElements.concat(paragraphs);
 			// this.getPageParagraphs(page).map(paragraph => {
@@ -316,4 +321,39 @@ export class LinesToParagraphModule extends Module {
 			return paragraph;
 		});
 	}
+
+	/**
+	 * Takes into account potential headings inside a paragraph - splits a paragraph into multiple
+	 * @param lineGroups List of joined lines to be alterered
+	 */
+	private accountForPotentialHeadings(lineGroups: Line[][]) {
+		const newLines: Line[][] = [].concat(lineGroups);
+
+		newLines.forEach(group => {
+			group.sort((l1: Line, l2: Line) => l2.getMainFont().size - l1.getMainFont().size);
+
+			// make paragraph groups by font size
+			const groupsByFontSize: Line[][] = [];
+			let visitedFontSizes: number[] = [];
+			for (const para of group) {
+				const paraFont: Font = para.getMainFont();
+				if (visitedFontSizes.includes(paraFont.size)) {
+					continue;
+				}
+
+				const pos = utils.findPositionsInArray(group.map(p => p.getMainFont().size), paraFont.size);
+
+				groupsByFontSize.push(pos.map(i => group[i]));
+				visitedFontSizes = [...new Set([...visitedFontSizes, paraFont.size])];
+			}
+		});
+	}
+
+	// /**
+	//  * Takes into account potential bullet points inside a paragraph - splits a para into multiple
+	//  * @param joinedLines List of joined lines to be alterered
+	//  */
+	// private accountForPotentialLists(lineGroups: Line[][]) {
+	// 	// do something;
+	// }
 }
