@@ -28,6 +28,19 @@ import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import { ReadingOrderDetectionModule } from '../ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 import { WordsToLineModule } from '../WordsToLineModule/WordsToLineModule';
+import * as defaultConfig from './defaultConfig.json';
+
+interface Options {
+	tolerance?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
+}
+
+const defaultOptions = (defaultConfig as any) as Options;
 
 type LineSpace = {
 	distance: number;
@@ -40,9 +53,13 @@ type LineSpace = {
  * Stability: Stable
  * Merge lines into paragraphs
  */
-export class LinesToParagraphModule extends Module {
+export class LinesToParagraphModule extends Module<Options> {
 	public static moduleName = 'lines-to-paragraph';
 	public static dependencies = [ReadingOrderDetectionModule, WordsToLineModule];
+
+	constructor(options?: Options) {
+		super(options, defaultOptions);
+	}
 
 	public main(doc: Document): Document {
 		doc.pages.forEach((page: Page) => {
@@ -234,7 +251,7 @@ export class LinesToParagraphModule extends Module {
 				index > 0 &&
 				distance.distanceHeightRatio.valueOf() -
 					sortedByDistance[index - 1].distanceHeightRatio.valueOf() <
-					0.25
+					this.options.tolerance.value
 			) {
 				const mergedTotalHeight =
 					mergedDistances[mergedDistances.length - 1].totalHeight.valueOf() +
