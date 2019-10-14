@@ -144,7 +144,7 @@ export default {
 					case 'alignUncertainty':
 						sliders[element] = { min: 0, max: 100, multiplier: 1, decimals: 0 };
 						break;
-					case 'lineLengthUncertainty':
+					case 'tolerance':
 						sliders[element] = { min: 0, max: 100, multiplier: 100, decimals: 2 };
 						break;
 				}
