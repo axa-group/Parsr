@@ -39,10 +39,11 @@ export class LinkDetectionModule extends Module {
 
 		doc.pages.forEach((page: Page) => {
 			page.getElementsOfType<Word>(Word, true).forEach(word => {
-				let match = [];
 				if (typeof word.content !== 'string') {
+					this.matchLinksInCharacters(word);
 					return;
 				}
+				let match = [];
 				// tslint:disable-next-line:no-conditional-assignment
 				if ((match = word.content.match(actionUriRegex))) {
 					//word.content = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
@@ -60,5 +61,15 @@ export class LinkDetectionModule extends Module {
 		});
 
 		return doc;
+	}
+
+	private matchLinksInCharacters(word: Word) {
+		const linkRegexp = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+		const mailRegexp = /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/;
+		if (word.toString().match(linkRegexp)) {
+			word.properties.link = `<a href="${word.toString()}">${word.toString()}</a>`;
+		} else if (word.toString().match(mailRegexp)) {
+			word.properties.link = `<a href="mailto:${word.toString()}">${word.toString()}</a>`;
+		}
 	}
 }
