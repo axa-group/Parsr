@@ -62,11 +62,11 @@ export class Paragraph extends Text {
 			lines.filter(line => line.lineBreak).map(l => l.line.id + ' lineBreak ' + l.lineBreak),
 		);*/
 		let output: string = '';
-		lines.forEach(line => {
+		lines.forEach((line, index) => {
 			output += this.lineToMarkDown(line.line);
 			if (line.lineBreak) {
 				output += '  \n';
-			} else {
+			} else if (index + 1 < lines.length) {
 				output += ' ';
 			}
 		});
