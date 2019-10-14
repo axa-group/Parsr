@@ -37,6 +37,18 @@
 									</li>
 								</ul>
 							</li>
+							<li>
+								<span>Box:</span>
+								<ul>
+									<li
+										v-for="(option, index) in Object.keys(currentElement.box)"
+										:key="'Item_' + index"
+									>
+										<span>{{ option }}:</span>
+										<span class="wordContent">{{ currentElement.box[option] }}</span>
+									</li>
+								</ul>
+							</li>
 						</ul>
 					</div>
 				</v-expansion-panel-content>
