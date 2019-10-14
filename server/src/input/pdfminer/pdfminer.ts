@@ -219,7 +219,9 @@ function breakLineIntoWords(
 				weight: RegExp(/bold/gim).test(char._attr.font) ? 'bold' : 'medium',
 				isItalic: RegExp(/italic/gim).test(char._attr.font) ? true : false,
 				isUnderline: RegExp(/underline/gim).test(char._attr.font) ? true : false,
+				color: ncolourToHex(char._attr.ncolour),
 			});
+
 			const charContent: string = getValidCharacter(char._);
 			return new Character(
 				getBoundingBox(char._attr.bbox, ',', pageHeight, scalingFactor),
@@ -303,6 +305,24 @@ function breakLineIntoWords(
 		}
 	}
 	return words;
+}
+
+function ncolourToHex(color: string) {
+	const rgbToHex = (r, g, b) =>
+		'#' +
+		[r, g, b]
+			.map(x => {
+				const hex = Math.ceil(x * 255).toString(16);
+				return hex.length === 1 ? '0' + hex : hex;
+			})
+			.join('');
+
+	const rgbColor = color
+		.replace('[', '')
+		.replace(']', '')
+		.split(',');
+
+	return rgbToHex(rgbColor[0], rgbColor[1] || rgbColor[0], rgbColor[2] || rgbColor[0]);
 }
 
 /**
