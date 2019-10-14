@@ -1,7 +1,7 @@
 {
 	"version": 0.5,
 	"extractor": {
-		"pdf": "pdf2json",
+		"pdf": "pdfminer",
 		"img": "tesseract",
 		"language": ["eng", "fra"]
 	},
@@ -13,7 +13,7 @@
 		["header-footer-detection", { "maxMarginPercentage": { "value": 15 } }],
 		["reading-order-detection", { "minColumnWidthInPagePercent": { "value": 15 } }],
 		"link-detection",
-		["words-to-line", { "maximumSpaceBetweenWords": { "value": 100 } }],
+		"words-to-line-new",
 		"lines-to-paragraph",
 		["page-number-detection", { "maxMarginPercentage": { "value": 15 } }],
 		"heading-detection",

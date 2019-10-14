@@ -31,7 +31,8 @@ import { RemoteModule } from './processing/RemoteModule/RemoteModule';
 import { SeparateWordsModule } from './processing/SeparateWordsModule/SeparateWordsModule';
 import { TableDetectionModule } from './processing/TableDetectionModule/TableDetectionModule';
 import { WhitespaceRemovalModule } from './processing/WhitespaceRemovalModule/WhitespaceRemovalModule';
-import { WordsToLineModule } from './processing/WordsToLineModule/WordsToLineModule';
+// import { WordsToLineModule } from './processing/WordsToLineModule/WordsToLineModule';
+import { WordsToLineModuleNew } from './processing/WordsToLineModuleNew/WordsToLineModuleNew';
 import { CleanerConfig, Config } from './types/Config';
 import { Document } from './types/DocumentRepresentation/Document';
 import logger from './utils/Logger';
@@ -49,7 +50,8 @@ export class Cleaner {
 	private cleaningToolRegister: Array<typeof Module> = [
 		OutOfPageRemovalModule,
 		ReadingOrderDetectionModule,
-		WordsToLineModule,
+		// WordsToLineModule,
+		WordsToLineModuleNew,
 		KeyValueDetectionModule,
 		LinesToParagraphModule,
 		HierarchyDetectionModule,
