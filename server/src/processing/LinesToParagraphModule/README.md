@@ -17,6 +17,18 @@ It creates new paragraph elements that contains arrays of line elements.
 
 It simply takes every line one by one according to the reading order and stops and loops if the next line is on another paragraph.
 
+## Parameters
+
+`tolerance`: Ratio used when merging lines into paragraphs taking into account the line height and bottom distance to next line.
+
+**TIP**: If you see two lines in same paragraph that should be splitted into two paragraphs decrease tolerance value, if you see two lines in diferent paragrpahs that should be part of same paragraph increase tolerance value.
+
+- Tolerance 0.1
+  ![](../../../../docs/assets/Paragraph_01.png)
+
+- Tolerance 0.25
+  ![](../../../../docs/assets/Paragraph_025.png)
+
 ## Accuracy
 
 Almost perfect
