@@ -21,7 +21,7 @@ It simply takes every line one by one according to the reading order and stops a
 
 `tolerance`: Ratio used when merging lines into paragraphs taking into account the line height and bottom distance to next line.
 
-**TIP**: If you see two lines in same paragraph that should be splitted into two paragraphs decrease tolerance value, if you see two lines in diferent paragrpahs that should be part of same paragraph increase tolerance value.
+**TIP**: If you see two lines in same paragraph that should be splitted into two paragraphs decrease tolerance value, if you see two lines in diferent paragraphs that should be part of same paragraph increase tolerance value.
 
 - Tolerance 0.1
   ![](../../../../docs/assets/Paragraph_01.png)
