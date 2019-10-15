@@ -118,7 +118,7 @@ export class WordsToLineModuleNew extends Module {
 		groups together the words that are at the same vertical position in a page
 	*/
 	private joinAlignedWords(words: Word[]): Word[][] {
-		const toBeMerged: Word[][] = [];
+		const lines: Word[][] = [];
 		let line: Word[] = [];
 
 		words.forEach((word, i) => {
@@ -129,11 +129,12 @@ export class WordsToLineModuleNew extends Module {
 			} catch (e) {
 				/* empty */
 			}
-			if (nextWord && nextWord.box.top !== word.box.top) {
-				toBeMerged.push(Object.assign([], line));
+
+			if (!nextWord || Math.abs(nextWord.box.top - word.box.top) > word.box.height * 0.4) {
+				lines.push(Object.assign([], line));
 				line = [];
 			}
 		});
-		return toBeMerged;
+		return lines;
 	}
 }
