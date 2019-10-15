@@ -104,9 +104,18 @@ export default new Vuex.Store({
 					},
 				],
 				'link-detection',
-
-				'words-to-line-new',
-
+				[
+					'words-to-line-new',
+					{
+						topUncertainty: {
+							value: 0.4,
+							range: {
+								min: 0,
+								max: 1,
+							},
+						},
+					},
+				],
 				[
 					'lines-to-paragraph',
 					{

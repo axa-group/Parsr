@@ -26,16 +26,36 @@ import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import { ReadingOrderDetectionModule } from '../ReadingOrderDetectionModule/ReadingOrderDetectionModule';
+import * as defaultConfig from './defaultConfig.json';
+
+interface Options {
+	topUncertainty?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
+}
+
+const defaultOptions = (defaultConfig as any) as Options;
 
 /**
  * Stability: Stable
  * Merge text block that are side by side to make lines.
  */
-export class WordsToLineModuleNew extends Module {
+export class WordsToLineModuleNew extends Module<Options> {
 	public static moduleName = 'words-to-line-new';
 	public static dependencies = [ReadingOrderDetectionModule];
 
+	constructor(options?: Options) {
+		super(options, defaultOptions);
+	}
+
 	public main(doc: Document): Document {
+		const opt: Options = {};
+		Object.assign(opt, defaultOptions, this.options);
+
 		doc.pages = doc.pages.map(page => {
 			if (page.getElementsOfType<Line>(Line).length > 0) {
 				logger.warn('Warning: this page already has some line in it. Not performing line merge.');
@@ -49,9 +69,9 @@ export class WordsToLineModuleNew extends Module {
 			const otherPageElements: Element[] = page.elements.filter(
 				element => !(element instanceof Word),
 			);
-			const otherElements: Element[] = this.joinWordsInElements(otherPageElements);
+			const otherElements: Element[] = this.joinWordsInElements(otherPageElements, opt);
 
-			const alignedPageWords: Word[][] = this.joinAlignedWords(words);
+			const alignedPageWords: Word[][] = this.joinAlignedWords(words, opt);
 			const texts: Text[] = this.mergeWordsIntoTexts(alignedPageWords);
 
 			page.elements = otherElements.concat(texts);
@@ -62,14 +82,14 @@ export class WordsToLineModuleNew extends Module {
 		return doc;
 	}
 
-	private joinWordsInElements(elements: Element[]) {
+	private joinWordsInElements(elements: Element[], options: Options) {
 		elements.forEach(element => {
-			this.joinWordsFromElement(element);
+			this.joinWordsFromElement(element, options);
 		});
 		return elements;
 	}
 
-	private joinWordsFromElement(element: Element): Word {
+	private joinWordsFromElement(element: Element, options: Options): Word {
 		if (element instanceof Word) {
 			return element;
 		} else if (
@@ -79,20 +99,20 @@ export class WordsToLineModuleNew extends Module {
 		) {
 			const containedWords: Word[] = [];
 			element.content.forEach(el => {
-				const containedWord = this.joinWordsFromElement(el);
+				const containedWord = this.joinWordsFromElement(el, options);
 				if (containedWord) {
 					containedWords.push(containedWord);
 				}
 			});
 			if (containedWords.length > 0) {
-				this.updateElementContents(element, containedWords);
+				this.updateElementContents(element, containedWords, options);
 			}
 		}
 		return null;
 	}
 
-	private updateElementContents(element: Element, words: Word[]) {
-		const joinedWords = this.joinAlignedWords(words);
+	private updateElementContents(element: Element, words: Word[], options: Options) {
+		const joinedWords = this.joinAlignedWords(words, options);
 		const elementContent = this.mergeWordsIntoTexts(joinedWords);
 		element.content = elementContent;
 	}
@@ -114,7 +134,7 @@ export class WordsToLineModuleNew extends Module {
 	/*
 		groups together the words that are at the same vertical position in a page
 	*/
-	private joinAlignedWords(words: Word[]): Word[][] {
+	private joinAlignedWords(words: Word[], options: Options): Word[][] {
 		const lines: Word[][] = [];
 		let line: Word[] = [];
 
@@ -127,7 +147,10 @@ export class WordsToLineModuleNew extends Module {
 				/* empty */
 			}
 
-			if (!nextWord || Math.abs(nextWord.box.top - word.box.top) > word.box.height * 0.4) {
+			if (
+				!nextWord ||
+				Math.abs(nextWord.box.top - word.box.top) > word.box.height * options.topUncertainty.value
+			) {
 				lines.push(line);
 				line = [];
 			}
