@@ -210,26 +210,29 @@ function breakLineIntoWords(
 	pageHeight: number,
 	scalingFactor: number = 1,
 ): Word[] {
+	let notAllowedChars = ['\u200B']; //&#8203 Zero Width Space
 	const words: Word[] = [];
-	const chars: Character[] = line.text.map(char => {
-		if (char._ === undefined) {
-			return undefined;
-		} else {
-			const font: Font = new Font(char._attr.font, parseFloat(char._attr.size), {
-				weight: RegExp(/bold/gim).test(char._attr.font) ? 'bold' : 'medium',
-				isItalic: RegExp(/italic/gim).test(char._attr.font) ? true : false,
-				isUnderline: RegExp(/underline/gim).test(char._attr.font) ? true : false,
-				color: ncolourToHex(char._attr.ncolour),
-			});
+	const chars: Character[] = line.text
+		.filter(char => !notAllowedChars.includes(char._))
+		.map(char => {
+			if (char._ === undefined) {
+				return undefined;
+			} else {
+				const font: Font = new Font(char._attr.font, parseFloat(char._attr.size), {
+					weight: RegExp(/bold/gim).test(char._attr.font) ? 'bold' : 'medium',
+					isItalic: RegExp(/italic/gim).test(char._attr.font) ? true : false,
+					isUnderline: RegExp(/underline/gim).test(char._attr.font) ? true : false,
+					color: ncolourToHex(char._attr.ncolour),
+				});
 
-			const charContent: string = getValidCharacter(char._);
-			return new Character(
-				getBoundingBox(char._attr.bbox, ',', pageHeight, scalingFactor),
-				charContent,
-				font,
-			);
-		}
-	});
+				const charContent: string = getValidCharacter(char._);
+				return new Character(
+					getBoundingBox(char._attr.bbox, ',', pageHeight, scalingFactor),
+					charContent,
+					font,
+				);
+			}
+		});
 	if (chars[0] === undefined || chars[0].content === wordSeperator) {
 		chars.splice(0, 1);
 	}
