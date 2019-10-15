@@ -25,6 +25,7 @@ import {
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
+import { ReadingOrderDetectionModule } from '../ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 
 /**
  * Stability: Stable
@@ -32,6 +33,7 @@ import { Module } from '../Module';
  */
 export class WordsToLineModuleNew extends Module {
 	public static moduleName = 'words-to-line-new';
+	public static dependencies = [ReadingOrderDetectionModule];
 
 	public main(doc: Document): Document {
 		doc.pages = doc.pages.map(page => {
@@ -42,13 +44,12 @@ export class WordsToLineModuleNew extends Module {
 
 			const words: Word[] = page
 				.getElementsOfType<Word>(Word, false)
-				.filter(Element.hasBoundingBox)
-				.sort(this.sortWordsByTopLeftPosition);
+				.filter(Element.hasBoundingBox);
 
-			// const otherPageElements: Element[] = page.elements.filter(
-			// 	element => !(element instanceof Word),
-			// );
-			const otherElements: Element[] = []; // this.joinWordsInElements(otherPageElements);
+			const otherPageElements: Element[] = page.elements.filter(
+				element => !(element instanceof Word),
+			);
+			const otherElements: Element[] = this.joinWordsInElements(otherPageElements);
 
 			const alignedPageWords: Word[][] = this.joinAlignedWords(words);
 			const texts: Text[] = this.mergeWordsIntoTexts(alignedPageWords);
@@ -61,43 +62,39 @@ export class WordsToLineModuleNew extends Module {
 		return doc;
 	}
 
-	// private joinWordsInElements(elements: Element[]) {
-	// 	elements.forEach(element => {
-	// 		this.joinWordsFromElement(element);
-	// 	});
-	// 	return elements;
-	// }
+	private joinWordsInElements(elements: Element[]) {
+		elements.forEach(element => {
+			this.joinWordsFromElement(element);
+		});
+		return elements;
+	}
 
-	// private joinWordsFromElement(element: Element): Word {
-	// 	if (element instanceof Word) {
-	// 		return element;
-	// 	} else if (
-	// 		element.content &&
-	// 		typeof element.content !== 'string' &&
-	// 		element.content.length !== 0
-	// 	) {
-	// 		const containedWords: Word[] = [];
-	// 		element.content.forEach(el => {
-	// 			const containedWord = this.joinWordsFromElement(el);
-	// 			if (containedWord) {
-	// 				containedWords.push(containedWord);
-	// 			}
-	// 		});
-	// 		if (containedWords.length > 0) {
-	// 			this.updateElementContents(element, containedWords);
-	// 		}
-	// 	}
-	// 	return null;
-	// }
+	private joinWordsFromElement(element: Element): Word {
+		if (element instanceof Word) {
+			return element;
+		} else if (
+			element.content &&
+			typeof element.content !== 'string' &&
+			element.content.length !== 0
+		) {
+			const containedWords: Word[] = [];
+			element.content.forEach(el => {
+				const containedWord = this.joinWordsFromElement(el);
+				if (containedWord) {
+					containedWords.push(containedWord);
+				}
+			});
+			if (containedWords.length > 0) {
+				this.updateElementContents(element, containedWords);
+			}
+		}
+		return null;
+	}
 
-	// private updateElementContents(element: Element, words: Word[]) {
-	// 	const joinedWords = this.joinAlignedWords(words);
-	// 	const elementContent = this.mergeWordsIntoTexts(joinedWords);
-	// 	element.content = elementContent;
-	// }
-
-	private sortWordsByTopLeftPosition(wordA: Word, wordB: Word): number {
-		return wordA.box.top - wordB.box.top || wordB.box.left - wordB.box.left;
+	private updateElementContents(element: Element, words: Word[]) {
+		const joinedWords = this.joinAlignedWords(words);
+		const elementContent = this.mergeWordsIntoTexts(joinedWords);
+		element.content = elementContent;
 	}
 
 	private mergeWordsIntoTexts(alignedWords: Word[][]): Text[] {
@@ -131,7 +128,7 @@ export class WordsToLineModuleNew extends Module {
 			}
 
 			if (!nextWord || Math.abs(nextWord.box.top - word.box.top) > word.box.height * 0.4) {
-				lines.push(Object.assign([], line));
+				lines.push(line);
 				line = [];
 			}
 		});
