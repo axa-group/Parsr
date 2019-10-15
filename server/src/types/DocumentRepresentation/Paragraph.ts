@@ -118,7 +118,7 @@ export class Paragraph extends Text {
 		iWordsIdx = utils.groupConsecutiveNumbersInArray(iWordsIdx[0]).filter(p => p.length !== 0);
 
 		// prepare the result
-		const result: string[] = words.map(w => w.toString());
+		const result: string[] = words.map(w => w.toMarkDown());
 
 		biWordsIdx.forEach(idGroup => {
 			result[idGroup[0]] = '***' + result[idGroup[0]];

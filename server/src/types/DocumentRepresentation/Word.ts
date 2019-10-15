@@ -37,6 +37,10 @@ export class Word extends Text {
 		this.language = language;
 	}
 
+	public toMarkDown(): string {
+		return this.properties.link ? this.properties.link : this.toString();
+	}
+
 	public toString(): string {
 		if (typeof this.content === 'string') {
 			return this.content.trim();
