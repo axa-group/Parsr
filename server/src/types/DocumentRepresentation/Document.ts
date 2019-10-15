@@ -15,6 +15,7 @@
  */
 
 import * as clone from 'clone';
+import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Element } from './Element';
 import { Font } from './Font';
@@ -124,29 +125,11 @@ export class Document {
 	 * mechanism. The most used font will be returned as a valid Font object.
 	 */
 	public getMainFont(): Font | undefined {
-		const fonts: Font[] = this.pages.map(p => p.getMainFont()).filter(f => f !== undefined);
-
-		const baskets: Font[][] = [];
-		fonts.forEach((font: Font) => {
-			let basketFound: boolean = false;
-			baskets.forEach((basket: Font[]) => {
-				if (basket.length > 0 && basket[0].isEqual(font)) {
-					basket.push(font);
-					basketFound = true;
-				}
-			});
-
-			if (!basketFound) {
-				baskets.push([font]);
-			}
-		});
-
-		baskets.sort((a, b) => {
-			return b.length - a.length;
-		});
-
-		if (baskets.length > 0 && baskets[0].length > 0) {
-			return baskets[0][0];
+		const result: Font = utils.findMostCommonFont(
+			this.pages.map(p => p.getMainFont()).filter(f => f !== undefined),
+		);
+		if (result !== undefined) {
+			return result;
 		} else {
 			logger.warn(`No font found for the document`);
 			return undefined;

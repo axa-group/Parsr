@@ -21,7 +21,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { inspect } from 'util';
-import { BoundingBox, Document, Element, Page, Text } from './types/DocumentRepresentation';
+import { BoundingBox, Document, Element, Font, Page, Text } from './types/DocumentRepresentation';
 import logger from './utils/Logger';
 
 let mutoolImagesFolder: string = '';
@@ -594,6 +594,36 @@ export function findPositionsInArray<T>(array: T[], element: T): number[] {
 		}
 	});
 	return result;
+}
+
+/***
+ * Finds the most common font among a list of fonts
+ */
+export function findMostCommonFont(fonts: Font[]): Font | undefined {
+	const baskets: Font[][] = [];
+	fonts.forEach((font: Font) => {
+		let basketFound: boolean = false;
+		baskets.forEach((basket: Font[]) => {
+			if (basket.length > 0 && basket[0].isEqual(font)) {
+				basket.push(font);
+				basketFound = true;
+			}
+		});
+
+		if (!basketFound) {
+			baskets.push([font]);
+		}
+	});
+
+	baskets.sort((a, b) => {
+		return b.length - a.length;
+	});
+
+	if (baskets.length > 0 && baskets[0].length > 0) {
+		return baskets[0][0];
+	} else {
+		return undefined;
+	}
 }
 
 /**

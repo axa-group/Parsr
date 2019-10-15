@@ -153,29 +153,11 @@ export class Paragraph extends Text {
 	 * as a valid Font object.
 	 */
 	public getMainFont(): Font | undefined {
-		const fonts: Font[] = this.content.map((line: Line) => line.getMainFont());
-		const baskets: Font[][] = [];
-
-		fonts.forEach((font: Font) => {
-			let basketFound: boolean = false;
-			baskets.forEach((basket: Font[]) => {
-				if (basket.length > 0 && basket[0].isEqual(font)) {
-					basket.push(font);
-					basketFound = true;
-				}
-			});
-
-			if (!basketFound) {
-				baskets.push([font]);
-			}
-		});
-
-		baskets.sort((a, b) => {
-			return b.length - a.length;
-		});
-
-		if (baskets.length > 0 && baskets[0].length > 0) {
-			return baskets[0][0];
+		const result: Font = utils.findMostCommonFont(
+			this.content.map((line: Line) => line.getMainFont()),
+		);
+		if (result !== undefined) {
+			return result;
 		} else {
 			logger.debug(`No font found for paragraph id ${this.id}`);
 			return undefined;

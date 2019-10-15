@@ -344,24 +344,35 @@ export class LinesToParagraphModule extends Module<Options> {
 	 * @param lineGroups List of joined lines to be alterered
 	 */
 	private accountForPotentialHeadings(lineGroups: Line[][]) {
-		const newLines: Line[][] = [].concat(lineGroups);
-
-		newLines.forEach(group => {
-			group.sort((l1: Line, l2: Line) => l2.getMainFont().size - l1.getMainFont().size);
-
-			// make paragraph groups by font size
-			const groupsByFontSize: Line[][] = [];
-			let visitedFontSizes: number[] = [];
-			for (const para of group) {
-				const paraFont: Font = para.getMainFont();
-				if (visitedFontSizes.includes(paraFont.size)) {
-					continue;
+		lineGroups.forEach(lineGroup => {
+			const mostCommonFont: Font | undefined = utils.findMostCommonFont(
+				lineGroup.map((l: Line) => l.getMainFont()).filter(f => f !== undefined),
+			);
+			const newLines: Line[] = [];
+			if (mostCommonFont instanceof Font) {
+				const headingCandidateIndices: number[] = lineGroup
+					.map((line: Line, pos: number) => {
+						if (line.getMainFont().size > mostCommonFont.size) {
+							return pos;
+						} else {
+							return undefined;
+						}
+					})
+					.filter((i: number) => i !== undefined);
+				let groupIndices: number[][] = [];
+				groupIndices = utils.groupConsecutiveNumbersInArray(headingCandidateIndices);
+				groupIndices.map((group: number[]) => {
+					group.map((pos: number) => newLines.push(lineGroup[pos]));
+				});
+				groupIndices.map((group: number[]) => {
+					group.map((pos: number) => lineGroup.splice(pos, 1));
+				});
+				if (newLines.length > 0) {
+					logger.debug(`------> ${newLines.length} new lines found in this group`);
+					newLines.map((l: Line) => lineGroups.push([l]));
 				}
-
-				const pos = utils.findPositionsInArray(group.map(p => p.getMainFont().size), paraFont.size);
-
-				groupsByFontSize.push(pos.map(i => group[i]));
-				visitedFontSizes = [...new Set([...visitedFontSizes, paraFont.size])];
+			} else {
+				logger.warn("can't account for headings while para merge - no font info available");
 			}
 		});
 	}

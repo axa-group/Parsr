@@ -54,6 +54,7 @@ export class HeadingDetectionModule extends Module {
 				return;
 			}
 			const textBodyFont: Font = doc.getMainFont();
+			logger.debug(`The document's text body font is: ${utils.prettifyObject(textBodyFont)}`);
 
 			// get all the paragraphs who don't have the same font as the main document one
 			const headingCandidates: Paragraph[] = doc
@@ -61,7 +62,7 @@ export class HeadingDetectionModule extends Module {
 				.filter(para => para.toString().trim() !== '')
 				.reduce((para1, para2) => para1.concat(para2), [])
 				.filter(para => para.getMainFont() !== undefined)
-				.filter(para => !para.getMainFont().isEqual(textBodyFont))
+				.filter(para => Math.floor(para.getMainFont().size) > Math.floor(textBodyFont.size))
 				.sort((para1, para2) => para2.getMainFont().size - para1.getMainFont().size);
 
 			// make paragraph groups by font size
@@ -69,17 +70,17 @@ export class HeadingDetectionModule extends Module {
 			let visitedFontSizes: number[] = [];
 			for (const para of headingCandidates) {
 				const paraFont: Font = para.getMainFont();
-				if (visitedFontSizes.includes(paraFont.size)) {
+				if (visitedFontSizes.includes(Math.floor(paraFont.size))) {
 					continue;
 				}
 
 				const pos = utils.findPositionsInArray(
-					headingCandidates.map(p => p.getMainFont().size),
-					paraFont.size,
+					headingCandidates.map(p => Math.floor(p.getMainFont().size)),
+					Math.floor(paraFont.size),
 				);
 
 				paraGroupsByFontSize.push(pos.map(i => headingCandidates[i]));
-				visitedFontSizes = [...new Set([...visitedFontSizes, paraFont.size])];
+				visitedFontSizes = [...new Set([...visitedFontSizes, Math.floor(paraFont.size)])];
 			}
 
 			logger.debug(
@@ -87,7 +88,9 @@ export class HeadingDetectionModule extends Module {
 					paraGroupsByFontSize.length
 				} groups of dimensions: ${paraGroupsByFontSize.map(
 					pg => pg.length,
-				)}: ${utils.prettifyObject(paraGroupsByFontSize.map(pg => pg[0].getMainFont().size))}`,
+				)}: ${utils.prettifyObject(
+					paraGroupsByFontSize.map(pg => Math.floor(pg[0].getMainFont().size)),
+				)}`,
 			);
 
 			// make headings
