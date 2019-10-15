@@ -131,7 +131,18 @@ export default new Vuex.Store({
 						mergeTableElements: { value: false, range: [true, false] },
 					},
 				],
-				'lines-to-paragraph',
+				[
+					'lines-to-paragraph',
+					{
+						tolerance: {
+							value: 0.25,
+							range: {
+								min: 0.0,
+								max: 1.0,
+							},
+						},
+					},
+				],
 				[
 					'page-number-detection',
 					{
