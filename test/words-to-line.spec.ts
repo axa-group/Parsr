@@ -24,7 +24,6 @@ import { Line } from '../server/src/types/DocumentRepresentation';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
 import { getPdf, runModules } from './helpers';
 
-// let docBefore: Document;
 let docAfter: Document;
 describe('Words to line module', () => {
 	withData(
@@ -40,7 +39,6 @@ describe('Words to line module', () => {
 				}
 
 				getPdf(transform, pdfName).then(([, pdfA]) => {
-					// docBefore = pdfB;
 					docAfter = pdfA;
 					done();
 				});
@@ -54,3 +52,22 @@ describe('Words to line module', () => {
 		},
 	);
 });
+
+// describe('Weird case adding some random text on top', () => {
+// 	before(done => {
+// 		function transform(pdf: Document) {
+// 			return runModules(pdf, [new ReadingOrderDetectionModule(), new WordsToLineModule()]);
+// 		}
+
+// 		getPdf(transform, 'testparagraph.pdf').then(([, pdfA]) => {
+// 			docAfter = pdfA;
+// 			done();
+// 		});
+// 	});
+
+// 	it('should have the correct amount of lines', () => {
+// 		expect(docAfter.pages[0].getElementsOfType<Line>(Line))
+// 			.to.be.an('array')
+// 			.and.to.be.of.length(31);
+// 	});
+// });
