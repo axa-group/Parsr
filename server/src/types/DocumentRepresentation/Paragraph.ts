@@ -22,9 +22,11 @@ import { Line } from './Line';
 import { Text } from './Text';
 import { Word } from './Word';
 
-type LineSpace = {
+type LineInfo = {
 	line: Line;
 	lineBreak: Boolean;
+	firstWordStyle: String;
+	lastWordStyle: String;
 };
 
 /**
@@ -57,20 +59,43 @@ export class Paragraph extends Text {
 	 * Converts the entire paragraph into a string form with formatting, with spaces between words.
 	 */
 	public toMarkdown(): string {
-		const lines: LineSpace[] = this.getLinesWithAvailableSpace();
-		/*console.log(
-			lines.filter(line => line.lineBreak).map(l => l.line.id + ' lineBreak ' + l.lineBreak),
-		);*/
+		const lines: LineInfo[] = this.getLinesInfo();
 		let output: string = '';
+		let prevLine: LineInfo = null;
 		lines.forEach((line, index) => {
-			output += this.lineToMarkDown(line.line);
+			let mergedStyles = { paragraphOutput: output, lineOutput: this.lineToMarkDown(line.line) };
+			this.mergeStyleLines(prevLine, line, mergedStyles);
+			output = mergedStyles.paragraphOutput;
+			output += mergedStyles.lineOutput;
 			if (line.lineBreak) {
 				output += '  \n';
 			} else if (index + 1 < lines.length) {
 				output += ' ';
 			}
+			prevLine = line;
 		});
-		return output;
+		return this.normalizeFontStyles(output);
+	}
+
+	private mergeStyleLines(prevLine: LineInfo, line: LineInfo, output: any) {
+		if (!prevLine) {
+			return;
+		}
+
+		if (line.lineBreak) {
+			return;
+		}
+
+		if (prevLine.lastWordStyle && prevLine.lastWordStyle === line.firstWordStyle) {
+			const end = output.paragraphOutput.length - (prevLine.lastWordStyle.length + 1);
+			output.paragraphOutput = output.paragraphOutput.slice(0, end) + ' ';
+			output.lineOutput = output.lineOutput.slice(prevLine.lastWordStyle.length);
+		}
+	}
+
+	private normalizeFontStyles(input: string): string {
+		['*** ***', '** **', '* *'].forEach(style => input.split(style).join(''));
+		return input;
 	}
 
 	private lineToMarkDown(line: Line) {
@@ -79,11 +104,12 @@ export class Paragraph extends Text {
 		let bWordsIdx: number[][] = Array<number[]>(1).fill([]);
 		let iWordsIdx: number[][] = Array<number[]>(1).fill([]);
 		words.forEach((w, index) => {
-			if (w.font.isItalic && w.font.weight === 'bold') {
+			const style = this.wordStyle(w);
+			if (style === '***') {
 				biWordsIdx[0].push(index);
-			} else if (!w.font.isItalic && w.font.weight === 'bold') {
+			} else if (style === '**') {
 				bWordsIdx[0].push(index);
-			} else if (w.font.isItalic && w.font.weight !== 'bold') {
+			} else if (style === '*') {
 				iWordsIdx[0].push(index);
 			}
 		});
@@ -122,10 +148,26 @@ export class Paragraph extends Text {
 		return this.content.map(l => l.content).reduce((a, b) => [...a, ...b]);
 	}
 
-	private getLinesWithAvailableSpace(): LineSpace[] {
+	private getLinesInfo(): LineInfo[] {
 		return this.content.map((l, index) => {
-			return { line: l, lineBreak: this.isLineBreak(index) };
+			return {
+				line: l,
+				lineBreak: this.isLineBreak(index),
+				firstWordStyle: this.wordStyle(l.content[0]),
+				lastWordStyle: this.wordStyle(l.content[l.content.length - 1]),
+			};
 		});
+	}
+
+	private wordStyle(word: Word): string {
+		if (word.font.isItalic && word.font.weight === 'bold') {
+			return '***';
+		} else if (!word.font.isItalic && word.font.weight === 'bold') {
+			return '**';
+		} else if (word.font.isItalic && word.font.weight !== 'bold') {
+			return '*';
+		}
+		return null;
 	}
 
 	private isLineBreak(index: number): Boolean {
