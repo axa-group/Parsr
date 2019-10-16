@@ -132,7 +132,7 @@ export class WordsToLineModuleNew extends Module<Options> {
 	}
 
 	/*
-		groups together the words that are at the same vertical position in a page
+		groups together the words that are at the same vertical position in a page and near each other
 	*/
 	private joinAlignedWords(words: Word[], options: Options): Word[][] {
 		const lines: Word[][] = [];
@@ -155,6 +155,41 @@ export class WordsToLineModuleNew extends Module<Options> {
 				line = [];
 			}
 		});
-		return lines;
+		return lines.map(this.splitSeparatedWords).flat(1);
+	}
+
+	/*
+		Takes a line and tries to detect possible disconnected sentences based on word separation.
+		Returns an array with the disconnected lines.
+	*/
+	private splitSeparatedWords(line: Word[]): Word[][] {
+		const spacesBetweenWords = line
+			.map((word, index, words) => {
+				if (words.length > index + 1) {
+					const nextWord = words[index + 1];
+					return nextWord.box.left - (word.box.left + word.box.width);
+				} else {
+					return null;
+				}
+			})
+			.filter(w => !!w);
+
+		const averageSpaceForLine = spacesBetweenWords.reduce(
+			(acc, space) => acc + space / spacesBetweenWords.length,
+			0,
+		);
+
+		const separatedLines: Word[][] = [];
+		let newLine: Word[] = [];
+		line.map((word, i) => {
+			newLine.push(word);
+			if (spacesBetweenWords[i] > Math.min(averageSpaceForLine * 10, 60)) {
+				separatedLines.push(Object.assign([], newLine));
+				newLine = [];
+			}
+		});
+		separatedLines.push(newLine);
+
+		return separatedLines;
 	}
 }
