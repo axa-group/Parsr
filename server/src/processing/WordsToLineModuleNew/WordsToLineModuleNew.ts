@@ -36,6 +36,20 @@ interface Options {
 			max: number;
 		};
 	};
+	maxAverageSpaceCount?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
+	maxSpacesBetweenWords?: {
+		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -155,14 +169,14 @@ export class WordsToLineModuleNew extends Module<Options> {
 				line = [];
 			}
 		});
-		return lines.map(this.splitSeparatedWords).flat(1);
+		return lines.map(l => this.splitSeparatedWords(l, options)).flat(1);
 	}
 
 	/*
 		Takes a line and tries to detect possible disconnected sentences based on word separation.
 		Returns an array with the disconnected lines.
 	*/
-	private splitSeparatedWords(line: Word[]): Word[][] {
+	private splitSeparatedWords(line: Word[], options: Options): Word[][] {
 		const spacesBetweenWords = line
 			.map((word, index, words) => {
 				if (words.length > index + 1) {
@@ -183,7 +197,13 @@ export class WordsToLineModuleNew extends Module<Options> {
 		let newLine: Word[] = [];
 		line.map((word, i) => {
 			newLine.push(word);
-			if (spacesBetweenWords[i] > Math.min(averageSpaceForLine * 10, 60)) {
+			if (
+				spacesBetweenWords[i] >
+				Math.min(
+					averageSpaceForLine * options.maxAverageSpaceCount.value,
+					options.maxSpacesBetweenWords.value,
+				)
+			) {
 				separatedLines.push(Object.assign([], newLine));
 				newLine = [];
 			}
