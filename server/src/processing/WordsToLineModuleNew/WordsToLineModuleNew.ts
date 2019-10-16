@@ -177,24 +177,19 @@ export class WordsToLineModuleNew extends Module<Options> {
 		Returns an array with the disconnected lines.
 	*/
 	private splitSeparatedWords(line: Word[], options: Options): Word[][] {
-		const spacesBetweenWords = line
+		const spacesBetweenWords: number[] = line
 			.map((word, index, words) => {
 				if (words.length > index + 1) {
 					const nextWord = words[index + 1];
-					if (word.box.left < nextWord.box.left) {
-						// left to right reading
-						return nextWord.box.left - (word.box.left + word.box.width);
-					} else {
-						// right to left reading
-						return word.box.left - (nextWord.box.left + nextWord.box.width);
-					}
-				} else {
-					return null;
+					return word.box.left < nextWord.box.left
+						? nextWord.box.left - (word.box.left + word.box.width) // left to right reading
+						: word.box.left - (nextWord.box.left + nextWord.box.width); // right to left reading
 				}
+				return null;
 			})
 			.filter(w => !!w);
 
-		const averageSpaceForLine = spacesBetweenWords.reduce(
+		const averageSpaceForLine: number = spacesBetweenWords.reduce(
 			(acc, space) => acc + space / spacesBetweenWords.length,
 			0,
 		);
