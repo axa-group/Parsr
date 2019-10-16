@@ -195,7 +195,7 @@ export class WordsToLineModuleNew extends Module<Options> {
 
 		const separatedLines: Word[][] = [];
 		let newLine: Word[] = [];
-		line.map((word, i) => {
+		line.forEach((word, i) => {
 			newLine.push(word);
 			if (
 				spacesBetweenWords[i] >
