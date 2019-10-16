@@ -181,7 +181,13 @@ export class WordsToLineModuleNew extends Module<Options> {
 			.map((word, index, words) => {
 				if (words.length > index + 1) {
 					const nextWord = words[index + 1];
-					return nextWord.box.left - (word.box.left + word.box.width);
+					if (word.box.left < nextWord.box.left) {
+						// left to right reading
+						return nextWord.box.left - (word.box.left + word.box.width);
+					} else {
+						// right to left reading
+						return word.box.left - (nextWord.box.left + nextWord.box.width);
+					}
 				} else {
 					return null;
 				}
