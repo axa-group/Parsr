@@ -31,6 +31,7 @@ describe('Words to line module', () => {
 			'one line document': ['line-merge.pdf', 1],
 			'multiple lines simple document': ['paragraph-merge-1.pdf', 4],
 			'multiple lines multiple columns document': ['paragraph-merge-2.pdf', 72],
+			'two lines at the same vertical position': ['page-number.pdf', 2],
         },
 		(pdfName, expectedLines) => {
 			before(done => {
