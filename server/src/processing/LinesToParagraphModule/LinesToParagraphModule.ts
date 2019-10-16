@@ -348,11 +348,52 @@ export class LinesToParagraphModule extends Module<Options> {
 			const mostCommonFont: Font | undefined = utils.findMostCommonFont(
 				lineGroup.map((l: Line) => l.getMainFont()).filter(f => f !== undefined),
 			);
+			let generalUpperCase: boolean;
+			const upperCaseScores: boolean[] = lineGroup.map((l: Line) => {
+				if (l.toString().toUpperCase() === l.toString()) {
+					return true;
+				} else {
+					return false;
+				}
+			});
+			if (
+				upperCaseScores.filter((s: boolean) => s === true).length >
+				Math.floor(upperCaseScores.length / 2)
+			) {
+				generalUpperCase = true;
+			} else {
+				generalUpperCase = false;
+			}
+			let generalTitleCase: boolean;
+			const titleCaseScores: boolean[] = lineGroup.map((l: Line) => {
+				if (utils.toTitleCase(l.toString()) === l.toString()) {
+					return true;
+				} else {
+					return false;
+				}
+			});
+			if (
+				titleCaseScores.filter((s: boolean) => s === true).length >
+				Math.floor(titleCaseScores.length / 2)
+			) {
+				generalTitleCase = true;
+			} else {
+				generalTitleCase = false;
+			}
 			const newLines: Line[] = [];
 			if (mostCommonFont instanceof Font) {
 				const headingCandidateIndices: number[] = lineGroup
 					.map((line: Line, pos: number) => {
-						if (line.getMainFont().size > mostCommonFont.size) {
+						if (
+							line.getMainFont().size > mostCommonFont.size ||
+							(line.getMainFont().weight === 'bold' && mostCommonFont.weight !== 'bold') ||
+							(line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
+								.length > 0 &&
+								(line.toString().toUpperCase() === line.toString() && !generalUpperCase)) ||
+							(line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
+								.length > 0 &&
+								(utils.toTitleCase(line.toString()) === line.toString() && !generalTitleCase))
+						) {
 							return pos;
 						} else {
 							return undefined;
@@ -360,7 +401,10 @@ export class LinesToParagraphModule extends Module<Options> {
 					})
 					.filter((i: number) => i !== undefined);
 				let groupIndices: number[][] = [];
-				groupIndices = utils.groupConsecutiveNumbersInArray(headingCandidateIndices);
+				groupIndices = [
+					...groupIndices,
+					...utils.groupConsecutiveNumbersInArray(headingCandidateIndices),
+				];
 				groupIndices.map((group: number[]) => {
 					group.map((pos: number) => newLines.push(lineGroup[pos]));
 				});
@@ -368,8 +412,8 @@ export class LinesToParagraphModule extends Module<Options> {
 					group.map((pos: number) => lineGroup.splice(pos, 1));
 				});
 				if (newLines.length > 0) {
-					logger.debug(`------> ${newLines.length} new lines found in this group`);
 					newLines.map((l: Line) => lineGroups.push([l]));
+					// lineGroups.push(newLines);
 				}
 			} else {
 				logger.warn("can't account for headings while para merge - no font info available");

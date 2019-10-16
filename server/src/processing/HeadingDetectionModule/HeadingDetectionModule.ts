@@ -58,11 +58,25 @@ export class HeadingDetectionModule extends Module {
 
 			// get all the paragraphs who don't have the same font as the main document one
 			const headingCandidates: Paragraph[] = doc
-				.getElementsOfType<Paragraph>(Paragraph)
+				.getElementsOfType<Paragraph>(Paragraph, false)
 				.filter(para => para.toString().trim() !== '')
 				.reduce((para1, para2) => para1.concat(para2), [])
 				.filter(para => para.getMainFont() !== undefined)
-				.filter(para => Math.floor(para.getMainFont().size) > Math.floor(textBodyFont.size))
+				.filter(
+					para =>
+						Math.floor(para.getMainFont().size) > Math.floor(textBodyFont.size) ||
+						(para.getMainFont().weight === 'bold' && textBodyFont.weight !== 'bold') ||
+						(para
+							.getWords()
+							.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString()))
+							.filter(p => p).length > 0 &&
+							para.toString().toUpperCase() === para.toString()) ||
+						(para
+							.getWords()
+							.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString()))
+							.filter(p => p).length > 0 &&
+							utils.toTitleCase(para.toString()) === para.toString()),
+				)
 				.sort((para1, para2) => para2.getMainFont().size - para1.getMainFont().size);
 
 			// make paragraph groups by font size

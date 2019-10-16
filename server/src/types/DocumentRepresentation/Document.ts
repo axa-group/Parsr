@@ -116,8 +116,13 @@ export class Document {
 		return this.getAllElements().find(x => x.id === id);
 	}
 
-	public getElementsOfType<T extends Element>(type: new (...args: any[]) => T): T[] {
-		return this.pages.map(p => p.getElementsOfType(type)).reduce((acc, val) => acc.concat(val), []);
+	public getElementsOfType<T extends Element>(
+		type: new (...args: any[]) => T,
+		deepSearch: boolean = true,
+	): T[] {
+		return this.pages
+			.map(p => p.getElementsOfType(type), deepSearch)
+			.reduce((acc, val) => acc.concat(val), []);
 	}
 
 	/**
