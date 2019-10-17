@@ -74,7 +74,7 @@ export class Paragraph extends Text {
 			}
 			prevLine = line;
 		});
-		return this.normalizeFontStyles(output);
+		return output;
 	}
 
 	private mergeStyleLines(prevLine: LineInfo, line: LineInfo, output: any) {
@@ -91,11 +91,6 @@ export class Paragraph extends Text {
 			output.paragraphOutput = output.paragraphOutput.slice(0, end) + ' ';
 			output.lineOutput = output.lineOutput.slice(prevLine.lastWordStyle.length);
 		}
-	}
-
-	private normalizeFontStyles(input: string): string {
-		['*** ***', '** **', '* *'].forEach(style => input.split(style).join(''));
-		return input;
 	}
 
 	private lineToMarkDown(line: Line) {
