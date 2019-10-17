@@ -108,14 +108,14 @@ export default new Vuex.Store({
 					'words-to-line-new',
 					{
 						topUncertainty: {
-							value: 0.4,
+							value: 0.5,
 							range: { min: 0.0, max: 1.0 },
 						},
 						maxAverageSpaceCount: {
-							value: 100,
+							value: 3,
 						},
 						maxSpacesBetweenWords: {
-							value: 200,
+							value: 14,
 						},
 					},
 				],
