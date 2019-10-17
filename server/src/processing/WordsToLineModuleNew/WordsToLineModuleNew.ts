@@ -146,6 +146,17 @@ export class WordsToLineModuleNew extends Module<Options> {
 	}
 
 	/*
+		takes a nested array of words and flattens it by one level.
+	*/
+	private flat(array: Word[][][]): Word[][] {
+		const newArray: Word[][] = [];
+		array.forEach(element => {
+			newArray.push(...element);
+		});
+		return newArray;
+	}
+
+	/*
 		groups together the words that are at the same vertical position in a page and near each other
 	*/
 	private joinAlignedWords(words: Word[], options: Options): Word[][] {
@@ -169,7 +180,7 @@ export class WordsToLineModuleNew extends Module<Options> {
 				line = [];
 			}
 		});
-		return lines.map(l => this.splitSeparatedWords(l, options)).flat(1);
+		return this.flat(lines.map(l => this.splitSeparatedWords(l, options)));
 	}
 
 	/*

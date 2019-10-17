@@ -2,7 +2,7 @@
 	"files": ["server/bin/index.ts"],
 	"compilerOptions": {
 		"types": ["node"],
-		"lib": ["es7", "es2019"],
+		"lib": ["es7"],
 		"target": "es5",
 		"sourceMap": true,
 		"outDir": "dist",
