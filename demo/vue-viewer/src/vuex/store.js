@@ -39,7 +39,7 @@ export default new Vuex.Store({
 		defaultConfig: {
 			version: 0.5,
 			extractor: {
-				pdf: 'pdf2json',
+				pdf: 'pdfminer',
 				img: 'tesseract',
 				language: ['eng', 'fra'],
 			},
