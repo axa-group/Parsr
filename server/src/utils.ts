@@ -637,3 +637,14 @@ export function groupConsecutiveNumbersInArray(theArray: number[]): number[][] {
 		}, []);
 	return result;
 }
+
+/*
+	takes a nested array and flattens it by one level.
+*/
+export function flat(array: any[][][]): any[][] {
+	const newArray: any[][] = [];
+	array.forEach(element => {
+		newArray.push(...element);
+	});
+	return newArray;
+}
