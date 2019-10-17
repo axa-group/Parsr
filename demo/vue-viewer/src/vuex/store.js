@@ -310,7 +310,7 @@ export default new Vuex.Store({
 	},
 	getters: {
 		fonts(state) {
-			return state.document.fonts;
+			return state.document ? state.document.fonts : [];
 		},
 		documentPages(state) {
 			return state.document ? state.document.pages.length : 0;
