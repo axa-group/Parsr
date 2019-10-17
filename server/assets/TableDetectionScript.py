@@ -128,12 +128,13 @@ def main():
     import sys
     pdfFile = str(sys.argv[1])
     flavor = str(sys.argv[2])
+    lineScale = int(sys.argv[3])
 
     pages = 'all'
-    if len(sys.argv) > 3:
-        pages = str(sys.argv[3])
+    if len(sys.argv) > 4:
+        pages = str(sys.argv[4])
 
-    tables = camelot.read_pdf(pdfFile, pages, None, flavor)
+    tables = camelot.read_pdf(pdfFile,  pages=pages, flavor=flavor, line_scale=lineScale)
 
     if len(tables) == 0:
         #print('No tables detected ', tables)

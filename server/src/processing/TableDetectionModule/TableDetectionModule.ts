@@ -39,6 +39,7 @@ const defaultExtractor: TableExtractor = {
 	readTables(inputFile: string, options: Options): TableExtractorResult {
 		let pages: string = 'all';
 		let flavor: string = 'lattice';
+		const lineScale: string = '70';
 		if (options.pages.value.length !== 0) {
 			pages = options.pages.value.toString();
 		}
@@ -69,6 +70,7 @@ const defaultExtractor: TableExtractor = {
 			__dirname + '/../../../assets/TableDetectionScript.py',
 			inputFile,
 			flavor,
+			lineScale,
 			pages,
 		]);
 
