@@ -14,7 +14,7 @@
 		["reading-order-detection", { "minColumnWidthInPagePercent": { "value": 15 } }],
 		"link-detection",
 		["words-to-line", { "maximumSpaceBetweenWords": { "value": 100 } }],
-		"lines-to-paragraph",
+		["lines-to-paragraph", { "tolerance": { "value": 0.25 } }],
 		["page-number-detection", { "maxMarginPercentage": { "value": 15 } }],
 		"heading-detection",
 		"hierarchy-detection",
