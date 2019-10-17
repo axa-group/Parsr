@@ -25,7 +25,6 @@ import {
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
-import { ReadingOrderDetectionModule } from '../ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
@@ -60,7 +59,6 @@ const defaultOptions = (defaultConfig as any) as Options;
  */
 export class WordsToLineModuleNew extends Module<Options> {
 	public static moduleName = 'words-to-line-new';
-	public static dependencies = [ReadingOrderDetectionModule];
 
 	constructor(options?: Options) {
 		super(options, defaultOptions);
@@ -78,7 +76,8 @@ export class WordsToLineModuleNew extends Module<Options> {
 
 			const words: Word[] = page
 				.getElementsOfType<Word>(Word, false)
-				.filter(Element.hasBoundingBox);
+				.filter(Element.hasBoundingBox)
+				.sort(this.sortWordsByTopLeftPosition);
 
 			const otherPageElements: Element[] = page.elements.filter(
 				element => !(element instanceof Word),
@@ -94,6 +93,19 @@ export class WordsToLineModuleNew extends Module<Options> {
 		});
 
 		return doc;
+	}
+
+	/*
+		sorts the words by top-left order, without considering columns or any special reading method.
+		if two words have a minimal difference in their top positions, I will assume that they are at the same line
+	*/
+	private sortWordsByTopLeftPosition(wordA: Word, wordB: Word): number {
+		const verticalDiff = Math.abs(wordA.box.top - wordB.box.top);
+
+		if (verticalDiff > wordA.box.height * 0.2) {
+			return wordA.box.top - wordB.box.top;
+		}
+		return wordB.box.left - wordA.box.left;
 	}
 
 	private joinWordsInElements(elements: Element[], options: Options) {
