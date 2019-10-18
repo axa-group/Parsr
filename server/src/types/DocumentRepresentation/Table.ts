@@ -311,11 +311,11 @@ export class Table extends Element {
 	 * Converts the entire table into a md code string.
 	 */
 	public toMarkdown(): string {
-		let output: string = '<table>';
+		let output: string = '<table>  \n';
 		this.content.forEach(row => {
 			output += row.toMarkdown() + '  \n';
 		});
-		return output + '</table>';
+		return output + '  \n</table>';
 	}
 
 	private calculateShape(): void {

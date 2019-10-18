@@ -87,4 +87,11 @@ export class Line extends Text {
 	public set scaling(value: number) {
 		this._scaling = value;
 	}
+
+	/**
+	 * Converts the entire element into a html code string (needed by MD table generation).
+	 */
+	public toHTML(): string {
+		return this.toString();
+	}
 }
