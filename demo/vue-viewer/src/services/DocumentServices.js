@@ -67,4 +67,10 @@ export default {
 	getDocumentStatus(docID) {
 		return apiClient.get('/queue/' + docID);
 	},
+	getDefaultConfiguration() {
+		return apiClient.get('/default-config');
+	},
+	getConfigForModule(name) {
+		return apiClient.get('/module-config/' + name);
+	},
 };
