@@ -70,7 +70,7 @@ export class MarkdownExporter extends Exporter {
 						output += '\n';
 					});
 				} else if (element instanceof Table) {
-					//output += mdtable(element.toArray());
+					output += element.toMarkdown();
 					output += '\n'.repeat(2);
 				}
 			});

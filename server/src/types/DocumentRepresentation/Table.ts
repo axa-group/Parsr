@@ -307,6 +307,17 @@ export class Table extends Element {
 		return arr;
 	}
 
+	/**
+	 * Converts the entire table into a md code string.
+	 */
+	public toMarkdown(): string {
+		let output: string = '<table>';
+		this.content.forEach(row => {
+			output += row.toMarkdown() + '  \n';
+		});
+		return output + '</table>';
+	}
+
 	private calculateShape(): void {
 		const rowsNb: number = this.content.length;
 		const colsNb: number = Math.max(...this.content.map(row => row.content.length));
