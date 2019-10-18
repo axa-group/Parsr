@@ -18,7 +18,6 @@ import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
 import { JsonExporter } from '../server/src/output/json/JsonExporter';
-import { HeadingDetectionModule } from '../server/src/processing/HeadingDetectionModule/HeadingDetectionModule';
 import { HierarchyDetectionModule } from '../server/src/processing/HierarchyDetectionModule/HierarchyDetectionModule';
 import { LinesToParagraphModule } from '../server/src/processing/LinesToParagraphModule/LinesToParagraphModule';
 import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
@@ -43,7 +42,6 @@ describe('JSON export and import', () => {
 					new ReadingOrderDetectionModule(),
 					new WordsToLineModule(),
 					new LinesToParagraphModule(),
-					new HeadingDetectionModule(),
 					new HierarchyDetectionModule(),
 				]);
 			}

@@ -497,12 +497,4 @@ export class LinesToParagraphModule extends Module<Options> {
 			group.forEach((heading: Heading) => (heading.level = index + 1));
 		});
 	}
-
-	// /**
-	//  * Takes into account potential bullet points inside a paragraph - splits a para into multiple
-	//  * @param joinedLines List of joined lines to be alterered
-	//  */
-	// private accountForPotentialLists(lineGroups: Line[][]) {
-	// 	// do something;
-	// }
 }
