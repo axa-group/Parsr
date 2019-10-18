@@ -16,6 +16,7 @@
 
 import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
+import logger from '../../utils/Logger';
 
 export class TableCell extends Element {
 	private _content: Element[];
@@ -85,5 +86,18 @@ export class TableCell extends Element {
 	 */
 	public set colspan(value: number) {
 		this._colspan = value;
+	}
+
+	/**
+	 * Converts the entire row into a md code string.
+	 */
+	public toMarkdown(): string {
+		let output: string = '<td>';
+		this.content.forEach(element => {
+			//output += element.toMarkdown();
+			logger.info(element.constructor.name);
+			output += 'cell';
+		});
+		return output + '</td>';
 	}
 }
