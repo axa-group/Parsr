@@ -2,31 +2,32 @@
 
 This page is a guide on how to use the API.
 
-- [API Guide](#API-Guide)
-	- [0. Introduction](#0-Introduction)
-	- [1. Send Your Document: POST /document](#1-Send-Your-Document-POST-document)
+- [API Guide](#api-guide)
+	- [0. Introduction](#0-introduction)
+	- [1. Send Your Document: POST /document](#1-send-your-document-post-document)
 		- [`curl` command](#curl-command)
-		- [Status: 202 - Accepted](#Status-202---Accepted)
-		- [Status: 415 - Unsupported Media Type](#Status-415---Unsupported-Media-Type)
-	- [2. Get the queue status: GET /queue/{id}](#2-Get-the-queue-status-GET-queueid)
+		- [Status: 202 - Accepted](#status-202---accepted)
+		- [Status: 415 - Unsupported Media Type](#status-415---unsupported-media-type)
+	- [2. Get the queue status: GET /queue/{id}](#2-get-the-queue-status-get-queueid)
 		- [`curl` command](#curl-command-1)
-		- [Status: 200 - OK](#Status-200---OK)
-		- [Status: 201 - Created](#Status-201---Created)
-		- [Status: 404 - Not Found](#Status-404---Not-Found)
-		- [Status: 500 - Internal Server Error](#Status-500---Internal-Server-Error)
-	- [3. Get the results](#3-Get-the-results)
-		- [3.1. JSON, Markdown and Text results](#31-JSON-Markdown-and-Text-results)
+		- [Status: 200 - OK](#status-200---ok)
+		- [Status: 201 - Created](#status-201---created)
+		- [Status: 404 - Not Found](#status-404---not-found)
+		- [Status: 500 - Internal Server Error](#status-500---internal-server-error)
+	- [3. Get the results](#3-get-the-results)
+		- [3.1. JSON, Markdown and Text results](#31-json-markdown-and-text-results)
 			- [`curl` command](#curl-command-2)
-			- [Status: 200 - OK](#Status-200---OK-1)
-			- [Status: 404 - Not Found](#Status-404---Not-Found-1)
-		- [3.2. CSV List of Files: GET /csv/{id}](#32-CSV-List-of-Files-GET-csvid)
+			- [Status: 200 - OK](#status-200---ok-1)
+			- [Status: 404 - Not Found](#status-404---not-found-1)
+		- [3.2. CSV List of Files: GET /csv/{id}](#32-csv-list-of-files-get-csvid)
 			- [`curl` command](#curl-command-3)
-			- [Status: 200 - OK](#Status-200---OK-2)
-			- [Status: 404 - Not Found](#Status-404---Not-Found-2)
-		- [3.3. CSV File: GET /csv/{id}/{page}/{table}](#33-CSV-File-GET-csvidpagetable)
+			- [Status: 200 - OK](#status-200---ok-2)
+			- [Status: 404 - Not Found](#status-404---not-found-2)
+		- [3.3. CSV File: GET /csv/{id}/{page}/{table}](#33-csv-file-get-csvidpagetable)
 			- [`curl` command](#curl-command-4)
-			- [Status: 200 - OK](#Status-200---OK-3)
-			- [Status: 404 - Not Found](#Status-404---Not-Found-3)
+			- [Status: 200 - OK](#status-200---ok-3)
+			- [Status: 404 - Not Found](#status-404---not-found-3)
+	- [4. Server Configuration Access](#4-server-configuration-access)
 
 ## 0. Introduction
 
@@ -45,7 +46,7 @@ The API has an endpoint prefix `/api` and then, optionaly, the version number `/
 
 First of all, you need to do a POST request to send the document to Parsr. Along that, you need to send the configuration to tell Parsr what kind of processing it must perform on the file.
 
-**Regarding the configuration file, please refer to the [configuration file documentation](configuration-file.md).**
+**Regarding the configuration file, please refer to the [configuration file documentation](configuration-file.md).** (**Tip**: You can also obtain the default configuration on the server via the endpoint: `/api/v1/default-config`. See [Section 4](#4-server-configuration-access).)
 
 ### `curl` command
 
@@ -214,3 +215,24 @@ This CSV output example contains multiline cells and an empty column.
 #### Status: 404 - Not Found
 
 This error means that the result file doesn't exist. Maybe `{page}` and `{table}` parameters doesn't refer to an or it wasn't asked to be outputed in the config you sent in the first request.
+
+## 4. Server Configuration Access
+
+The API can also be queried to gain access to the following server assts:
+
+1. **Default Configuration**: The server's default configuration can be queried (at `/api/v1/default-config`) using:
+
+		curl -X GET \
+		http://localhost:3001/api/v1/default-config
+
+2. **List of Modules**: The list of all usable modules can be queried from the server (at `/api/v1/modules`) using:
+
+		curl -X GET \
+		http://localhost:3001/api/v1/modules
+
+3. **Module Configuration**: A module's configuration file, which includes name, description and each module parameter's default value and range can be queried (at `/api/v1/module-config/<module_name>`) using:
+
+		curl -X GET \
+		http://localhost:3001/api/v1/module-config/table-detection
+
+... which will fetch the configuration file for the table-detection module.
