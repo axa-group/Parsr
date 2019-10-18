@@ -117,10 +117,11 @@ function main(): void {
 		orchestrator
 			.run(filePath)
 			.then((doc: Document) => {
-				const nbTexts = doc.pages.map(p => p.elements.length).reduce((a, b) => a + b);
-				logger.debug('nbTexts: ' + nbTexts);
-
+				const nbTexts = doc.pages.map(p => p.elements.length).reduce((a, b) => a + b, 0);
 				if (nbTexts === 0) {
+					logger.warn(
+						`No text was found in the document. Trying to treat it as an image and perform OCR using ${config.extractor.img}...`,
+					);
 					if (config.extractor.img === 'tesseract') {
 						filePath = pdfToImage(filePath);
 						orchestrator = new Orchestrator(new TesseractExtractor(config), cleaner);
