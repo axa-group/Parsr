@@ -22,9 +22,11 @@ import { Line } from './Line';
 import { Text } from './Text';
 import { Word } from './Word';
 
-type LineSpace = {
+type LineInfo = {
 	line: Line;
 	lineBreak: boolean;
+	firstWordStyle: string;
+	lastWordStyle: string;
 };
 
 /**
@@ -32,37 +34,6 @@ type LineSpace = {
  * which potentially represents a symantic grouping.
  */
 export class Paragraph extends Text {
-	/**
-	 * Getter content
-	 * @return {Line[]}
-	 */
-	public get content(): Line[] {
-		return this._content;
-	}
-
-	/**
-	 * Getter language
-	 * @return {string}
-	 */
-	public get language(): string {
-		return this._language;
-	}
-
-	/**
-	 * Setter content
-	 * @param {Line[]} value
-	 */
-	public set content(value: Line[]) {
-		this._content = value;
-	}
-
-	/**
-	 * Setter language
-	 * @param {string} value
-	 */
-	public set language(value: string) {
-		this._language = value;
-	}
 	private _content: Line[];
 	private _language: string;
 
@@ -88,18 +59,20 @@ export class Paragraph extends Text {
 	 * Converts the entire paragraph into a string form with formatting, with spaces between words.
 	 */
 	public toMarkdown(): string {
-		const lines: LineSpace[] = this.getLinesWithAvailableSpace();
-		/*console.log(
-			lines.filter(line => line.lineBreak).map(l => l.line.id + ' lineBreak ' + l.lineBreak),
-		);*/
+		const lines: LineInfo[] = this.getLinesInfo();
 		let output: string = '';
-		lines.forEach(line => {
-			output += this.lineToMarkDown(line.line);
+		let prevLine: LineInfo = null;
+		lines.forEach((line, index) => {
+			const mergedStyles = { paragraphOutput: output, lineOutput: this.lineToMarkDown(line.line) };
+			this.mergeStyleLines(prevLine, line, mergedStyles);
+			output = mergedStyles.paragraphOutput;
+			output += mergedStyles.lineOutput;
 			if (line.lineBreak) {
 				output += '  \n';
-			} else {
+			} else if (index + 1 < lines.length) {
 				output += ' ';
 			}
+			prevLine = line;
 		});
 		return output;
 	}
@@ -153,14 +126,53 @@ export class Paragraph extends Text {
 	 * as a valid Font object.
 	 */
 	public getMainFont(): Font | undefined {
-		const result: Font = utils.findMostCommonFont(
-			this.content.map((line: Line) => line.getMainFont()),
-		);
-		if (result !== undefined) {
-			return result;
+		const fonts: Font[] = this.content
+			.map((line: Line) => {
+				return line.content.map((word: Word) => word.font);
+			})
+			.reduce((a, b) => a.concat(b), []);
+
+		const baskets: Font[][] = [];
+
+		fonts.forEach((font: Font) => {
+			let basketFound: boolean = false;
+			baskets.forEach((basket: Font[]) => {
+				if (basket.length > 0 && basket[0].isEqual(font)) {
+					basket.push(font);
+					basketFound = true;
+				}
+			});
+
+			if (!basketFound) {
+				baskets.push([font]);
+			}
+		});
+
+		baskets.sort((a, b) => {
+			return b.length - a.length;
+		});
+
+		if (baskets.length > 0 && baskets[0].length > 0) {
+			return baskets[0][0];
 		} else {
 			logger.debug(`No font found for paragraph id ${this.id}`);
 			return undefined;
+		}
+	}
+
+	private mergeStyleLines(prevLine: LineInfo, line: LineInfo, output: any) {
+		if (!prevLine) {
+			return;
+		}
+
+		if (line.lineBreak) {
+			return;
+		}
+
+		if (prevLine.lastWordStyle && prevLine.lastWordStyle === line.firstWordStyle) {
+			const end = output.paragraphOutput.length - (prevLine.lastWordStyle.length + 1);
+			output.paragraphOutput = output.paragraphOutput.slice(0, end) + ' ';
+			output.lineOutput = output.lineOutput.slice(prevLine.lastWordStyle.length);
 		}
 	}
 
@@ -170,11 +182,12 @@ export class Paragraph extends Text {
 		let bWordsIdx: number[][] = Array<number[]>(1).fill([]);
 		let iWordsIdx: number[][] = Array<number[]>(1).fill([]);
 		words.forEach((w, index) => {
-			if (w.font.isItalic && w.font.weight === 'bold') {
+			const style = this.wordStyle(w);
+			if (style === '***') {
 				biWordsIdx[0].push(index);
-			} else if (!w.font.isItalic && w.font.weight === 'bold') {
+			} else if (style === '**') {
 				bWordsIdx[0].push(index);
-			} else if (w.font.isItalic && w.font.weight !== 'bold') {
+			} else if (style === '*') {
 				iWordsIdx[0].push(index);
 			}
 		});
@@ -183,7 +196,7 @@ export class Paragraph extends Text {
 		iWordsIdx = utils.groupConsecutiveNumbersInArray(iWordsIdx[0]).filter(p => p.length !== 0);
 
 		// prepare the result
-		const result: string[] = words.map(w => w.toString());
+		const result: string[] = words.map(w => w.toMarkDown());
 
 		biWordsIdx.forEach(idGroup => {
 			result[idGroup[0]] = '***' + result[idGroup[0]];
@@ -206,10 +219,26 @@ export class Paragraph extends Text {
 			.trim();
 	}
 
-	private getLinesWithAvailableSpace(): LineSpace[] {
+	private getLinesInfo(): LineInfo[] {
 		return this.content.map((l, index) => {
-			return { line: l, lineBreak: this.isLineBreak(index) };
+			return {
+				line: l,
+				lineBreak: this.isLineBreak(index),
+				firstWordStyle: this.wordStyle(l.content[0]),
+				lastWordStyle: this.wordStyle(l.content[l.content.length - 1]),
+			};
 		});
+	}
+
+	private wordStyle(word: Word): string {
+		if (word.font.isItalic && word.font.weight === 'bold') {
+			return '***';
+		} else if (!word.font.isItalic && word.font.weight === 'bold') {
+			return '**';
+		} else if (word.font.isItalic && word.font.weight !== 'bold') {
+			return '*';
+		}
+		return null;
 	}
 
 	private isLineBreak(index: number): boolean {
@@ -220,5 +249,37 @@ export class Paragraph extends Text {
 		const nextLine: Line = this.content[index + 1];
 		const availableSpace = this.width - line.width;
 		return availableSpace >= nextLine.content[0].width;
+	}
+
+	/**
+	 * Getter content
+	 * @return {Line[]}
+	 */
+	public get content(): Line[] {
+		return this._content;
+	}
+
+	/**
+	 * Getter language
+	 * @return {string}
+	 */
+	public get language(): string {
+		return this._language;
+	}
+
+	/**
+	 * Setter content
+	 * @param {Line[]} value
+	 */
+	public set content(value: Line[]) {
+		this._content = value;
+	}
+
+	/**
+	 * Setter language
+	 * @param {string} value
+	 */
+	public set language(value: string) {
+		this._language = value;
 	}
 }

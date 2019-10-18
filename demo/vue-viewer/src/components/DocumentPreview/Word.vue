@@ -22,8 +22,11 @@
 			:style="{
 				fontSize: props.fonts.filter(font => font.id === props.element.font).shift().size * 0.6,
 				fill: props.fonts.filter(font => font.id === props.element.font).shift().color,
+				fontWeight: props.fonts.filter(font => font.id === props.element.font).shift().weight,
+				fontStyle: props.fonts.filter(font => font.id === props.element.font).shift().isItalic
+					? 'italic'
+					: '',
 			}"
-			:font-weight="fontWeight"
 			@click="listeners['custom-event'](props.element)"
 			>{{ !Array.isArray(props.element.content) ? props.element.content.trim() : 'Array empty'
 			}}{{ props.element.fakeSpace ? '&nbsp;' : '' }}</text

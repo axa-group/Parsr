@@ -39,7 +39,7 @@ export default new Vuex.Store({
 		defaultConfig: {
 			version: 0.5,
 			extractor: {
-				pdf: 'pdf2json',
+				pdf: 'pdfminer',
 				img: 'tesseract',
 				language: ['eng', 'fra'],
 			},
@@ -310,7 +310,7 @@ export default new Vuex.Store({
 	},
 	getters: {
 		fonts(state) {
-			return state.document.fonts;
+			return state.document ? state.document.fonts : [];
 		},
 		documentPages(state) {
 			return state.document ? state.document.pages.length : 0;
