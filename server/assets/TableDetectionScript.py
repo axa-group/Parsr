@@ -54,12 +54,11 @@ def getCellLocation(cell):
     return location
 
 def getCellFrame(cell):
-    if cell.text == '':        
-        return None
-    
     cellData = dict()
     cellData['location'] = getCellLocation(cell)
     cellData['size'] = getCellSize(cell)
+    cellData['colSpan'] = 1
+    cellData['rowSpan'] = 1
     return cellData
 
 def updateCellColSpan(cell, row, index, cellInfo):
@@ -88,15 +87,20 @@ def updateCellRowSpan(cell, allRows, index, cellInfo):
 
 def extractRowData(row, allRows):
     cellsData = []
+    cellHSpan = 0    
     for index, cell in enumerate(row, 0):
-        cellInfo = getCellFrame(cell)
-        if cellInfo != None:
+        cellInfo = getCellFrame(cell)  
+        if(cell.text != ''):      
             if cell.hspan:
-                cellInfo = updateCellColSpan(cell, row, index, cellInfo)
+                cellInfo = updateCellColSpan(cell, row, index, cellInfo)                
+            
             if cell.vspan:
                 cellInfo = updateCellRowSpan(cell, allRows, index, cellInfo)
-            cellsData.append(cellInfo)
 
+        cellHSpan += cellInfo['colSpan']
+        if cell.text != '' or (index + 1 >= cellHSpan and cell.text == '' and len(cellsData) > 0):
+            cellsData.append(cellInfo)        
+        
     return cellsData
 
 def extractRowsData(table):
