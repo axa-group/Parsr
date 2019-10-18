@@ -21,7 +21,15 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { inspect } from 'util';
-import { BoundingBox, Document, Element, Font, Page, Text } from './types/DocumentRepresentation';
+import {
+	BoundingBox,
+	Document,
+	Element,
+	Font,
+	Line,
+	Page,
+	Text,
+} from './types/DocumentRepresentation';
 import logger from './utils/Logger';
 
 let mutoolImagesFolder: string = '';
@@ -594,6 +602,45 @@ export function findPositionsInArray<T>(array: T[], element: T): number[] {
 		}
 	});
 	return result;
+}
+
+export function isGeneralUpperCase(lineGroup: Line[]): boolean {
+	let generalUpperCase: boolean;
+	const upperCaseScores: boolean[] = lineGroup.map((l: Line) => {
+		if (l.toString().toUpperCase() === l.toString()) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+	if (
+		upperCaseScores.filter((s: boolean) => s === true).length >
+		Math.floor(upperCaseScores.length / 2)
+	) {
+		generalUpperCase = true;
+	} else {
+		generalUpperCase = false;
+	}
+	return generalUpperCase;
+}
+export function isGeneralTitleCase(lineGroup: Line[]): boolean {
+	let generalTitleCase: boolean;
+	const titleCaseScores: boolean[] = lineGroup.map((l: Line) => {
+		if (toTitleCase(l.toString()) === l.toString()) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+	if (
+		titleCaseScores.filter((s: boolean) => s === true).length >
+		Math.floor(titleCaseScores.length / 2)
+	) {
+		generalTitleCase = true;
+	} else {
+		generalTitleCase = false;
+	}
+	return generalTitleCase;
 }
 
 /***

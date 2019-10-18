@@ -19,9 +19,11 @@ import {
 	Document,
 	Element,
 	Font,
+	Heading,
 	Line,
 	Page,
 	Paragraph,
+	Word,
 } from '../../types/DocumentRepresentation';
 
 import * as utils from '../../utils';
@@ -34,6 +36,13 @@ import * as defaultConfig from './defaultConfig.json';
 interface Options {
 	tolerance?: {
 		value: number;
+		range: {
+			min: number;
+			max: number;
+		};
+	};
+	computeHeadings?: {
+		value: boolean;
 		range: {
 			min: number;
 			max: number;
@@ -57,9 +66,30 @@ type LineSpace = {
 export class LinesToParagraphModule extends Module<Options> {
 	public static moduleName = 'lines-to-paragraph';
 	public static dependencies = [ReadingOrderDetectionModule, WordsToLineModule];
-
 	constructor(options?: Options) {
 		super(options, defaultOptions);
+	}
+
+	public isHeadingCandidate(
+		lines: Line[],
+		mostCommonFont: Font,
+		generalUpperCase: boolean,
+		generalTitleCase: boolean,
+	): boolean {
+		const decisions: boolean[] = [];
+		lines.forEach((line: Line) => {
+			decisions.push(
+				line.getMainFont().size > mostCommonFont.size ||
+					(line.getMainFont().weight === 'bold' && mostCommonFont.weight !== 'bold') ||
+					(line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
+						.length > 0 &&
+						(line.toString().toUpperCase() === line.toString() && !generalUpperCase)) ||
+					(line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
+						.length > 0 &&
+						(utils.toTitleCase(line.toString()) === line.toString() && !generalTitleCase)),
+			);
+		});
+		return decisions.filter(d => !d).length === 0;
 	}
 
 	public main(doc: Document): Document {
@@ -70,29 +100,54 @@ export class LinesToParagraphModule extends Module<Options> {
 				);
 				return page;
 			}
+
+			// get all the lines
 			const lines = this.getPageLines(page);
-			const interLinesSpaces = this.getInterLinesSpace(lines);
+
+			// get the main body font from all the lines
+			const textBodyFont: Font = utils.findMostCommonFont(
+				lines
+					.map((l: Line) => utils.findMostCommonFont(l.content.map(w => w.font)))
+					.filter(f => f !== undefined),
+			);
+
+			// get the spaces between all lines
+			const interLinesSpaces: LineSpace[] = this.getInterLinesSpace(lines);
+
+			// join lines among them using the spaces computed above
 			const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
-			let otherElements = this.getPageElements(page, lines);
-			otherElements = this.joinLinesInElements(otherElements);
+
+			// perform line merge for all the lines inside other elements
+			let otherElements: Element[] = this.getElementsExcept(page, lines);
+			otherElements = this.joinLinesInElements(otherElements, textBodyFont);
 
 			// Clean the properties.cr  information as it is not usefull down the line
-			for (const theseLines of joinedLines) {
-				for (const thisLine of theseLines) {
-					for (const thisWord of thisLine.content) {
+			joinedLines.forEach((theseLines: Line[]) => {
+				theseLines.forEach((thisLine: Line) => {
+					thisLine.content.forEach((thisWord: Word) => {
 						if (thisWord.properties && thisWord.properties.cr) {
 							delete thisWord.properties.cr;
 							delete thisWord.properties.cl;
 						}
-					}
-				}
+					});
+				});
+			});
+
+			if (this.options.computeHeadings.value) {
+				const newStructures = this.extractHeadings(joinedLines, textBodyFont);
+				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
+				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
+				page.elements = otherElements.concat([...headings, ...paras]);
+
+				logger.debug(
+					`Made ${headings.length} headings and ${paras.length} from ${lines.length} lines`,
+				);
+			} else {
+				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
+				page.elements = otherElements.concat(paras);
+
+				logger.debug(`Made ${paras.length} from ${lines.length} lines`);
 			}
-
-			this.accountForPotentialHeadings(joinedLines);
-			// this.accountForPotentialLists(joinedLines);
-
-			const paragraphs: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
-			page.elements = otherElements.concat(paragraphs);
 			// this.getPageParagraphs(page).map(paragraph => {
 			// console.log('Paragraph ' + paragraph.id + ' order ' + paragraph.properties.order);
 			// TODO: Set fine paragraph order
@@ -103,14 +158,21 @@ export class LinesToParagraphModule extends Module<Options> {
 		return doc;
 	}
 
-	private joinLinesInElements(elements: Element[]): Element[] {
+	private joinLinesInElements(elements: Element[], textBodyFont: Font): Element[] {
 		const withLines: Element[] = [];
 		this.getElementsWithLines(elements, withLines);
 		withLines.forEach(element => {
 			const lines = this.getLinesInElement(element);
 			const interLinesSpaces = this.getInterLinesSpace(lines);
 			const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
-			element.content = this.mergeLinesIntoParagraphs(joinedLines);
+			if (this.options.computeHeadings.value) {
+				const newStructures = this.extractHeadings(joinedLines, textBodyFont);
+				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
+				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
+				element.content = [...headings, ...paras];
+			} else {
+				element.content = this.mergeLinesIntoParagraphs(joinedLines);
+			}
 		});
 		return elements;
 	}
@@ -136,7 +198,7 @@ export class LinesToParagraphModule extends Module<Options> {
 		});
 	}
 
-	private getPageElements(page: Page, excludeLines: Line[]): Element[] {
+	private getElementsExcept(page: Page, excludeLines: Line[]): Element[] {
 		return page.elements.filter(
 			element => !(element instanceof Line) || !excludeLines.includes(element),
 		);
@@ -327,72 +389,50 @@ export class LinesToParagraphModule extends Module<Options> {
 		return Math.round(distance);
 	}
 
+	private mergeLinesIntoHeadings(joinedLines: Line[][]): Heading[] {
+		return joinedLines.map((group: Line[]) => {
+			const heading: Heading = utils.mergeElements<Line, Heading>(
+				new Heading(BoundingBox.merge(group.map((l: Line) => l.box))),
+				...group,
+			);
+			heading.properties.order = group[0].properties.order;
+			return heading;
+		});
+	}
+
 	private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
 		return joinedLines.map((group: Line[]) => {
 			const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
-				new Paragraph(new BoundingBox(0, 0, 0, 0)),
+				new Paragraph(BoundingBox.merge(group.map((l: Line) => l.box))),
 				...group,
 			);
-
 			paragraph.properties.order = group[0].properties.order;
 			return paragraph;
 		});
 	}
 
 	/**
-	 * Takes into account potential headings inside a paragraph - splits a paragraph into multiple
+	 * Takes into account potential headings inside a paragraph
+	 * splits a paragraph into multiple ones and returns heading candidates
 	 * @param lineGroups List of joined lines to be alterered
 	 */
-	private accountForPotentialHeadings(lineGroups: Line[][]) {
+	private extractHeadings(
+		lineGroups: Line[][],
+		textBodyFont: Font,
+	): { headingLines: Line[][]; newLines: Line[][] } {
+		const newLineGroups: Line[][] = [];
+		const newHeadingGroups: Line[][] = [];
 		lineGroups.forEach(lineGroup => {
-			const mostCommonFont: Font | undefined = utils.findMostCommonFont(
-				lineGroup.map((l: Line) => l.getMainFont()).filter(f => f !== undefined),
-			);
-			let generalUpperCase: boolean;
-			const upperCaseScores: boolean[] = lineGroup.map((l: Line) => {
-				if (l.toString().toUpperCase() === l.toString()) {
-					return true;
-				} else {
-					return false;
-				}
-			});
-			if (
-				upperCaseScores.filter((s: boolean) => s === true).length >
-				Math.floor(upperCaseScores.length / 2)
-			) {
-				generalUpperCase = true;
-			} else {
-				generalUpperCase = false;
-			}
-			let generalTitleCase: boolean;
-			const titleCaseScores: boolean[] = lineGroup.map((l: Line) => {
-				if (utils.toTitleCase(l.toString()) === l.toString()) {
-					return true;
-				} else {
-					return false;
-				}
-			});
-			if (
-				titleCaseScores.filter((s: boolean) => s === true).length >
-				Math.floor(titleCaseScores.length / 2)
-			) {
-				generalTitleCase = true;
-			} else {
-				generalTitleCase = false;
-			}
-			const newLines: Line[] = [];
-			if (mostCommonFont instanceof Font) {
-				const headingCandidateIndices: number[] = lineGroup
+			if (textBodyFont instanceof Font) {
+				const headingIdx: number[] = lineGroup
 					.map((line: Line, pos: number) => {
 						if (
-							line.getMainFont().size > mostCommonFont.size ||
-							(line.getMainFont().weight === 'bold' && mostCommonFont.weight !== 'bold') ||
-							(line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
-								.length > 0 &&
-								(line.toString().toUpperCase() === line.toString() && !generalUpperCase)) ||
-							(line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
-								.length > 0 &&
-								(utils.toTitleCase(line.toString()) === line.toString() && !generalTitleCase))
+							this.isHeadingCandidate(
+								[line],
+								textBodyFont,
+								utils.isGeneralUpperCase(lineGroup),
+								utils.isGeneralTitleCase(lineGroup),
+							)
 						) {
 							return pos;
 						} else {
@@ -400,25 +440,40 @@ export class LinesToParagraphModule extends Module<Options> {
 						}
 					})
 					.filter((i: number) => i !== undefined);
-				let groupIndices: number[][] = [];
-				groupIndices = [
-					...groupIndices,
-					...utils.groupConsecutiveNumbersInArray(headingCandidateIndices),
-				];
-				groupIndices.map((group: number[]) => {
-					group.map((pos: number) => newLines.push(lineGroup[pos]));
-				});
-				groupIndices.map((group: number[]) => {
-					group.map((pos: number) => lineGroup.splice(pos, 1));
-				});
-				if (newLines.length > 0) {
-					newLines.map((l: Line) => lineGroups.push([l]));
-					// lineGroups.push(newLines);
+				if (headingIdx.length > 0) {
+					const lineIdx: number[] = [...Array(lineGroup.length).keys()].filter(
+						x => !headingIdx.includes(x),
+					);
+					utils.groupConsecutiveNumbersInArray(lineIdx).forEach((group: number[]) => {
+						const newLines: Line[] = [];
+						group.forEach((id: number) => {
+							newLines.push(lineGroup[id]);
+						});
+						if (newLines.length > 0) {
+							newLineGroups.push(newLines);
+						}
+					});
+					utils.groupConsecutiveNumbersInArray(headingIdx).forEach((group: number[]) => {
+						const newHeadings: Line[] = [];
+						group.forEach((id: number) => {
+							newHeadings.push(lineGroup[id]);
+						});
+						if (newHeadings.length > 0) {
+							newHeadingGroups.push(newHeadings);
+						}
+					});
+				} else {
+					newLineGroups.push(lineGroup);
 				}
 			} else {
 				logger.warn("can't account for headings while para merge - no font info available");
 			}
 		});
+		if (newHeadingGroups.length > 0) {
+			return { headingLines: newHeadingGroups, newLines: newLineGroups };
+		} else {
+			return { headingLines: [], newLines: lineGroups };
+		}
 	}
 
 	// /**

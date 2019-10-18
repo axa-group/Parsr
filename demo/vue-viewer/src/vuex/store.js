@@ -141,6 +141,10 @@ export default new Vuex.Store({
 								max: 1.0,
 							},
 						},
+						computeHeadings: {
+							value: true,
+							range: [true, false],
+						},
 					},
 				],
 				[
@@ -156,7 +160,6 @@ export default new Vuex.Store({
 						ignorePages: { value: [] },
 					},
 				],
-				'heading-detection',
 				'hierarchy-detection',
 			],
 			output: {
