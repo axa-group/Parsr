@@ -70,31 +70,9 @@ export class LinesToParagraphModule extends Module<Options> {
 		super(options, defaultOptions);
 	}
 
-	public isHeadingCandidate(
-		lines: Line[],
-		mostCommonFont: Font,
-		generalUpperCase: boolean,
-		generalTitleCase: boolean,
-	): boolean {
-		const decisions: boolean[] = [];
-		lines.forEach((line: Line) => {
-			decisions.push(
-				line.getMainFont().size > mostCommonFont.size ||
-					(line.getMainFont().weight === 'bold' && mostCommonFont.weight !== 'bold') ||
-					(line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
-						.length > 0 &&
-						(line.toString().toUpperCase() === line.toString() && !generalUpperCase)) ||
-					(line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
-						.length > 0 &&
-						(utils.toTitleCase(line.toString()) === line.toString() && !generalTitleCase)),
-			);
-		});
-		return decisions.filter(d => !d).length === 0;
-	}
-
 	public main(doc: Document): Document {
 		doc.pages.forEach((page: Page) => {
-			if (page.getElementsOfType<Paragraph>(Paragraph).length > 0) {
+			if (page.getElementsOfType<Heading>(Heading).length > 0) {
 				logger.warn(
 					'Warning: this page already has some paragraphs in it. Not performing paragraph merge.',
 				);
@@ -135,8 +113,9 @@ export class LinesToParagraphModule extends Module<Options> {
 
 			if (this.options.computeHeadings.value) {
 				const newStructures = this.extractHeadings(joinedLines, textBodyFont);
-				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
 				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
+				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
+				this.computeHeadingLevels(headings);
 				page.elements = otherElements.concat([...headings, ...paras]);
 
 				logger.debug(
@@ -158,6 +137,28 @@ export class LinesToParagraphModule extends Module<Options> {
 		return doc;
 	}
 
+	private isHeadingCandidate(
+		lines: Line[],
+		mostCommonFont: Font,
+		generalUpperCase: boolean,
+		generalTitleCase: boolean,
+	): boolean {
+		const decisions: boolean[] = [];
+		lines.forEach((line: Line) => {
+			decisions.push(
+				line.getMainFont().size > mostCommonFont.size ||
+					(line.getMainFont().weight === 'bold' && mostCommonFont.weight !== 'bold') ||
+					(line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
+						.length > 0 &&
+						(line.toString().toUpperCase() === line.toString() && !generalUpperCase)) ||
+					(line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
+						.length > 0 &&
+						(utils.toTitleCase(line.toString()) === line.toString() && !generalTitleCase)),
+			);
+		});
+		return decisions.filter(d => !d).length === 0;
+	}
+
 	private joinLinesInElements(elements: Element[], textBodyFont: Font): Element[] {
 		const withLines: Element[] = [];
 		this.getElementsWithLines(elements, withLines);
@@ -167,8 +168,9 @@ export class LinesToParagraphModule extends Module<Options> {
 			const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
 			if (this.options.computeHeadings.value) {
 				const newStructures = this.extractHeadings(joinedLines, textBodyFont);
-				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
 				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
+				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
+				this.computeHeadingLevels(headings);
 				element.content = [...headings, ...paras];
 			} else {
 				element.content = this.mergeLinesIntoParagraphs(joinedLines);
@@ -403,7 +405,7 @@ export class LinesToParagraphModule extends Module<Options> {
 	private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
 		return joinedLines.map((group: Line[]) => {
 			const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
-				new Paragraph(BoundingBox.merge(group.map((l: Line) => l.box))),
+				new Heading(BoundingBox.merge(group.map((l: Line) => l.box))),
 				...group,
 			);
 			paragraph.properties.order = group[0].properties.order;
@@ -474,6 +476,26 @@ export class LinesToParagraphModule extends Module<Options> {
 		} else {
 			return { headingLines: [], newLines: lineGroups };
 		}
+	}
+
+	private computeHeadingLevels(headings: Heading[]) {
+		const paraGroupsByFontSize: Heading[][] = []; // make paragraph groups by font size
+		let visitedFontSizes: number[] = [];
+		for (const heading of headings) {
+			const paraFont: Font = heading.getMainFont();
+			if (visitedFontSizes.includes(Math.floor(paraFont.size))) {
+				continue;
+			}
+			const pos = utils.findPositionsInArray(
+				headings.map(h => Math.floor(h.getMainFont().size)),
+				Math.floor(paraFont.size),
+			);
+			paraGroupsByFontSize.push(pos.map(i => headings[i]));
+			visitedFontSizes = [...new Set([...visitedFontSizes, Math.floor(paraFont.size)])];
+		}
+		paraGroupsByFontSize.forEach((group: Heading[], index: number) => {
+			group.forEach((heading: Heading) => (heading.level = index + 1));
+		});
 	}
 
 	// /**
