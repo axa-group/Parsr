@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as mdtable from 'markdown-table';
 import { Document, Heading, List, Paragraph, Table } from '../../types/DocumentRepresentation';
 import logger from '../../utils/Logger';
 import { Exporter } from '../Exporter';
@@ -71,7 +70,7 @@ export class MarkdownExporter extends Exporter {
 						output += '\n';
 					});
 				} else if (element instanceof Table) {
-					output += mdtable(element.toArray());
+					//output += mdtable(element.toArray());
 					output += '\n'.repeat(2);
 				}
 			});
