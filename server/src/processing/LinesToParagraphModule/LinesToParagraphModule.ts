@@ -405,7 +405,7 @@ export class LinesToParagraphModule extends Module<Options> {
 	private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
 		return joinedLines.map((group: Line[]) => {
 			const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
-				new Heading(BoundingBox.merge(group.map((l: Line) => l.box))),
+				new Paragraph(BoundingBox.merge(group.map((l: Line) => l.box))),
 				...group,
 			);
 			paragraph.properties.order = group[0].properties.order;
