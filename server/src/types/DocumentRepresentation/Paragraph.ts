@@ -22,7 +22,7 @@ import { Line } from './Line';
 import { Text } from './Text';
 import { Word } from './Word';
 
-type LineInfo = {
+export type LineInfo = {
 	line: Line;
 	lineBreak: boolean;
 	firstWordStyle: string;
@@ -170,7 +170,7 @@ export class Paragraph extends Text {
 		}
 	}
 
-	private mergeStyleLines(prevLine: LineInfo, line: LineInfo, output: any) {
+	public mergeStyleLines(prevLine: LineInfo, line: LineInfo, output: any) {
 		if (!prevLine) {
 			return;
 		}
@@ -186,7 +186,7 @@ export class Paragraph extends Text {
 		}
 	}
 
-	private lineToMarkDown(line: Line) {
+	public lineToMarkDown(line: Line) {
 		const words: Word[] = line.content;
 		let biWordsIdx: number[][] = Array<number[]>(1).fill([]);
 		let bWordsIdx: number[][] = Array<number[]>(1).fill([]);
@@ -229,7 +229,7 @@ export class Paragraph extends Text {
 			.trim();
 	}
 
-	private getLinesInfo(): LineInfo[] {
+	public getLinesInfo(): LineInfo[] {
 		return this.content.map((l, index) => {
 			return {
 				line: l,
@@ -240,7 +240,7 @@ export class Paragraph extends Text {
 		});
 	}
 
-	private wordStyle(word: Word): string {
+	public wordStyle(word: Word): string {
 		if (word.font.isItalic && word.font.weight === 'bold') {
 			return '***';
 		} else if (!word.font.isItalic && word.font.weight === 'bold') {
@@ -251,7 +251,7 @@ export class Paragraph extends Text {
 		return null;
 	}
 
-	private isLineBreak(index: number): boolean {
+	public isLineBreak(index: number): boolean {
 		if (index + 1 >= this.content.length) {
 			return false;
 		}
