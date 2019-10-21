@@ -68,9 +68,6 @@ export default {
 		return apiClient.get('/queue/' + docID);
 	},
 	getDefaultConfiguration() {
-		return apiClient.get('/default-config');
-	},
-	getConfigForModule(name) {
-		return apiClient.get('/module-config/' + name);
+		return apiClient.get('/default-config?specs=true');
 	},
 };

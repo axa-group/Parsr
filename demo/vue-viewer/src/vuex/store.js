@@ -116,23 +116,9 @@ export default new Vuex.Store({
 		getDefaultConfiguration({ commit }) {
 			commit('LOADING', true);
 			return DocumentService.getDefaultConfiguration().then(({ data }) => {
-				data.cleaner = data.cleaner.map(mod => {
-					const moduleName = Array.isArray(mod) ? mod[0] : mod;
-					return DocumentService.getConfigForModule(moduleName).then(({ data: modConfig }) => {
-						return [moduleName, modConfig];
-					});
-				});
-
-				return Promise.all(data.cleaner).then(configs => {
-					data.cleaner = configs.map(c => {
-						delete c[1].name;
-						delete c[1].description;
-						return Object.keys(c[1]).length > 0 ? c : c[0];
-					});
-					commit('SET_DEFAULT_CONFIG', data);
-					commit('LOADING', false);
-					return data;
-				});
+				commit('SET_DEFAULT_CONFIG', data);
+				commit('LOADING', false);
+				return data;
 			});
 		},
 		fetchThumbnail(_, { page }) {
