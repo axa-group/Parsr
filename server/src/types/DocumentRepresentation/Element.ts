@@ -212,4 +212,11 @@ export abstract class Element {
 		this._properties = {};
 		this.children = [];
 	}
+
+	/**
+	 * Converts the entire element into a html code string (needed by MD table generation).
+	 */
+	public toHTML(): string {
+		return "To be implemented in '" + this.constructor.name + "'";
+	}
 }

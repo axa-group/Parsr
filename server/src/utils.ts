@@ -21,7 +21,15 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { inspect } from 'util';
-import { BoundingBox, Document, Element, Page, Text } from './types/DocumentRepresentation';
+import {
+	BoundingBox,
+	Document,
+	Element,
+	Font,
+	Line,
+	Page,
+	Text,
+} from './types/DocumentRepresentation';
 import logger from './utils/Logger';
 
 let mutoolImagesFolder: string = '';
@@ -594,6 +602,75 @@ export function findPositionsInArray<T>(array: T[], element: T): number[] {
 		}
 	});
 	return result;
+}
+
+export function isGeneralUpperCase(lineGroup: Line[]): boolean {
+	let generalUpperCase: boolean;
+	const upperCaseScores: boolean[] = lineGroup.map((l: Line) => {
+		if (l.toString().toUpperCase() === l.toString()) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+	if (
+		upperCaseScores.filter((s: boolean) => s === true).length >
+		Math.floor(upperCaseScores.length / 2)
+	) {
+		generalUpperCase = true;
+	} else {
+		generalUpperCase = false;
+	}
+	return generalUpperCase;
+}
+export function isGeneralTitleCase(lineGroup: Line[]): boolean {
+	let generalTitleCase: boolean;
+	const titleCaseScores: boolean[] = lineGroup.map((l: Line) => {
+		if (toTitleCase(l.toString()) === l.toString()) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+	if (
+		titleCaseScores.filter((s: boolean) => s === true).length >
+		Math.floor(titleCaseScores.length / 2)
+	) {
+		generalTitleCase = true;
+	} else {
+		generalTitleCase = false;
+	}
+	return generalTitleCase;
+}
+
+/***
+ * Finds the most common font among a list of fonts
+ */
+export function findMostCommonFont(fonts: Font[]): Font | undefined {
+	const baskets: Font[][] = [];
+	fonts.forEach((font: Font) => {
+		let basketFound: boolean = false;
+		baskets.forEach((basket: Font[]) => {
+			if (basket.length > 0 && basket[0].isEqual(font)) {
+				basket.push(font);
+				basketFound = true;
+			}
+		});
+
+		if (!basketFound) {
+			baskets.push([font]);
+		}
+	});
+
+	baskets.sort((a, b) => {
+		return b.length - a.length;
+	});
+
+	if (baskets.length > 0 && baskets[0].length > 0) {
+		return baskets[0][0];
+	} else {
+		return undefined;
+	}
 }
 
 /**

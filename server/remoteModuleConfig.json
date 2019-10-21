@@ -19,7 +19,6 @@
 				"url": "http://localhost:8888"
 			}
 		],
-		"heading-detection",
 		["header-footer-detection", { "maxMarginPercentage": 15 }],
 		"hierarchy-detection",
 		[

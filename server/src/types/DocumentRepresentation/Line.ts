@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
+import * as utils from '../../utils';
+import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
+import { Font } from './Font';
 import { Text } from './Text';
 import { Word } from './Word';
 
@@ -38,6 +41,20 @@ export class Line extends Text {
 			.map(w => w.toString().trim())
 			.reduce((w1, w2) => w1 + ' ' + w2, '')
 			.trim();
+	}
+
+	/**
+	 * Returns the main font of the line using a basket + voting mechanism. The most used font will be returned
+	 * as a valid Font object.
+	 */
+	public getMainFont(): Font | undefined {
+		const result: Font = utils.findMostCommonFont(this.content.map((word: Word) => word.font));
+		if (result !== undefined) {
+			return result;
+		} else {
+			logger.debug(`No font found for word id ${this.id}`);
+			return undefined;
+		}
 	}
 
 	/**
@@ -86,5 +103,12 @@ export class Line extends Text {
 	 */
 	public set scaling(value: number) {
 		this._scaling = value;
+	}
+
+	/**
+	 * Converts the entire element into a html code string (needed by MD table generation).
+	 */
+	public toHTML(): string {
+		return this.toString();
 	}
 }

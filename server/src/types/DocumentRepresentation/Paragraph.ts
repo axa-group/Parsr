@@ -78,6 +78,16 @@ export class Paragraph extends Text {
 	}
 
 	/**
+	 * Converts the entire element into a html code string (needed by MD table generation).
+	 */
+	public toHTML(): string {
+		return this.content
+			.map(l => l.toString())
+			.reduce((l1, l2) => l1 + l2 + ' ', '')
+			.trim();
+	}
+
+	/**
 	 * Get every words from the paragraph in a flat array.
 	 */
 	public getWords(): Word[] {

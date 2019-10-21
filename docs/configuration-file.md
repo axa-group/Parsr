@@ -155,7 +155,6 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 		["words-to-line", { "maximumSpaceBetweenWords": { "value": 100 } }],
 		"lines-to-paragraph",
 		["page-number-detection", { "maxMarginPercentage": { "value": 15 } }],
-		"heading-detection",
 		"hierarchy-detection",
 		[
 			"regex-matcher",
