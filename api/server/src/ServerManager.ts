@@ -15,6 +15,14 @@
  */
 
 import { readdirSync, readFileSync } from 'fs';
+import deepMerge from 'lodash/fp/merge';
+
+export interface ConfigFile {
+	version: number;
+	extractor: object;
+	cleaner: object[];
+	output: object[];
+}
 
 export class ServerManager {
 	private defaultConfigPath: string = `../../server/defaultConfig.json`;
@@ -23,8 +31,14 @@ export class ServerManager {
 	/**
 	 * Returns the default configuration of the server
 	 */
-	public getDefaultConfig(): object {
+	public getDefaultConfig(): ConfigFile {
 		return JSON.parse(readFileSync(this.defaultConfigPath, 'utf-8'));
+	}
+
+	public getDefaultConfigWithSpecs(): ConfigFile {
+		const mainDefaultConfig = this.getDefaultConfig();
+		mainDefaultConfig.cleaner = mainDefaultConfig.cleaner.map(this.fillModuleWithSpecs.bind(this));
+		return mainDefaultConfig;
 	}
 
 	/**
@@ -54,5 +68,34 @@ export class ServerManager {
 				'utf-8',
 			),
 		);
+	}
+
+	private fillModuleWithSpecs(mod: object): object {
+		const moduleName = Array.isArray(mod) ? mod[0] : mod;
+		const customConfig = Array.isArray(mod) ? mod[1] : {};
+
+		const moduleConfig = JSON.parse(
+			JSON.stringify(
+				Object.assign(
+					{},
+					{
+						...this.getModuleConfig(moduleName),
+						/*
+							this will dissappear in the next iteration,
+							where I will change the structure of the config files
+						*/
+						name: undefined,
+						description: undefined,
+					},
+				),
+			),
+		);
+
+		const mergedResult = [moduleName, deepMerge(moduleConfig, customConfig)].filter(
+			d => typeof d !== 'object' || Object.keys(d).length > 0,
+		);
+
+		// if length === 2, config has parameters. if not, i return only the module name as a string
+		return mergedResult.length === 2 ? mergedResult : mergedResult[0];
 	}
 }
