@@ -39,6 +39,7 @@ interface Options {
 		range: {
 			min: number;
 			max: number;
+			step: number;
 		};
 	};
 	computeHeadings?: {
