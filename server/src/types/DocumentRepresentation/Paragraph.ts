@@ -81,12 +81,10 @@ export class Paragraph extends Text {
 	 * Converts the entire element into a html code string (needed by MD table generation).
 	 */
 	public toHTML(): string {
-		const content: string[] = this.content.map(l => l.toString());
-		if (content.length !== 0) {
-			return content.reduce((l1, l2) => l1 + l2 + ' ', '').trim();
-		} else {
-			return '';
-		}
+		return this.content
+			.map(l => l.toString())
+			.reduce((l1, l2) => l1 + l2 + ' ', '')
+			.trim();
 	}
 
 	/**
