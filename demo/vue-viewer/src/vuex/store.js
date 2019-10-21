@@ -135,7 +135,7 @@ export default new Vuex.Store({
 				});
 			});
 		},
-		fetchThumbnail({ commit }, { page }) {
+		fetchThumbnail(_, { page }) {
 			return DocumentService.getThumbnail(this.state.uuid, page);
 		},
 		fetchDocument({ commit }) {
