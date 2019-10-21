@@ -3,7 +3,13 @@
 		<form @submit.prevent="upload">
 			<fieldset>
 				<legend>Input file</legend>
-				<input type="file" id="file" name="file" @change="fileChanged($event)" style="margin:10px 0px" />
+				<input
+					type="file"
+					id="file"
+					name="file"
+					@change="fileChanged($event)"
+					style="margin:10px 0px"
+				/>
 			</fieldset>
 
 			<fieldset>
@@ -35,9 +41,7 @@
 			</fieldset>
 
 			<v-btn rounded class="submit" :disabled="isSubmitDisabled" @click="upload">SUBMIT</v-btn>
-			<p class="required">
-				<span>*</span> Required fields
-			</p>
+			<p class="required"><span>*</span> Required fields</p>
 		</form>
 
 		<v-overlay :absolute="false" opacity="0.5" :value="shouldDisplayOverlay" :dark="false">
@@ -52,7 +56,12 @@
 					<span v-html="processError" />
 				</p>
 				<v-btn v-if="processError" rounded class="submit" @click="closeProcessTrack">CLOSE</v-btn>
-				<v-progress-circular v-if="loading" color="#00008a" indeterminate size="24"></v-progress-circular>
+				<v-progress-circular
+					v-if="loading"
+					color="#00008a"
+					indeterminate
+					size="24"
+				></v-progress-circular>
 				<strong v-if="processStatusCompleted">Process completed</strong>
 			</div>
 		</v-overlay>
@@ -108,7 +117,8 @@ export default {
 	},
 	watch: {
 		loadingConfig(newVal, oldVal) {
-			if (oldVal && !newVal) { //finished loading
+			if (oldVal && !newVal) {
+				//finished loading
 				this.customConfig = { ...this.defaultConfig };
 			}
 		},
@@ -160,6 +170,7 @@ export default {
 					case 'addNewline':
 					case 'checkFont':
 					case 'mergeTableElements':
+					case 'computeHeadings':
 						defaults[element] = [true, false];
 						break;
 				}
