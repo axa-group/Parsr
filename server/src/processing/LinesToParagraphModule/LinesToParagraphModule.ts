@@ -43,10 +43,6 @@ interface Options {
 	};
 	computeHeadings?: {
 		value: boolean;
-		range: {
-			min: number;
-			max: number;
-		};
 	};
 }
 
