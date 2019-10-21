@@ -71,9 +71,7 @@ export class ServerManager {
 	}
 
 	private fillModuleWithSpecs(mod: object): object {
-		const moduleName = Array.isArray(mod) ? mod[0] : mod;
-		const customConfig = Array.isArray(mod) ? mod[1] : {};
-
+		const [moduleName, customConfig] = Array.isArray(mod) ? mod : [mod, {}];
 		/*
 			this will be refactored in the next iteration,
 			where I won't have to remove the name and description values
