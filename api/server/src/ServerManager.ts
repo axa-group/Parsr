@@ -15,6 +15,14 @@
  */
 
 import { readdirSync, readFileSync } from 'fs';
+import deepMerge from 'lodash/fp/merge';
+
+export interface ConfigFile {
+	version: number;
+	extractor: object;
+	cleaner: object[];
+	output: object[];
+}
 
 export class ServerManager {
 	private defaultConfigPath: string = `../../server/defaultConfig.json`;
@@ -23,8 +31,14 @@ export class ServerManager {
 	/**
 	 * Returns the default configuration of the server
 	 */
-	public getDefaultConfig(): object {
+	public getDefaultConfig(): ConfigFile {
 		return JSON.parse(readFileSync(this.defaultConfigPath, 'utf-8'));
+	}
+
+	public getDefaultConfigWithSpecs(): ConfigFile {
+		const mainDefaultConfig = this.getDefaultConfig();
+		mainDefaultConfig.cleaner = mainDefaultConfig.cleaner.map(this.fillModuleWithSpecs.bind(this));
+		return mainDefaultConfig;
 	}
 
 	/**
@@ -54,5 +68,28 @@ export class ServerManager {
 				'utf-8',
 			),
 		);
+	}
+
+	private fillModuleWithSpecs(mod: object): object {
+		const [moduleName, customConfig] = Array.isArray(mod) ? mod : [mod, {}];
+		/*
+			this will be refactored in the next iteration,
+			where I won't have to remove the name and description values
+			(specs will not be on the same level)
+		*/
+		const moduleConfig = JSON.parse(
+			JSON.stringify({
+				...this.getModuleConfig(moduleName),
+				name: undefined,
+				description: undefined,
+			}),
+		);
+
+		const mergedResult = [moduleName, deepMerge(moduleConfig, customConfig)].filter(
+			d => typeof d !== 'object' || Object.keys(d).length > 0,
+		);
+
+		// if length === 2, config has parameters. if not, i return only the module name as a string
+		return mergedResult.length === 2 ? mergedResult : mergedResult[0];
 	}
 }

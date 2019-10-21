@@ -8,10 +8,18 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import AppNav from '@/components/NavBar';
 
 export default {
 	components: { AppNav },
+	methods: {
+		...mapActions(['getDefaultConfiguration']),
+	},
+	mounted() {
+		this.getDefaultConfiguration();
+	}
+
 };
 </script>
 

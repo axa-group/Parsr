@@ -7,5 +7,7 @@
 	"isGlobal": {
 		"value": true
 	},
-	"queries": []
+	"queries": {
+		"value": []
+	}
 }

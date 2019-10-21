@@ -1,15 +1,9 @@
 <template>
-	<div class="main v-application v-application--is-ltr">
+	<div class="main v-application v-application--is-ltr" v-if="!loadingConfig">
 		<form @submit.prevent="upload">
 			<fieldset>
 				<legend>Input file</legend>
-				<input
-					type="file"
-					id="file"
-					name="file"
-					@change="fileChanged($event)"
-					style="margin:10px 0px"
-				/>
+				<input type="file" id="file" name="file" @change="fileChanged($event)" style="margin:10px 0px" />
 			</fieldset>
 
 			<fieldset>
@@ -25,8 +19,7 @@
 					class="selectOptionExtractor"
 					prefix="Pdf"
 					solo
-				>
-				</v-select>
+				></v-select>
 			</fieldset>
 
 			<fieldset>
@@ -42,26 +35,24 @@
 			</fieldset>
 
 			<v-btn rounded class="submit" :disabled="isSubmitDisabled" @click="upload">SUBMIT</v-btn>
-			<p class="required"><span>*</span> Required fields</p>
+			<p class="required">
+				<span>*</span> Required fields
+			</p>
 		</form>
 
 		<v-overlay :absolute="false" opacity="0.5" :value="shouldDisplayOverlay" :dark="false">
 			<div class="processTracker">
 				<p v-for="status in processStatus" :key="status">
-					<span v-html="status" /> <img :src="checkIcon" />
+					<span v-html="status" />
+					<img :src="checkIcon" />
 				</p>
 				<p v-if="processError">
-					<span style="vertical-align:middle">Process failed</span
-					><v-icon size="20" color="red" style="margin-left:10px">mdi-alert-circle</v-icon
-					><span v-html="processError" />
+					<span style="vertical-align:middle">Process failed</span>
+					<v-icon size="20" color="red" style="margin-left:10px">mdi-alert-circle</v-icon>
+					<span v-html="processError" />
 				</p>
 				<v-btn v-if="processError" rounded class="submit" @click="closeProcessTrack">CLOSE</v-btn>
-				<v-progress-circular
-					v-if="loading"
-					color="#00008a"
-					indeterminate
-					size="24"
-				></v-progress-circular>
+				<v-progress-circular v-if="loading" color="#00008a" indeterminate size="24"></v-progress-circular>
 				<strong v-if="processStatusCompleted">Process completed</strong>
 			</div>
 		</v-overlay>
@@ -89,6 +80,7 @@ export default {
 	computed: {
 		...mapState({
 			defaultConfig: state => state.defaultConfig,
+			loadingConfig: state => state.loadingConfig,
 		}),
 		modulesOrder() {
 			return this.defaultConfig.cleaner.map(el => {
@@ -113,6 +105,13 @@ export default {
 	},
 	beforeMount() {
 		this.customConfig = { ...this.defaultConfig };
+	},
+	watch: {
+		loadingConfig(newVal, oldVal) {
+			if (oldVal && !newVal) { //finished loading
+				this.customConfig = { ...this.defaultConfig };
+			}
+		},
 	},
 	methods: {
 		moduleParams(configItem) {
