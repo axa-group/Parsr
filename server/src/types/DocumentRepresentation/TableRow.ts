@@ -46,7 +46,7 @@ export class TableRow extends Element {
 	 * Converts the entire row into a md code string.
 	 */
 	public toMarkdown(): string {
-		let output: string = "<tr style='background-color:transparent'>  \n";
+		let output: string = "<tr style='background-color:#fff'>  \n";
 		this.content.forEach(cell => {
 			output += cell.toMarkdown();
 		});

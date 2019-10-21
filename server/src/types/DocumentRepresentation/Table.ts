@@ -315,7 +315,7 @@ export class Table extends Element {
 		this.content.forEach(row => {
 			output += row.toMarkdown() + '  \n';
 		});
-		return output + '  \n</table>';
+		return output + '</table>';
 	}
 
 	private calculateShape(): void {
