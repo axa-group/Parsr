@@ -74,21 +74,17 @@ export class ServerManager {
 		const moduleName = Array.isArray(mod) ? mod[0] : mod;
 		const customConfig = Array.isArray(mod) ? mod[1] : {};
 
+		/*
+			this will be refactored in the next iteration,
+			where I won't have to remove the name and description values
+			(specs will not be on the same level)
+		*/
 		const moduleConfig = JSON.parse(
-			JSON.stringify(
-				Object.assign(
-					{},
-					{
-						...this.getModuleConfig(moduleName),
-						/*
-							this will dissappear in the next iteration,
-							where I will change the structure of the config files
-						*/
-						name: undefined,
-						description: undefined,
-					},
-				),
-			),
+			JSON.stringify({
+				...this.getModuleConfig(moduleName),
+				name: undefined,
+				description: undefined,
+			}),
 		);
 
 		const mergedResult = [moduleName, deepMerge(moduleConfig, customConfig)].filter(
