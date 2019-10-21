@@ -83,9 +83,7 @@ export class Paragraph extends Text {
 	public toHTML(): string {
 		const content: string[] = this.content.map(l => l.toString());
 		if (content.length !== 0) {
-			return content
-				.reduce((l1, l2, index) => l1 + l2 + (index + 1 < content.length ? '<br/>' : ''), '')
-				.trim();
+			return content.reduce((l1, l2) => l1 + l2 + ' ', '').trim();
 		} else {
 			return '';
 		}
