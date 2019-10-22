@@ -34,17 +34,8 @@ import { WordsToLineModule } from '../WordsToLineModule/WordsToLineModule';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	tolerance?: {
-		value: number;
-		range: {
-			min: number;
-			max: number;
-			step: number;
-		};
-	};
-	computeHeadings?: {
-		value: boolean;
-	};
+	tolerance?: number;
+	computeHeadings?: boolean;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -108,7 +99,7 @@ export class LinesToParagraphModule extends Module<Options> {
 				});
 			});
 
-			if (this.options.computeHeadings.value) {
+			if (this.options.computeHeadings) {
 				const newStructures = this.extractHeadings(joinedLines, textBodyFont);
 				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
 				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
@@ -163,7 +154,7 @@ export class LinesToParagraphModule extends Module<Options> {
 			const lines = this.getLinesInElement(element);
 			const interLinesSpaces = this.getInterLinesSpace(lines);
 			const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
-			if (this.options.computeHeadings.value) {
+			if (this.options.computeHeadings) {
 				const newStructures = this.extractHeadings(joinedLines, textBodyFont);
 				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
 				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
@@ -317,7 +308,7 @@ export class LinesToParagraphModule extends Module<Options> {
 				index > 0 &&
 				distance.distanceHeightRatio.valueOf() -
 					sortedByDistance[index - 1].distanceHeightRatio.valueOf() <
-					this.options.tolerance.value
+					this.options.tolerance
 			) {
 				const mergedTotalHeight =
 					mergedDistances[mergedDistances.length - 1].totalHeight.valueOf() +
