@@ -29,10 +29,11 @@ export class Module<T = undefined> {
 			this takes the 'options' in key-value format and the 'defaultOptions' in specs format
 			and returns a merged object in key-value format, prioritizing the values in options object
 		*/
-		if (options && defaultOptions) {
-			const mergedOptions = (defaultOptions as any).specs;
+		this._options = {};
+		if (defaultOptions && defaultOptions.hasOwnProperty('specs')) {
+			const mergedOptions = Object.assign({}, (defaultOptions as any).specs);
 			Object.keys(mergedOptions).forEach(key => {
-				mergedOptions[key] = options[key] || mergedOptions[key].value;
+				mergedOptions[key] = (options && options[key]) || mergedOptions[key].value;
 			});
 
 			this._options = mergedOptions;
