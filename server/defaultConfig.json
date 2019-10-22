@@ -13,118 +13,79 @@
 		[
 			"whitespace-removal",
 			{
-				"minWidth": {
-					"value": 0
-				}
+				"minWidth": 10
 			}
 		],
 		[
 			"redundancy-detection",
 			{
-				"minOverlap": {
-					"value": 0.5
-				},
-				"minimumPages": {
-					"value": 6
-				}
+				"minOverlap": 0.5
 			}
 		],
 		[
 			"table-detection",
 			{
-				"pages": {
-					"value": []
-				},
-				"flavor": {
-					"value": "lattice"
-				}
+				"pages": [],
+				"flavor": "lattice"
 			}
 		],
 		[
 			"header-footer-detection",
 			{
-				"ignorePages": {
-					"value": []
-				},
-				"maxMarginPercentage": {
-					"value": 15
-				}
+				"ignorePages": [],
+				"maxMarginPercentage": 15
 			}
 		],
 		[
 			"reading-order-detection",
 			{
-				"minVerticalGapWidth": {
-					"value": 5
-				},
-				"minColumnWidthInPagePercent": {
-					"value": 15
-				}
+				"minVerticalGapWidth": 5,
+				"minColumnWidthInPagePercent": 15
 			}
 		],
 		"link-detection",
 		[
 			"words-to-line",
 			{
-				"lineHeightUncertainty": {
-					"value": 0.2
-				},
-				"topUncertainty": {
-					"value": 0.4
-				},
-				"maximumSpaceBetweenWords": {
-					"value": 100
-				},
-				"mergeTableElements": {
-					"value": false
-				}
+				"lineHeightUncertainty": 0.2,
+				"topUncertainty": 0.4,
+				"maximumSpaceBetweenWords": 100,
+				"mergeTableElements": false
 			}
 		],
 		[
 			"lines-to-paragraph",
 			{
-				"tolerance": {
-					"value": 0.25
-				}
+				"tolerance": 0.25
 			}
 		],
 		[
 			"page-number-detection",
 			{
-				"ignorePages": {
-					"value": []
-				},
-				"maxMarginPercentage": {
-					"value": 15
-				}
+				"ignorePages": [],
+				"maxMarginPercentage": 15
 			}
 		],
 		"hierarchy-detection",
 		[
 			"regex-matcher",
 			{
-				"isCaseSensitive": {
-					"value": true
-				},
-				"isGlobal": {
-					"value": true
-				},
-				"queries": {
-					"value": [
-						{
-							"label": "Car",
-							"regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
-						},
-						{
-							"label": "Age",
-							"regex": "(\\d+)[ -]*(ans|jarige)"
-						},
-						{
-							"label": "Percent",
-							"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
-						}
-					]
-				}
+				"isCaseSensitive": true,
+				"isGlobal": true,
+				"queries": [
+					{
+						"label": "Car",
+						"regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
+					},
+					{
+						"label": "Age",
+						"regex": "(\\d+)[ -]*(ans|jarige)"
+					},
+					{
+						"label": "Percent",
+						"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
+					}
+				]
 			}
 		]
 	],
