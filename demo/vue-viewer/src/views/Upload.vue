@@ -35,7 +35,6 @@
 					:key="'Item_' + index"
 					:model="customConfig.cleaner"
 					:value="item"
-					:params="moduleParams(item)"
 					@change="configChange"
 				/>
 			</fieldset>
@@ -124,59 +123,6 @@ export default {
 		},
 	},
 	methods: {
-		moduleParams(configItem) {
-			if (Array.isArray(configItem)) {
-				const moduleParams = {};
-				let defaultValues = this.defaultValuesForModule(configItem);
-				if (defaultValues != {}) moduleParams['defaultValues'] = defaultValues;
-				let sliderValues = this.sliderValuesForModule(configItem);
-				if (sliderValues != {}) moduleParams['sliders'] = sliderValues;
-				return moduleParams;
-			}
-			return {};
-		},
-		sliderValuesForModule(module) {
-			const sliders = {};
-			Object.keys(module[1]).forEach(element => {
-				switch (element) {
-					case 'percentageOfRedundancy':
-					case 'lineHeightUncertainty':
-					case 'topUncertainty':
-					case 'maxInterline':
-						sliders[element] = { min: 0, max: 10, multiplier: 10, decimals: 1 };
-						break;
-					case 'minWidth':
-					case 'maxMarginPercentage':
-					case 'minColumnWidthInPagePercent':
-					case 'minVerticalGapWidth':
-					case 'maximumSpaceBetweenWords':
-					case 'alignUncertainty':
-						sliders[element] = { min: 0, max: 100, multiplier: 1, decimals: 0 };
-						break;
-					case 'tolerance':
-						sliders[element] = { min: 0, max: 100, multiplier: 100, decimals: 2 };
-						break;
-				}
-			});
-			return sliders;
-		},
-		defaultValuesForModule(module) {
-			const defaults = {};
-			Object.keys(module[1]).forEach(element => {
-				switch (element) {
-					case 'flavor':
-						defaults[element] = ['lattice', 'stream'];
-						break;
-					case 'addNewline':
-					case 'checkFont':
-					case 'mergeTableElements':
-					case 'computeHeadings':
-						defaults[element] = [true, false];
-						break;
-				}
-			});
-			return defaults;
-		},
 		configChange(configItem) {
 			if (configItem.selected) {
 				this.customConfig.cleaner.push(configItem.item);

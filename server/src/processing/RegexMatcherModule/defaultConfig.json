@@ -2,10 +2,12 @@
 	"name": "regex-matcher",
 	"description": "Matches the text against a certain number of Regular Expressions, configurable in the configuration.",
 	"isCaseSensitive": {
-		"value": true
+		"value": true,
+		"range": [true, false]
 	},
 	"isGlobal": {
-		"value": true
+		"value": true,
+		"range": [true, false]
 	},
 	"queries": {
 		"value": []

@@ -2,7 +2,8 @@
 	"name": "number-correction",
 	"description": "Perform error detection and correction on financial numbers.",
 	"fixSplitNumbers": {
-		"value": true
+		"value": true,
+		"range": [true, false]
 	},
 	"maxConsecutiveSplits": {
 		"value": 3,

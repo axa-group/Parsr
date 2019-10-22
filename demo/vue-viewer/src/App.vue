@@ -18,8 +18,7 @@ export default {
 	},
 	mounted() {
 		this.getDefaultConfiguration();
-	}
-
+	},
 };
 </script>
 
