@@ -13,7 +13,7 @@
 		[
 			"whitespace-removal",
 			{
-				"minWidth": 10
+				"minWidth": 0
 			}
 		],
 		[
