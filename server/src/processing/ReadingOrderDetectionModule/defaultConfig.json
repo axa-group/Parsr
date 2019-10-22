@@ -1,18 +1,20 @@
 {
 	"name": "reading-order-detection",
 	"description": "Detect the reading order of the text items in the document.",
-	"minVerticalGapWidth": {
-		"value": 5,
-		"range": {
-			"min": 0,
-			"max": 100
-		}
-	},
-	"minColumnWidthInPagePercent": {
-		"value": 5,
-		"range": {
-			"min": 0,
-			"max": 100
+	"specs": {
+		"minVerticalGapWidth": {
+			"value": 5,
+			"range": {
+				"min": 0,
+				"max": 100
+			}
+		},
+		"minColumnWidthInPagePercent": {
+			"value": 5,
+			"range": {
+				"min": 0,
+				"max": 100
+			}
 		}
 	}
 }
