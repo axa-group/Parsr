@@ -289,8 +289,10 @@ export class Paragraph extends Text {
 			return false;
 		}
 		const line: Line = this.content[index];
+		const wordsAvgSpace = this.avgWordSpace(line);
 		const nextLine: Line = this.content[index + 1];
-		const availableSpace = this.width - line.width;
+		const spaceParagraphToLine = line.left - this.left;
+		const availableSpace = this.width - line.width - wordsAvgSpace - spaceParagraphToLine;
 		return availableSpace >= nextLine.content[0].width;
 	}
 
@@ -324,6 +326,17 @@ export class Paragraph extends Text {
 	 */
 	public set language(value: string) {
 		this._language = value;
+	}
+
+	private avgWordSpace(line: Line): number {
+		const margins = line.content.map((word, index) => {
+			if (index > 0) {
+				return word.left - line.content[index - 1].right;
+			}
+			return 0;
+		});
+
+		return margins.reduce((a, b) => a + b, 0) / margins.length;
 	}
 
 	private wordStyleEndTag(style: WordStyle, format: string): string {
