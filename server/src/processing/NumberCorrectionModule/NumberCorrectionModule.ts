@@ -60,12 +60,12 @@ export class NumberCorrectionModule extends Module<Options> {
 	}
 
 	public main(doc: Document): Document {
-		const options = Object.assign(defaultOptions, this.options);
+		// const options = Object.assign(defaultOptions, this.options);
 		doc.pages.forEach(page => {
 			// Correct numbers embedded into Words
 			this.correctWords(page);
 			// Correct numbers that might be split by mistake into exactly 2 Words under a Line node.
-			if (options.fixSplitNumbers) {
+			if (this.options.fixSplitNumbers) {
 				this.correctLines(page);
 			}
 		});
