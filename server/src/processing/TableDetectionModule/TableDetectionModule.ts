@@ -14,13 +14,8 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 export interface Options {
-	pages?: {
-		value: number[];
-	};
-	flavor?: {
-		value: string;
-		range: string[];
-	};
+	pages?: number[];
+	flavor?: string;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -40,15 +35,15 @@ const defaultExtractor: TableExtractor = {
 		let pages: string = 'all';
 		let flavor: string = 'lattice';
 		const lineScale: string = '70';
-		if (options.pages.value.length !== 0) {
-			pages = options.pages.value.toString();
+		if (options.pages.length !== 0) {
+			pages = options.pages.toString();
 		}
-		if (!options.flavor.value.includes(options.flavor.value)) {
+		if (!options.flavor.includes(options.flavor)) {
 			logger.warn(
-				`table detection flavor asked for: ${options.flavor.value} is not a possibility. defaulting to 'lattice'`,
+				`table detection flavor asked for: ${options.flavor} is not a possibility. defaulting to 'lattice'`,
 			);
 		} else {
-			flavor = options.flavor.value;
+			flavor = options.flavor;
 		}
 
 		// find python executable name
@@ -100,14 +95,15 @@ export class TableDetectionModule extends Module<Options> {
 	}
 
 	public main(doc: Document): Document {
-		const options: Options = { ...defaultOptions, ...this.options };
+		// options is already merged in constructor!!!
+		// const options: Options = { ...defaultOptions, ...this.options };
 		if (doc.getElementsOfType<Table>(Table).length > 0) {
 			logger.warn(
 				'Warning: document already has tables extracted by the extractor. Not performing table detection.',
 			);
 			return doc;
 		}
-		const tableExtractor = this.extractor.readTables(doc.inputFile, options);
+		const tableExtractor = this.extractor.readTables(doc.inputFile, this.options);
 
 		if (tableExtractor.status !== 0) {
 			logger.error(tableExtractor.stderr);
