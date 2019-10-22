@@ -82,7 +82,7 @@ export function replaceObject<T extends Element, U extends T>(
 // Handle Windows convert.exe conflict.
 export function getConvertPath(): string {
 	if (/^win/i.test(os.platform())) {
-		const where = spawnSync('where.exe', ['convert']);
+		const where = spawnSync('where.exe', ['magick']);
 		let filepaths: string[] = where.stdout.toString().split(os.EOL);
 		filepaths = filepaths.filter(
 			filepath => !/System/.test(filepath) && filepath.trim().length > 0,
@@ -94,7 +94,7 @@ export function getConvertPath(): string {
 			return filepaths[0];
 		}
 	} else {
-		return 'convert';
+		return 'magick';
 	}
 }
 
