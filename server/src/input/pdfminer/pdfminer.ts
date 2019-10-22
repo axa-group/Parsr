@@ -210,10 +210,10 @@ function breakLineIntoWords(
 	pageHeight: number,
 	scalingFactor: number = 1,
 ): Word[] {
-	let notAllowedChars = ['\u200B']; //&#8203 Zero Width Space
+	const notAllowedChars = ['\u200B']; // &#8203 Zero Width Space
 	const words: Word[] = [];
 	const chars: Character[] = line.text
-		.filter(char => !notAllowedChars.includes(char._))
+		.filter(char => !notAllowedChars.includes(char._) && char._attr !== undefined)
 		.map(char => {
 			if (char._ === undefined) {
 				return undefined;
