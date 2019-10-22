@@ -39,6 +39,7 @@ const defaultExtractor: TableExtractor = {
 	readTables(inputFile: string, options: Options): TableExtractorResult {
 		let pages: string = 'all';
 		let flavor: string = 'lattice';
+		const lineScale: string = '70';
 		if (options.pages.value.length !== 0) {
 			pages = options.pages.value.toString();
 		}
@@ -69,6 +70,7 @@ const defaultExtractor: TableExtractor = {
 			__dirname + '/../../../assets/TableDetectionScript.py',
 			inputFile,
 			flavor,
+			lineScale,
 			pages,
 		]);
 
@@ -215,7 +217,15 @@ export class TableDetectionModule extends Module<Options> {
 	}
 
 	private wordsInCellBox(cellBounds: BoundingBox, pageWords: Word[]): Word[] {
-		return pageWords.filter(word => utils.isInBox(word, cellBounds, false));
+		const isInBox = (element, box) => {
+			return (
+				element.box.top + element.box.height * 0.2 >= box.top &&
+				element.box.top + element.box.height <= box.top + box.height &&
+				element.box.left >= box.left &&
+				element.box.left + element.box.width <= box.left + box.width
+			);
+		};
+		return pageWords.filter(word => isInBox(word, cellBounds));
 	}
 
 	private removeWordsUsedInCells(document: Document) {

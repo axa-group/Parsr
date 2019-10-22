@@ -41,4 +41,15 @@ export class TableRow extends Element {
 	public set content(value: TableCell[]) {
 		this._content = value;
 	}
+
+	/**
+	 * Converts the entire row into a md code string.
+	 */
+	public toMarkdown(): string {
+		let output: string = "<tr style='background-color:#fff'>  \n";
+		this.content.forEach(cell => {
+			output += cell.toMarkdown();
+		});
+		return output + '</tr>';
+	}
 }

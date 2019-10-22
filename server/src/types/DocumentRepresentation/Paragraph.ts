@@ -22,9 +22,11 @@ import { Line } from './Line';
 import { Text } from './Text';
 import { Word } from './Word';
 
-type LineSpace = {
+type LineInfo = {
 	line: Line;
-	lineBreak: Boolean;
+	lineBreak: boolean;
+	firstWordStyle: string;
+	lastWordStyle: string;
 };
 
 /**
@@ -57,61 +59,31 @@ export class Paragraph extends Text {
 	 * Converts the entire paragraph into a string form with formatting, with spaces between words.
 	 */
 	public toMarkdown(): string {
-		const lines: LineSpace[] = this.getLinesWithAvailableSpace();
-		/*console.log(
-			lines.filter(line => line.lineBreak).map(l => l.line.id + ' lineBreak ' + l.lineBreak),
-		);*/
+		const lines: LineInfo[] = this.getLinesInfo();
 		let output: string = '';
-		lines.forEach(line => {
-			output += this.lineToMarkDown(line.line);
+		let prevLine: LineInfo = null;
+		lines.forEach((line, index) => {
+			const mergedStyles = { paragraphOutput: output, lineOutput: this.lineToMarkDown(line.line) };
+			this.mergeStyleLines(prevLine, line, mergedStyles);
+			output = mergedStyles.paragraphOutput;
+			output += mergedStyles.lineOutput;
 			if (line.lineBreak) {
 				output += '  \n';
-			} else {
+			} else if (index + 1 < lines.length) {
 				output += ' ';
 			}
+			prevLine = line;
 		});
 		return output;
 	}
 
-	private lineToMarkDown(line: Line) {
-		const words: Word[] = line.content;
-		let biWordsIdx: number[][] = Array<number[]>(1).fill([]);
-		let bWordsIdx: number[][] = Array<number[]>(1).fill([]);
-		let iWordsIdx: number[][] = Array<number[]>(1).fill([]);
-		words.forEach((w, index) => {
-			if (w.font.isItalic && w.font.weight === 'bold') {
-				biWordsIdx[0].push(index);
-			} else if (!w.font.isItalic && w.font.weight === 'bold') {
-				bWordsIdx[0].push(index);
-			} else if (w.font.isItalic && w.font.weight !== 'bold') {
-				iWordsIdx[0].push(index);
-			}
-		});
-		biWordsIdx = utils.groupConsecutiveNumbersInArray(biWordsIdx[0]).filter(p => p.length !== 0);
-		bWordsIdx = utils.groupConsecutiveNumbersInArray(bWordsIdx[0]).filter(p => p.length !== 0);
-		iWordsIdx = utils.groupConsecutiveNumbersInArray(iWordsIdx[0]).filter(p => p.length !== 0);
-
-		// prepare the result
-		const result: string[] = words.map(w => w.toString());
-
-		biWordsIdx.forEach(idGroup => {
-			result[idGroup[0]] = '***' + result[idGroup[0]];
-			result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '***';
-		});
-
-		bWordsIdx.forEach(idGroup => {
-			result[idGroup[0]] = '**' + result[idGroup[0]];
-			result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '**';
-		});
-
-		iWordsIdx.forEach(idGroup => {
-			result[idGroup[0]] = '*' + result[idGroup[0]];
-			result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '*';
-		});
-
-		return result
-			.map(w => w.trim())
-			.reduce((w1, w2) => w1 + ' ' + w2, '')
+	/**
+	 * Converts the entire element into a html code string (needed by MD table generation).
+	 */
+	public toHTML(): string {
+		return this.content
+			.map(l => l.toString())
+			.reduce((l1, l2) => l1 + l2 + ' ', '')
 			.trim();
 	}
 
@@ -122,21 +94,6 @@ export class Paragraph extends Text {
 		return this.content.map(l => l.content).reduce((a, b) => [...a, ...b]);
 	}
 
-	private getLinesWithAvailableSpace(): LineSpace[] {
-		return this.content.map((l, index) => {
-			return { line: l, lineBreak: this.isLineBreak(index) };
-		});
-	}
-
-	private isLineBreak(index: number): Boolean {
-		if (index + 1 >= this.content.length) {
-			return false;
-		}
-		const line: Line = this.content[index];
-		const nextLine: Line = this.content[index + 1];
-		const availableSpace = this.width - line.width;
-		return availableSpace >= nextLine.content[0].width;
-	}
 	/**
 	 * Get every words that compose a paragrah's substring.
 	 * @param start Begining of the string
@@ -211,6 +168,97 @@ export class Paragraph extends Text {
 			logger.debug(`No font found for paragraph id ${this.id}`);
 			return undefined;
 		}
+	}
+
+	private mergeStyleLines(prevLine: LineInfo, line: LineInfo, output: any) {
+		if (!prevLine) {
+			return;
+		}
+
+		if (line.lineBreak) {
+			return;
+		}
+
+		if (prevLine.lastWordStyle && prevLine.lastWordStyle === line.firstWordStyle) {
+			const end = output.paragraphOutput.length - (prevLine.lastWordStyle.length + 1);
+			output.paragraphOutput = output.paragraphOutput.slice(0, end) + ' ';
+			output.lineOutput = output.lineOutput.slice(prevLine.lastWordStyle.length);
+		}
+	}
+
+	private lineToMarkDown(line: Line) {
+		const words: Word[] = line.content;
+		let biWordsIdx: number[][] = Array<number[]>(1).fill([]);
+		let bWordsIdx: number[][] = Array<number[]>(1).fill([]);
+		let iWordsIdx: number[][] = Array<number[]>(1).fill([]);
+		words.forEach((w, index) => {
+			const style = this.wordStyle(w);
+			if (style === '***') {
+				biWordsIdx[0].push(index);
+			} else if (style === '**') {
+				bWordsIdx[0].push(index);
+			} else if (style === '*') {
+				iWordsIdx[0].push(index);
+			}
+		});
+		biWordsIdx = utils.groupConsecutiveNumbersInArray(biWordsIdx[0]).filter(p => p.length !== 0);
+		bWordsIdx = utils.groupConsecutiveNumbersInArray(bWordsIdx[0]).filter(p => p.length !== 0);
+		iWordsIdx = utils.groupConsecutiveNumbersInArray(iWordsIdx[0]).filter(p => p.length !== 0);
+
+		// prepare the result
+		const result: string[] = words.map(w => w.toMarkDown());
+
+		biWordsIdx.forEach(idGroup => {
+			result[idGroup[0]] = '***' + result[idGroup[0]];
+			result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '***';
+		});
+
+		bWordsIdx.forEach(idGroup => {
+			result[idGroup[0]] = '**' + result[idGroup[0]];
+			result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '**';
+		});
+
+		iWordsIdx.forEach(idGroup => {
+			result[idGroup[0]] = '*' + result[idGroup[0]];
+			result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '*';
+		});
+
+		return result
+			.map(w => w.trim())
+			.reduce((w1, w2) => w1 + ' ' + w2, '')
+			.trim();
+	}
+
+	private getLinesInfo(): LineInfo[] {
+		return this.content.map((l, index) => {
+			return {
+				line: l,
+				lineBreak: this.isLineBreak(index),
+				firstWordStyle: this.wordStyle(l.content[0]),
+				lastWordStyle: this.wordStyle(l.content[l.content.length - 1]),
+			};
+		});
+	}
+
+	private wordStyle(word: Word): string {
+		if (word.font.isItalic && word.font.weight === 'bold') {
+			return '***';
+		} else if (!word.font.isItalic && word.font.weight === 'bold') {
+			return '**';
+		} else if (word.font.isItalic && word.font.weight !== 'bold') {
+			return '*';
+		}
+		return null;
+	}
+
+	private isLineBreak(index: number): boolean {
+		if (index + 1 >= this.content.length) {
+			return false;
+		}
+		const line: Line = this.content[index];
+		const nextLine: Line = this.content[index + 1];
+		const availableSpace = this.width - line.width;
+		return availableSpace >= nextLine.content[0].width;
 	}
 
 	/**

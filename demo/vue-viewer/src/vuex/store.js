@@ -36,129 +36,11 @@ export default new Vuex.Store({
 				csvs: [],
 			},
 		},
+		loadingConfig: false,
 		defaultConfig: {
-			version: 0.5,
-			extractor: {
-				pdf: 'pdf2json',
-				img: 'tesseract',
-				language: ['eng', 'fra'],
-			},
-			cleaner: [
-				'out-of-page-removal',
-				[
-					'whitespace-removal',
-					{
-						minWidth: {
-							value: 0,
-							range: { min: 0, max: 100 },
-						},
-					},
-				],
-				[
-					'redundancy-detection',
-					{
-						percentageOfRedundancy: { value: 0.5, range: { min: 0.0, max: 1.0 } },
-						minimumPages: { value: 6 },
-					},
-				],
-				[
-					'table-detection',
-					{
-						pages: { value: 'all' },
-						flavor: {
-							value: 'lattice',
-							range: ['lattice', 'stream'],
-						},
-					},
-				],
-				[
-					'header-footer-detection',
-					{
-						maxMarginPercentage: {
-							value: 15,
-							range: {
-								min: 0,
-								max: 100,
-							},
-						},
-						ignorePages: { value: [] },
-					},
-				],
-				[
-					'reading-order-detection',
-					{
-						minVerticalGapWidth: {
-							value: 5,
-							range: {
-								min: 0,
-								max: 100,
-							},
-						},
-						minColumnWidthInPagePercent: {
-							value: 5,
-							range: {
-								min: 0,
-								max: 100,
-							},
-						},
-					},
-				],
-				'link-detection',
-				[
-					'words-to-line',
-					{
-						lineHeightUncertainty: {
-							value: 0.2,
-							range: {
-								min: 0.0,
-								max: 1.0,
-							},
-						},
-						topUncertainty: {
-							value: 0.4,
-							range: {
-								min: 0.0,
-								max: 1.0,
-							},
-						},
-						maximumSpaceBetweenWords: {
-							value: 100,
-							range: {
-								min: 0,
-								max: 100,
-							},
-						},
-						mergeTableElements: { value: false, range: [true, false] },
-					},
-				],
-				'lines-to-paragraph',
-				[
-					'page-number-detection',
-					{
-						maxMarginPercentage: {
-							value: 15,
-							range: {
-								min: 0,
-								max: 100,
-							},
-						},
-						ignorePages: { value: [] },
-					},
-				],
-				'heading-detection',
-				'hierarchy-detection',
-			],
-			output: {
-				granularity: 'word',
-				includeMarginals: false,
-				formats: {
-					json: true,
-					text: true,
-					csv: true,
-					markdown: true,
-					pdf: false,
-				},
-			},
+			extractor: {},
+			cleaner: [],
+			output: {},
 		},
 	},
 	mutations: {
@@ -223,10 +105,23 @@ export default new Vuex.Store({
 		switchExpansionPanel(state, { panel, value }) {
 			Vue.set(state.expansionPanels, panel, value);
 		},
+		SET_DEFAULT_CONFIG(state, config) {
+			Vue.set(state, 'defaultConfig', config);
+		},
+		LOADING(state, value) {
+			Vue.set(state, 'loadingConfig', value);
+		},
 	},
 	actions: {
-		fetchThumbnail({ commit }, { page }) {
-			console.log(commit);
+		getDefaultConfiguration({ commit }) {
+			commit('LOADING', true);
+			return DocumentService.getDefaultConfiguration().then(({ data }) => {
+				commit('SET_DEFAULT_CONFIG', data);
+				commit('LOADING', false);
+				return data;
+			});
+		},
+		fetchThumbnail(_, { page }) {
 			return DocumentService.getThumbnail(this.state.uuid, page);
 		},
 		fetchDocument({ commit }) {
@@ -299,7 +194,7 @@ export default new Vuex.Store({
 	},
 	getters: {
 		fonts(state) {
-			return state.document.fonts;
+			return state.document ? state.document.fonts : [];
 		},
 		documentPages(state) {
 			return state.document ? state.document.pages.length : 0;

@@ -1,27 +1,114 @@
 {
 	"version": 0.5,
 	"extractor": {
-		"pdf": "pdf2json",
+		"pdf": "pdfminer",
 		"img": "tesseract",
-		"language": ["eng", "fra"]
+		"language": [
+			"eng",
+			"fra"
+		]
 	},
 	"cleaner": [
 		"out-of-page-removal",
-		"whitespace-removal",
-		"redundancy-detection",
-		"table-detection",
-		["header-footer-detection", { "maxMarginPercentage": { "value": 15 } }],
-		["reading-order-detection", { "minColumnWidthInPagePercent": { "value": 15 } }],
+		[
+			"whitespace-removal",
+			{
+				"minWidth": {
+					"value": 0
+				}
+			}
+		],
+		[
+			"redundancy-detection",
+			{
+				"minOverlap": {
+					"value": 0.5
+				},
+				"minimumPages": {
+					"value": 6
+				}
+			}
+		],
+		[
+			"table-detection",
+			{
+				"pages": {
+					"value": []
+				},
+				"flavor": {
+					"value": "lattice"
+				}
+			}
+		],
+		[
+			"header-footer-detection",
+			{
+				"ignorePages": {
+					"value": []
+				},
+				"maxMarginPercentage": {
+					"value": 15
+				}
+			}
+		],
+		[
+			"reading-order-detection",
+			{
+				"minVerticalGapWidth": {
+					"value": 5
+				},
+				"minColumnWidthInPagePercent": {
+					"value": 15
+				}
+			}
+		],
 		"link-detection",
-		["words-to-line", { "maximumSpaceBetweenWords": { "value": 100 } }],
-		"lines-to-paragraph",
-		["page-number-detection", { "maxMarginPercentage": { "value": 15 } }],
-		"heading-detection",
-		"list-detection",
+		[
+			"words-to-line",
+			{
+				"lineHeightUncertainty": {
+					"value": 0.2
+				},
+				"topUncertainty": {
+					"value": 0.4
+				},
+				"maximumSpaceBetweenWords": {
+					"value": 100
+				},
+				"mergeTableElements": {
+					"value": false
+				}
+			}
+		],
+		[
+			"lines-to-paragraph",
+			{
+				"tolerance": {
+					"value": 0.25
+				}
+			}
+		],
+		[
+			"page-number-detection",
+			{
+				"ignorePages": {
+					"value": []
+				},
+				"maxMarginPercentage": {
+					"value": 15
+				}
+			}
+		],
 		"hierarchy-detection",
 		[
 			"regex-matcher",
 			{
+				"isCaseSensitive": {
+					"value": true
+				},
+				"isGlobal": {
+					"value": true
+				},
 				"queries": {
 					"value": [
 						{

@@ -1,5 +1,5 @@
 <template>
-	<div class="main v-application v-application--is-ltr">
+	<div class="main v-application v-application--is-ltr" v-if="!loadingConfig">
 		<form @submit.prevent="upload">
 			<fieldset>
 				<legend>Input file</legend>
@@ -25,8 +25,7 @@
 					class="selectOptionExtractor"
 					prefix="Pdf"
 					solo
-				>
-				</v-select>
+				></v-select>
 			</fieldset>
 
 			<fieldset>
@@ -48,12 +47,13 @@
 		<v-overlay :absolute="false" opacity="0.5" :value="shouldDisplayOverlay" :dark="false">
 			<div class="processTracker">
 				<p v-for="status in processStatus" :key="status">
-					<span v-html="status" /> <img :src="checkIcon" />
+					<span v-html="status" />
+					<img :src="checkIcon" />
 				</p>
 				<p v-if="processError">
-					<span style="vertical-align:middle">Process failed</span
-					><v-icon size="20" color="red" style="margin-left:10px">mdi-alert-circle</v-icon
-					><span v-html="processError" />
+					<span style="vertical-align:middle">Process failed</span>
+					<v-icon size="20" color="red" style="margin-left:10px">mdi-alert-circle</v-icon>
+					<span v-html="processError" />
 				</p>
 				<v-btn v-if="processError" rounded class="submit" @click="closeProcessTrack">CLOSE</v-btn>
 				<v-progress-circular
@@ -89,6 +89,7 @@ export default {
 	computed: {
 		...mapState({
 			defaultConfig: state => state.defaultConfig,
+			loadingConfig: state => state.loadingConfig,
 		}),
 		modulesOrder() {
 			return this.defaultConfig.cleaner.map(el => {
@@ -113,6 +114,14 @@ export default {
 	},
 	beforeMount() {
 		this.customConfig = { ...this.defaultConfig };
+	},
+	watch: {
+		loadingConfig(newVal, oldVal) {
+			if (oldVal && !newVal) {
+				//finished loading
+				this.customConfig = { ...this.defaultConfig };
+			}
+		},
 	},
 	methods: {
 		moduleParams(configItem) {
@@ -144,7 +153,7 @@ export default {
 					case 'alignUncertainty':
 						sliders[element] = { min: 0, max: 100, multiplier: 1, decimals: 0 };
 						break;
-					case 'lineLengthUncertainty':
+					case 'tolerance':
 						sliders[element] = { min: 0, max: 100, multiplier: 100, decimals: 2 };
 						break;
 				}
@@ -161,6 +170,7 @@ export default {
 					case 'addNewline':
 					case 'checkFont':
 					case 'mergeTableElements':
+					case 'computeHeadings':
 						defaults[element] = [true, false];
 						break;
 				}

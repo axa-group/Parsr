@@ -24,7 +24,7 @@ import * as path from 'path';
 import { FileManager } from './FileManager';
 import logger from './Logger';
 import { ProcessManager } from './ProcessManager';
-import { ServerManager } from './ServerManager';
+import { ConfigFile, ServerManager } from './ServerManager';
 import { Binder, PipelineProcess, QueueStatus, SingleFileType } from './types';
 
 export class ApiServer {
@@ -105,9 +105,13 @@ export class ApiServer {
 	private handleGetDefaultConfig(req: Request, res: Response): void {
 		res.setHeader('Access-Control-Allow-Origin', '*');
 
-		let defaultConfig: object;
+		let defaultConfig: ConfigFile;
 		try {
-			defaultConfig = this.serverManager.getDefaultConfig();
+			if (req.query.specs && req.query.specs === 'true') {
+				defaultConfig = this.serverManager.getDefaultConfigWithSpecs();
+			} else {
+				defaultConfig = this.serverManager.getDefaultConfig();
+			}
 		} catch (err) {
 			logger.warn(`Cannot get default server settings: ${err}`);
 			res.sendStatus(404);

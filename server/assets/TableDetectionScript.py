@@ -54,12 +54,11 @@ def getCellLocation(cell):
     return location
 
 def getCellFrame(cell):
-    if cell.text == '':        
-        return None
-    
     cellData = dict()
     cellData['location'] = getCellLocation(cell)
     cellData['size'] = getCellSize(cell)
+    cellData['colSpan'] = 1
+    cellData['rowSpan'] = 1
     return cellData
 
 def updateCellColSpan(cell, row, index, cellInfo):
@@ -88,15 +87,20 @@ def updateCellRowSpan(cell, allRows, index, cellInfo):
 
 def extractRowData(row, allRows):
     cellsData = []
+    cellHSpan = 0    
     for index, cell in enumerate(row, 0):
-        cellInfo = getCellFrame(cell)
-        if cellInfo != None:
+        cellInfo = getCellFrame(cell)  
+        if(cell.text != ''):      
             if cell.hspan:
-                cellInfo = updateCellColSpan(cell, row, index, cellInfo)
+                cellInfo = updateCellColSpan(cell, row, index, cellInfo)                
+            
             if cell.vspan:
                 cellInfo = updateCellRowSpan(cell, allRows, index, cellInfo)
-            cellsData.append(cellInfo)
 
+        cellHSpan += cellInfo['colSpan']
+        if cell.text != '' or (index + 1 >= cellHSpan and cell.text == '' and len(cellsData) > 0):
+            cellsData.append(cellInfo)        
+        
     return cellsData
 
 def extractRowsData(table):
@@ -128,12 +132,13 @@ def main():
     import sys
     pdfFile = str(sys.argv[1])
     flavor = str(sys.argv[2])
+    lineScale = int(sys.argv[3])
 
     pages = 'all'
-    if len(sys.argv) > 3:
-        pages = str(sys.argv[3])
+    if len(sys.argv) > 4:
+        pages = str(sys.argv[4])
 
-    tables = camelot.read_pdf(pdfFile, pages, None, flavor)
+    tables = camelot.read_pdf(pdfFile,  pages=pages, flavor=flavor, line_scale=lineScale)
 
     if len(tables) == 0:
         #print('No tables detected ', tables)
