@@ -1,8 +1,10 @@
 {
 	"name": "whitespace-removal",
 	"description": "Removes textual elements containing only whitespace as content.",
-	"minWidth": {
-		"value": 0,
-		"range": { "min": 0, "max": 100 }
+	"specs": {
+		"minWidth": {
+			"value": 0,
+			"range": { "min": 0, "max": 100 }
+		}
 	}
 }

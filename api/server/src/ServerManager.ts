@@ -15,8 +15,6 @@
  */
 
 import { readdirSync, readFileSync } from 'fs';
-import deepMerge from 'lodash/fp/merge';
-
 export interface ConfigFile {
 	version: number;
 	extractor: object;
@@ -72,22 +70,15 @@ export class ServerManager {
 
 	private fillModuleWithSpecs(mod: object): object {
 		const [moduleName, customConfig] = Array.isArray(mod) ? mod : [mod, {}];
-		/*
-			this will be refactored in the next iteration,
-			where I won't have to remove the name and description values
-			(specs will not be on the same level)
-		*/
-		const moduleConfig = JSON.parse(
-			JSON.stringify({
-				...this.getModuleConfig(moduleName),
-				name: undefined,
-				description: undefined,
-			}),
-		);
 
-		const mergedResult = [moduleName, deepMerge(moduleConfig, customConfig)].filter(
-			d => typeof d !== 'object' || Object.keys(d).length > 0,
-		);
+		const { specs } = this.getModuleConfig(moduleName) as any;
+
+		// merges custom parameter values with the value in the module specs
+		Object.keys(customConfig).forEach(key => {
+			specs[key].value = customConfig[key];
+		});
+
+		const mergedResult = [moduleName, specs].filter(m => !!m);
 
 		// if length === 2, config has parameters. if not, i return only the module name as a string
 		return mergedResult.length === 2 ? mergedResult : mergedResult[0];

@@ -32,22 +32,10 @@ import * as defaultConfig from './defaultConfig.json';
  */
 
 interface Options {
-	numberRegExp?: {
-		value: string;
-	};
-	fixSplitNumbers?: {
-		value: boolean;
-	};
-	maxConsecutiveSplits?: {
-		value: number;
-		range: {
-			min: number;
-			max: number;
-		};
-	};
-	whitelist?: {
-		value: string[];
-	};
+	numberRegExp?: string;
+	fixSplitNumbers?: boolean;
+	maxConsecutiveSplits?: number;
+	whitelist?: string[];
 }
 
 // The default regexps might be changed depending of the language and number notation.
@@ -72,12 +60,12 @@ export class NumberCorrectionModule extends Module<Options> {
 	}
 
 	public main(doc: Document): Document {
-		const options = Object.assign(defaultOptions, this.options);
+		// const options = Object.assign(defaultOptions, this.options);
 		doc.pages.forEach(page => {
 			// Correct numbers embedded into Words
 			this.correctWords(page);
 			// Correct numbers that might be split by mistake into exactly 2 Words under a Line node.
-			if (options.fixSplitNumbers.value) {
+			if (this.options.fixSplitNumbers) {
 				this.correctLines(page);
 			}
 		});
@@ -204,8 +192,8 @@ export class NumberCorrectionModule extends Module<Options> {
 	private getBestSuggestion(input: string, preCandidates?: Map<string, number>): string | null {
 		const suggestions = this.suggestNumberCorrections(
 			input,
-			RegExp(this.options.numberRegExp.value),
-			new Set(this.options.whitelist.value),
+			RegExp(this.options.numberRegExp),
+			new Set(this.options.whitelist),
 			preCandidates,
 		);
 		if (suggestions.length > 0) {
@@ -242,7 +230,7 @@ export class NumberCorrectionModule extends Module<Options> {
 			if (
 				line.content &&
 				line.content.length >= 2 &&
-				line.content.length <= this.options.maxConsecutiveSplits.value
+				line.content.length <= this.options.maxConsecutiveSplits
 			) {
 				// Make sure words are numbers
 				const consecutiveWordsAreNumbers = line.content.reduce((acc, word) => {
