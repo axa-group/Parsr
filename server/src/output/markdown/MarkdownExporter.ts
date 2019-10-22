@@ -42,19 +42,23 @@ export class MarkdownExporter extends Exporter {
 					return;
 				}
 				if (element instanceof Heading) {
-					if (element.level < 7) {
+					output += element.toMarkdown();
+					output += '\n'.repeat(2);
+					/*if (element.level < 7) {
 						let theHeading: string = '';
 						for (let i = 0; i !== element.level; ++i) {
 							theHeading += '#';
 						}
-						theHeading += ' ';
+						if (element.level > 0) {
+							theHeading += ' ';
+						}
 						theHeading += element.toString().replace(/(?:\r\n|\r|\n)/g, '<br />');
 						output += theHeading;
 						output += '\n'.repeat(2);
 					} else {
 						output += element.toString();
 						output += '\n'.repeat(2);
-					}
+					}*/
 				} else if (element instanceof Paragraph) {
 					output += element.toMarkdown();
 					output += '\n'.repeat(2);

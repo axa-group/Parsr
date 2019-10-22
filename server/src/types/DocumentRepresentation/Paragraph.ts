@@ -22,12 +22,18 @@ import { Line } from './Line';
 import { Text } from './Text';
 import { Word } from './Word';
 
-type LineInfo = {
+export type LineInfo = {
 	line: Line;
 	lineBreak: boolean;
-	firstWordStyle: string;
-	lastWordStyle: string;
+	firstWordStyle: WordStyle;
+	lastWordStyle: WordStyle;
 };
+
+enum WordStyle {
+	Bold,
+	Italic,
+	BoldItalic,
+}
 
 /**
  * The Paragraph class represents a collection of lines, fused together to represent a block of text
@@ -59,32 +65,14 @@ export class Paragraph extends Text {
 	 * Converts the entire paragraph into a string form with formatting, with spaces between words.
 	 */
 	public toMarkdown(): string {
-		const lines: LineInfo[] = this.getLinesInfo();
-		let output: string = '';
-		let prevLine: LineInfo = null;
-		lines.forEach((line, index) => {
-			const mergedStyles = { paragraphOutput: output, lineOutput: this.lineToMarkDown(line.line) };
-			this.mergeStyleLines(prevLine, line, mergedStyles);
-			output = mergedStyles.paragraphOutput;
-			output += mergedStyles.lineOutput;
-			if (line.lineBreak) {
-				output += '  \n';
-			} else if (index + 1 < lines.length) {
-				output += ' ';
-			}
-			prevLine = line;
-		});
-		return output;
+		return this.export('md');
 	}
 
 	/**
 	 * Converts the entire element into a html code string (needed by MD table generation).
 	 */
 	public toHTML(): string {
-		return this.content
-			.map(l => l.toString())
-			.reduce((l1, l2) => l1 + l2 + ' ', '')
-			.trim();
+		return this.export('html');
 	}
 
 	/**
@@ -170,7 +158,7 @@ export class Paragraph extends Text {
 		}
 	}
 
-	private mergeStyleLines(prevLine: LineInfo, line: LineInfo, output: any) {
+	public mergeStyleLines(prevLine: LineInfo, line: LineInfo, output: any, format: string) {
 		if (!prevLine) {
 			return;
 		}
@@ -179,25 +167,27 @@ export class Paragraph extends Text {
 			return;
 		}
 
-		if (prevLine.lastWordStyle && prevLine.lastWordStyle === line.firstWordStyle) {
-			const end = output.paragraphOutput.length - (prevLine.lastWordStyle.length + 1);
+		if (prevLine.lastWordStyle != null && prevLine.lastWordStyle === line.firstWordStyle) {
+			const endTag = this.wordStyleEndTag(prevLine.lastWordStyle, format);
+			const end = output.paragraphOutput.length - (endTag.length + 1);
 			output.paragraphOutput = output.paragraphOutput.slice(0, end) + ' ';
-			output.lineOutput = output.lineOutput.slice(prevLine.lastWordStyle.length);
+			const startTag = this.wordStyleStartTag(prevLine.lastWordStyle, format);
+			output.lineOutput = output.lineOutput.slice(startTag.length);
 		}
 	}
 
-	private lineToMarkDown(line: Line) {
+	public lineToMarkDown(line: Line) {
 		const words: Word[] = line.content;
 		let biWordsIdx: number[][] = Array<number[]>(1).fill([]);
 		let bWordsIdx: number[][] = Array<number[]>(1).fill([]);
 		let iWordsIdx: number[][] = Array<number[]>(1).fill([]);
 		words.forEach((w, index) => {
 			const style = this.wordStyle(w);
-			if (style === '***') {
+			if (style === WordStyle.BoldItalic) {
 				biWordsIdx[0].push(index);
-			} else if (style === '**') {
+			} else if (style === WordStyle.Bold) {
 				bWordsIdx[0].push(index);
-			} else if (style === '*') {
+			} else if (style === WordStyle.Italic) {
 				iWordsIdx[0].push(index);
 			}
 		});
@@ -229,7 +219,50 @@ export class Paragraph extends Text {
 			.trim();
 	}
 
-	private getLinesInfo(): LineInfo[] {
+	public lineToHTML(line: Line) {
+		const words: Word[] = line.content;
+		let biWordsIdx: number[][] = Array<number[]>(1).fill([]);
+		let bWordsIdx: number[][] = Array<number[]>(1).fill([]);
+		let iWordsIdx: number[][] = Array<number[]>(1).fill([]);
+		words.forEach((w, index) => {
+			const style = this.wordStyle(w);
+			if (style === WordStyle.BoldItalic) {
+				biWordsIdx[0].push(index);
+			} else if (style === WordStyle.Bold) {
+				bWordsIdx[0].push(index);
+			} else if (style === WordStyle.Italic) {
+				iWordsIdx[0].push(index);
+			}
+		});
+		biWordsIdx = utils.groupConsecutiveNumbersInArray(biWordsIdx[0]).filter(p => p.length !== 0);
+		bWordsIdx = utils.groupConsecutiveNumbersInArray(bWordsIdx[0]).filter(p => p.length !== 0);
+		iWordsIdx = utils.groupConsecutiveNumbersInArray(iWordsIdx[0]).filter(p => p.length !== 0);
+
+		// prepare the result
+		const result: string[] = words.map(w => w.toMarkDown());
+
+		biWordsIdx.forEach(idGroup => {
+			result[idGroup[0]] = '<b><i>' + result[idGroup[0]];
+			result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '</i></b>';
+		});
+
+		bWordsIdx.forEach(idGroup => {
+			result[idGroup[0]] = '<b>' + result[idGroup[0]];
+			result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '</b>';
+		});
+
+		iWordsIdx.forEach(idGroup => {
+			result[idGroup[0]] = '<i>' + result[idGroup[0]];
+			result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '</i>';
+		});
+
+		return result
+			.map(w => w.trim())
+			.reduce((w1, w2) => w1 + ' ' + w2, '')
+			.trim();
+	}
+
+	public getLinesInfo(): LineInfo[] {
 		return this.content.map((l, index) => {
 			return {
 				line: l,
@@ -240,24 +273,26 @@ export class Paragraph extends Text {
 		});
 	}
 
-	private wordStyle(word: Word): string {
+	public wordStyle(word: Word): WordStyle {
 		if (word.font.isItalic && word.font.weight === 'bold') {
-			return '***';
+			return WordStyle.BoldItalic;
 		} else if (!word.font.isItalic && word.font.weight === 'bold') {
-			return '**';
+			return WordStyle.Bold;
 		} else if (word.font.isItalic && word.font.weight !== 'bold') {
-			return '*';
+			return WordStyle.Italic;
 		}
 		return null;
 	}
 
-	private isLineBreak(index: number): boolean {
+	public isLineBreak(index: number): boolean {
 		if (index + 1 >= this.content.length) {
 			return false;
 		}
 		const line: Line = this.content[index];
+		const wordsAvgSpace = this.avgWordSpace(line);
 		const nextLine: Line = this.content[index + 1];
-		const availableSpace = this.width - line.width;
+		const spaceParagraphToLine = line.left - this.left;
+		const availableSpace = this.width - line.width - wordsAvgSpace - spaceParagraphToLine;
 		return availableSpace >= nextLine.content[0].width;
 	}
 
@@ -291,5 +326,61 @@ export class Paragraph extends Text {
 	 */
 	public set language(value: string) {
 		this._language = value;
+	}
+
+	private avgWordSpace(line: Line): number {
+		const margins = line.content.map((word, index) => {
+			if (index > 0) {
+				return word.left - line.content[index - 1].right;
+			}
+			return 0;
+		});
+
+		return margins.reduce((a, b) => a + b, 0) / margins.length;
+	}
+
+	private wordStyleEndTag(style: WordStyle, format: string): string {
+		return this.wordStyleTag(style, format, true);
+	}
+
+	private wordStyleStartTag(style: WordStyle, format: string): string {
+		return this.wordStyleTag(style, format, false);
+	}
+
+	private wordStyleTag(style: WordStyle, format: string, clossingTag: boolean): string {
+		switch (style) {
+			case WordStyle.BoldItalic:
+				return format === 'md'
+					? '***'
+					: '<' + (clossingTag ? '/' : '') + 'i><' + (clossingTag ? '/' : '') + 'b>';
+			case WordStyle.Bold:
+				return format === 'md' ? '**' : '<' + (clossingTag ? '/' : '') + 'b>';
+			case WordStyle.Italic:
+				return format === 'md' ? '*' : '<' + (clossingTag ? '/' : '') + 'i>';
+		}
+		return '';
+	}
+
+	private export(format: string): string {
+		const lines: LineInfo[] = this.getLinesInfo();
+		let output: string = '';
+		let prevLine: LineInfo = null;
+		lines.forEach((line, index) => {
+			let lineOutput = this.lineToMarkDown(line.line);
+			if (format === 'html') {
+				lineOutput = this.lineToHTML(line.line);
+			}
+			const mergedStyles = { paragraphOutput: output, lineOutput };
+			this.mergeStyleLines(prevLine, line, mergedStyles, format);
+			output = mergedStyles.paragraphOutput;
+			output += mergedStyles.lineOutput;
+			if (line.lineBreak) {
+				output += format === 'md' ? '  \n' : '<br/>';
+			} else if (index + 1 < lines.length) {
+				output += ' ';
+			}
+			prevLine = line;
+		});
+		return output;
 	}
 }
