@@ -375,7 +375,6 @@ export class Paragraph extends Text {
 			output = mergedStyles.paragraphOutput;
 			output += mergedStyles.lineOutput;
 			if (line.lineBreak) {
-				console.log('Line Break ' + line.line.id);
 				output += format === 'md' ? '  \n' : '<br/>';
 			} else if (index + 1 < lines.length) {
 				output += ' ';
