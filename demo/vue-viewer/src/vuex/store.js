@@ -193,6 +193,13 @@ export default new Vuex.Store({
 		},
 	},
 	getters: {
+		currentPageElements(state) {
+			try {
+				return state.document.pages[state.selectedPage - 1].elements;
+			} catch (e) {
+				return [];
+			}
+		},
 		fonts(state) {
 			return state.document ? state.document.fonts : [];
 		},
