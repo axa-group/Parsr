@@ -101,8 +101,31 @@ export default {
 		isSubmitDisabled() {
 			return !this.file;
 		},
+		/* 
+			this function takes the config in 'specs' format and returns only the values of each parameter
+			ex:
+				parameter: {
+					value: 'foo',
+					range: ['foo', 'bar']
+				}
+
+			returns parameter: 'foo'
+		*/
+		keyValueConfig() {
+			// i have to make sure to clone the values and not the references of the configs
+			const config = JSON.parse(JSON.stringify({ ...this.defaultConfig, ...this.customConfig }));
+			config.cleaner = config.cleaner.map(mod => {
+				if (Array.isArray(mod)) {
+					Object.keys(mod[1]).forEach(key => {
+						mod[1][key] = mod[1][key].value;
+					});
+				}
+				return mod;
+			});
+			return config;
+		},
 		configAsBinary() {
-			var data = this.encode(JSON.stringify({ ...this.defaultConfig, ...this.customConfig }));
+			var data = this.encode(JSON.stringify(this.keyValueConfig));
 			return new Blob([data], {
 				type: 'application/json',
 			});
