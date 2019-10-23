@@ -256,6 +256,7 @@ function main(): void {
 	function pdfToImage(pdfPath: string): string {
 		const tifFilePath = pdfPath + '.tiff';
 		const ret = child_process.spawnSync(utils.getConvertPath(), [
+			'convert',
 			'-density',
 			'200x200',
 			'-compress',
