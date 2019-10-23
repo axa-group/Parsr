@@ -81,20 +81,14 @@ export function replaceObject<T extends Element, U extends T>(
 
 // Handle Windows convert.exe conflict.
 export function getConvertPath(): string {
-	if (/^win/i.test(os.platform())) {
-		const where = spawnSync('where.exe', ['magick']);
-		let filepaths: string[] = where.stdout.toString().split(os.EOL);
-		filepaths = filepaths.filter(
-			filepath => !/System/.test(filepath) && filepath.trim().length > 0,
-		);
+	const where = spawnSync(getExecLocationCommandOnSystem(), ['magick']);
+	let filepaths: string[] = where.stdout.toString().split(os.EOL);
+	filepaths = filepaths.filter(filepath => !/System/.test(filepath) && filepath.trim().length > 0);
 
-		if (filepaths.length === 0) {
-			throw new Error('Cannot find ImageMagick convert tool. Are you sure it is installed?');
-		} else {
-			return filepaths[0];
-		}
+	if (filepaths.length === 0) {
+		throw new Error('Cannot find ImageMagick convert tool. Are you sure it is installed?');
 	} else {
-		return 'magick';
+		return filepaths[0];
 	}
 }
 
