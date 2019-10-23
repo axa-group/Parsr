@@ -52,4 +52,14 @@ export class Heading extends Paragraph {
 	public toHTML(): string {
 		return '<strong>' + this.content.map(line => line.toHTML()).join(' ') + '</strong>';
 	}
+
+	/**
+	 * Converts the entire paragraph into a string form with formatting, with spaces between words.
+	 */
+	public toMarkdown(): string {
+		if (this.level === 0) {
+			return super.toMarkdown();
+		}
+		return '#'.repeat(this.level) + ' ' + this.toString();
+	}
 }

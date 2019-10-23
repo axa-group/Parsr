@@ -35,7 +35,6 @@
 					:key="'Item_' + index"
 					:model="customConfig.cleaner"
 					:value="item"
-					:params="moduleParams(item)"
 					@change="configChange"
 				/>
 			</fieldset>
@@ -102,8 +101,31 @@ export default {
 		isSubmitDisabled() {
 			return !this.file;
 		},
+		/* 
+			this function takes the config in 'specs' format and returns only the values of each parameter
+			ex:
+				parameter: {
+					value: 'foo',
+					range: ['foo', 'bar']
+				}
+
+			returns parameter: 'foo'
+		*/
+		keyValueConfig() {
+			// i have to make sure to clone the values and not the references of the configs
+			const config = JSON.parse(JSON.stringify({ ...this.defaultConfig, ...this.customConfig }));
+			config.cleaner = config.cleaner.map(mod => {
+				if (Array.isArray(mod)) {
+					Object.keys(mod[1]).forEach(key => {
+						mod[1][key] = mod[1][key].value;
+					});
+				}
+				return mod;
+			});
+			return config;
+		},
 		configAsBinary() {
-			var data = this.encode(JSON.stringify({ ...this.defaultConfig, ...this.customConfig }));
+			var data = this.encode(JSON.stringify(this.keyValueConfig));
 			return new Blob([data], {
 				type: 'application/json',
 			});
@@ -124,59 +146,6 @@ export default {
 		},
 	},
 	methods: {
-		moduleParams(configItem) {
-			if (Array.isArray(configItem)) {
-				const moduleParams = {};
-				let defaultValues = this.defaultValuesForModule(configItem);
-				if (defaultValues != {}) moduleParams['defaultValues'] = defaultValues;
-				let sliderValues = this.sliderValuesForModule(configItem);
-				if (sliderValues != {}) moduleParams['sliders'] = sliderValues;
-				return moduleParams;
-			}
-			return {};
-		},
-		sliderValuesForModule(module) {
-			const sliders = {};
-			Object.keys(module[1]).forEach(element => {
-				switch (element) {
-					case 'percentageOfRedundancy':
-					case 'lineHeightUncertainty':
-					case 'topUncertainty':
-					case 'maxInterline':
-						sliders[element] = { min: 0, max: 10, multiplier: 10, decimals: 1 };
-						break;
-					case 'minWidth':
-					case 'maxMarginPercentage':
-					case 'minColumnWidthInPagePercent':
-					case 'minVerticalGapWidth':
-					case 'maximumSpaceBetweenWords':
-					case 'alignUncertainty':
-						sliders[element] = { min: 0, max: 100, multiplier: 1, decimals: 0 };
-						break;
-					case 'tolerance':
-						sliders[element] = { min: 0, max: 100, multiplier: 100, decimals: 2 };
-						break;
-				}
-			});
-			return sliders;
-		},
-		defaultValuesForModule(module) {
-			const defaults = {};
-			Object.keys(module[1]).forEach(element => {
-				switch (element) {
-					case 'flavor':
-						defaults[element] = ['lattice', 'stream'];
-						break;
-					case 'addNewline':
-					case 'checkFont':
-					case 'mergeTableElements':
-					case 'computeHeadings':
-						defaults[element] = [true, false];
-						break;
-				}
-			});
-			return defaults;
-		},
 		configChange(configItem) {
 			if (configItem.selected) {
 				this.customConfig.cleaner.push(configItem.item);

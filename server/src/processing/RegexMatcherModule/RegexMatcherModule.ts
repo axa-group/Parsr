@@ -22,15 +22,9 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	queries?: {
-		value: Array<{ regex: string; label: string }>;
-	};
-	isGlobal?: {
-		value: boolean;
-	};
-	isCaseSensitive?: {
-		value: boolean;
-	};
+	queries?: Array<{ regex: string; label: string }>;
+	isGlobal?: boolean;
+	isCaseSensitive?: boolean;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -44,14 +38,14 @@ export class RegexMatcherModule extends Module<Options> {
 	}
 
 	public main(doc: Document): Document {
-		this.options.queries.value.forEach(query => {
+		this.options.queries.forEach(query => {
 			logger.info(`Labeling Texts with label ${query.label} from regex ${query.regex}`);
 
 			let regexType: string = '';
-			if (this.options.isGlobal.value) {
+			if (this.options.isGlobal) {
 				regexType += 'g';
 			}
-			if (this.options.isCaseSensitive.value) {
+			if (this.options.isCaseSensitive) {
 				regexType += 'i';
 			}
 

@@ -24,12 +24,8 @@ Following is an example of the configuration of the table-detection module:
 [
 	"table-detection",
 	{
-		"pages": {
-			"value": [1, 2, 3]   // or [] for all pages
-		}
-		"flavor": {
-			"value": "lattice"
-		}
+		"pages": [1, 2, 3],   // or [] for all pages
+		"flavor": "lattice"
 	}
 ]
 ```

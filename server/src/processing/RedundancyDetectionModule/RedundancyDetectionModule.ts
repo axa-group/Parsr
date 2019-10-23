@@ -20,16 +20,7 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	minOverlap?: {
-		value: number;
-		range: {
-			min: number;
-			max: number;
-		};
-	};
-	minimumPages?: {
-		value: number;
-	};
+	minOverlap?: number;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -105,7 +96,7 @@ export class RedundancyDetectionModule extends Module<Options> {
 			} else {
 				for (const e of group) {
 					const overlap: number = BoundingBox.getOverlap(e.box, newElement.box);
-					if (!(overlap >= this.options.minOverlap.value)) {
+					if (!(overlap >= this.options.minOverlap)) {
 						decision = false;
 						break;
 					}

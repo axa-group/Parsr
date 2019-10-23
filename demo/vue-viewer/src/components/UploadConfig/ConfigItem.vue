@@ -15,16 +15,20 @@
 						<v-expansion-panel-content>
 							<ul>
 								<li v-for="(option, index) in Object.keys(itemOptions)" :key="'Item_' + index">
-									<span v-if="params.defaultValues[option] == null" v-html="option" />
+									<span v-if="!optionIsSelect(option)" v-html="option" />
 									<input
-										v-if="params.defaultValues[option] == null"
+										v-if="
+											optionIsFreeText(option) ||
+												optionIsSlider(option) ||
+												optionValueIsArray(option)
+										"
 										type="text"
 										:value="itemOptions[option].value"
 										@change="optionChange(option, $event)"
 									/>
 									<v-select
-										v-if="params.defaultValues[option]"
-										:items="params.defaultValues[option]"
+										v-if="optionIsSelect(option)"
+										:items="itemOptions[option].range"
 										v-model="itemOptions[option].value"
 										:flat="true"
 										:hide-details="true"
@@ -34,18 +38,17 @@
 										class="selectOption"
 										:prefix="option"
 										solo
-									>
-									</v-select>
+									></v-select>
 									<v-slider
-										v-if="params.sliders[option]"
-										:value="itemOptions[option].value * params.sliders[option].multiplier"
-										:max="params.sliders[option].max"
-										:min="params.sliders[option].min"
+										v-if="optionIsSlider(option)"
+										:value="itemOptions[option].value"
+										:min="itemOptions[option].range.min"
+										:max="itemOptions[option].range.max"
+										:step="itemOptions[option].range.step || 1"
 										hide-details
 										class="slider"
 										@input="optionChangeSlider(option, $event)"
-									>
-									</v-slider>
+									></v-slider>
 								</li>
 							</ul>
 						</v-expansion-panel-content>
@@ -75,9 +78,6 @@ export default {
 			type: [String, Array],
 			required: true,
 		},
-		params: {
-			type: Object,
-		},
 	},
 	computed: {
 		itemKey() {
@@ -97,6 +97,22 @@ export default {
 		},
 	},
 	methods: {
+		optionValueIsArray(option) {
+			return Array.isArray(this.itemOptions[option].value);
+		},
+		optionIsFreeText(option) {
+			return !this.itemOptions[option].range && !Array.isArray(this.itemOptions[option].value);
+		},
+		optionIsSelect(option) {
+			return this.itemOptions[option].range && Array.isArray(this.itemOptions[option].range);
+		},
+		optionIsSlider(option) {
+			return (
+				this.itemOptions[option].range &&
+				this.itemOptions[option].range.hasOwnProperty('min') &&
+				this.itemOptions[option].range.hasOwnProperty('max')
+			);
+		},
 		readmeLink(module) {
 			return (
 				'https://github.com/axa-group/Parsr/tree/develop/server/src/processing/' +
@@ -111,9 +127,7 @@ export default {
 			this.value[1][item].value = event.target.value;
 		},
 		optionChangeSlider(item, value) {
-			this.value[1][item].value = (value / this.params.sliders[item].multiplier).toFixed(
-				this.params.sliders[item].decimals,
-			);
+			this.value[1][item].value = value;
 		},
 		switchChange() {
 			this.$emit('change', { selected: this.isSelected, item: this.value });
