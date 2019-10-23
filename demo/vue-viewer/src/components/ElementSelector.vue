@@ -16,7 +16,7 @@
 							:auto-select-first="true"
 							:items="items"
 							:value="selectedElement"
-							@change="selectedElementEvent"
+							@change="selectAndHighlight"
 						/>
 					</div>
 				</v-expansion-panel-content>
@@ -26,7 +26,9 @@
 </template>
 <script>
 import { mapMutations, mapState, mapGetters } from 'vuex';
+import selectAndHighlight from './../mixins/selectAndHighlight';
 export default {
+	mixins: [selectAndHighlight],
 	props: {
 		pageElements: {
 			type: Array,
@@ -34,26 +36,7 @@ export default {
 		},
 	},
 	methods: {
-		...mapMutations(['setElementSelected', 'switchExpansionPanel']),
-		selectedElementEvent(element) {
-			// removes all other highlighted elements when this selector is used
-			const highlightedElements = document.getElementsByClassName('highlighted');
-			Array.from(highlightedElements || []).forEach(element => {
-				element.classList.remove('highlighted');
-			});
-
-			if (element) {
-				document.getElementById(this.buildID(element)).classList.add('highlighted');
-			}
-
-			this.setElementSelected(element);
-		},
-		capitalize(string) {
-			return string.charAt(0).toUpperCase() + string.slice(1);
-		},
-		buildID(element) {
-			return this.capitalize(element.type).concat('_', element.id);
-		},
+		...mapMutations(['switchExpansionPanel']),
 		flatten(element) {
 			var flattend = [];
 			!(function flat(element, buildID) {

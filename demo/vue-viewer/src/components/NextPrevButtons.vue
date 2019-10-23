@@ -23,8 +23,11 @@
 	</div>
 </template>
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters } from 'vuex';
+import selectAndHighlight from './../mixins/selectAndHighlight';
+
 export default {
+	mixins: [selectAndHighlight],
 	props: {
 		element: {
 			type: Object,
@@ -50,34 +53,14 @@ export default {
 		},
 	},
 	methods: {
-		...mapMutations(['setElementSelected']),
-		capitalize(string) {
-			return string.charAt(0).toUpperCase() + string.slice(1);
-		},
-		buildID(element) {
-			return this.capitalize(element.type).concat('_', element.id);
-		},
-		setElement(element) {
-			// removes all other highlighted elements when this selector is used
-			const highlightedElements = document.getElementsByClassName('highlighted');
-			Array.from(highlightedElements || []).forEach(element => {
-				element.classList.remove('highlighted');
-			});
-
-			if (element) {
-				document.getElementById(this.buildID(element)).classList.add('highlighted');
-			}
-
-			this.setElementSelected(element);
-		},
 		sortFunction(a, b) {
 			return a.properties.order - b.properties.order;
 		},
 		selectPrevElementOfSameType() {
-			this.setElement(this.allOfType[this.elementIndex - 1]);
+			this.selectAndHighlight(this.allOfType[this.elementIndex - 1]);
 		},
 		selectNextElementOfSameType() {
-			this.setElement(this.allOfType[this.elementIndex + 1]);
+			this.selectAndHighlight(this.allOfType[this.elementIndex + 1]);
 		},
 		getAllElementsOfType(type) {
 			const all = [];
