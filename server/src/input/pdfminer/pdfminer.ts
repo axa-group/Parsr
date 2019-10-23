@@ -213,7 +213,7 @@ function breakLineIntoWords(
 	const notAllowedChars = ['\u200B']; // &#8203 Zero Width Space
 	const words: Word[] = [];
 	const chars: Character[] = line.text
-		.filter(char => !notAllowedChars.includes(char._) && char._attr !== undefined)
+		.filter((char, index) => !notAllowedChars.includes(char._) && !isFakeChar(line, index))
 		.map(char => {
 			if (char._ === undefined) {
 				return undefined;
@@ -224,7 +224,6 @@ function breakLineIntoWords(
 					isUnderline: RegExp(/underline/gim).test(char._attr.font) ? true : false,
 					color: ncolourToHex(char._attr.ncolour),
 				});
-
 				const charContent: string = getValidCharacter(char._);
 				return new Character(
 					getBoundingBox(char._attr.bbox, ',', pageHeight, scalingFactor),
@@ -308,6 +307,24 @@ function breakLineIntoWords(
 		}
 	}
 	return words;
+}
+
+function isFakeChar(line: PdfminerTextline, index: number): boolean {
+	const emptyWithAttr = line.text.filter(text => text._ === undefined && text._attr !== undefined)
+		.length;
+	const emptyWithNoAttr = line.text.filter(text => text._ === undefined && text._attr === undefined)
+		.length;
+
+	if (
+		emptyWithAttr > 0 &&
+		emptyWithNoAttr > 0 &&
+		index + 1 < line.text.length &&
+		line.text[index]._attr === undefined
+	) {
+		return true;
+	}
+
+	return false;
 }
 
 function ncolourToHex(color: string) {
