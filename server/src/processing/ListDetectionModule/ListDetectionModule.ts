@@ -47,6 +47,7 @@ export class ListDetectionModule extends Module {
 				.getElementsOfType<Paragraph>(Paragraph, false)
 				.filter(para => !(para instanceof Heading));
 			paras.forEach(para => {
+				let listFound: boolean = false;
 				const orderedIdx: number[] = [...Array(para.content.length).keys()]
 					.filter(i => para.content[i].content.length > 1)
 					.filter(i => detectKindOfListItem(para.content[i]) === 'ordered');
@@ -73,6 +74,7 @@ export class ListDetectionModule extends Module {
 						g => new Paragraph(BoundingBox.merge(g.map(l => l.box)), g),
 					);
 					finalLists.push(new List(BoundingBox.merge(listParas.map(p => p.box)), listParas, true));
+					listFound = true;
 				}
 
 				const unorderedIdx: number[] = [...Array(para.content.length).keys()]
@@ -103,18 +105,21 @@ export class ListDetectionModule extends Module {
 						g => new Paragraph(BoundingBox.merge(g.map(l => l.box)), g),
 					);
 					finalLists.push(new List(BoundingBox.merge(listParas.map(p => p.box)), listParas, false));
+					listFound = true;
 				}
-				if (rogueLines.length > 0) {
-					logger.debug(
-						`rogue lines leftover are : \n${groupLinesByConsecutiveGroups(rogueLines)
-							.map(g => g.map(l => l.toString()).join('\n'))
-							.join('\n\n\n')}
-						`,
-					);
-					// add these as new paragraphs using mergeLinesIntoParagraphs
-				} else {
-					// remove paragraph
-					page.elements = getElementsExcept(page, [para]);
+				if (listFound) {
+					if (rogueLines.length > 0) {
+						logger.debug(
+							`rogue lines leftover are : \n${groupLinesByConsecutiveGroups(rogueLines)
+								.map(g => g.map(l => l.toString()).join('\n'))
+								.join('\n\n\n')}
+							`,
+						);
+						// add these as new paragraphs using mergeLinesIntoParagraphs
+					} else {
+						// remove paragraph
+						page.elements = getElementsExcept(page, [para]);
+					}
 				}
 			});
 			logger.debug(
