@@ -18,6 +18,7 @@ import * as clone from 'clone';
 import { readFileSync } from 'fs';
 import { PdfJsonExtractor } from '../server/src/input/pdf2json/PdfJsonExtractor';
 import { PdfminerExtractor } from '../server/src/input/pdfminer/PdfminerExtractor';
+import { TesseractExtractor } from '../server/src/input/tesseract/TesseractExtractor';
 import { Module } from '../server/src/processing/Module';
 import { Config } from '../server/src/types/Config';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
@@ -67,6 +68,22 @@ export function getPdfUsingPdfMiner(
 		.then(docAfter => {
 			return [docBefore, docAfter] as [Document, Document]; // required because TS doesn't handle tuples correctly
 		});
+}
+
+export async function getImage(
+	func: (doc: Document) => Promise<Document>,
+	filename: string,
+): Promise<[Document, Document]> {
+	const config: Config = JSON.parse(
+		readFileSync(`${__dirname}/../server/defaultConfig.json`, 'utf8'),
+	);
+
+	const te = new TesseractExtractor(config);
+	const doc = await te.run(`${__dirname}/assets/${filename}`);
+	const docBefore = clone(doc);
+	const docAfter = await func(doc);
+	
+	return [docBefore, docAfter];
 }
 
 export function getPdf(
