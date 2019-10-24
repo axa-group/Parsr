@@ -16,7 +16,6 @@
 
 import { spawnSync } from 'child_process';
 import * as fs from 'fs';
-import * as os from 'os';
 import * as utils from '../utils';
 import logger from '../utils/Logger';
 
@@ -27,10 +26,8 @@ import logger from '../utils/Logger';
  */
 export function extractFonts(pdfInputFile: string): Promise<void> {
 	return new Promise<void>((resolve, reject) => {
-		const mutoolPath = spawnSync(utils.getExecLocationCommandOnSystem(), ['mutool']).output.join(
-			'',
-		);
-		if (mutoolPath === '' || (/^win/i.test(os.platform()) && /no mutool in/.test(mutoolPath))) {
+		const mutoolPath = utils.getCommandLocationOnSystem('mutool');
+		if (!mutoolPath) {
 			logger.warn('MuPDF not installed !! Skip fonts extraction.');
 			resolve();
 		} else {
