@@ -46,7 +46,7 @@ export class LinkDetectionModule extends Module {
 				let match = [];
 				// tslint:disable-next-line:no-conditional-assignment
 				if ((match = word.content.match(actionUriRegex))) {
-					//word.content = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
+					// word.content = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
 					word.content = match[3];
 					word.properties.link = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
 					// tslint:disable-next-line:no-conditional-assignment
