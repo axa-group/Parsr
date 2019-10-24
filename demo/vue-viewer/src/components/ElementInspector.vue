@@ -16,6 +16,7 @@
 							>Select a word to inspect properties</span
 						>
 						<ul v-if="currentElement" class="elementProperties">
+							<li><next-prev :element="currentElement" /></li>
 							<li><span>Type:</span> {{ currentElement.type }}</li>
 							<li><span>Id:</span> {{ currentElement.id }}</li>
 							<li v-if="currentElement.font">
@@ -59,7 +60,9 @@
 
 <script>
 import { mapMutations, mapGetters } from 'vuex';
+import nextPrev from './NextPrevButtons';
 export default {
+	components: { nextPrev },
 	props: {
 		pageElements: {
 			type: Array,
