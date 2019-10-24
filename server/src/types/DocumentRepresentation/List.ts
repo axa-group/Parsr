@@ -41,7 +41,7 @@ export class List extends Element {
 		this.firstItemNumber = firstItemNumber;
 	}
 
-	public addParagraph(paragraph: Paragraph) {
+	public addListItem(paragraph: Paragraph) {
 		this.content.push(paragraph);
 		this.box = BoundingBox.merge([this.box, paragraph.box]);
 	}

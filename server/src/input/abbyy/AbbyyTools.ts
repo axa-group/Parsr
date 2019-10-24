@@ -427,7 +427,7 @@ export class AbbyyTools extends Extractor {
 							elements.push(currentList);
 						} else {
 							this.treatListItem(paragraph);
-							currentList.addParagraph(paragraph);
+							currentList.addListItem(paragraph);
 						}
 					} else {
 						if (paragraph.content.length !== 0 && paragraph.toString() !== '') {

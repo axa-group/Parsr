@@ -349,6 +349,15 @@ export function isNumbering(text: Text): boolean {
 }
 
 /**
+ * generates 'count' number of elements from start
+ * @param start start number
+ * @param count number of elements
+ */
+export function range(start, count) {
+	return Array.apply(0, Array(count)).map((_element, index) => index + start);
+}
+
+/**
  * Remove `null` or `undefined` elements
  * @param doc
  */
