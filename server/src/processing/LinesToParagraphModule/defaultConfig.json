@@ -13,10 +13,6 @@
 		"computeHeadings": {
 			"value": true,
 			"range": [true, false]
-		},
-		"computeLists": {
-			"value": true,
-			"range": [true, false]
 		}
 	}
 }

@@ -21,7 +21,6 @@ import {
 	Font,
 	Heading,
 	Line,
-	List,
 	Page,
 	Paragraph,
 	Word,
@@ -37,7 +36,6 @@ import * as defaultConfig from './defaultConfig.json';
 interface Options {
 	tolerance?: number;
 	computeHeadings?: boolean;
-	computeLists?: boolean;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -101,16 +99,15 @@ export class LinesToParagraphModule extends Module<Options> {
 				});
 			});
 
-			if (this.options.computeHeadings || this.options.computeLists) {
-				const newStructures = this.extractHeadingsAndLists(joinedLines, textBodyFont);
+			if (this.options.computeHeadings) {
+				const newStructures = this.extractHeadings(joinedLines, textBodyFont);
 				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
-				const lists: List[] = this.mergeLinesIntoLists(newStructures.listLines);
 				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
 				this.computeHeadingLevels(headings);
-				page.elements = otherElements.concat([...headings, ...paras, ...lists]);
+				page.elements = otherElements.concat([...headings, ...paras]);
 
 				logger.debug(
-					`Made ${headings.length} headings, ${lists.length} lists and ${paras.length} paras from ${lines.length} lines`,
+					`Made ${headings.length} headings and ${paras.length} from ${lines.length} lines`,
 				);
 			} else {
 				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
@@ -157,13 +154,12 @@ export class LinesToParagraphModule extends Module<Options> {
 			const lines = this.getLinesInElement(element);
 			const interLinesSpaces = this.getInterLinesSpace(lines);
 			const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
-			if (this.options.computeHeadings || this.options.computeLists) {
-				const newStructures = this.extractHeadingsAndLists(joinedLines, textBodyFont);
+			if (this.options.computeHeadings) {
+				const newStructures = this.extractHeadings(joinedLines, textBodyFont);
 				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
-				const lists: List[] = this.mergeLinesIntoLists(newStructures.listLines);
 				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
 				this.computeHeadingLevels(headings);
-				element.content = [...headings, ...paras, ...lists];
+				element.content = [...headings, ...paras];
 			} else {
 				element.content = this.mergeLinesIntoParagraphs(joinedLines);
 			}
@@ -383,17 +379,6 @@ export class LinesToParagraphModule extends Module<Options> {
 		return Math.round(distance);
 	}
 
-	private mergeLinesIntoLists(joinedLines: Line[][]): List[] {
-		if (joinedLines.length > 0) {
-			logger.info(
-				`\n\n------>list lines received: ${utils.prettifyObject(
-					joinedLines.map(g => g.map(l => l.id).join(', ')),
-				)}`,
-			);
-		}
-		return [];
-	}
-
 	private mergeLinesIntoHeadings(joinedLines: Line[][]): Heading[] {
 		return joinedLines.map((group: Line[]) => {
 			const heading: Heading = utils.mergeElements<Line, Heading>(
@@ -417,109 +402,68 @@ export class LinesToParagraphModule extends Module<Options> {
 	}
 
 	/**
-	 * Takes into account potential headings and inside a paragraph
-	 * splits a paragraph into multiple ones and returns list, heading and para candidates
+	 * Takes into account potential headings inside a paragraph
+	 * splits a paragraph into multiple ones and returns heading candidates
 	 * @param lineGroups List of joined lines to be alterered
 	 */
-	private extractHeadingsAndLists(
+	private extractHeadings(
 		lineGroups: Line[][],
 		textBodyFont: Font,
-	): { headingLines: Line[][]; listLines: Line[][]; newLines: Line[][] } {
-		let newLineGroups: Line[][] = [];
-		const newListGroups: Line[][] = [];
+	): { headingLines: Line[][]; newLines: Line[][] } {
+		const newLineGroups: Line[][] = [];
 		const newHeadingGroups: Line[][] = [];
 		lineGroups.forEach(lineGroup => {
 			if (textBodyFont instanceof Font) {
-				// compute headings
-				let headingIdx: number[] = [];
-				if (this.options.computeHeadings) {
-					headingIdx = lineGroup
-						.map((line: Line, pos: number) => {
-							if (
-								this.isHeadingCandidate(
-									[line],
-									textBodyFont,
-									utils.isGeneralUpperCase(lineGroup),
-									utils.isGeneralTitleCase(lineGroup),
-								)
-							) {
-								return pos;
-							} else {
-								return undefined;
-							}
-						})
-						.filter((i: number) => i !== undefined);
+				const headingIdx: number[] = lineGroup
+					.map((line: Line, pos: number) => {
+						if (
+							this.isHeadingCandidate(
+								[line],
+								textBodyFont,
+								utils.isGeneralUpperCase(lineGroup),
+								utils.isGeneralTitleCase(lineGroup),
+							)
+						) {
+							return pos;
+						} else {
+							return undefined;
+						}
+					})
+					.filter((i: number) => i !== undefined);
+				if (headingIdx.length > 0) {
+					const lineIdx: number[] = [...Array(lineGroup.length).keys()].filter(
+						x => !headingIdx.includes(x),
+					);
+					utils.groupConsecutiveNumbersInArray(lineIdx).forEach((group: number[]) => {
+						const newLines: Line[] = [];
+						group.forEach((id: number) => {
+							newLines.push(lineGroup[id]);
+						});
+						if (newLines.length > 0) {
+							newLineGroups.push(newLines);
+						}
+					});
+					utils.groupConsecutiveNumbersInArray(headingIdx).forEach((group: number[]) => {
+						const newHeadings: Line[] = [];
+						group.forEach((id: number) => {
+							newHeadings.push(lineGroup[id]);
+						});
+						if (newHeadings.length > 0) {
+							newHeadingGroups.push(newHeadings);
+						}
+					});
+				} else {
+					newLineGroups.push(lineGroup);
 				}
-
-				// compute lists
-				let listIdx: number[] = [];
-				if (this.options.computeLists) {
-					listIdx = lineGroup
-						.map((line: Line, pos: number) => {
-							if (
-								line.content.length > 1 &&
-								headingIdx.indexOf(pos) === -1 &&
-								this.detectKindOfListItem(line) !== 'none'
-							) {
-								return pos;
-							} else {
-								return undefined;
-							}
-						})
-						.filter((i: number) => i !== undefined);
-				}
-
-				const lineIdx: number[] = [...Array(lineGroup.length).keys()]
-					.filter(x => !headingIdx.includes(x))
-					.filter(x => !listIdx.includes(x));
-
-				utils.groupConsecutiveNumbersInArray(lineIdx).forEach((group: number[]) => {
-					const newLines: Line[] = [];
-					group.forEach((id: number) => {
-						newLines.push(lineGroup[id]);
-					});
-					if (newLines.length > 0) {
-						newLineGroups.push(newLines);
-					}
-				});
-				utils.groupConsecutiveNumbersInArray(headingIdx).forEach((group: number[]) => {
-					const newHeadings: Line[] = [];
-					group.forEach((id: number) => {
-						newHeadings.push(lineGroup[id]);
-					});
-					if (newHeadings.length > 0) {
-						newHeadingGroups.push(newHeadings);
-					}
-				});
-				utils.groupConsecutiveNumbersInArray(listIdx).forEach((group: number[]) => {
-					const newLists: Line[] = [];
-					group.forEach((id: number) => {
-						newLists.push(lineGroup[id]);
-					});
-					if (newLists.length > 0) {
-						newListGroups.push(newLists);
-					}
-				});
 			} else {
 				logger.warn("can't account for headings while para merge - no font info available");
 			}
 		});
-		if (newHeadingGroups.length === 0 && newListGroups.length === 0) {
-			newLineGroups = lineGroups;
+		if (newHeadingGroups.length > 0) {
+			return { headingLines: newHeadingGroups, newLines: newLineGroups };
+		} else {
+			return { headingLines: [], newLines: lineGroups };
 		}
-		return { headingLines: newHeadingGroups, listLines: newListGroups, newLines: newLineGroups };
-	}
-
-	private detectKindOfListItem(line: Line): string {
-		let listType: string = 'none';
-		if (line.content.length !== 0) {
-			if (utils.isBullet(line)) {
-				listType = 'unordered';
-			} else if (utils.isNumbering(line)) {
-				listType = 'ordered';
-			}
-		}
-		return listType;
 	}
 
 	private computeHeadingLevels(headings: Heading[]) {
