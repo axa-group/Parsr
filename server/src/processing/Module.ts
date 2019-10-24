@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,20 @@ export class Module<T = undefined> {
 	private _extraOptions: any = {};
 
 	constructor(options?: T, defaultOptions?: T, extraOptions?: T) {
-		this._options = { ...defaultOptions, ...options };
+		/*
+			this takes the 'options' in key-value format and the 'defaultOptions' in specs format
+			and returns a merged object in key-value format, prioritizing the values in options object
+		*/
+		this._options = {};
+		if (defaultOptions && defaultOptions.hasOwnProperty('specs')) {
+			const mergedOptions = Object.assign({}, (defaultOptions as any).specs);
+			Object.keys(mergedOptions).forEach(key => {
+				mergedOptions[key] =
+					options && options.hasOwnProperty(key) ? options[key] : mergedOptions[key].value;
+			});
+
+			this._options = mergedOptions;
+		}
 		this._extraOptions = extraOptions;
 	}
 

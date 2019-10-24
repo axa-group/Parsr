@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as mdtable from 'markdown-table';
 import { Document, Heading, List, Paragraph, Table } from '../../types/DocumentRepresentation';
 import logger from '../../utils/Logger';
 import { Exporter } from '../Exporter';
@@ -43,25 +42,29 @@ export class MarkdownExporter extends Exporter {
 					return;
 				}
 				if (element instanceof Heading) {
-					if (element.level < 7) {
+					output += element.toMarkdown();
+					output += '\n'.repeat(2);
+					/*if (element.level < 7) {
 						let theHeading: string = '';
 						for (let i = 0; i !== element.level; ++i) {
 							theHeading += '#';
 						}
-						theHeading += ' ';
+						if (element.level > 0) {
+							theHeading += ' ';
+						}
 						theHeading += element.toString().replace(/(?:\r\n|\r|\n)/g, '<br />');
 						output += theHeading;
 						output += '\n'.repeat(2);
 					} else {
 						output += element.toString();
 						output += '\n'.repeat(2);
-					}
+					}*/
 				} else if (element instanceof Paragraph) {
-					output += element.toString();
+					output += element.toMarkdown();
 					output += '\n'.repeat(2);
 				} else if (element instanceof List) {
 					element.content.forEach((para, itemNumber) => {
-						const paraText: string = para.toString();
+						const paraText: string = para.toMarkdown();
 						if (element.isOrdered) {
 							output += (itemNumber + 1).toString() + ' ';
 						} else {
@@ -71,12 +74,12 @@ export class MarkdownExporter extends Exporter {
 						output += '\n';
 					});
 				} else if (element instanceof Table) {
-					output += mdtable(element.toArray());
+					output += element.toMarkdown();
 					output += '\n'.repeat(2);
 				}
 			});
 			// end of page
-			output += '\n'.repeat(10);
+			// output += '\n'.repeat(10);
 		});
 		return output;
 	}

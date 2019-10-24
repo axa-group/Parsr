@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ export class OutOfPageRemovalModule extends Module {
 	public main(doc: Document): Document {
 		doc.pages.forEach((page: Page) => {
 			page.elements = page.elements.filter((element: Element) => {
-				return !(element instanceof Text) || utils.isInBox(element.box, page.box);
+				return !(element instanceof Text) || utils.isInBox(element, page.box);
 			});
 		});
 

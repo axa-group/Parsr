@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,14 @@ import {
 	BoundingBox,
 	Document,
 	Element,
+	Font,
 	Heading,
 	Line,
 	Page,
 	Paragraph,
 	Word,
 } from '../../types/DocumentRepresentation';
+
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
@@ -32,35 +34,19 @@ import { WordsToLineModule } from '../WordsToLineModule/WordsToLineModule';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	addNewline?: boolean;
-	alignUncertainty?: {
-		value: number;
-		range: {
-			min: number;
-			max: number;
-		};
-	};
-	checkFont?: {
-		value: boolean;
-	};
-	lineLengthUncertainty?: {
-		value: number;
-		range: {
-			min: number;
-			max: number;
-		};
-	};
-	maxInterline?: {
-		value: number;
-		range: {
-			min: number;
-			max: number;
-		};
-	};
+	tolerance?: number;
+	computeHeadings?: boolean;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
 
+type LineSpace = {
+	distance: number;
+	usageRatio: number;
+	distanceHeightRatio: number;
+	totalHeight: number;
+	lines: Line[];
+};
 /**
  * Stability: Stable
  * Merge lines into paragraphs
@@ -68,293 +54,435 @@ const defaultOptions = (defaultConfig as any) as Options;
 export class LinesToParagraphModule extends Module<Options> {
 	public static moduleName = 'lines-to-paragraph';
 	public static dependencies = [ReadingOrderDetectionModule, WordsToLineModule];
-
-	constructor(options: Options = {}) {
+	constructor(options?: Options) {
 		super(options, defaultOptions);
 	}
 
 	public main(doc: Document): Document {
 		doc.pages.forEach((page: Page) => {
-			if (page.getElementsOfType<Paragraph>(Paragraph).length > 0) {
+			if (page.getElementsOfType<Heading>(Heading).length > 0) {
 				logger.warn(
 					'Warning: this page already has some paragraphs in it. Not performing paragraph merge.',
 				);
 				return page;
 			}
-			const lines: Line[] = page
-				.getElementsOfType<Line>(Line, false)
-				.sort(utils.sortElementsByOrder);
-			const otherPageElements: Element[] = page.elements.filter(
-				element => !(element instanceof Line) || !lines.includes(element),
+
+			// get all the lines
+			const lines = this.getPageLines(page);
+
+			// get the main body font from all the lines
+			const textBodyFont: Font = utils.findMostCommonFont(
+				lines
+					.map((l: Line) => utils.findMostCommonFont(l.content.map(w => w.font)))
+					.filter(f => f !== undefined),
 			);
-			const otherElements: Element[] = this.joinLinesInElements(otherPageElements);
-			const joinedLines: Line[][] = this.joinLines(lines);
+
+			// get the spaces between all lines
+			const interLinesSpaces: LineSpace[] = this.getInterLinesSpace(lines);
+
+			// join lines among them using the spaces computed above
+			const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
+
+			// perform line merge for all the lines inside other elements
+			let otherElements: Element[] = this.getElementsExcept(page, lines);
+			otherElements = this.joinLinesInElements(otherElements, textBodyFont);
 
 			// Clean the properties.cr  information as it is not usefull down the line
-			for (const theseLines of joinedLines) {
-				for (const thisLine of theseLines) {
-					for (const thisWord of thisLine.content) {
+			joinedLines.forEach((theseLines: Line[]) => {
+				theseLines.forEach((thisLine: Line) => {
+					thisLine.content.forEach((thisWord: Word) => {
 						if (thisWord.properties && thisWord.properties.cr) {
 							delete thisWord.properties.cr;
 							delete thisWord.properties.cl;
 						}
-					}
-				}
-			}
-			const paragraphs: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
-			page.elements = otherElements.concat(paragraphs);
+					});
+				});
+			});
 
+			if (this.options.computeHeadings) {
+				const newStructures = this.extractHeadings(joinedLines, textBodyFont);
+				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
+				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
+				this.computeHeadingLevels(headings);
+				page.elements = otherElements.concat([...headings, ...paras]);
+
+				logger.debug(
+					`Made ${headings.length} headings and ${paras.length} from ${lines.length} lines`,
+				);
+			} else {
+				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
+				page.elements = otherElements.concat(paras);
+
+				logger.debug(`Made ${paras.length} from ${lines.length} lines`);
+			}
+			// this.getPageParagraphs(page).map(paragraph => {
+			// console.log('Paragraph ' + paragraph.id + ' order ' + paragraph.properties.order);
+			// TODO: Set fine paragraph order
+			// });
 			return page;
 		});
 
 		return doc;
 	}
 
-	private joinLinesInElements(elements: Element[]) {
-		elements.forEach(element => {
-			this.joinLinesFromElement(element);
+	private isHeadingCandidate(
+		lines: Line[],
+		mostCommonFont: Font,
+		generalUpperCase: boolean,
+		generalTitleCase: boolean,
+	): boolean {
+		const decisions: boolean[] = [];
+		lines.forEach((line: Line) => {
+			decisions.push(
+				line.getMainFont().size > mostCommonFont.size ||
+					(line.getMainFont().weight === 'bold' && mostCommonFont.weight !== 'bold') ||
+					(line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
+						.length > 0 &&
+						(line.toString().toUpperCase() === line.toString() && !generalUpperCase)) ||
+					(line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
+						.length > 0 &&
+						(utils.toTitleCase(line.toString()) === line.toString() && !generalTitleCase)),
+			);
+		});
+		return decisions.filter(d => !d).length === 0;
+	}
+
+	private joinLinesInElements(elements: Element[], textBodyFont: Font): Element[] {
+		const withLines: Element[] = [];
+		this.getElementsWithLines(elements, withLines);
+		withLines.forEach(element => {
+			const lines = this.getLinesInElement(element);
+			const interLinesSpaces = this.getInterLinesSpace(lines);
+			const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
+			if (this.options.computeHeadings) {
+				const newStructures = this.extractHeadings(joinedLines, textBodyFont);
+				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
+				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
+				this.computeHeadingLevels(headings);
+				element.content = [...headings, ...paras];
+			} else {
+				element.content = this.mergeLinesIntoParagraphs(joinedLines);
+			}
 		});
 		return elements;
 	}
 
-	private joinLinesFromElement(element: Element): Line {
-		if (
-			!(element instanceof Line) &&
-			element.content &&
-			typeof element.content !== 'string' &&
-			element.content.length !== 0
-		) {
-			const containedLines: Line[] = [];
-			element.content.forEach(el => {
-				const containedLine = this.joinLinesFromElement(el);
-				if (containedLine) {
-					containedLines.push(containedLine);
-				}
-			});
-			if (containedLines.length > 0) {
-				this.updateElementContents(element, containedLines);
-			}
-		} else if (element instanceof Line) {
-			return element;
+	private getLinesInElement(element: Element): Line[] {
+		if (Array.isArray(element.content)) {
+			const lines = element.content;
+			return lines.filter(item => item instanceof Line).map(line => line as Line);
 		}
-		return null;
+		return [];
 	}
 
-	private updateElementContents(element: Element, lines: Line[]) {
-		const joinedLines = this.joinLines(lines);
-		const elementContent = this.mergeLinesIntoParagraphs(joinedLines);
-		element.content = elementContent;
-	}
-
-	private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
-		let newOrder = 0;
-		return joinedLines.map((group: Line[]) => {
-			const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
-				new Paragraph(new BoundingBox(0, 0, 0, 0)),
-				...group,
-			);
-			paragraph.properties.order = newOrder++;
-			return paragraph;
+	private getElementsWithLines(elements: Element[], withLines: Element[]) {
+		elements.forEach(element => {
+			const lines = this.getLinesInElement(element);
+			if (lines.length > 0) {
+				withLines.push(element);
+			} else if (Array.isArray(element.content)) {
+				element.content.forEach(child => {
+					this.getElementsWithLines(child.content as Element[], withLines);
+				});
+			}
 		});
 	}
 
-	private joinLines(lines: Line[]): Line[][] {
+	private getElementsExcept(page: Page, excludeLines: Line[]): Element[] {
+		return page.elements.filter(
+			element => !(element instanceof Line) || !excludeLines.includes(element),
+		);
+	}
+
+	private getPageLines(page: Page): Line[] {
+		return page.getElementsOfType<Line>(Line, false).sort(utils.sortElementsByOrder);
+	}
+
+	private joinLinesWithSpaces(lines: Line[], lineSpaces: LineSpace[]): Line[][] {
 		const toBeMerged: Line[][] = [];
-		for (let i = 0; i < lines.length; i++) {
-			const firstLine: Line = lines[i];
-			const mergeGroup: Line[] = [firstLine];
+		let paragraphLines: Line[] = [];
 
-			for (let j = i + 1; j < lines.length; j++) {
-				const prev: Line = lines[j - 1];
-				const curr: Line = lines[j];
+		const isLineInsideParagraph = (lineToFind: Line) => {
+			return toBeMerged
+				.reduce((prev, curr) => {
+					return prev.concat(curr);
+				}, [])
+				.map(line => line.id)
+				.includes(lineToFind.id);
+		};
 
-				if (
-					//// FIXME (!this.options.checkFont || line1.font === line2.font) &&
-					this.isAdjacentLine(prev, curr) &&
-					(utils.isAligned([prev, curr], this.options.alignUncertainty.value) ||
-						utils.isAlignedCenter([prev, curr], this.options.alignUncertainty.value)) &&
-					// isntBulletList(prev, curr) &&
-					// TODO handle table elements: !line1.properties.isTableElement &&
-					// TODO handle table elements: !line2.properties.isTableElement &&
-					!this.havePlaceForFirstWordInPreviousLine(prev, curr, mergeGroup) &&
-					prev instanceof Heading === curr instanceof Heading
-				) {
-					mergeGroup.push(curr);
-					i++;
-				} else {
-					// i = j;
-					break;
+		lineSpaces.forEach(space => {
+			lines.forEach((line, index) => {
+				const nextLine = this.getNextLine(index, lines);
+				let currentLineDistance = this.getInterLineDistance(line, nextLine);
+
+				if (this.shouldAdjustLineDistance(currentLineDistance, lineSpaces)) {
+					currentLineDistance = this.findAccuratedDistance(currentLineDistance, lineSpaces);
 				}
-			}
 
-			toBeMerged.push(mergeGroup);
+				if (currentLineDistance != null && currentLineDistance <= space.distance) {
+					if (!isLineInsideParagraph(line)) {
+						paragraphLines.push(line);
+					} else if (paragraphLines.length > 0) {
+						toBeMerged.push([...paragraphLines]);
+						paragraphLines = [];
+					}
+				} else if (
+					(currentLineDistance > space.distance && paragraphLines.length > 0) ||
+					currentLineDistance == null
+				) {
+					if (paragraphLines.length > 0) {
+						if (!isLineInsideParagraph(line)) {
+							paragraphLines.push(line);
+						}
+						toBeMerged.push([...paragraphLines]);
+						paragraphLines = [];
+					} else if (!isLineInsideParagraph(line)) {
+						paragraphLines.push(line);
+						if (currentLineDistance == null) {
+							toBeMerged.push([...paragraphLines]);
+							paragraphLines = [];
+						}
+					}
+				}
+			});
+		});
+
+		if (lines.length === 1 && lineSpaces.length === 0) {
+			toBeMerged.push(lines);
 		}
 		return toBeMerged;
 	}
 
-	private havePlaceForFirstWordInPreviousLine(topLine: Line, bottomLine: Line, paragraph: Line[]) {
-		const topLineRight: number = topLine.right;
-		const topLineLeft: number = topLine.left;
+	private findAccuratedDistance(distance: number, lineSpaces: LineSpace[]): number {
+		const accurated = lineSpaces
+			.map(space => {
+				return {
+					distance: space.distance,
+					dif: Math.abs(distance.valueOf() - space.distance.valueOf()),
+				};
+			})
+			.sort((a, b) => a.dif - b.dif);
 
-		const linecontent: Word[] = bottomLine.content;
+		if (accurated.length > 0) {
+			return accurated[0].distance;
+		}
+		return distance;
+	}
 
-		let orientation = this.detectParagraphOrientation(paragraph, bottomLine);
-
-		if (orientation === 'JUSTIFIED') {
+	private shouldAdjustLineDistance(distance: number, lineSpaces: LineSpace[]): boolean {
+		if (distance == null) {
 			return false;
 		}
+		return lineSpaces.filter(space => space.distance === distance).shift() == null;
+	}
 
-		// for now by default we fall back to Left if we can not determine the allignement.
-		if (orientation === 'DISALIGNED') {
-			orientation = 'LEFT';
+	private getNextLine(index: number, inLines: Line[]): Line {
+		if (index + 1 >= inLines.length) {
+			return null;
 		}
 
-		linecontent.sort((a: Word, b: Word) => {
-			return a.left < b.left ? -1 : 1;
+		const nextLine = inLines[index + 1];
+		const currentLine = inLines[index];
+		if (nextLine.top < currentLine.top) {
+			return null;
+		}
+
+		return nextLine;
+	}
+
+	private getInterLinesSpace(lines: Line[]): LineSpace[] {
+		const interLineSpaces = this.getPercentagedLineSpaces(lines);
+		return this.removeMinorDistancesChanges(interLineSpaces);
+	}
+
+	private removeMinorDistancesChanges(lines: LineSpace[]): LineSpace[] {
+		const sortedByDistance = lines.sort((a, b) => {
+			return a.distance.valueOf() - b.distance.valueOf();
 		});
+		// .filter(space => space.distance >= 0);
 
-		const firstWord: Word = linecontent[0];
-
-		let hyphenIndex = firstWord.content.length;
-
-		let text: string = firstWord.content.toString();
-		text = text.toLowerCase();
-
-		for (let i = 1; i < text.length; ++i) {
-			// special break character
-			// TODO : Expand with all standart unicode set of separator
-			if (' \t.?!,;-:。？！，；：'.indexOf(text[i]) !== -1) {
-				hyphenIndex = i;
-				break;
+		const mergedDistances: LineSpace[] = [];
+		sortedByDistance.forEach((distance, index) => {
+			if (
+				index > 0 &&
+				distance.distanceHeightRatio.valueOf() -
+					sortedByDistance[index - 1].distanceHeightRatio.valueOf() <
+					this.options.tolerance
+			) {
+				const mergedTotalHeight =
+					mergedDistances[mergedDistances.length - 1].totalHeight.valueOf() +
+					distance.totalHeight.valueOf();
+				const mergedLines = [
+					...mergedDistances[mergedDistances.length - 1].lines,
+					...distance.lines,
+				];
+				mergedDistances[mergedDistances.length - 1] = {
+					distance: distance.distance,
+					usageRatio:
+						mergedDistances[mergedDistances.length - 1].usageRatio.valueOf() +
+						distance.usageRatio.valueOf(),
+					lines: mergedLines,
+					totalHeight: mergedTotalHeight,
+					distanceHeightRatio:
+						distance.distance.valueOf() / (mergedTotalHeight / mergedLines.length),
+				};
+			} else {
+				mergedDistances.push(distance);
 			}
-		}
+		});
 
-		if (hyphenIndex !== firstWord.content.length) {
-			hyphenIndex++;
-		}
-
-		// todo : better hyphen rules
-		const supposedWidth: number = (firstWord.width / firstWord.content.length) * hyphenIndex;
-
-		if (
-			orientation === 'LEFT' &&
-			topLineRight + supposedWidth < firstWord.properties.cr - this.options.alignUncertainty.value
-		) {
-			return true;
-		}
-
-		if (
-			orientation === 'RIGHT' &&
-			topLineLeft - supposedWidth > firstWord.properties.cl + this.options.alignUncertainty.value
-		) {
-			return true;
-		}
-
-		if (
-			orientation === 'CENTER' &&
-			topLineLeft - firstWord.properties.cl + (firstWord.properties.cr - topLineRight) >
-				supposedWidth + this.options.alignUncertainty.value
-		) {
-			return true;
-		}
-
-		return false;
+		return mergedDistances.sort((a, b) => {
+			return b.usageRatio.valueOf() - a.usageRatio.valueOf();
+		});
+		// .filter(space => space.distance >= 0);
 	}
 
-	private detectParagraphOrientation(paragraph: Line[], newLine: Line) {
-		const left: number[] = [];
-		const right: number[] = [];
-		const center: number[] = [];
+	private getPercentagedLineSpaces(lines: Line[]): LineSpace[] {
+		const linesSpaces = [];
+		lines.forEach((line, index) => {
+			const nextLine = index + 1 < lines.length ? lines[index + 1] : null;
+			const distance = this.getInterLineDistance(line, nextLine);
+			if (distance != null) {
+				const existingDistance = linesSpaces.filter(space => space.distance === distance).shift();
+				if (existingDistance) {
+					existingDistance.lines.push(line.id);
+					existingDistance.usageRatio = Number(
+						(existingDistance.lines.length / lines.length).toPrecision(3),
+					);
+					existingDistance.totalHeight += line.height;
+				} else {
+					linesSpaces.push({
+						distance,
+						usageRatio: Number((1 / lines.length).toPrecision(3)),
+						lines: [line.id],
+						totalHeight: line.height,
+					});
+				}
+			}
+		});
 
-		for (const line of paragraph) {
-			const orient = this.getLineOrientation(line);
-			left.push(orient.left);
-			right.push(orient.right);
-			center.push(orient.center);
-		}
-		const orientation = this.getLineOrientation(newLine);
-		left.push(orientation.left);
-		right.push(orientation.right);
-		center.push(orientation.center);
+		linesSpaces.map(space => {
+			space.distanceHeightRatio = space.distance / (space.totalHeight / space.lines.length);
+		});
 
-		let isLeftAligned = false;
-		left.sort();
-		if (Math.abs(left[0] - left[left.length - 1]) < this.options.alignUncertainty.value * 2) {
-			isLeftAligned = true;
-		}
-
-		let isRightAligned = false;
-		right.sort();
-		if (Math.abs(right[0] - right[right.length - 1]) < this.options.alignUncertainty.value * 2) {
-			isRightAligned = true;
-		}
-
-		let isCenterAligned = false;
-		center.sort();
-		if (Math.abs(center[0] - center[center.length - 1]) < this.options.alignUncertainty.value * 2) {
-			isCenterAligned = true;
-		}
-
-		if (isRightAligned && isLeftAligned) {
-			return 'JUSTIFIED';
-		}
-
-		if (isLeftAligned) {
-			return 'LEFT';
-		}
-
-		if (isRightAligned) {
-			return 'RIGHT';
-		}
-
-		if (isCenterAligned) {
-			return 'CENTER';
-		}
-
-		return 'DISALIGNED';
+		return linesSpaces.sort((a, b) => {
+			return b.usageRatio.valueOf() - a.usageRatio.valueOf();
+		});
 	}
 
-	private getLineOrientation(line: Line) {
-		const linecontent: Word[] = line.content;
-		let left: number = 0;
-		let right: number = 0;
-		let center: number = 0;
+	private getInterLineDistance(line: Line, nextLine: Line): number {
+		if (!nextLine) {
+			return null;
+		}
+		const distance = nextLine.top - line.bottom;
+		return Math.round(distance);
+	}
 
-		linecontent.sort((a: Word, b: Word) => {
-			return a.left < b.left ? -1 : 1;
+	private mergeLinesIntoHeadings(joinedLines: Line[][]): Heading[] {
+		return joinedLines.map((group: Line[]) => {
+			const heading: Heading = utils.mergeElements<Line, Heading>(
+				new Heading(BoundingBox.merge(group.map((l: Line) => l.box))),
+				...group,
+			);
+			heading.properties.order = group[0].properties.order;
+			return heading;
 		});
+	}
 
-		const firstWord = linecontent[0];
-		left = firstWord.box.left;
-
-		linecontent.sort((a: Word, b: Word) => {
-			return a.right > b.right ? -1 : 1;
+	private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
+		return joinedLines.map((group: Line[]) => {
+			const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
+				new Paragraph(BoundingBox.merge(group.map((l: Line) => l.box))),
+				...group,
+			);
+			paragraph.properties.order = group[0].properties.order;
+			return paragraph;
 		});
-
-		const lastWord = linecontent[0];
-		right = lastWord.box.right;
-
-		center = firstWord.box.left + (lastWord.box.right - firstWord.box.left) / 2;
-
-		// reset line to original
-
-		linecontent.sort((a: Word, b: Word) => {
-			return a.left < b.left ? -1 : 1;
-		});
-
-		return { left, right, center };
 	}
 
 	/**
-	 * Checks if two lines are adjacent or not by using a measure of their overlap uncertainty.
-	 * @param line1 the first line
-	 * @param line2 the second line
+	 * Takes into account potential headings inside a paragraph
+	 * splits a paragraph into multiple ones and returns heading candidates
+	 * @param lineGroups List of joined lines to be alterered
 	 */
-	private isAdjacentLine(line1: Line, line2: Line): boolean {
-		const verticalOverlapUncertainty = (line1.height * 2) / 3;
-		return (
-			line1.top + line1.height < line2.top + verticalOverlapUncertainty &&
-			line1.top + line1.height * (1 + this.options.maxInterline.value) > line2.top
-		);
+	private extractHeadings(
+		lineGroups: Line[][],
+		textBodyFont: Font,
+	): { headingLines: Line[][]; newLines: Line[][] } {
+		const newLineGroups: Line[][] = [];
+		const newHeadingGroups: Line[][] = [];
+		lineGroups.forEach(lineGroup => {
+			if (textBodyFont instanceof Font) {
+				const headingIdx: number[] = lineGroup
+					.map((line: Line, pos: number) => {
+						if (
+							this.isHeadingCandidate(
+								[line],
+								textBodyFont,
+								utils.isGeneralUpperCase(lineGroup),
+								utils.isGeneralTitleCase(lineGroup),
+							)
+						) {
+							return pos;
+						} else {
+							return undefined;
+						}
+					})
+					.filter((i: number) => i !== undefined);
+				if (headingIdx.length > 0) {
+					const lineIdx: number[] = [...Array(lineGroup.length).keys()].filter(
+						x => !headingIdx.includes(x),
+					);
+					utils.groupConsecutiveNumbersInArray(lineIdx).forEach((group: number[]) => {
+						const newLines: Line[] = [];
+						group.forEach((id: number) => {
+							newLines.push(lineGroup[id]);
+						});
+						if (newLines.length > 0) {
+							newLineGroups.push(newLines);
+						}
+					});
+					utils.groupConsecutiveNumbersInArray(headingIdx).forEach((group: number[]) => {
+						const newHeadings: Line[] = [];
+						group.forEach((id: number) => {
+							newHeadings.push(lineGroup[id]);
+						});
+						if (newHeadings.length > 0) {
+							newHeadingGroups.push(newHeadings);
+						}
+					});
+				} else {
+					newLineGroups.push(lineGroup);
+				}
+			} else {
+				logger.warn("can't account for headings while para merge - no font info available");
+			}
+		});
+		if (newHeadingGroups.length > 0) {
+			return { headingLines: newHeadingGroups, newLines: newLineGroups };
+		} else {
+			return { headingLines: [], newLines: lineGroups };
+		}
+	}
+
+	private computeHeadingLevels(headings: Heading[]) {
+		const paraGroupsByFontSize: Heading[][] = []; // make paragraph groups by font size
+		let visitedFontSizes: number[] = [];
+		for (const heading of headings) {
+			const paraFont: Font = heading.getMainFont();
+			if (visitedFontSizes.includes(Math.floor(paraFont.size))) {
+				continue;
+			}
+			const pos = utils.findPositionsInArray(
+				headings.map(h => Math.floor(h.getMainFont().size)),
+				Math.floor(paraFont.size),
+			);
+			paraGroupsByFontSize.push(pos.map(i => headings[i]));
+			visitedFontSizes = [...new Set([...visitedFontSizes, Math.floor(paraFont.size)])];
+		}
+		paraGroupsByFontSize.forEach((group: Heading[], index: number) => {
+			group.forEach((heading: Heading) => (heading.level = index + 1));
+		});
 	}
 }

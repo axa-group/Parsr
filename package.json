@@ -17,7 +17,7 @@
 		"test": "test"
 	},
 	"scripts": {
-		"test": "mocha -r ts-node/register **/*.spec.ts",
+		"test": "mocha -t 10000 -r ts-node/register **/*.spec.ts",
 		"copyAssets": "copyfiles -u 2 \"./server/assets/*\" \"./dist/assets/\"",
 		"build:ts": "npm run copyAssets && tsc --outDir ./dist",
 		"build:ts:watch": "npm run copyAssets && tsc -w --outDir ./dist",
@@ -31,7 +31,7 @@
 		"start:api:background": "npm run start:api&",
 		"start:front": "cd demo/web-viewer && node index.js",
 		"start": "npm run start:api & npm run start:front",
-		"format": "prettier --write --list-different '{,!(dist|demo/web-viewer/public)/**/}*.{js,md,ts,css,scss}'"
+		"format": "prettier --write --list-different \"{,!(dist|demo/web-viewer/public)/**/}*.{js,md,ts,css,scss}\""
 	},
 	"husky": {
 		"hooks": {
@@ -62,7 +62,6 @@
 		"csv-stringify": "^5.3.3",
 		"file-type": "^9.0.0",
 		"html-entities": "^1.2.1",
-		"markdown-table": "^1.1.3",
 		"pdf-image": "^2.0.0",
 		"pino": "^5.13.2",
 		"pino-pretty": "^2.6.1",

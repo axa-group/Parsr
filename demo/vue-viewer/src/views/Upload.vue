@@ -1,5 +1,5 @@
 <template>
-	<div class="main v-application v-application--is-ltr">
+	<div class="main v-application v-application--is-ltr" v-if="!loadingConfig">
 		<form @submit.prevent="upload">
 			<fieldset>
 				<legend>Input file</legend>
@@ -13,13 +13,28 @@
 			</fieldset>
 
 			<fieldset>
+				<legend>Extractor configuration</legend>
+				<v-select
+					:items="['pdf2json', 'pdfminer']"
+					v-model="defaultConfig.extractor.pdf"
+					:flat="true"
+					:hide-details="true"
+					background-color="transparent"
+					color="rgba(0, 0, 0, 0.54)"
+					height="20px"
+					class="selectOptionExtractor"
+					prefix="Pdf"
+					solo
+				></v-select>
+			</fieldset>
+
+			<fieldset>
 				<legend>Modules configuration</legend>
 				<configItem
 					v-for="(item, index) in defaultConfig.cleaner"
 					:key="'Item_' + index"
 					:model="customConfig.cleaner"
 					:value="item"
-					:params="moduleParams(item)"
 					@change="configChange"
 				/>
 			</fieldset>
@@ -29,14 +44,15 @@
 		</form>
 
 		<v-overlay :absolute="false" opacity="0.5" :value="shouldDisplayOverlay" :dark="false">
-			<div v-if="processStatus.length > 0" class="processTracker">
+			<div class="processTracker">
 				<p v-for="status in processStatus" :key="status">
-					<span v-html="status" /> <img :src="checkIcon" />
+					<span v-html="status" />
+					<img :src="checkIcon" />
 				</p>
 				<p v-if="processError">
-					<span style="vertical-align:middle">Process failed</span
-					><v-icon size="20" color="red" style="margin-left:10px">mdi-alert-circle</v-icon
-					><span v-html="processError" />
+					<span style="vertical-align:middle">Process failed</span>
+					<v-icon size="20" color="red" style="margin-left:10px">mdi-alert-circle</v-icon>
+					<span v-html="processError" />
 				</p>
 				<v-btn v-if="processError" rounded class="submit" @click="closeProcessTrack">CLOSE</v-btn>
 				<v-progress-circular
@@ -72,6 +88,7 @@ export default {
 	computed: {
 		...mapState({
 			defaultConfig: state => state.defaultConfig,
+			loadingConfig: state => state.loadingConfig,
 		}),
 		modulesOrder() {
 			return this.defaultConfig.cleaner.map(el => {
@@ -84,80 +101,64 @@ export default {
 		isSubmitDisabled() {
 			return !this.file;
 		},
+		/* 
+			this function takes the config in 'specs' format and returns only the values of each parameter
+			ex:
+				parameter: {
+					value: 'foo',
+					range: ['foo', 'bar']
+				}
+
+			returns parameter: 'foo'
+		*/
+		keyValueConfig() {
+			// i have to make sure to clone the values and not the references of the configs
+			const config = JSON.parse(JSON.stringify({ ...this.defaultConfig, ...this.customConfig }));
+			config.cleaner = config.cleaner.map(mod => {
+				if (Array.isArray(mod)) {
+					Object.keys(mod[1]).forEach(key => {
+						mod[1][key] = mod[1][key].value;
+					});
+				}
+				return mod;
+			});
+			return config;
+		},
 		configAsBinary() {
-			var data = this.encode(JSON.stringify({ ...this.defaultConfig, ...this.customConfig }));
+			var data = this.encode(JSON.stringify(this.keyValueConfig));
 			return new Blob([data], {
 				type: 'application/json',
 			});
 		},
 		shouldDisplayOverlay() {
-			return this.processStatus.length > 0;
+			return this.processStatus.length > 0 || this.processError;
 		},
 	},
 	beforeMount() {
 		this.customConfig = { ...this.defaultConfig };
 	},
-	methods: {
-		moduleParams(configItem) {
-			if (Array.isArray(configItem)) {
-				const moduleParams = {};
-				let defaultValues = this.defaultValuesForModule(configItem);
-				if (defaultValues != {}) moduleParams['defaultValues'] = defaultValues;
-				let sliderValues = this.sliderValuesForModule(configItem);
-				if (sliderValues != {}) moduleParams['sliders'] = sliderValues;
-				return moduleParams;
+	watch: {
+		loadingConfig(newVal, oldVal) {
+			if (oldVal && !newVal) {
+				//finished loading
+				this.customConfig = { ...this.defaultConfig };
 			}
-			return {};
 		},
-		sliderValuesForModule(module) {
-			const sliders = {};
-			Object.keys(module[1]).forEach(element => {
-				switch (element) {
-					case 'percentageOfRedundancy':
-					case 'lineHeightUncertainty':
-					case 'topUncertainty':
-					case 'maxInterline':
-						sliders[element] = { min: 0, max: 10, multiplier: 10, decimals: 1 };
-						break;
-					case 'minWidth':
-					case 'maxMarginPercentage':
-					case 'minColumnWidthInPagePercent':
-					case 'minVerticalGapWidth':
-					case 'maximumSpaceBetweenWords':
-					case 'alignUncertainty':
-						sliders[element] = { min: 0, max: 100, multiplier: 1, decimals: 0 };
-						break;
-					case 'lineLengthUncertainty':
-						sliders[element] = { min: 0, max: 100, multiplier: 100, decimals: 2 };
-						break;
-				}
-			});
-			return sliders;
-		},
-		defaultValuesForModule(module) {
-			const defaults = {};
-			Object.keys(module[1]).forEach(element => {
-				switch (element) {
-					case 'flavor':
-						defaults[element] = ['lattice', 'stream'];
-						break;
-					case 'addNewline':
-					case 'checkFont':
-					case 'mergeTableElements':
-						defaults[element] = [true, false];
-						break;
-				}
-			});
-			return defaults;
-		},
+	},
+	methods: {
 		configChange(configItem) {
 			if (configItem.selected) {
-				let moduleName = configItem.item;
-				if (Array.isArray(configItem.item)) {
-					moduleName = configItem.item[0];
-				}
-				const index = this.modulesOrder.indexOf(moduleName);
-				this.customConfig.cleaner.splice(index, 0, configItem.item);
+				this.customConfig.cleaner.push(configItem.item);
+				const moduleName = configItem => {
+					if (Array.isArray(configItem)) {
+						return configItem[0];
+					}
+					return configItem;
+				};
+				const correctOrder = this.modulesOrder;
+				this.customConfig.cleaner.sort((a, b) => {
+					return correctOrder.indexOf(moduleName(a)) - correctOrder.indexOf(moduleName(b));
+				});
 			} else {
 				this.customConfig.cleaner = this.customConfig.cleaner.filter(el => el !== configItem.item);
 			}
@@ -211,7 +212,11 @@ export default {
 					this.trackPipeStatus();
 				})
 				.catch(error => {
-					console.log(error.message);
+					this.processError =
+						"<p style='font-size:0.8em;color:#a8a8a8;text-align:left;width:100%;'>" +
+						error.message +
+						'</p>';
+
 					this.loading = false;
 				});
 		},
@@ -231,6 +236,32 @@ export default {
 };
 </script>
 
+<style lang="scss">
+.selectOptionExtractor div.v-input__control {
+	min-height: auto !important;
+}
+.selectOptionExtractor div.v-input__control div.v-input__slot {
+	padding: 0 !important;
+}
+.selectOptionExtractor div.v-input__control div.v-select__slot {
+	width: 100px;
+}
+.selectOptionExtractor div.v-input__control div.v-select__slot div.v-text-field__prefix {
+	min-width: 60px;
+	text-align: left;
+}
+.selectOptionExtractor div.v-input__control div.v-input__slot div.v-select__selection {
+	border: solid 1px #cccccc;
+	min-width: 90px;
+	text-align: center;
+	display: block;
+	padding: 0 5px;
+}
+.selectOptionExtractor div.v-input__control div.v-input__slot input {
+	width: 0 !important;
+	max-width: 0 !important;
+}
+</style>
 <style lang="scss" scoped>
 .main {
 	padding-top: 20px;
@@ -308,5 +339,15 @@ label span {
 .processTracker + strong {
 	margin-top: 10px;
 	font-size: 1.2em;
+}
+
+.selectOptionExtractor {
+	vertical-align: middle;
+	color: rgba(0, 0, 0, 0.54);
+	width: 300px;
+	margin: 10px auto !important;
+}
+.selectOptionExtractor div {
+	min-height: auto !important;
 }
 </style>

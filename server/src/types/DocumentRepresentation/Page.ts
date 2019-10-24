@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { isInBox } from '../../utils';
+import { findMostCommonFont, isInBox } from '../../utils';
 import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
@@ -116,9 +116,7 @@ export class Page {
 	 * @param textOnly Elements of the subset should only be the textual elements.
 	 */
 	public getElementsSubset(box: BoundingBox, textOnly: boolean = false): Element[] {
-		return this.elements
-			.filter(e => e instanceof Text || textOnly)
-			.filter(e => isInBox(e.box, box));
+		return this.elements.filter(e => e instanceof Text || textOnly).filter(e => isInBox(e, box));
 	}
 
 	/**
@@ -185,6 +183,21 @@ export class Page {
 			) {
 				stack = stack.concat(element.content);
 			}
+		}
+	}
+
+	/**
+	 * Removes an element from the page
+	 * @param e The element which is to be removed
+	 */
+	public removeElement(e: Element) {
+		const index: number = this.elements.indexOf(e, 0);
+		if (index > -1 || e !== undefined) {
+			this.elements.splice(index, 1);
+		} else {
+			logger.debug(
+				`--> Could not remove element id "${e.id}" in first level elements on page ${this.pageNumber}; it might be located deeper`,
+			);
 		}
 	}
 
@@ -273,31 +286,13 @@ export class Page {
 	 * mechanism. The most used font will be returned as a valid Font object.
 	 */
 	public getMainFont(): Font | undefined {
-		const fonts: Font[] = this.getElementsOfType<Paragraph>(Paragraph)
-			.map(p => p.getMainFont())
-			.filter(f => f !== undefined);
-
-		const baskets: Font[][] = [];
-		fonts.forEach((font: Font) => {
-			let basketFound: boolean = false;
-			baskets.forEach((basket: Font[]) => {
-				if (basket.length > 0 && basket[0].isEqual(font)) {
-					basket.push(font);
-					basketFound = true;
-				}
-			});
-
-			if (!basketFound) {
-				baskets.push([font]);
-			}
-		});
-
-		baskets.sort((a, b) => {
-			return b.length - a.length;
-		});
-
-		if (baskets.length > 0 && baskets[0].length > 0) {
-			return baskets[0][0];
+		const result: Font = findMostCommonFont(
+			this.getElementsOfType<Paragraph>(Paragraph, false)
+				.map(p => p.getMainFont())
+				.filter(f => f !== undefined),
+		);
+		if (result !== undefined) {
+			return result;
 		} else {
 			logger.debug(`no font found for page ${this.pageNumber}`);
 			return undefined;

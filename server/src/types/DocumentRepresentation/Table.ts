@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -286,7 +286,9 @@ export class Table extends Element {
 
 					for (let c = 0; c < cell.colspan; c++) {
 						for (let r = 0; r < cell.rowspan; r++) {
-							arr[i + r][j + c] = null;
+							if (i + r < arr.length && j + c < arr[i].length) {
+								arr[i + r][j + c] = null;
+							}
 						}
 					}
 
@@ -303,6 +305,17 @@ export class Table extends Element {
 		}
 
 		return arr;
+	}
+
+	/**
+	 * Converts the entire table into a md code string.
+	 */
+	public toMarkdown(): string {
+		let output: string = '<table>  \n';
+		this.content.forEach(row => {
+			output += row.toMarkdown() + '  \n';
+		});
+		return output + '</table>';
 	}
 
 	private calculateShape(): void {

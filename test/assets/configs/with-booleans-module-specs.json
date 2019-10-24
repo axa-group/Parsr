@@ -1,0 +1,20 @@
+{
+    "name": "words-to-line",
+    "description": "Create lines from a bunch of words, according to the reading order.",
+    "specs": {
+        "foo": {
+            "value": false,
+            "range": [
+                true,
+                false
+            ]
+        },
+        "bar": {
+            "value": true,
+            "range": [
+                true,
+                false
+            ]
+        }
+    }
+}

@@ -14,13 +14,8 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 export interface Options {
-	pages?: {
-		value: number[];
-	};
-	flavor?: {
-		value: string;
-		range: string[];
-	};
+	pages?: number[];
+	flavor?: string;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -39,15 +34,16 @@ const defaultExtractor: TableExtractor = {
 	readTables(inputFile: string, options: Options): TableExtractorResult {
 		let pages: string = 'all';
 		let flavor: string = 'lattice';
-		if (options.pages.value.length !== 0) {
-			pages = options.pages.value.toString();
+		const lineScale: string = '70';
+		if (options.pages.length !== 0) {
+			pages = options.pages.toString();
 		}
-		if (options.flavor.range.indexOf(options.flavor.value) === -1) {
+		if (!options.flavor.includes(options.flavor)) {
 			logger.warn(
-				`table detection flavor asked for: ${options.flavor.value} is not a possibility. defaulting to 'lattice'`,
+				`table detection flavor asked for: ${options.flavor} is not a possibility. defaulting to 'lattice'`,
 			);
 		} else {
-			flavor = options.flavor.value;
+			flavor = options.flavor;
 		}
 
 		// find python executable name
@@ -69,6 +65,7 @@ const defaultExtractor: TableExtractor = {
 			__dirname + '/../../../assets/TableDetectionScript.py',
 			inputFile,
 			flavor,
+			lineScale,
 			pages,
 		]);
 
@@ -98,8 +95,15 @@ export class TableDetectionModule extends Module<Options> {
 	}
 
 	public main(doc: Document): Document {
-		const options: Options = { ...defaultOptions, ...this.options };
-		const tableExtractor = this.extractor.readTables(doc.inputFile, options);
+		// options is already merged in constructor!!!
+		// const options: Options = { ...defaultOptions, ...this.options };
+		if (doc.getElementsOfType<Table>(Table).length > 0) {
+			logger.warn(
+				'Warning: document already has tables extracted by the extractor. Not performing table detection.',
+			);
+			return doc;
+		}
+		const tableExtractor = this.extractor.readTables(doc.inputFile, this.options);
 
 		if (tableExtractor.status !== 0) {
 			logger.error(tableExtractor.stderr);
@@ -123,7 +127,42 @@ export class TableDetectionModule extends Module<Options> {
 		const pageHeight = page.box.height;
 		const table: Table = this.createTable(tableData, pageHeight);
 		table.content = this.createRows(tableData, page);
-		page.elements = page.elements.concat(table);
+		if (!this.isFalseTable(table)) {
+			page.elements = page.elements.concat(table);
+		}
+	}
+
+	private isFalseTable(table: Table): boolean {
+		let isFalse = false;
+		table.content.forEach((_, index) => {
+			if (!this.existAdjacentRow(index, table)) {
+				isFalse = true;
+			}
+		});
+		return isFalse;
+	}
+
+	private existAdjacentRow(rowIndex: number, table: Table): TableRow {
+		if (rowIndex + 1 === table.content.length) {
+			return this.existPreviousRow(rowIndex, table);
+		}
+		const row = table.content[rowIndex];
+		const findRowWithTop = Math.ceil(row.box.top + row.box.height);
+
+		return table.content
+			.filter(rowToFind => Math.ceil(rowToFind.box.top) === findRowWithTop)
+			.shift();
+	}
+
+	private existPreviousRow(rowIndex: number, table: Table): TableRow {
+		const row = table.content[rowIndex];
+		const findRowWithBottom = Math.ceil(row.box.top);
+
+		return table.content
+			.filter(
+				rowToFind => Math.ceil(rowToFind.box.top + rowToFind.box.height) === findRowWithBottom,
+			)
+			.shift();
 	}
 
 	private createTable(tableData: any, pageHeight: number): Table {
@@ -174,7 +213,15 @@ export class TableDetectionModule extends Module<Options> {
 	}
 
 	private wordsInCellBox(cellBounds: BoundingBox, pageWords: Word[]): Word[] {
-		return pageWords.filter(word => utils.isInBox(word.box, cellBounds, false));
+		const isInBox = (element, box) => {
+			return (
+				element.box.top + element.box.height * 0.2 >= box.top &&
+				element.box.top + element.box.height <= box.top + box.height &&
+				element.box.left >= box.left &&
+				element.box.left + element.box.width <= box.left + box.width
+			);
+		};
+		return pageWords.filter(word => isInBox(word, cellBounds));
 	}
 
 	private removeWordsUsedInCells(document: Document) {

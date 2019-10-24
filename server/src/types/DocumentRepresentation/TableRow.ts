@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,5 +40,16 @@ export class TableRow extends Element {
 	 */
 	public set content(value: TableCell[]) {
 		this._content = value;
+	}
+
+	/**
+	 * Converts the entire row into a md code string.
+	 */
+	public toMarkdown(): string {
+		let output: string = "<tr style='background-color:#fff'>  \n";
+		this.content.forEach(cell => {
+			output += cell.toMarkdown();
+		});
+		return output + '</tr>';
 	}
 }

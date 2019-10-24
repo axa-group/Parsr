@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { spawn, spawnSync } from 'child_process';
+import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as os from 'os';
 import { parseString } from 'xml2js';
@@ -24,9 +24,7 @@ import {
 	Document,
 	Element,
 	Font,
-	Line,
 	Page,
-	Paragraph,
 	Word,
 } from '../../types/DocumentRepresentation';
 import { PdfminerPage } from '../../types/PdfminerPage';
@@ -46,17 +44,36 @@ export function execute(pdfInputFile: string): Promise<Document> {
 	return new Promise<Document>((resolveDocument, rejectDocument) => {
 		return repairPdf(pdfInputFile).then(repairedPdf => {
 			const xmlOutputFile: string = utils.getTemporaryFile('.xml');
+			let pdf2txtLocation: string = utils.getCommandLocationOnSystem('pdf2txt.py');
+			if (pdf2txtLocation === '') {
+				pdf2txtLocation = utils.getCommandLocationOnSystem('pdf2txt');
+			}
+			if (pdf2txtLocation === '') {
+				logger.debug(
+					`Unable to find pdf2txt, the pdfminer executable on the system. Are you sure it is installed?`,
+				);
+			} else {
+				logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
+			}
+			logger.info(`Extracting PDF contents using pdfminer...`);
 			logger.debug(
-				`pdf2txt.py ${['-c', 'utf-8', '-A', '-t', 'xml', '-o', xmlOutputFile, repairedPdf].join(
-					' ',
-				)}`,
+				`${pdf2txtLocation} ${[
+					'-c',
+					'utf-8',
+					'-A',
+					'-t',
+					'xml',
+					'-o',
+					xmlOutputFile,
+					repairedPdf,
+				].join(' ')}`,
 			);
 
 			if (!fs.existsSync(xmlOutputFile)) {
 				fs.appendFileSync(xmlOutputFile, '');
 			}
 
-			const pdfminer = spawn('pdf2txt.py', [
+			const pdfminer = spawn(pdf2txtLocation, [
 				'-c',
 				'utf-8',
 				'-A',
@@ -121,13 +138,11 @@ function getPage(pageObj: PdfminerPage): Page {
 
 	// treat paragraphs
 	if (pageObj.textbox !== undefined) {
-		const paras: Paragraph[] = pageObj.textbox.map(para => {
-			const lines: Line[] = para.textline.map(line =>
-				breakLineIntoWords(line, ',', pageBbox.height),
-			);
-			return new Paragraph(getBoundingBox(para._attr.bbox, ',', pageBbox.height), lines);
+		pageObj.textbox.forEach(para => {
+			para.textline.map(line => {
+				elements = [...elements, ...breakLineIntoWords(line, ',', pageBbox.height)];
+			});
 		});
-		elements = [...elements, ...paras];
 	}
 	return new Page(parseFloat(pageObj._attr.id), elements, pageBbox);
 }
@@ -148,53 +163,128 @@ function getBoundingBox(
 	return new BoundingBox(left, top, width, height);
 }
 
+function getMostCommonFont(theFonts: Font[]): Font {
+	const fonts: Font[] = theFonts.reduce((a, b) => a.concat(b), []);
+
+	const baskets: Font[][] = [];
+
+	fonts.forEach((font: Font) => {
+		let basketFound: boolean = false;
+		baskets.forEach((basket: Font[]) => {
+			if (basket.length > 0 && basket[0].isEqual(font)) {
+				basket.push(font);
+				basketFound = true;
+			}
+		});
+
+		if (!basketFound) {
+			baskets.push([font]);
+		}
+	});
+
+	baskets.sort((a, b) => {
+		return b.length - a.length;
+	});
+
+	if (baskets.length > 0 && baskets[0].length > 0) {
+		return baskets[0][0];
+	} else {
+		return Font.undefinedFont;
+	}
+}
+
+/**
+ * Fetches the character a particular pdfminer's textual output represents
+ * TODO: This placeholder will accomodate the solution at https://github.com/aarohijohal/pdfminer.six/issues/1 ...
+ * TODO: ... For now, it returns a '?' when a (cid:) is encountered
+ * @param character the character value outputted by pdfminer
+ * @param font the font associated with the character  -- TODO to be taken into consideration here
+ */
+function getValidCharacter(character: string): string {
+	return RegExp(/\(cid:/gm).test(character) ? '?' : character;
+}
+
 function breakLineIntoWords(
 	line: PdfminerTextline,
 	wordSeperator: string = ' ',
 	pageHeight: number,
 	scalingFactor: number = 1,
-): Line {
-	const chars: Character[] = line.text.map(char => {
-		if (char._ === undefined) {
-			return undefined;
-		} else {
-			return new Character(getBoundingBox(char._attr.bbox, ',', pageHeight, scalingFactor), char._);
-		}
-	});
+): Word[] {
+	const notAllowedChars = ['\u200B']; // &#8203 Zero Width Space
+	const words: Word[] = [];
+	const chars: Character[] = line.text
+		.filter((char, index) => !notAllowedChars.includes(char._) && !isFakeChar(line, index))
+		.map(char => {
+			if (char._ === undefined) {
+				return undefined;
+			} else {
+				const font: Font = new Font(char._attr.font, parseFloat(char._attr.size), {
+					weight: RegExp(/bold/gim).test(char._attr.font) ? 'bold' : 'medium',
+					isItalic: RegExp(/italic/gim).test(char._attr.font) ? true : false,
+					isUnderline: RegExp(/underline/gim).test(char._attr.font) ? true : false,
+					color: ncolourToHex(char._attr.ncolour),
+				});
+				const charContent: string = getValidCharacter(char._);
+				return new Character(
+					getBoundingBox(char._attr.bbox, ',', pageHeight, scalingFactor),
+					charContent,
+					font,
+				);
+			}
+		});
 	if (chars[0] === undefined || chars[0].content === wordSeperator) {
 		chars.splice(0, 1);
 	}
 	if (chars[chars.length - 1] === undefined || chars[chars.length - 1].content === wordSeperator) {
 		chars.splice(chars.length - 1, chars.length);
 	}
-	const mostCommonFont: Font = new Font(
-		findMode(
-			line.text
-				.filter(char => char !== undefined && char._attr !== undefined)
-				.map(char => char._attr.font),
-		)[0],
-		findMode(
-			line.text
-				.filter(char => char !== undefined && char._attr !== undefined)
-				.map(char => char._attr.size),
-		)[0],
-	);
 
-	let sepLocs = chars
-		.filter(char => char !== undefined)
-		.reduce((a, e, i) => (e.content === wordSeperator ? a.concat(i) : a), []); // fill with spaces
+	if (chars.length === 0 || (chars.length === 1 && chars[0] === undefined)) {
+		return words;
+	}
 
-	sepLocs = [
-		...sepLocs,
-		...chars.reduce((a, e, i) => (e === undefined ? a.concat(i) : a), []), // fill with undefs
-	].sort((a, b) => a - b);
+	if (
+		chars
+			.filter(c => c !== undefined)
+			.map(c => c.content.length)
+			.filter(l => l > 1).length > 0
+	) {
+		logger.debug(`pdfminer returned some characters of size > 1`);
+	}
 
-	const words: Word[] = [];
+	const sepLocs: number[] = chars
+		.map((c, i) => {
+			if (c === undefined) {
+				return i;
+			} else {
+				return undefined;
+			}
+		})
+		.filter(l => l !== undefined)
+		.filter(l => l !== 0)
+		.filter(l => l !== chars.length);
+
+	let charSelection: Character[] = [];
 	if (sepLocs.length === 0) {
-		words.push(new Word(BoundingBox.merge(chars.map(c => c.box)), chars, mostCommonFont));
+		charSelection = chars.filter(c => c !== undefined);
+		words.push(
+			new Word(
+				BoundingBox.merge(charSelection.map(c => c.box)),
+				charSelection,
+				getMostCommonFont(charSelection.map(c => c.font)),
+			),
+		);
 	} else {
-		const firstSel: Character[] = chars.slice(0, sepLocs[0]);
-		words.push(new Word(BoundingBox.merge(firstSel.map(c => c.box)), firstSel, mostCommonFont));
+		charSelection = chars.slice(0, sepLocs[0]).filter(c => c !== undefined);
+		if (charSelection.length > 0) {
+			words.push(
+				new Word(
+					BoundingBox.merge(charSelection.map(c => c.box)),
+					charSelection,
+					getMostCommonFont(charSelection.map(c => c.font)),
+				),
+			);
+		}
 		for (let i = 0; i !== sepLocs.length; ++i) {
 			let from: number;
 			let to: number;
@@ -204,13 +294,55 @@ function breakLineIntoWords(
 			} else {
 				to = chars.length;
 			}
-			const charSelection: Character[] = chars.slice(from, to);
-			words.push(
-				new Word(BoundingBox.merge(charSelection.map(c => c.box)), charSelection, mostCommonFont),
-			);
+			charSelection = chars.slice(from, to).filter(c => c !== undefined);
+			if (charSelection.length > 0) {
+				words.push(
+					new Word(
+						BoundingBox.merge(charSelection.map(c => c.box)),
+						charSelection,
+						getMostCommonFont(charSelection.map(c => c.font)),
+					),
+				);
+			}
 		}
 	}
-	return new Line(getBoundingBox(line._attr.bbox, ',', pageHeight), words);
+	return words;
+}
+
+function isFakeChar(line: PdfminerTextline, index: number): boolean {
+	const emptyWithAttr = line.text.filter(text => text._ === undefined && text._attr !== undefined)
+		.length;
+	const emptyWithNoAttr = line.text.filter(text => text._ === undefined && text._attr === undefined)
+		.length;
+
+	if (
+		emptyWithAttr > 0 &&
+		emptyWithNoAttr > 0 &&
+		index + 1 < line.text.length &&
+		line.text[index]._attr === undefined
+	) {
+		return true;
+	}
+
+	return false;
+}
+
+function ncolourToHex(color: string) {
+	const rgbToHex = (r, g, b) =>
+		'#' +
+		[r, g, b]
+			.map(x => {
+				const hex = Math.ceil(x * 255).toString(16);
+				return hex.length === 1 ? '0' + hex : hex;
+			})
+			.join('');
+
+	const rgbColor = color
+		.replace('[', '')
+		.replace(']', '')
+		.split(',');
+
+	return rgbToHex(rgbColor[0], rgbColor[1] || rgbColor[0], rgbColor[2] || rgbColor[0]);
 }
 
 /**
@@ -219,7 +351,7 @@ function breakLineIntoWords(
  */
 function repairPdf(filePath: string) {
 	return new Promise<string>(resolve => {
-		const mutoolPath = spawnSync('which', ['mutool']).output.join('');
+		const mutoolPath = utils.getCommandLocationOnSystem('mutool');
 		if (mutoolPath === '' || (/^win/i.test(os.platform()) && /no mutool in/.test(mutoolPath))) {
 			logger.warn('MuPDF not installed !! Skip clean PDF.');
 			resolve(filePath);
@@ -233,31 +365,4 @@ function repairPdf(filePath: string) {
 			});
 		}
 	});
-}
-
-/** find the most common element in an array */
-function findMode(collection) {
-	if (collection.length === 0) {
-		return null;
-	}
-	const modeMap = {};
-	let maxCount = 1;
-	let modes = [];
-
-	collection.forEach(el => {
-		if (modeMap[el] === null) {
-			modeMap[el] = 1;
-		} else {
-			modeMap[el]++;
-		}
-
-		if (modeMap[el] > maxCount) {
-			modes = [el];
-			maxCount = modeMap[el];
-		} else if (modeMap[el] === maxCount) {
-			modes.push(el);
-			maxCount = modeMap[el];
-		}
-	});
-	return modes;
 }

@@ -90,8 +90,8 @@ Module can be called in the full form:
 [
 	"module",
 	{
-		"option-1": { "value": 100 },
-		"option-2": { "value": true }
+		"option-1": 100,
+		"option-2": true
 	}
 ],
 ```
@@ -149,33 +149,30 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 		"whitespace-removal",
 		"redundancy-detection",
 		"table-detection",
-		["header-footer-detection", { "maxMarginPercentage": { "value": 15 } }],
-		["reading-order-detection", { "minColumnWidthInPagePercent": { "value": 15 } }],
+		["header-footer-detection", { "maxMarginPercentage": 15 }],
+		["reading-order-detection", { "minColumnWidthInPagePercent": 15 } ],
 		"link-detection",
-		["words-to-line", { "maximumSpaceBetweenWords": { "value": 100 } }],
+		["words-to-line", { "maximumSpaceBetweenWords": 100 }],
 		"lines-to-paragraph",
-		["page-number-detection", { "maxMarginPercentage": { "value": 15 } }],
-		"heading-detection",
+		["page-number-detection", { "maxMarginPercentage": 15 }],
 		"hierarchy-detection",
 		[
 			"regex-matcher",
 			{
-				"queries": {
-					"value": [
-						{
-							"label": "Car",
-							"regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
-						},
-						{
-							"label": "Age",
-							"regex": "(\\d+)[ -]*(ans|jarige)"
-						},
-						{
-							"label": "Percent",
-							"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
-						}
-					]
-				}
+				"queries": [
+					{
+						"label": "Car",
+						"regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
+					},
+					{
+						"label": "Age",
+						"regex": "(\\d+)[ -]*(ans|jarige)"
+					},
+					{
+						"label": "Percent",
+						"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
+					}
+				]
 			}
 		]
 	],

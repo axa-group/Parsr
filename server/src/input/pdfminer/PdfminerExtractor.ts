@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,10 @@ import * as pdfminer from './pdfminer';
  */
 export class PdfminerExtractor extends Extractor {
 	public run(inputFile: string): Promise<Document> {
-		const pdf2jsonExtract: Promise<Document> = pdfminer.execute(inputFile);
+		const pdfminerExtract: Promise<Document> = pdfminer.execute(inputFile);
 
 		const extractFont = extractFonts(inputFile);
 
-		return Promise.all([pdf2jsonExtract, extractFont]).then(([doc]: [Document, void]) => doc);
+		return Promise.all([pdfminerExtract, extractFont]).then(([doc]: [Document, void]) => doc);
 	}
 }

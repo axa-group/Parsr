@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,17 +38,21 @@ export class LinkDetectionModule extends Module {
 		const actionRegex = /(.*)(actionGoToR|actionLaunch|actionNamed|actionMovie|actionUnknown)(.*)/;
 
 		doc.pages.forEach((page: Page) => {
-			page.getElementsOfType<Word>(Word).forEach(word => {
-				let match = [];
+			page.getElementsOfType<Word>(Word, true).forEach(word => {
 				if (typeof word.content !== 'string') {
+					this.matchLinksInCharacters(word);
 					return;
 				}
+				let match = [];
 				// tslint:disable-next-line:no-conditional-assignment
 				if ((match = word.content.match(actionUriRegex))) {
-					word.content = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
+					// word.content = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
+					word.content = match[3];
+					word.properties.link = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
 					// tslint:disable-next-line:no-conditional-assignment
 				} else if ((match = word.content.match(actionGoToRegex))) {
-					word.content = match[1] + match[3];
+					word.content = match[3];
+					word.properties.link = match[1] + match[3];
 					// tslint:disable-next-line:no-conditional-assignment
 				} else if ((match = word.content.match(actionRegex))) {
 					logger.debug('Unknown action: %s', word.content);
@@ -57,5 +61,15 @@ export class LinkDetectionModule extends Module {
 		});
 
 		return doc;
+	}
+
+	private matchLinksInCharacters(word: Word) {
+		const linkRegexp = /\b((http|https):\/\/?)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
+		const mailRegexp = /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/;
+		if (word.toString().match(linkRegexp)) {
+			word.properties.link = `<a href="${word.toString()}">${word.toString()}</a>`;
+		} else if (word.toString().match(mailRegexp)) {
+			word.properties.link = `<a href="mailto:${word.toString()}">${word.toString()}</a>`;
+		}
 	}
 }

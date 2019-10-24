@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,10 +23,7 @@ import * as defaultConfig from './defaultConfig.json';
 // List of every options you need.
 // Don't forget the question mark!
 interface Options {
-	yourOption?: {
-		value: string;
-		range: string[];
-	};
+	yourOption?: string;
 }
 
 // Default options if none have been set in the configuration file.

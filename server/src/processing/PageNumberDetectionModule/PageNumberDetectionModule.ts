@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,16 +27,8 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	ignorePages?: {
-		value: number[];
-	};
-	maxMarginPercentage?: {
-		value: number;
-		range: {
-			min: number;
-			max: number;
-		};
-	};
+	ignorePages?: number[];
+	maxMarginPercentage?: number;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -63,7 +55,7 @@ export class PageNumberDetectionModule extends Module<Options> {
 					'the document only has 1 page (not enough data).',
 			);
 			return doc;
-		} else if (this.options.maxMarginPercentage.value === undefined) {
+		} else if (this.options.maxMarginPercentage === undefined) {
 			logger.info(
 				'Not computing marginals (headers and footers); maxMarginPercentage setting not found in the configuration.',
 			);
@@ -76,7 +68,7 @@ export class PageNumberDetectionModule extends Module<Options> {
 		}
 		logger.info(
 			'Detecting marginals (headers and footers) with maxMarginPercentage:',
-			this.options.maxMarginPercentage.value,
+			this.options.maxMarginPercentage,
 			'...',
 		);
 
@@ -92,7 +84,7 @@ export class PageNumberDetectionModule extends Module<Options> {
 		}
 
 		doc.pages
-			.filter(p => !this.options.ignorePages.value.includes(p))
+			.filter(p => !this.options.ignorePages.includes(p))
 			.forEach(page => {
 				const h: number[] = page.horizontalOccupancy.map(boolToInt);
 				occupancyAcrossHeight = utils.addVectors(occupancyAcrossHeight, h);
@@ -116,7 +108,7 @@ export class PageNumberDetectionModule extends Module<Options> {
 			});
 
 		const maxT: number = Math.floor(
-			0 + (this.options.maxMarginPercentage.value * occupancyAcrossHeight.length) / 100,
+			0 + (this.options.maxMarginPercentage * occupancyAcrossHeight.length) / 100,
 		);
 		doc.margins.top = heightZeros
 			.filter(value => value < maxT)
@@ -125,7 +117,7 @@ export class PageNumberDetectionModule extends Module<Options> {
 			})[0];
 		const maxB: number = Math.floor(
 			occupancyAcrossHeight.length -
-				(this.options.maxMarginPercentage.value * occupancyAcrossHeight.length) / 100,
+				(this.options.maxMarginPercentage * occupancyAcrossHeight.length) / 100,
 		);
 		doc.margins.bottom = heightZeros
 			.filter(value => value > maxB)
@@ -133,7 +125,7 @@ export class PageNumberDetectionModule extends Module<Options> {
 				return a - b;
 			})[0];
 		const maxL: number = Math.floor(
-			0 + (this.options.maxMarginPercentage.value * occupancyAcrossWidth.length) / 100,
+			0 + (this.options.maxMarginPercentage * occupancyAcrossWidth.length) / 100,
 		);
 		doc.margins.left = widthZeros
 			.filter(value => value < maxL)
@@ -142,7 +134,7 @@ export class PageNumberDetectionModule extends Module<Options> {
 			})[0];
 		const maxR: number = Math.floor(
 			occupancyAcrossWidth.length -
-				(this.options.maxMarginPercentage.value * occupancyAcrossWidth.length) / 100,
+				(this.options.maxMarginPercentage * occupancyAcrossWidth.length) / 100,
 		);
 		doc.margins.right = widthZeros
 			.filter(value => value > maxR)
@@ -151,7 +143,7 @@ export class PageNumberDetectionModule extends Module<Options> {
 			})[0];
 
 		logger.info(
-			`Document margins for maxMarginPercentage ${this.options.maxMarginPercentage.value}: ` +
+			`Document margins for maxMarginPercentage ${this.options.maxMarginPercentage}: ` +
 				`top: ${doc.margins.top}, bottom: ${doc.margins.bottom}, ` +
 				`left: ${doc.margins.left}, right: ${doc.margins.right}`,
 		);

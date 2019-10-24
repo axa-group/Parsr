@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,15 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { inspect } from 'util';
-import { BoundingBox, Document, Element, Page, Text } from './types/DocumentRepresentation';
+import {
+	BoundingBox,
+	Document,
+	Element,
+	Font,
+	Line,
+	Page,
+	Text,
+} from './types/DocumentRepresentation';
 import logger from './utils/Logger';
 
 let mutoolImagesFolder: string = '';
@@ -73,20 +81,14 @@ export function replaceObject<T extends Element, U extends T>(
 
 // Handle Windows convert.exe conflict.
 export function getConvertPath(): string {
-	if (/^win/i.test(os.platform())) {
-		const where = spawnSync('where.exe', ['convert']);
-		let filepaths: string[] = where.stdout.toString().split(os.EOL);
-		filepaths = filepaths.filter(
-			filepath => !/System/.test(filepath) && filepath.trim().length > 0,
-		);
+	const where = spawnSync(getExecLocationCommandOnSystem(), ['magick']);
+	let filepaths: string[] = where.stdout.toString().split(os.EOL);
+	filepaths = filepaths.filter(filepath => !/System/.test(filepath) && filepath.trim().length > 0);
 
-		if (filepaths.length === 0) {
-			throw new Error('Cannot find ImageMagick convert tool. Are you sure it is installed?');
-		} else {
-			return filepaths[0];
-		}
+	if (filepaths.length === 0) {
+		throw new Error('Cannot find ImageMagick convert tool. Are you sure it is installed?');
 	} else {
-		return 'convert';
+		return filepaths[0];
 	}
 }
 
@@ -252,6 +254,17 @@ export function isAlignedLeft(
 	return true;
 }
 
+export function findElementIDInPageBySameBoundingBox(element: Element, page: Page): number {
+	let elementID: number = -1;
+	const elements: Element[] = page.getAllElements();
+	elements.forEach(e => {
+		if (BoundingBox.isEqual(e.box, element.box)) {
+			elementID = e.id;
+		}
+	});
+	return elementID;
+}
+
 export function isAlignedRight(texts: Text[], alignUncertainty: number = 0): boolean {
 	for (let i = 0; i < texts.length - 1; i++) {
 		const t1 = texts[i];
@@ -265,38 +278,26 @@ export function isAlignedRight(texts: Text[], alignUncertainty: number = 0): boo
 	return true;
 }
 
-export function isAlignedAndOverlapVertically(texts: Text[]): boolean {
-	if (texts.length === 0) {
-		return true;
-	}
-
-	return (
-		(isAligned(texts) || isAlignedCenter(texts)) &&
-		texts.every(t => t.top === texts[0].top) &&
-		texts.every(t => t.height === texts[0].height)
-	);
-}
-
 /**
  * Check if an element is contained inside a bounding box
  * @param element Element that'll be checked
  * @param box Containing box
  * @param strict Will check if the element can stay strictly in the box without overstepping (Default: `true`)
  */
-export function isInBox(element: BoundingBox, box: BoundingBox, strict: boolean = true): boolean {
+export function isInBox(element: Element, box: BoundingBox, strict: boolean = true): boolean {
 	if (strict) {
 		return (
-			element.top >= box.top &&
-			element.top + element.height <= box.top + box.height &&
-			element.left >= box.left &&
-			element.left + element.width <= box.left + box.width
+			element.box.top >= box.top &&
+			element.box.top + element.box.height <= box.top + box.height &&
+			element.box.left >= box.left &&
+			element.box.left + element.box.width <= box.left + box.width
 		);
 	} else {
 		return (
-			element.top < box.top + box.height &&
-			element.top + element.height > box.top &&
-			element.left < box.left + box.width &&
-			element.left + element.width > box.left
+			element.box.top < box.top + box.height &&
+			element.box.top + element.box.height > box.top &&
+			element.box.left < box.left + box.width &&
+			element.box.left + element.box.width > box.left
 		);
 	}
 }
@@ -597,6 +598,75 @@ export function findPositionsInArray<T>(array: T[], element: T): number[] {
 	return result;
 }
 
+export function isGeneralUpperCase(lineGroup: Line[]): boolean {
+	let generalUpperCase: boolean;
+	const upperCaseScores: boolean[] = lineGroup.map((l: Line) => {
+		if (l.toString().toUpperCase() === l.toString()) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+	if (
+		upperCaseScores.filter((s: boolean) => s === true).length >
+		Math.floor(upperCaseScores.length / 2)
+	) {
+		generalUpperCase = true;
+	} else {
+		generalUpperCase = false;
+	}
+	return generalUpperCase;
+}
+export function isGeneralTitleCase(lineGroup: Line[]): boolean {
+	let generalTitleCase: boolean;
+	const titleCaseScores: boolean[] = lineGroup.map((l: Line) => {
+		if (toTitleCase(l.toString()) === l.toString()) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+	if (
+		titleCaseScores.filter((s: boolean) => s === true).length >
+		Math.floor(titleCaseScores.length / 2)
+	) {
+		generalTitleCase = true;
+	} else {
+		generalTitleCase = false;
+	}
+	return generalTitleCase;
+}
+
+/***
+ * Finds the most common font among a list of fonts
+ */
+export function findMostCommonFont(fonts: Font[]): Font | undefined {
+	const baskets: Font[][] = [];
+	fonts.forEach((font: Font) => {
+		let basketFound: boolean = false;
+		baskets.forEach((basket: Font[]) => {
+			if (basket.length > 0 && basket[0].isEqual(font)) {
+				basket.push(font);
+				basketFound = true;
+			}
+		});
+
+		if (!basketFound) {
+			baskets.push([font]);
+		}
+	});
+
+	baskets.sort((a, b) => {
+		return b.length - a.length;
+	});
+
+	if (baskets.length > 0 && baskets[0].length > 0) {
+		return baskets[0][0];
+	} else {
+		return undefined;
+	}
+}
+
 /**
  * returns the location of the executable locator command on the current system.
  * on linux/unix machines, this is 'which', on windows machines, it is 'where'.
@@ -618,4 +688,23 @@ export function getCommandLocationOnSystem(executableName: string): string {
 	} else {
 		return res;
 	}
+}
+
+/**
+ * Returns the grouping of consecutive numbers in an array
+ * @param theArray The input array of numbers
+ */
+export function groupConsecutiveNumbersInArray(theArray: number[]): number[][] {
+	let result: number[][] = [];
+	result = theArray
+		.sort((a, b) => a - b)
+		.reduce((r, n) => {
+			const lastSubArray = r[r.length - 1];
+			if (!lastSubArray || lastSubArray[lastSubArray.length - 1] !== n - 1) {
+				r.push([]);
+			}
+			r[r.length - 1].push(n);
+			return r;
+		}, []);
+	return result;
 }

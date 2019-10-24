@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,5 +85,48 @@ export class TableCell extends Element {
 	 */
 	public set colspan(value: number) {
 		this._colspan = value;
+	}
+
+	/**
+	 * Converts the entire row into a md code string.
+	 */
+	public toMarkdown(): string {
+		let output: string = '   <td';
+		if (this.colspan > 1) {
+			output += ' colspan=' + this.colspan;
+		}
+		if (this.rowspan > 1) {
+			output += ' rowspan=' + this.rowspan;
+		}
+
+		if (this.isCenterAligned()) {
+			output += " align='center'";
+		}
+
+		output += '>';
+
+		this.content.forEach(element => {
+			output += element.toHTML();
+		});
+		return output + '</td>  \n';
+	}
+
+	private isCenterAligned(): boolean {
+		const firstChild = this.content[0];
+		if (firstChild && Array.isArray(firstChild.content)) {
+			const childContents = firstChild.content as Element[];
+			return (
+				childContents
+					.map(element => {
+						const marginLeft = Math.ceil(
+							Math.abs(element.left + element.width - this.width - this.left),
+						);
+						const marginRight = Math.ceil(element.left - this.left);
+						return Math.abs(marginLeft - marginRight) < 2;
+					})
+					.filter(boolCenterAlignment => boolCenterAlignment).length === childContents.length
+			);
+		}
+		return false;
 	}
 }

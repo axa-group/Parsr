@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@ export function extractFonts(pdfInputFile: string): Promise<void> {
 			logger.warn('MuPDF not installed !! Skip fonts extraction.');
 			resolve();
 		} else {
-			logger.info('Extracting fonts...');
 			const folder = utils.getMutoolExtractionFolder();
+			logger.info(`Extracting fonts to ${folder}...`);
 			const command = `mutool extract '${pdfInputFile}'`;
 			logger.debug(command);
 			const ret = spawnSync('mutool', ['extract', pdfInputFile], { cwd: folder });

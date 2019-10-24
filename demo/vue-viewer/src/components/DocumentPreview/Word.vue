@@ -14,12 +14,22 @@
 			:y="props.element.box.t + props.element.box.h"
 			fill="black"
 			:textLength="props.element.box.w"
+			:lengthAdjust="
+				props.fonts.filter(font => font.id === props.element.font).shift().size
+					? 'spacing'
+					: 'spacingAndGlyphs'
+			"
 			:style="{
 				fontSize: props.fonts.filter(font => font.id === props.element.font).shift().size * 0.6,
+				fill: props.fonts.filter(font => font.id === props.element.font).shift().color,
+				fontWeight: props.fonts.filter(font => font.id === props.element.font).shift().weight,
+				fontStyle: props.fonts.filter(font => font.id === props.element.font).shift().isItalic
+					? 'italic'
+					: '',
 			}"
-			:font-weight="fontWeight"
 			@click="listeners['custom-event'](props.element)"
-			>{{ props.element.content.trim() }}</text
+			>{{ !Array.isArray(props.element.content) ? props.element.content.trim() : 'Array empty'
+			}}{{ props.element.fakeSpace ? '&nbsp;' : '' }}</text
 		>
 	</g>
 </template>

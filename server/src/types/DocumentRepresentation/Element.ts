@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -211,5 +211,12 @@ export abstract class Element {
 		this._metadata = [];
 		this._properties = {};
 		this.children = [];
+	}
+
+	/**
+	 * Converts the entire element into a html code string (needed by MD table generation).
+	 */
+	public toHTML(): string {
+		return "To be implemented in '" + this.constructor.name + "'";
 	}
 }

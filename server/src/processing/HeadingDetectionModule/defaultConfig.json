@@ -1,4 +1,0 @@
-{
-	"name": "heading-detection",
-	"description": "Detects the headings in a document, given that it already contains Paragraphs, Lines and Words, along with formatting (font size, weight, etc) information."
-}

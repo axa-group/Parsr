@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,10 @@ export class Word extends Text {
 		this.content = content;
 		this.font = font;
 		this.language = language;
+	}
+
+	public toMarkDown(): string {
+		return this.properties.link ? this.properties.link : this.toString();
 	}
 
 	public toString(): string {

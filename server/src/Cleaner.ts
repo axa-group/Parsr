@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 
 import { HeaderFooterDetectionModule } from './processing/HeaderFooterDetectionModule/HeaderFooterDetectionModule';
-import { HeadingDetectionModule } from './processing/HeadingDetectionModule/HeadingDetectionModule';
 import { HierarchyDetectionModule } from './processing/HierarchyDetectionModule/HierarchyDetectionModule';
 import { KeyValueDetectionModule } from './processing/KeyValueDetectionModule/KeyValueDetectionModule';
 import { LinesToParagraphModule } from './processing/LinesToParagraphModule/LinesToParagraphModule';
@@ -59,7 +58,6 @@ export class Cleaner {
 		NumberCorrectionModule,
 		RedundancyDetectionModule,
 		WhitespaceRemovalModule,
-		HeadingDetectionModule,
 		TableDetectionModule,
 		RegexMatcherModule,
 		RemoteModule,

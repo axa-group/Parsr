@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,8 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	url?: {
-		value: number;
-	};
-	granularity?: {
-		value: string;
-		range: string[];
-	};
+	url?: string;
+	granularity?: string;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -41,12 +36,12 @@ export class RemoteModule extends Module<Options> {
 	}
 
 	public main(doc: Document): Promise<Document> {
-		const jsonExporter = new JsonExporter(doc, this.options.granularity.value);
+		const jsonExporter = new JsonExporter(doc, this.options.granularity);
 		const json: JsonExport = jsonExporter.getJson();
 
 		return axios({
 			method: 'POST',
-			url: this.options.url.value,
+			url: this.options.url,
 			data: json,
 			timeout: 0x7ffffff,
 		}).then((response: AxiosResponse<JsonExport>) => {

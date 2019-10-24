@@ -1,12 +1,12 @@
 <template>
-	<div class="PageInspector">
-		<v-expansion-panels :value="0">
+	<div class="v-application v-application--is-ltr PageInspector">
+		<v-expansion-panels v-model="elementInspectorSwitch">
 			<v-expansion-panel>
-				<v-expansion-panel-header
-					><header>
+				<v-expansion-panel-header>
+					<header>
 						<h1>Element inspector</h1>
-					</header></v-expansion-panel-header
-				>
+					</header>
+				</v-expansion-panel-header>
 				<v-expansion-panel-content>
 					<div class="PageInspectorContainer">
 						<v-icon v-if="!currentElement" size="40" color="#cccccc" style="margin-top:10px;"
@@ -16,6 +16,7 @@
 							>Select a word to inspect properties</span
 						>
 						<ul v-if="currentElement" class="elementProperties">
+							<li><next-prev :element="currentElement" /></li>
 							<li><span>Type:</span> {{ currentElement.type }}</li>
 							<li><span>Id:</span> {{ currentElement.id }}</li>
 							<li v-if="currentElement.font">
@@ -23,7 +24,7 @@
 								<span>{{ fontInfo(currentElement.font) }}</span>
 							</li>
 							<li v-if="!Array.isArray(currentElement.content)">
-								<span>Content:</span> {{ currentElement.content }}
+								<span>Content:</span> <span class="wordContent">{{ currentElement.content }}</span>
 							</li>
 							<li v-if="Object.keys(currentElement.properties).length > 0">
 								<span>Properties:</span>
@@ -32,7 +33,20 @@
 										v-for="(option, index) in Object.keys(currentElement.properties)"
 										:key="'Item_' + index"
 									>
-										<span>{{ option }}:</span> {{ currentElement.properties[option] }}
+										<span>{{ option }}:</span>
+										<span class="wordContent">{{ currentElement.properties[option] }}</span>
+									</li>
+								</ul>
+							</li>
+							<li>
+								<span>Box:</span>
+								<ul>
+									<li
+										v-for="(option, index) in Object.keys(currentElement.box)"
+										:key="'Item_' + index"
+									>
+										<span>{{ option }}:</span>
+										<span class="wordContent">{{ currentElement.box[option] }}</span>
 									</li>
 								</ul>
 							</li>
@@ -45,7 +59,10 @@
 </template>
 
 <script>
+import { mapMutations, mapGetters } from 'vuex';
+import nextPrev from './NextPrevButtons';
 export default {
+	components: { nextPrev },
 	props: {
 		pageElements: {
 			type: Array,
@@ -65,11 +82,21 @@ export default {
 		},
 	},
 	computed: {
+		...mapGetters(['elementInspectorSwitchState']),
+		elementInspectorSwitch: {
+			get() {
+				return this.elementInspectorSwitchState;
+			},
+			set(value) {
+				this.switchExpansionPanel({ panel: 'elementInspector', value });
+			},
+		},
 		currentElement() {
 			return this.selectedParentElement ? this.selectedParentElement : this.selectedElement;
 		},
 	},
 	methods: {
+		...mapMutations(['switchExpansionPanel']),
 		fontInfo(fontId) {
 			const font = this.fonts.filter(font => font.id === fontId).shift();
 			if (font) {
@@ -123,6 +150,15 @@ export default {
 	border: 0;
 	padding: 0;
 }
+
+.PageInspectorContainer span.wordContent {
+	display: inline-block;
+	max-width: 200px;
+	word-break: break-all;
+	vertical-align: top;
+	margin-left: 10px;
+}
+
 div.v-expansion-panels div.v-expansion-panel {
 	background-color: transparent;
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,14 @@ import * as path from 'path';
 import { FileManager } from './FileManager';
 import logger from './Logger';
 import { ProcessManager } from './ProcessManager';
+import { ConfigFile, ServerManager } from './ServerManager';
 import { Binder, PipelineProcess, QueueStatus, SingleFileType } from './types';
 
 export class ApiServer {
 	private outputDir: string = path.resolve(`${__dirname}/output`);
 	private fileManager: FileManager = new FileManager();
 	private processManager: ProcessManager = new ProcessManager();
+	private serverManager: ServerManager = new ServerManager();
 
 	private upload = multer({
 		storage: multer.diskStorage({
@@ -86,9 +88,77 @@ export class ApiServer {
 		// TODO add every other endpoint
 		v1_0.get('/thumbnail/:id/:page', this.handleGetThumb.bind(this));
 
+		// server info endpoints
+		v1_0.get('/default-config', this.handleGetDefaultConfig.bind(this));
+		v1_0.get('/modules', this.handleGetModules.bind(this));
+		v1_0.get('/module-config/:modulename', this.handleGetModuleConfig.bind(this));
+
 		app.listen(port, () => {
 			logger.info(`Api listening on port ${port}!`);
 		});
+	}
+
+	/**
+	 * Status: 200 - Ok. Returns the default config of the server
+	 * Status: 404 - Not Found - the default server config was not found in the pre-set location
+	 */
+	private handleGetDefaultConfig(req: Request, res: Response): void {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+
+		let defaultConfig: ConfigFile;
+		try {
+			if (req.query.specs && req.query.specs === 'true') {
+				defaultConfig = this.serverManager.getDefaultConfigWithSpecs();
+			} else {
+				defaultConfig = this.serverManager.getDefaultConfig();
+			}
+		} catch (err) {
+			logger.warn(`Cannot get default server settings: ${err}`);
+			res.sendStatus(404);
+			return;
+		}
+		logger.info(`Returning the default server settings...`);
+		res.status(200).json(defaultConfig);
+	}
+
+	/**
+	 * Status: 200 - Ok. Returns the list of all the modules on the server
+	 * Status: 404 - Not Found - the list of modules could not be obtained
+	 */
+	private handleGetModules(req: Request, res: Response): void {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+
+		let modules: object;
+		try {
+			modules = this.serverManager.getModules();
+		} catch (err) {
+			logger.warn(`Cannot get the module names: ${err}`);
+			res.sendStatus(404);
+			return;
+		}
+		logger.info(`Returning the modules on the server...`);
+		res.status(200).json(modules);
+	}
+
+	/**
+	 * Status: 200 - Ok. Returns the default config of the module
+	 * Status: 404 - Not Found - the configuration of the module could not be obtained
+	 * Status: 500 - Internal Server Error
+	 */
+	private handleGetModuleConfig(req: Request, res: Response): void {
+		res.setHeader('Access-Control-Allow-Origin', '*');
+		const moduleName = req.params.modulename;
+
+		let moduleConfig: object;
+		try {
+			moduleConfig = this.serverManager.getModuleConfig(moduleName);
+		} catch (err) {
+			logger.warn(`Cannot get the module config for module ${moduleName} ${err}`);
+			res.sendStatus(404);
+			return;
+		}
+		logger.info(`Returning the default module config for module ${moduleName}...`);
+		res.status(200).json(moduleConfig);
 	}
 
 	/**
@@ -214,6 +284,7 @@ export class ApiServer {
 	}
 
 	private handleGetCsv(req: Request, res: Response) {
+		res.setHeader('Access-Control-Allow-Origin', '*');
 		const docId: string = req.params.id;
 		const page: number = parseInt(req.params.page, 10);
 		const table: number = parseInt(req.params.table, 10);
@@ -227,14 +298,19 @@ export class ApiServer {
 	}
 
 	private handleGetCsvList(req: Request, res: Response) {
+		res.setHeader('Access-Control-Allow-Origin', '*');
 		const docId: string = req.params.id;
-		const folder: string = this.fileManager.getFilePath(docId, 'csvs');
-		const paths: string[] = fs.readdirSync(folder).map(filename => {
-			const match = filename.match(/-(\d+)-(\d+)\.csv$/);
-			return `${req.baseUrl}/csv/${docId}/${match[1]}/${match[2]}`;
-		});
+		try {
+			const folder: string = this.fileManager.getFilePath(docId, 'csvs');
+			const paths: string[] = fs.readdirSync(folder).map(filename => {
+				const match = filename.match(/-(\d+)-(\d+)\.csv$/);
+				return `${req.baseUrl}/csv/${docId}/${match[1]}/${match[2]}`;
+			});
 
-		res.json(paths);
+			res.json(paths);
+		} catch (err) {
+			res.status(404).send(err.stack);
+		}
 	}
 
 	private handleGetMarkdown(req: Request, res: Response) {
@@ -252,7 +328,7 @@ export class ApiServer {
 			const file: string = this.fileManager.getFilePath(req.params.id, type);
 			res.sendFile(file);
 		} catch (err) {
-			res.status(404).send(err);
+			res.status(404).send(err.stack);
 		}
 	}
 

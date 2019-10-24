@@ -1,14 +1,16 @@
 {
 	"name": "page-number-detection",
 	"description": "Detects the page number for each page in a document",
-	"ignorePages": {
-		"value": []
-	},
-	"maxMarginPercentage": {
-		"value": 30,
-		"range": {
-			"min": 0,
-			"max": 100
+	"specs": {
+		"ignorePages": {
+			"value": []
+		},
+		"maxMarginPercentage": {
+			"value": 30,
+			"range": {
+				"min": 0,
+				"max": 100
+			}
 		}
 	}
 }
