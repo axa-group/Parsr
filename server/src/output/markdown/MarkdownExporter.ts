@@ -66,7 +66,7 @@ export class MarkdownExporter extends Exporter {
 					element.content.forEach((para, itemNumber) => {
 						const paraText: string = para.toMarkdown();
 						if (element.isOrdered) {
-							output += (itemNumber + 1).toString() + ' ';
+							output += (itemNumber + 1).toString() + '. ';
 						} else {
 							output += '- ';
 						}

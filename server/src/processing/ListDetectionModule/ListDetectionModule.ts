@@ -111,6 +111,10 @@ export class ListDetectionModule extends Module {
 							.join('\n\n\n')}
 						`,
 					);
+					// add these as new paragraphs using mergeLinesIntoParagraphs
+				} else {
+					// remove paragraph
+					page.elements = getElementsExcept(page, [para]);
 				}
 			});
 			logger.debug(
@@ -118,86 +122,28 @@ export class ListDetectionModule extends Module {
 					utils.prettifyObject(l.content.map(p => p.toString() + '\n')),
 				)}`,
 			);
-			// TODO: push the new lists to the page
+			page.elements.push(...finalLists);
 		});
 
 		logger.info(`Finished list detection.`);
 		return doc;
 
-		function mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
-			return joinedLines.map((group: Line[]) => {
-				const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
-					new Paragraph(BoundingBox.merge(group.map((l: Line) => l.box))),
-					...group,
-				);
-				paragraph.properties.order = group[0].properties.order;
-				return paragraph;
-			});
-		}
+		// function mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
+		// 	return joinedLines.map((group: Line[]) => {
+		// 		const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
+		// 			new Paragraph(BoundingBox.merge(group.map((l: Line) => l.box))),
+		// 			...group,
+		// 		);
+		// 		paragraph.properties.order = group[0].properties.order;
+		// 		return paragraph;
+		// 	});
+		// }
 
 		function getElementsExcept(page: Page, excluding: Paragraph[]): Element[] {
 			return page.elements.filter(
 				element => !(element instanceof Paragraph) || !excluding.includes(element),
 			);
 		}
-
-		// replace existing paragraphs and add the lists to the document
-		// function replaceParagraphsByListInDocument(list: List, paragraphs: Paragraph[]) {
-		// 	// use the order of the first paragraph for the list
-		// 	list.properties.order = paragraphs[0].properties.order;
-
-		// 	logger.debug(
-		// 		`replacing element order #${list.properties.order}, a list of size ${
-		// 			list.content.length
-		// 		}, initial element count: ${[...doc.pages.map(p => p.elements.length)].reduce(
-		// 			(a, b) => a + b,
-		// 			0,
-		// 		)}`,
-		// 	);
-
-		// 	// replace the first paragraph with the list
-		// 	for (const page of doc.pages) {
-		// 		if (page.elements.includes(paragraphs[0])) {
-		// 			page.elements.splice(1, page.elements.indexOf(paragraphs[0]), list);
-		// 			break;
-		// 		}
-		// 	}
-
-		// 	// save the highest order information from the paragraph
-		// 	const orderDelta: number = paragraphs
-		// 		.slice(1, paragraphs.length)
-		// 		.map(p => p.properties.order)
-		// 		.sort((a, b) => b - a)[0];
-
-		// 	// remove the other paragraphs
-		// 	if (paragraphs.length > 1) {
-		// 		for (let i = 1; i < paragraphs.length; i++) {
-		// 			const para = paragraphs[i];
-		// 			doc.pages
-		// 				.filter(page => page.elements.includes(para))
-		// 				.forEach(page => {
-		// 					page.elements.splice(page.elements.indexOf(para), 1);
-		// 				});
-		// 		}
-		// 	}
-
-		// 	// delta back the order number from all succeeding elements in the document
-		// 	doc.pages.forEach(page => {
-		// 		page.elements
-		// 			.filter(elem => elem.properties.order > orderDelta)
-		// 			.forEach(e => {
-		// 				e.properties.order = e.properties.order - orderDelta;
-		// 			});
-		// 	});
-
-		// 	// debug output
-		// 	logger.debug(
-		// 		`done. total elements at the end ${[...doc.pages.map(p => p.elements.length)].reduce(
-		// 			(a, b) => a + b,
-		// 			0,
-		// 		)}`,
-		// 	);
-		// }
 
 		function groupLinesByConsecutiveGroups(paras: Line[]): Line[][] {
 			paras.sort((a, b) => a.properties.order - b.properties.order);
