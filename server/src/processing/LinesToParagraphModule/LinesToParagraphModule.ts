@@ -58,8 +58,11 @@ export class LinesToParagraphModule extends Module<Options> {
 		super(options, defaultOptions);
 	}
 
+	private maxLineDistance: number = 0;
+
 	public main(doc: Document): Document {
 		doc.pages.forEach((page: Page) => {
+			this.maxLineDistance = page.height * 0.2;
 			if (page.getElementsOfType<Heading>(Heading).length > 0) {
 				logger.warn(
 					'Warning: this page already has some paragraphs in it. Not performing paragraph merge.',
@@ -224,6 +227,11 @@ export class LinesToParagraphModule extends Module<Options> {
 					if (!isLineInsideParagraph(line)) {
 						paragraphLines.push(line);
 					} else if (paragraphLines.length > 0) {
+						toBeMerged.push([...paragraphLines]);
+						paragraphLines = [];
+					}
+
+					if (currentLineDistance > this.maxLineDistance && paragraphLines.length > 0) {
 						toBeMerged.push([...paragraphLines]);
 						paragraphLines = [];
 					}
