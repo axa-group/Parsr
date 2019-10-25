@@ -16,7 +16,6 @@
 
 import { spawn, spawnSync } from 'child_process';
 import * as fs from 'fs';
-import { TSV } from 'tsv';
 import { Config } from '../../types/Config';
 import { BoundingBox, Document, Font, Page, Word } from '../../types/DocumentRepresentation';
 import { TsvElement } from '../../types/TsvElement';
@@ -104,7 +103,7 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
 				logger.info('Reading tsv file...');
 
 				const tsvContent: string = fs.readFileSync(tsvOutputFile + '.tsv', 'utf-8');
-				const tsvOut: TsvElement[] = TSV.parse(tsvContent);
+				const tsvOut: TsvElement[] = parseTsv(tsvContent);
 				const pages: Page[] = [];
 
 				tsvOut.forEach((elem: TsvElement) => {
@@ -143,5 +142,21 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
 				reject(`tesseract return code is ${code}`);
 			}
 		});
+	});
+}
+
+function parseTsv(tsv: string): any[] {
+	const lines: string[] = tsv.split(/\r?\n/).filter(line => line.length !== 0);
+
+	const headers: string[] = lines.shift().split('\t');
+
+	return lines.map(line => {
+		const record: object = {};
+
+		line.split('\t').forEach((field, i) => {
+			record[headers[i]] = field;
+		});
+
+		return record;
 	});
 }
