@@ -91,10 +91,7 @@ export default {
 	},
 	computed: {
 		elementsOfType() {
-			return elementType => {
-				console.log(elementType);
-				return this.pageElements.filter(element => element.type === elementType);
-			};
+			return elementType => this.pageElements.filter(element => element.type === elementType);
 		},
 		pageElements() {
 			if (!this.appeared) {
