@@ -38,6 +38,13 @@
 				:fonts="fonts"
 				@custom-event="elementSelected"
 			/>
+			<list
+				v-for="element in elementsOfType('list')"
+				:key="element.id"
+				:element="element"
+				:fonts="fonts"
+				@custom-event="elementSelected"
+			/>
 			<!--component
 				v-for="element in page.elements"
 				:functional="true"
@@ -56,8 +63,9 @@ import scrollItemMixin from '@/mixins/scrollItemMixin.js';
 import Paragraph from '@/components/DocumentPreview/Paragraph';
 import Heading from '@/components/DocumentPreview/Heading';
 import TableData from '@/components/DocumentPreview/Table';
+import List from '@/components/DocumentPreview/List';
 export default {
-	components: { Paragraph, Heading, TableData },
+	components: { Paragraph, Heading, TableData, List },
 	mixins: [scrollItemMixin],
 	data() {
 		return {
@@ -240,5 +248,11 @@ export default {
 }
 g.TableContainer text {
 	dominant-baseline: text-after-edge;
+}
+
+.VisibleLists rect.List {
+	fill: transparent;
+	stroke: orange;
+	stroke-width: 1;
 }
 </style>
