@@ -17,6 +17,7 @@
 				VisibleParagraphs: isParagraphFilter,
 				VisibleHeadings: isHeadingFilter,
 				VisibleTables: isTableFilter,
+				VisibleLists: isListFilter,
 			}"
 		/>
 		<div style="border-left: solid 1px #ebebf1;">
@@ -90,6 +91,9 @@ export default {
 		},
 		isTableFilter() {
 			return this.inspectorFilters.tables;
+		},
+		isListFilter() {
+			return this.inspectorFilters.lists;
 		},
 	},
 	mounted() {

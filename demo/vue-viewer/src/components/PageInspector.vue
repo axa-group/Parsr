@@ -34,6 +34,14 @@
 							@change="swapFilters()"
 						></v-switch>
 						<v-switch
+							v-model="listsFilter"
+							label="Lists"
+							class="switch"
+							color="indigo darken-3"
+							:hide-details="true"
+							@change="swapFilters()"
+						></v-switch>
+						<v-switch
 							v-model="tablesFilter"
 							label="Tables"
 							class="switch"
@@ -66,6 +74,7 @@ export default {
 			paragraphsFilter: this.filters.paragraphs,
 			tablesFilter: this.filters.tables,
 			headingsFilter: this.filters.headings,
+			listsFilter: this.filters.lists,
 		};
 	},
 	props: {
@@ -94,6 +103,7 @@ export default {
 				paragraphs: this.paragraphsFilter,
 				tables: this.tablesFilter,
 				headings: this.headingsFilter,
+				lists: this.listsFilter,
 			};
 			this.$store.commit('setInspectorFilters', newFilters);
 		},
