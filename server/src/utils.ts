@@ -334,24 +334,12 @@ export function hasSameLocation(uncertainty: number, ...texts: Text[]): boolean 
 }
 
 /**
- * Verifies if a string of text is a bullet point or not.
- * @param text The input text to be checked.
- * @returns true/false representing the result of the check.
+ * generates 'count' number of elements from start
+ * @param start start number
+ * @param count number of elements
  */
-export function isBullet(text: Text): boolean {
-	const bulletCharacters: string[] = ['●', '', '•', '', 'º', '■', '–', '·', '*', '-'];
-	const bulletOr = bulletCharacters.map(b => `\\${b}`).join('|');
-	return new RegExp(`^(${bulletOr})`).test(text.toString().trim());
-}
-
-/**
- * Verifies if a string of text is a numbered list item or not.
- * @param text The input text to be checked.
- * @returns true/false representing the result of the check.
- */
-export function isNumbering(text: Text): boolean {
-	const regex = /^\d[.)0-9]*/gm;
-	return regex.test(text.toString().trim());
+export function range(start, count) {
+	return Array.apply(0, Array(count)).map((_element, index) => index + start);
 }
 
 /**

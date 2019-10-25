@@ -54,6 +54,7 @@ export interface JsonElement {
 	rowspan?: number;
 	colspan?: number;
 	isOrdered?: boolean;
+	firstItemNumber?: number;
 	properties?: JsonProperties;
 	metadata?: number[];
 	level?: number;

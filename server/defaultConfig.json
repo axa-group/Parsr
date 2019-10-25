@@ -59,6 +59,7 @@
 				"tolerance": 0.25
 			}
 		],
+		"list-detection",
 		[
 			"page-number-detection",
 			{

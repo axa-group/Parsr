@@ -107,13 +107,13 @@ export class LinesToParagraphModule extends Module<Options> {
 				page.elements = otherElements.concat([...headings, ...paras]);
 
 				logger.debug(
-					`Made ${headings.length} headings and ${paras.length} from ${lines.length} lines`,
+					`Made ${headings.length} headings and ${paras.length} paras from ${lines.length} lines`,
 				);
 			} else {
 				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(joinedLines);
 				page.elements = otherElements.concat(paras);
 
-				logger.debug(`Made ${paras.length} from ${lines.length} lines`);
+				logger.debug(`Made ${paras.length} paras from ${lines.length} lines`);
 			}
 			// this.getPageParagraphs(page).map(paragraph => {
 			// console.log('Paragraph ' + paragraph.id + ' order ' + paragraph.properties.order);
