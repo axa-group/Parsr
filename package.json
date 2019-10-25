@@ -17,7 +17,7 @@
 		"test": "test"
 	},
 	"scripts": {
-		"test": "mocha -t 10000 -r ts-node/register test/**/*.spec.ts",
+		"test": "mocha -t 10000 -r ts-node/register **/*.spec.ts",
 		"copyAssets": "copyfiles -u 2 \"./server/assets/*\" \"./dist/assets/\"",
 		"build:ts": "npm run copyAssets && tsc --outDir ./dist",
 		"build:ts:watch": "npm run copyAssets && tsc -w --outDir ./dist",
