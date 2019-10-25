@@ -15,6 +15,7 @@
  */
 
 import { parseString } from 'xml2js';
+import { ListDetectionModule } from '../../processing/ListDetectionModule/ListDetectionModule';
 import {
 	Barcode,
 	BoundingBox,
@@ -302,10 +303,10 @@ export class AbbyyTools extends Extractor {
 	private treatListItem(paragraph: Paragraph): boolean {
 		let isOrderedList: boolean = false;
 		if (paragraph.content.length !== 0) {
-			if (utils.isBullet(paragraph.content[0].content[0])) {
+			if (ListDetectionModule.isBullet(paragraph.content[0].content[0])) {
 				isOrderedList = false;
 				paragraph.content[0].content.shift();
-			} else if (utils.isNumbering(paragraph.content[0].content[0])) {
+			} else if (ListDetectionModule.isNumbering(paragraph.content[0].content[0])) {
 				isOrderedList = true;
 			}
 		}

@@ -63,16 +63,17 @@ export class MarkdownExporter extends Exporter {
 					output += element.toMarkdown();
 					output += '\n'.repeat(2);
 				} else if (element instanceof List) {
-					element.content.forEach((para, itemNumber) => {
+					element.content.forEach((para, index) => {
 						const paraText: string = para.toMarkdown();
 						if (element.isOrdered) {
-							output += (itemNumber + 1).toString() + '. ';
+							output += (element.firstItemNumber + index).toString() + '. ';
 						} else {
 							output += '- ';
 						}
 						output += paraText;
 						output += '\n';
 					});
+					output += '\n';
 				} else if (element instanceof Table) {
 					output += element.toMarkdown();
 					output += '\n'.repeat(2);

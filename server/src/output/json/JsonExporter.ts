@@ -223,6 +223,7 @@ export class JsonExporter extends Exporter {
 			}
 		} else if (element instanceof List) {
 			jsonElement.isOrdered = element.isOrdered;
+			jsonElement.firstItemNumber = element.firstItemNumber;
 			jsonElement.content = element.content.map(elem => this.elementToJsonElement(elem));
 		} else if (element instanceof Table) {
 			jsonElement.content = element.content.map(elem => this.elementToJsonElement(elem));

@@ -23,6 +23,7 @@ import {
 	List,
 	Page,
 	Paragraph,
+	Text,
 } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
@@ -36,6 +37,26 @@ import { Module } from '../Module';
  */
 export class ListDetectionModule extends Module {
 	public static moduleName = 'list-detection';
+	/**
+	 * Verifies if a string of text is a bullet point or not.
+	 * @param text The input text to be checked.
+	 * @returns true/false representing the result of the check.
+	 */
+	public static isBullet(text: Text): boolean {
+		const bulletCharacters: string[] = ['●', '', '•', '', 'º', '■', '–', '·', '*', '-', '→'];
+		const bulletOr = bulletCharacters.map(b => `\\${b}`).join('|');
+		return new RegExp(`^(${bulletOr})`).test(text.toString().trim());
+	}
+
+	/**
+	 * Verifies if a string of text is a numbered list item or not.
+	 * @param text The input text to be checked.
+	 * @returns true/false representing the result of the check.
+	 */
+	public static isNumbering(text: Text): boolean {
+		const regex = /^\d[.:)0-9]*/gm;
+		return regex.test(text.toString().trim());
+	}
 
 	public main(doc: Document): Document {
 		logger.info(`Starting list detection..`);
@@ -50,7 +71,7 @@ export class ListDetectionModule extends Module {
 				let listFound: boolean = false;
 				const orderedIdx: number[] = [...Array(para.content.length).keys()]
 					.filter(i => para.content[i].content.length > 1)
-					.filter(i => detectKindOfListItem(para.content[i]) === 'ordered');
+					.filter(i => this.detectKindOfListItem(para.content[i]) === 'ordered');
 
 				if (orderedIdx.includes(0)) {
 					const orderedLineGroup: Line[][] = [];
@@ -79,7 +100,7 @@ export class ListDetectionModule extends Module {
 
 				const unorderedIdx: number[] = [...Array(para.content.length).keys()]
 					.filter(i => para.content[i].content.length > 1)
-					.filter(i => detectKindOfListItem(para.content[i]) === 'unordered');
+					.filter(i => this.detectKindOfListItem(para.content[i]) === 'unordered');
 
 				if (unorderedIdx.includes(0)) {
 					const unorderedLineGroup: Line[][] = [];
@@ -110,15 +131,15 @@ export class ListDetectionModule extends Module {
 				if (listFound) {
 					if (rogueLines.length > 0) {
 						logger.debug(
-							`rogue lines leftover are : \n${groupLinesByConsecutiveGroups(rogueLines)
+							`rogue lines leftover are : \n${this.groupLinesByConsecutiveGroups(rogueLines)
 								.map(g => g.map(l => l.toString()).join('\n'))
 								.join('\n\n\n')}
 							`,
 						);
-						// add these as new paragraphs using mergeLinesIntoParagraphs
+						// TODO add these as new paragraphs using mergeLinesIntoParagraphs
 					} else {
 						// remove paragraph
-						page.elements = getElementsExcept(page, [para]);
+						page.elements = this.getElementsExcept(page, [para]);
 					}
 				}
 			});
@@ -127,65 +148,84 @@ export class ListDetectionModule extends Module {
 					utils.prettifyObject(l.content.map(p => p.toString() + '\n')),
 				)}`,
 			);
+
+			// clean lists - make sure the numbering is removed.
+			finalLists.map(l => this.removeNumberingFromList(l));
 			page.elements.push(...finalLists);
 		});
 
 		logger.info(`Finished list detection.`);
 		return doc;
+	}
 
-		// function mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
-		// 	return joinedLines.map((group: Line[]) => {
-		// 		const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
-		// 			new Paragraph(BoundingBox.merge(group.map((l: Line) => l.box))),
-		// 			...group,
-		// 		);
-		// 		paragraph.properties.order = group[0].properties.order;
-		// 		return paragraph;
-		// 	});
-		// }
-
-		function getElementsExcept(page: Page, excluding: Paragraph[]): Element[] {
-			return page.elements.filter(
-				element => !(element instanceof Paragraph) || !excluding.includes(element),
-			);
-		}
-
-		function groupLinesByConsecutiveGroups(paras: Line[]): Line[][] {
-			paras.sort((a, b) => a.properties.order - b.properties.order);
-			const ret: Line[][] = [];
-			if (!paras.length) {
-				return ret;
+	private detectKindOfListItem(text: Text): string {
+		let listType: string = 'none';
+		if (text.content.length !== 0) {
+			if (ListDetectionModule.isBullet(text)) {
+				listType = 'unordered';
+			} else if (ListDetectionModule.isNumbering(text)) {
+				listType = 'ordered';
 			}
-			let ixf = 0;
-			for (let ixc = 1; ixc < paras.length; ixc += 1) {
-				if (paras[ixc].properties.order !== paras[ixc - 1].properties.order + 1) {
-					ret.push(paras.slice(ixf, ixc));
-					ixf = ixc;
+		}
+		return listType;
+	}
+
+	private removeNumberingFromList(list: List) {
+		list.content.forEach((para: Paragraph, index: number) => {
+			let itemNumber: number = 0;
+			const firstLine: Line = para.content[0];
+			if (this.detectKindOfListItem(firstLine.content[0]) !== 'none') {
+				const itemIndicator: string = firstLine.content.splice(0, 1)[0].toString();
+				if (list.isOrdered) {
+					itemNumber = parseFloat(itemIndicator.replace(/[^0-9]/g, ''));
+					if (index === 0) {
+						list.firstItemNumber = itemNumber;
+					}
 				}
 			}
-			ret.push(paras.slice(ixf, paras.length));
+		});
+	}
+
+	private getElementsExcept(page: Page, excluding: Paragraph[]): Element[] {
+		return page.elements.filter(
+			element => !(element instanceof Paragraph) || !excluding.includes(element),
+		);
+	}
+
+	private groupLinesByConsecutiveGroups(paras: Line[]): Line[][] {
+		paras.sort((a, b) => a.properties.order - b.properties.order);
+		const ret: Line[][] = [];
+		if (!paras.length) {
 			return ret;
 		}
-
-		function detectKindOfListItem(line: Line): string {
-			let listType: string = 'none';
-			if (line.content.length !== 0) {
-				if (utils.isBullet(line)) {
-					listType = 'unordered';
-				} else if (utils.isNumbering(line)) {
-					listType = 'ordered';
-				}
+		let ixf = 0;
+		for (let ixc = 1; ixc < paras.length; ixc += 1) {
+			if (paras[ixc].properties.order !== paras[ixc - 1].properties.order + 1) {
+				ret.push(paras.slice(ixf, ixc));
+				ixf = ixc;
 			}
-			return listType;
 		}
-
-		// function isAligned(bullet: Text, text: Text): boolean {
-		// 	return (
-		// 		bullet.left + bullet.width + maxSpace >= text.left &&
-		// 		bullet.left < text.left + text.width &&
-		// 		((bullet.top <= text.top && bullet.top + bullet.height >= text.top) ||
-		// 			(bullet.top >= text.top && bullet.top <= text.top + text.height))
-		// 	);
-		// }
+		ret.push(paras.slice(ixf, paras.length));
+		return ret;
 	}
+
+	// private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
+	// 	return joinedLines.map((group: Line[]) => {
+	// 		const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
+	// 			new Paragraph(BoundingBox.merge(group.map((l: Line) => l.box))),
+	// 			...group,
+	// 		);
+	// 		paragraph.properties.order = group[0].properties.order;
+	// 		return paragraph;
+	// 	});
+	// }
+
+	// private isAligned(bullet: Text, text: Text): boolean {
+	// 	return (
+	// 		bullet.left + bullet.width + maxSpace >= text.left &&
+	// 		bullet.left < text.left + text.width &&
+	// 		((bullet.top <= text.top && bullet.top + bullet.height >= text.top) ||
+	// 			(bullet.top >= text.top && bullet.top <= text.top + text.height))
+	// 	);
+	// }
 }
