@@ -48,10 +48,10 @@ const defaultExtractor: TableExtractor = {
 
 		// find python executable name
 		let pythonLocation: string = utils.getCommandLocationOnSystem('python3');
-		if (pythonLocation === '') {
+		if (!pythonLocation) {
 			pythonLocation = utils.getCommandLocationOnSystem('python');
 		}
-		if (pythonLocation === '') {
+		if (!pythonLocation) {
 			return {
 				stdout: '',
 				stderr: 'Unable to find python on the system. Are you sure it is installed?',

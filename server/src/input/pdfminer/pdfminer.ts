@@ -16,7 +16,6 @@
 
 import { spawn } from 'child_process';
 import * as fs from 'fs';
-import * as os from 'os';
 import { parseString } from 'xml2js';
 import {
 	BoundingBox,
@@ -45,10 +44,10 @@ export function execute(pdfInputFile: string): Promise<Document> {
 		return repairPdf(pdfInputFile).then(repairedPdf => {
 			const xmlOutputFile: string = utils.getTemporaryFile('.xml');
 			let pdf2txtLocation: string = utils.getCommandLocationOnSystem('pdf2txt.py');
-			if (pdf2txtLocation === '') {
+			if (!pdf2txtLocation) {
 				pdf2txtLocation = utils.getCommandLocationOnSystem('pdf2txt');
 			}
-			if (pdf2txtLocation === '') {
+			if (!pdf2txtLocation) {
 				logger.debug(
 					`Unable to find pdf2txt, the pdfminer executable on the system. Are you sure it is installed?`,
 				);
@@ -352,7 +351,7 @@ function ncolourToHex(color: string) {
 function repairPdf(filePath: string) {
 	return new Promise<string>(resolve => {
 		const mutoolPath = utils.getCommandLocationOnSystem('mutool');
-		if (mutoolPath === '' || (/^win/i.test(os.platform()) && /no mutool in/.test(mutoolPath))) {
+		if (!mutoolPath) {
 			logger.warn('MuPDF not installed !! Skip clean PDF.');
 			resolve(filePath);
 		} else {
