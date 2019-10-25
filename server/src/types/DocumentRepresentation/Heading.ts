@@ -50,7 +50,7 @@ export class Heading extends Paragraph {
 	 * Converts the entire element into a html code string (needed by MD table generation).
 	 */
 	public toHTML(): string {
-		return '<b>' + this.content.map(line => line.toHTML()).join(' ') + '</b>';
+		return '<strong>' + this.content.map(line => line.toHTML()).join(' ') + '</strong>';
 	}
 
 	/**

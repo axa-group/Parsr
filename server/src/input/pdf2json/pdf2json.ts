@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import * as fs from 'fs';
 import { XmlEntities } from 'html-entities';
+import * as os from 'os';
 import { BoundingBox, Document, Font, Page, Text, Word } from '../../types/DocumentRepresentation';
 import { Pdf2JsonFont } from '../../types/Pdf2JsonFont';
 import { Pdf2JsonPage } from '../../types/Pdf2JsonPage';
@@ -147,8 +148,10 @@ function findOrCreate(newFont: Font, fonts: Font[]): Font {
  */
 function repairPdf(filePath: string) {
 	return new Promise<string>(resolve => {
-		const mutoolPath = utils.getCommandLocationOnSystem('mutool');
-		if (!mutoolPath) {
+		const mutoolPath = spawnSync(utils.getExecLocationCommandOnSystem(), ['mutool']).output.join(
+			'',
+		);
+		if (mutoolPath === '' || (/^win/i.test(os.platform()) && /no mutool in/.test(mutoolPath))) {
 			logger.warn('MuPDF not installed !! Skip clean PDF.');
 			resolve(filePath);
 		} else {
