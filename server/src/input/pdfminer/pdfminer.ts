@@ -28,6 +28,7 @@ import {
 } from '../../types/DocumentRepresentation';
 import { PdfminerPage } from '../../types/PdfminerPage';
 import { PdfminerTextline } from '../../types/PdfminerTextline';
+import { PdfminerText } from '../../types/PdfminerText';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 
@@ -59,7 +60,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
 				`${pdf2txtLocation} ${[
 					'-c',
 					'utf-8',
-					'-A',
+					// '-A', crashes pdf2txt.py using Benchmark axa.uk.business.owntools.pdf
 					'-t',
 					'xml',
 					'-o',
@@ -75,7 +76,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
 			const pdfminer = spawn(pdf2txtLocation, [
 				'-c',
 				'utf-8',
-				'-A',
+				// '-A', crashes pdf2txt.py using Benchmark axa.uk.business.owntools.pdf
 				'-t',
 				'xml',
 				'-o',
@@ -211,8 +212,9 @@ function breakLineIntoWords(
 ): Word[] {
 	const notAllowedChars = ['\u200B']; // &#8203 Zero Width Space
 	const words: Word[] = [];
+	const fakeSpaces = thereAreFakeSpaces(line);
 	const chars: Character[] = line.text
-		.filter((char, index) => !notAllowedChars.includes(char._) && !isFakeChar(line, index))
+		.filter(char => !notAllowedChars.includes(char._) && !isFakeChar(char, fakeSpaces))
 		.map(char => {
 			if (char._ === undefined) {
 				return undefined;
@@ -308,18 +310,34 @@ function breakLineIntoWords(
 	return words;
 }
 
-function isFakeChar(line: PdfminerTextline, index: number): boolean {
-	const emptyWithAttr = line.text.filter(text => text._ === undefined && text._attr !== undefined)
-		.length;
-	const emptyWithNoAttr = line.text.filter(text => text._ === undefined && text._attr === undefined)
-		.length;
+function thereAreFakeSpaces(lines: PdfminerTextline): boolean {
+	// Will remove all <text> </text> only if in line we found
+	// <text> </text> follwed by empty <text> but with attributes
+	// <text font="W" bbox="W" colourspace="X" ncolour="Y" size="Z"> </text>
+	const emptyWithAttr = lines.text
+		.map((word, index) => {
+			return { text: word, pos: index };
+		})
+		.filter(word => word.text._ === undefined && word.text._attr !== undefined)
+		.map(word => word.pos);
+	const emptyWithNoAttr = lines.text
+		.map((word, index) => {
+			return { text: word, pos: index };
+		})
+		.filter(word => word.text._ === undefined && word.text._attr === undefined)
+		.map(word => word.pos);
 
-	if (
-		emptyWithAttr > 0 &&
-		emptyWithNoAttr > 0 &&
-		index + 1 < line.text.length &&
-		line.text[index]._attr === undefined
-	) {
+	let fakeSpaces = false;
+	emptyWithNoAttr.forEach(pos => {
+		if (emptyWithAttr.includes(pos + 1)) {
+			fakeSpaces = true;
+		}
+	});
+	return fakeSpaces;
+}
+
+function isFakeChar(word: PdfminerText, fakeSpacesInLine: boolean): boolean {
+	if (fakeSpacesInLine && word._ === undefined && word._attr === undefined) {
 		return true;
 	}
 
