@@ -108,7 +108,6 @@ export class LinesToParagraphModule extends Module<Options> {
 				const newStructures = this.extractHeadings(joinedLines, textBodyFont);
 				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
 				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
-				this.computeHeadingLevels(headings);
 				page.elements = otherElements.concat([...headings, ...paras]);
 
 				logger.debug(
@@ -127,6 +126,9 @@ export class LinesToParagraphModule extends Module<Options> {
 			return page;
 		});
 
+		if (this.options.computeHeadings) {
+			this.computeHeadingLevels(doc);
+		}
 		return doc;
 	}
 
@@ -163,7 +165,6 @@ export class LinesToParagraphModule extends Module<Options> {
 				const newStructures = this.extractHeadings(joinedLines, textBodyFont);
 				const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
 				const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
-				this.computeHeadingLevels(headings);
 				element.content = [...headings, ...paras];
 			} else {
 				element.content = this.mergeLinesIntoParagraphs(joinedLines);
@@ -480,23 +481,41 @@ export class LinesToParagraphModule extends Module<Options> {
 		}
 	}
 
-	private computeHeadingLevels(headings: Heading[]) {
-		const paraGroupsByFontSize: Heading[][] = []; // make paragraph groups by font size
-		let visitedFontSizes: number[] = [];
-		for (const heading of headings) {
-			const paraFont: Font = heading.getMainFont();
-			if (visitedFontSizes.includes(Math.floor(paraFont.size))) {
-				continue;
-			}
-			const pos = utils.findPositionsInArray(
-				headings.map(h => Math.floor(h.getMainFont().size)),
-				Math.floor(paraFont.size),
+	private computeHeadingLevels(document: Document) {
+		const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
+		const fontInfo = (heading: Heading) => {
+			return {
+				size: heading.getMainFont().size,
+				weight: heading.getMainFont().weight,
+				upperCase: utils.isGeneralUpperCase(heading.content),
+			};
+		};
+		// get all heading fonts sorted by size & upperCase
+		// TODO: ¿ sort also by weight ?
+		const sortedFonts = headings
+			.map(h => fontInfo(h))
+			.sort((a, b) => {
+				if (a.size !== b.size) {
+					return b.size - a.size;
+				}
+				return a.upperCase === b.upperCase ? 0 : a.upperCase ? -1 : 1;
+			});
+		// remove duplicates
+		const uniqueSortedFonts = [...new Set(sortedFonts.map(f => JSON.stringify(f)))].map(s =>
+			JSON.parse(s),
+		);
+
+		const serializeFont = (heading: Heading) => {
+			return (
+				fontInfo(heading).size + '|' + fontInfo(heading).weight + '|' + fontInfo(heading).upperCase
 			);
-			paraGroupsByFontSize.push(pos.map(i => headings[i]));
-			visitedFontSizes = [...new Set([...visitedFontSizes, Math.floor(paraFont.size)])];
-		}
-		paraGroupsByFontSize.forEach((group: Heading[], index: number) => {
-			group.forEach((heading: Heading) => (heading.level = index + 1));
+		};
+
+		headings.forEach(h => {
+			const level = uniqueSortedFonts
+				.map(f => f.size + '|' + f.weight + '|' + f.upperCase)
+				.indexOf(serializeFont(h));
+			h.level = level + 1;
 		});
 	}
 }
