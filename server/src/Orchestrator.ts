@@ -31,7 +31,7 @@ export class Orchestrator {
 	/**
 	 * Constructs the orchestrator object with a specific extractor
 	 *
-	 * @param extractor The choice of the extractor to be used. To be chosen among abbyy, tesseract, pdf2json, etc.
+	 * @param extractor The choice of the extractor to be used. To be chosen among abbyy, tesseract, pdfminer, etc.
 	 * @param cleaner The cleaner module specifies the handler for all cleaning tasks in the second
 	 * phase of the doc treatment.
 	 */

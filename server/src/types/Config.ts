@@ -26,7 +26,7 @@ export class Config {
 		this.output = config.output;
 
 		if (typeof this.extractor.pdf === 'undefined') {
-			this.extractor.pdf = 'pdf2json';
+			this.extractor.pdf = 'pdfminer';
 		}
 
 		if (typeof this.extractor.img === 'undefined') {
@@ -58,7 +58,7 @@ export interface OutputConfig {
 export type CleanerConfig = Array<string | [string, object]>;
 
 export interface ExtractorConfig {
-	pdf: 'pdf2json' | 'pdfminer' | 'tesseract' | 'abbyy';
+	pdf: 'pdfminer' | 'tesseract' | 'abbyy';
 	img: 'tesseract' | 'abbyy' | 'google-vision';
 	language: TesseractLanguage | TesseractLanguage[];
 }

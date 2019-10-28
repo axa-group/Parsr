@@ -13,8 +13,7 @@
       - [1.2.1. 安装 Linux 环境下的依赖](#121-installing-dependencies-under-linux)
       - [1.2.2. 安装 MacOS 环境下的依赖](#122-installing-dependencies-under-macos)
       - [1.2.3. 安装 Windows 环境下的依赖](#123-installing-dependencies-under-windows)
-        - [1.2.3.1. pdf2json](#1231-pdf2json)
-        - [1.2.3.2. Tesseract](#1232-tesseract)
+        - [1.2.3.1. Tesseract](#1232-tesseract)
     - [1.3. 可选依赖](#13-optional-dependencies)
       - [1.3.1. MuPDF](#131-mupdf)
       - [1.3.2. Pandoc](#132-pandoc)
@@ -60,13 +59,13 @@ Docker 容器已经上传到 [Docker Hub](https://hub.docker.com/u/axarev).
 ```sh
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
-sudo apt-get install nodejs npm qpdf imagemagick pdf2json tesseract-ocr libtesseract-dev
+sudo apt-get install nodejs npm qpdf imagemagick tesseract-ocr libtesseract-dev
 ```
 
 在 **Arch** 操作系统下 :
 
 ```sh
-pacman -S nodejs npm qpdf imagemagick pdf2json tesseract
+pacman -S nodejs npm qpdf imagemagick tesseract
 ```
 
 #### 1.2.2. 安装 MacOS 环境下的依赖
@@ -81,7 +80,7 @@ pacman -S nodejs npm qpdf imagemagick pdf2json tesseract
 之后用 brew 指令安装依赖：
 
 ```sh
-brew install node qpdf imagemagick pdf2json tesseract tesseract-lang
+brew install node qpdf imagemagick tesseract tesseract-lang
 ```
 
 #### 1.2.3. 安装 Windows 环境下的依赖
@@ -96,19 +95,7 @@ brew install node qpdf imagemagick pdf2json tesseract tesseract-lang
 
 3. [下载安装 **`node.js`**](https://nodejs.org/en/download)
 
-##### 1.2.3.1. pdf2json
-
-下载最新版 pdf2json (`.msi` file)：[点击这里](https://github.com/flexpaper/pdf2json/releases)
-
-之后将目录里的 `pdf2json.exe` 添加到系统路径 PATH:
-
-如果已经将其安装到`C:\Program Files (x86)\PDF2JSON`，您可以通过[用户界面](https://docs.alfresco.com/4.2/tasks/fot-addpath.html)进行路径添加，或者在 Powershell 中使用如下指令(以管理员身份运行):
-
-```sh
-setx PATH "\$env:PATH;C:\Program Files (x86)\PDF2JSON" -m
-```
-
-##### 1.2.3.2. Tesseract
+##### 1.2.3.1. Tesseract
 
 您可以在 [the wiki](https://github.com/UB-Mannheim/tesseract/wiki) 下载 Tesseract 4.0 64-bit for Windows 或者查看更新
 
@@ -314,8 +301,6 @@ Parsr 默认的 OCR 解决方案是 tesseract，这是 Parsr 的基本依赖。
 
 根据平台要处理的文档类型，应安装以下一个或多个依赖项。
 
-如果要将包含数字（或*可选定*）文本元素的简单 PDF 输入系统，则需要安装**`pdf2json` **库。
-
 如果图像（`jpg`，`png`，`tiff`等）要与工具一起使用，那么该工具还支持使用以下两个基于 OCR 的解决方案作为底层提取模块：
 
 1. **`tesseract`** : 开源，且支持超过 100 种语言，Google 的 Tesseract 是一款免费的 OCR 解决方案。 但是不能检测到文本格式或表格数据。
@@ -338,11 +323,10 @@ Parsr 默认的 OCR 解决方案是 tesseract，这是 Parsr 的基本依赖。
 
 1. **QPDF**: Apache [http://qpdf.sourceforge.net](http://qpdf.sourceforge.net/)
 2. **ImageMagick**: Apache 2.0 [https://imagemagick.org/script/license.php](https://imagemagick.org/script/license.php)
-3. **Pdf2json**: Apache 2.0 [https://github.com/modesty/pdf2json/blob/scratch/quadf-forms/license.txt](https://github.com/modesty/pdf2json/blob/scratch/quadf-forms/license.txt)
-4. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
-5. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)
-6. **MuPDF** (Optional dependency): AGPL [https://mupdf.com/license.html](https://mupdf.com/license.html)
-7. **Pandoc** (Optional dependency): GPL [https://github.com/jgm/pandoc](https://github.com/jgm/pandoc)
+3. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
+4. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)
+5. **MuPDF** (Optional dependency): AGPL [https://mupdf.com/license.html](https://mupdf.com/license.html)
+6. **Pandoc** (Optional dependency): GPL [https://github.com/jgm/pandoc](https://github.com/jgm/pandoc)
 
 ## 7. 证书
 

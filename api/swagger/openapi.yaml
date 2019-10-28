@@ -311,7 +311,7 @@ components:
           properties:
             pdf:
               type: string
-              enum: ['pdf2json', 'tesseract', 'abbyy']
+              enum: ['pdfminer', 'tesseract', 'abbyy']
             img:
               type: string
               enum: ['tesseract', 'abbyy']

@@ -15,8 +15,7 @@ It provides users with clean structured and label-enriched information set for r
       - [1.2.1. Installing Dependencies under Linux](#121-installing-dependencies-under-linux)
       - [1.2.2. Installing Dependencies under MacOS](#122-installing-dependencies-under-macos)
       - [1.2.3. Installing Dependencies under Windows](#123-installing-dependencies-under-windows)
-        - [1.2.3.1. pdf2json](#1231-pdf2json)
-        - [1.2.3.2. Tesseract](#1232-tesseract)
+        - [1.2.3.1. Tesseract](#1231-tesseract)
     - [1.3. Optional Dependencies](#13-optional-dependencies)
       - [1.3.1. MuPDF](#131-mupdf)
       - [1.3.2. Pandoc](#132-pandoc)
@@ -62,14 +61,14 @@ Under a **Debian** based distribution:
 ```sh
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
-sudo apt-get install nodejs npm qpdf imagemagick pdf2json python-pdfminer tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
+sudo apt-get install nodejs npm qpdf imagemagick python-pdfminer tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
 pip install camelot-py
 ```
 
 Under **Arch** Linux :
 
 ```sh
-pacman -S nodejs npm qpdf imagemagick pdf2json pdfminer tesseract python-pip
+pacman -S nodejs npm qpdf imagemagick pdfminer tesseract python-pip
 pip install camelot-py
 ```
 
@@ -85,7 +84,7 @@ To install it, launch the following in a terminal
 Next, install the required dependencies:
 
 ```sh
-brew install node qpdf imagemagick pdf2json tesseract tesseract-lang
+brew install node qpdf imagemagick tesseract tesseract-lang
 ```
 
 To install the python based depedencies (pdfminer and camelot), install, first install `pip`:
@@ -117,18 +116,7 @@ pip install ghostscript camelot-py
 4. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install-deps.html#for-windows).
 5. For the **pdfminer** extractor for pdfs, [follow these steps](https://github.com/pdfminer/pdfminer.six#how-to-install).
 
-##### 1.2.3.1. pdf2json
-
-Download the latest release (`.msi` file) of pdf2json [here](https://github.com/flexpaper/pdf2json/releases).
-
-Then, you need to add `pdf2json.exe` to your PATH.
-If you have install it in `C:\Program Files (x86)\PDF2JSON`, you can either add it [using the user interface](https://docs.alfresco.com/4.2/tasks/fot-addpath.html) or execute the following command in Powershell (Run as Administrator):
-
-```sh
-setx PATH "\$env:PATH;C:\Program Files (x86)\PDF2JSON" -m
-```
-
-##### 1.2.3.2. Tesseract
+##### 1.2.3.1. Tesseract
 
 You can download Tesseract 4.0 64-bit for Windows or check out other available formats on [the wiki](https://github.com/UB-Mannheim/tesseract/wiki).
 
@@ -339,8 +327,6 @@ The following _required_ dependencies need to be installed for Parsr to work pro
 
 Depending upon the type of documents to be treated by the platform, one or multiple of the following dependencies should be installed.
 
-If simple PDFs containing digital (or _selectable_) textual elements are to be fed into the system, the **`pdf2json`** library needs to be installed.
-
 If images (`jpg`, `png`, `tiff`, etc.) are to be used with the tool, then the tool also supports the use of the following two OCR based solutions as an underlying extraction module:
 
 1. **`tesseract`** : Open source, support for over ~100 languages, Google's Tesseract is a free, on premise OCR solution. However, text formatting, or tabular data is not detected.
@@ -363,12 +349,11 @@ Third Party Libraries licenses :
 
 1. **QPDF**: Apache [http://qpdf.sourceforge.net](http://qpdf.sourceforge.net/)
 2. **ImageMagick**: Apache 2.0 [https://imagemagick.org/script/license.php](https://imagemagick.org/script/license.php)
-3. **Pdf2json**: Apache 2.0 [https://github.com/modesty/pdf2json/blob/scratch/quadf-forms/license.txt](https://github.com/modesty/pdf2json/blob/scratch/quadf-forms/license.txt)
-4. **Pdfminer.six**: MIT [https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE](https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE)
-5. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
-6. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)
-7. **MuPDF** (Optional dependency): AGPL [https://mupdf.com/license.html](https://mupdf.com/license.html)
-8. **Pandoc** (Optional dependency): GPL [https://github.com/jgm/pandoc](https://github.com/jgm/pandoc)
+3. **Pdfminer.six**: MIT [https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE](https://github.com/pdfminer/pfminer.six/blob/master/LICENSE)
+4. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
+5. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)
+6. **MuPDF** (Optional dependency): AGPL [https://mupdf.com/license.html](https://mupdf.com/license.html)
+7. **Pandoc** (Optional dependency): GPL [https://github.com/jgm/pandoc](https://github.com/jgm/pandoc)
 
 ## 7. License
 
