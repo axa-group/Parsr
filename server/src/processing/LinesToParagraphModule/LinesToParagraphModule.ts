@@ -54,8 +54,7 @@ type LineSpace = {
 export class LinesToParagraphModule extends Module<Options> {
 	public static moduleName = 'lines-to-paragraph';
 	public static dependencies = [ReadingOrderDetectionModule, WordsToLineModule];
-
-	private maxLineDistance: number = 0;
+	public maxLineDistance = 0;
 
 	constructor(options?: Options) {
 		super(options, defaultOptions);
