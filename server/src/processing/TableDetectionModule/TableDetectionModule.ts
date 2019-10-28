@@ -1,4 +1,6 @@
 import * as child_process from 'child_process';
+import * as filetype from 'file-type';
+import * as fs from 'fs';
 import {
 	BoundingBox,
 	Document,
@@ -97,7 +99,14 @@ export class TableDetectionModule extends Module<Options> {
 	public main(doc: Document): Document {
 		// options is already merged in constructor!!!
 		// const options: Options = { ...defaultOptions, ...this.options };
-		if (doc.getElementsOfType<Table>(Table).length > 0) {
+		const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
+		if (fileType.ext !== 'pdf') {
+			logger.warn(
+				`Warning: The input file ${doc.inputFile} is not a PDF; Not performing table detection.`,
+			);
+			return doc;
+		}
+		if (doc.getElementsOfType<Table>(Table).length !== 0) {
 			logger.warn(
 				'Warning: document already has tables extracted by the extractor. Not performing table detection.',
 			);
