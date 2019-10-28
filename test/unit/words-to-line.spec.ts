@@ -51,6 +51,14 @@ describe('Words to Line Module', () => {
 				const json = JSON.parse(
 					fs.readFileSync(__dirname + '/assets/' + fileName, { encoding: 'utf8' }),
 				);
+
+				// sets each word 'order' property for WordsToLine module to work properly
+				json.pages.forEach(page => {
+					page.elements.forEach((element, order) => {
+						element.properties = { order };
+					});
+				});
+
 				docBefore = json2document(json);
 
 				runModules(docBefore, [new WordsToLineModule()]).then(after => {
