@@ -17,11 +17,11 @@
 import {
 	BoundingBox,
 	Document,
-	Element,
+	//Element,
 	Heading,
 	Line,
 	List,
-	Page,
+	//Page,
 	Paragraph,
 	Text,
 } from '../../types/DocumentRepresentation';
@@ -43,9 +43,24 @@ export class ListDetectionModule extends Module {
 	 * @returns true/false representing the result of the check.
 	 */
 	public static isBullet(text: Text): boolean {
-		const bulletCharacters: string[] = ['●', '', '•', '', 'º', '■', '–', '·', '*', '-', '→'];
-		const bulletOr = bulletCharacters.map(b => `\\${b}`).join('|');
-		return new RegExp(`^(${bulletOr})`).test(text.toString().trim());
+		// Creates an string array with decimal codes from 9632 to 9727
+		// See bullets in array --> https://www.w3schools.com/charsets/ref_utf_geometric.asp
+		const bulletsChars: string[] = Array.apply(null, { length: 96 })
+			.map(Number.call, Number)
+			.map(x => Number(x + 9632))
+			.map(x => String.fromCharCode(x))
+			.concat(['', '•', '–', '·', '-', '→', '􏰀', '􏰀']);
+
+		const bulletOr = bulletsChars.map(b => `\\${b}`).join('|') + ' ';
+		// There are codes like '􏰀' = 56319 and othersther that are not valid for
+		// .charCodeAt() and always return 63 represented as '?'
+		// in this case we will consider as a bullet
+		const unknownCode =
+			text
+				.toString()
+				.trim()
+				.charCodeAt(0) === 63;
+		return new RegExp(`^(${bulletOr})`).test(text.toString().trim()) || unknownCode;
 	}
 
 	/**
@@ -54,7 +69,7 @@ export class ListDetectionModule extends Module {
 	 * @returns true/false representing the result of the check.
 	 */
 	public static isNumbering(text: Text): boolean {
-		const regex = /^\d[.:)0-9]*/gm;
+		const regex = /^\d+([\.\:\)])\ /;
 		return regex.test(text.toString().trim());
 	}
 
@@ -62,102 +77,76 @@ export class ListDetectionModule extends Module {
 		logger.info(`Starting list detection..`);
 
 		doc.pages.forEach(page => {
-			const rogueLines: Line[] = [];
-			const finalLists: List[] = [];
+			let foundLists: List[] = [];
+			let listFound: boolean = false;
 			const paras: Paragraph[] = page
 				.getElementsOfType<Paragraph>(Paragraph, false)
 				.filter(para => !(para instanceof Heading));
 			paras.forEach(para => {
-				let listFound: boolean = false;
-				const orderedIdx: number[] = [...Array(para.content.length).keys()]
-					.filter(i => para.content[i].content.length > 1)
-					.filter(i => this.detectKindOfListItem(para.content[i]) === 'ordered');
-
-				if (orderedIdx.includes(0)) {
-					const orderedLineGroup: Line[][] = [];
-					for (let i = 0; i !== orderedIdx.length; ++i) {
-						let to: number;
-						let from: number;
-						from = orderedIdx[i];
-						if (i === orderedIdx.length - 1) {
-							to = para.content.length;
-						} else {
-							to = orderedIdx[i + 1];
-						}
-						orderedLineGroup.push(utils.range(from, to - from).map((x: number) => para.content[x]));
-					}
-					rogueLines.concat(
-						...[...Array(para.content.length).keys()]
-							.filter(i => [].concat.apply([], orderedLineGroup).includes(i))
-							.map(i => para.content[i]),
-					);
-					const listParas: Paragraph[] = orderedLineGroup.map(
-						g => new Paragraph(BoundingBox.merge(g.map(l => l.box)), g),
-					);
-					finalLists.push(new List(BoundingBox.merge(listParas.map(p => p.box)), listParas, true));
+				const orderedLists = this.createListFromParagraph(para, 'ordered');
+				if (orderedLists.length > 0) {
 					listFound = true;
+					foundLists = foundLists.concat(orderedLists.reduce((a, b) => a.concat(b), []));
 				}
-
-				const unorderedIdx: number[] = [...Array(para.content.length).keys()]
-					.filter(i => para.content[i].content.length > 1)
-					.filter(i => this.detectKindOfListItem(para.content[i]) === 'unordered');
-
-				if (unorderedIdx.includes(0)) {
-					const unorderedLineGroup: Line[][] = [];
-					for (let i = 0; i !== unorderedIdx.length; ++i) {
-						let to: number;
-						let from: number;
-						from = orderedIdx[i];
-						if (i === unorderedIdx.length - 1) {
-							to = para.content.length;
-						} else {
-							to = unorderedIdx[i + 1];
-						}
-						unorderedLineGroup.push(
-							utils.range(from, to - from).map((x: number) => para.content[x]),
-						);
-					}
-					rogueLines.concat(
-						...[...Array(para.content.length).keys()]
-							.filter(i => [].concat.apply([], unorderedLineGroup).includes(i))
-							.map(i => para.content[i]),
-					);
-					const listParas: Paragraph[] = unorderedLineGroup.map(
-						g => new Paragraph(BoundingBox.merge(g.map(l => l.box)), g),
-					);
-					finalLists.push(new List(BoundingBox.merge(listParas.map(p => p.box)), listParas, false));
+				const unorderedLists = this.createListFromParagraph(para, 'unordered');
+				if (unorderedLists.length > 0) {
 					listFound = true;
-				}
-				if (listFound) {
-					if (rogueLines.length > 0) {
-						logger.debug(
-							`rogue lines leftover are : \n${this.groupLinesByConsecutiveGroups(rogueLines)
-								.map(g => g.map(l => l.toString()).join('\n'))
-								.join('\n\n\n')}
-							`,
-						);
-						// TODO add these as new paragraphs using mergeLinesIntoParagraphs
-					} else {
-						// remove paragraph
-						page.elements = this.getElementsExcept(page, [para]);
-					}
+					foundLists = foundLists.concat(unorderedLists.reduce((a, b) => a.concat(b), []));
 				}
 			});
-			logger.debug(
-				`${finalLists.length} new lists: ${finalLists.map(l =>
-					utils.prettifyObject(l.content.map(p => p.toString() + '\n')),
-				)}`,
-			);
-
-			// clean lists - make sure the numbering is removed.
-			finalLists.map(l => this.removeNumberingFromList(l));
-			page.elements.push(...finalLists);
+			if (listFound) {
+				// clean lists - make sure the numbering is removed.
+				foundLists.map(l => this.removeNumberingFromList(l));
+				this.removeListLinesFromParagraphs(paras, foundLists);
+				page.elements.push(...foundLists);
+			}
 		});
 
 		logger.info(`Finished list detection.`);
 		return doc;
 	}
 
+	private removeListLinesFromParagraphs(paragraphs: Paragraph[], lists: List[]) {
+		const linesInLists = lists
+			.map(list => list.content)
+			.reduce((a, b) => a.concat(b), [])
+			.map(para => para.content)
+			.reduce((a, b) => a.concat(b), []);
+
+		paragraphs.forEach(para => {
+			para.content = para.content.filter(line => !linesInLists.includes(line));
+			para.box = BoundingBox.merge(para.content.map(l => l.box));
+		});
+	}
+
+	private createListFromParagraph(para: Paragraph, listType: string): List[] {
+		const finalLists: List[] = [];
+		const listItemPos: number[] = [...Array(para.content.length).keys()]
+			.filter(i => para.content[i].content.length > 1)
+			.filter(i => this.detectKindOfListItem(para.content[i]) === listType);
+
+		if (listItemPos.length > 0) {
+			const orderedLineGroup: Line[][] = [];
+			for (let i = 0; i !== listItemPos.length; ++i) {
+				let to: number;
+				let from: number;
+				from = listItemPos[i];
+				if (i === listItemPos.length - 1) {
+					to = para.content.length;
+				} else {
+					to = listItemPos[i + 1];
+				}
+				orderedLineGroup.push(utils.range(from, to - from).map((x: number) => para.content[x]));
+			}
+			const listParas: Paragraph[] = orderedLineGroup.map(
+				g => new Paragraph(BoundingBox.merge(g.map(l => l.box)), g),
+			);
+			finalLists.push(
+				new List(BoundingBox.merge(listParas.map(p => p.box)), listParas, listType === 'ordered'),
+			);
+		}
+		return finalLists;
+	}
 	private detectKindOfListItem(text: Text): string {
 		let listType: string = 'none';
 		if (text.content.length !== 0) {
@@ -174,8 +163,10 @@ export class ListDetectionModule extends Module {
 		list.content.forEach((para: Paragraph, index: number) => {
 			let itemNumber: number = 0;
 			const firstLine: Line = para.content[0];
-			if (this.detectKindOfListItem(firstLine.content[0]) !== 'none') {
+			if (this.detectKindOfListItem(firstLine) !== 'none') {
 				const itemIndicator: string = firstLine.content.splice(0, 1)[0].toString();
+				// TODO: Fit line box to words inside it
+				// firstLine.box.left = firstLine.content[0].box.left;
 				if (list.isOrdered) {
 					itemNumber = parseFloat(itemIndicator.replace(/[^0-9]/g, ''));
 					if (index === 0) {
@@ -185,47 +176,4 @@ export class ListDetectionModule extends Module {
 			}
 		});
 	}
-
-	private getElementsExcept(page: Page, excluding: Paragraph[]): Element[] {
-		return page.elements.filter(
-			element => !(element instanceof Paragraph) || !excluding.includes(element),
-		);
-	}
-
-	private groupLinesByConsecutiveGroups(paras: Line[]): Line[][] {
-		paras.sort((a, b) => a.properties.order - b.properties.order);
-		const ret: Line[][] = [];
-		if (!paras.length) {
-			return ret;
-		}
-		let ixf = 0;
-		for (let ixc = 1; ixc < paras.length; ixc += 1) {
-			if (paras[ixc].properties.order !== paras[ixc - 1].properties.order + 1) {
-				ret.push(paras.slice(ixf, ixc));
-				ixf = ixc;
-			}
-		}
-		ret.push(paras.slice(ixf, paras.length));
-		return ret;
-	}
-
-	// private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
-	// 	return joinedLines.map((group: Line[]) => {
-	// 		const paragraph: Paragraph = utils.mergeElements<Line, Paragraph>(
-	// 			new Paragraph(BoundingBox.merge(group.map((l: Line) => l.box))),
-	// 			...group,
-	// 		);
-	// 		paragraph.properties.order = group[0].properties.order;
-	// 		return paragraph;
-	// 	});
-	// }
-
-	// private isAligned(bullet: Text, text: Text): boolean {
-	// 	return (
-	// 		bullet.left + bullet.width + maxSpace >= text.left &&
-	// 		bullet.left < text.left + text.width &&
-	// 		((bullet.top <= text.top && bullet.top + bullet.height >= text.top) ||
-	// 			(bullet.top >= text.top && bullet.top <= text.top + text.height))
-	// 	);
-	// }
 }

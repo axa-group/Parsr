@@ -43,41 +43,14 @@ export class MarkdownExporter extends Exporter {
 				}
 				if (element instanceof Heading) {
 					output += element.toMarkdown();
-					output += '\n'.repeat(2);
-					/*if (element.level < 7) {
-						let theHeading: string = '';
-						for (let i = 0; i !== element.level; ++i) {
-							theHeading += '#';
-						}
-						if (element.level > 0) {
-							theHeading += ' ';
-						}
-						theHeading += element.toString().replace(/(?:\r\n|\r|\n)/g, '<br />');
-						output += theHeading;
-						output += '\n'.repeat(2);
-					} else {
-						output += element.toString();
-						output += '\n'.repeat(2);
-					}*/
 				} else if (element instanceof Paragraph) {
 					output += element.toMarkdown();
-					output += '\n'.repeat(2);
 				} else if (element instanceof List) {
-					element.content.forEach((para, index) => {
-						const paraText: string = para.toMarkdown();
-						if (element.isOrdered) {
-							output += (element.firstItemNumber + index).toString() + '. ';
-						} else {
-							output += '- ';
-						}
-						output += paraText;
-						output += '\n';
-					});
-					output += '\n';
+					output += element.toMarkdown();
 				} else if (element instanceof Table) {
 					output += element.toMarkdown();
-					output += '\n'.repeat(2);
 				}
+				output += '\n'.repeat(2);
 			});
 			// end of page
 			// output += '\n'.repeat(10);
