@@ -109,4 +109,18 @@ export class List extends Element {
 	public set firstItemNumber(value: number) {
 		this._firstItemNumber = value;
 	}
+
+	public toMarkdown(): string {
+		let output: string = '';
+		this.content.forEach((para, index) => {
+			const paraText: string = para.toMarkdown();
+			if (this.isOrdered) {
+				output += (this.firstItemNumber + index).toString() + '. ';
+			} else {
+				output += '- ';
+			}
+			output += paraText + (index + 1 < this.content.length ? '\n' : '');
+		});
+		return output;
+	}
 }
