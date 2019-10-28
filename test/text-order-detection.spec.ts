@@ -29,25 +29,27 @@ describe('Text order detection function', () => {
 	let fourth: Element;
 
 	before(done => {
-		getPdf(d => runModules(d, [new ReadingOrderDetectionModule()]), pdfName).then(([_, pdfAfter]) => {
-			pdfAfter.pages[0].elements.forEach(elt => {
-				switch (elt.content) {
-					case 'FIRST':
-						first = elt;
-						break;
-					case 'SECOND':
-						second = elt;
-						break;
-					case 'THIRD':
-						third = elt;
-						break;
-					case 'FOURTH':
-						fourth = elt;
-						break;
-				}
-			});
-			done();
-		});
+		getPdf(d => runModules(d, [new ReadingOrderDetectionModule()]), pdfName).then(
+			([_, pdfAfter]) => {
+				pdfAfter.pages[0].elements.forEach(elt => {
+					switch (elt.toString()) {
+						case 'FIRST':
+							first = elt;
+							break;
+						case 'SECOND':
+							second = elt;
+							break;
+						case 'THIRD':
+							third = elt;
+							break;
+						case 'FOURTH':
+							fourth = elt;
+							break;
+					}
+				});
+				done();
+			},
+		);
 	});
 
 	it('should have order properties', () => {

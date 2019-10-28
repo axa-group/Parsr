@@ -27,11 +27,14 @@ describe('Number parsing on images', () => {
 	let words: string[];
 
 	before(async () => {
-		const [, imageAfter] = await getImage(d => runModules(d, [new ReadingOrderDetectionModule()]), imageName);
+		const [, imageAfter] = await getImage(
+			d => runModules(d, [new ReadingOrderDetectionModule()]),
+			imageName,
+		);
 
 		words = imageAfter.pages[0].elements
 			.sort((a, b) => a.properties.order - b.properties.order)
-			.map(elem => <string>elem.content);
+			.map(elem => elem.toString());
 	});
 
 	it('should preserve all digits in a number', () => {
@@ -43,11 +46,14 @@ describe('Number parsing on PDFs', () => {
 	let words: string[];
 
 	before(async () => {
-		const [, pdfAfter] = await getPdf(d => runModules(d, [new ReadingOrderDetectionModule()]), pdfName);
+		const [, pdfAfter] = await getPdf(
+			d => runModules(d, [new ReadingOrderDetectionModule()]),
+			pdfName,
+		);
 
 		words = pdfAfter.pages[0].elements
 			.sort((a, b) => a.properties.order - b.properties.order)
-			.map(elem => <string>elem.content);
+			.map(elem => elem.toString());
 	});
 
 	it('should preserve all digits in a number', () => {

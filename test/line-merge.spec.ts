@@ -53,7 +53,7 @@ describe('Line merge function', () => {
 
 			it('should not alter the content', () => {
 				expect(
-					(pdfAfter.pages[0].elements[0].content as Element[]).map(t => t.content).join(' '),
+					(pdfAfter.pages[0].elements[0].content as Element[]).map(t => t.toString()).join(' '),
 				).to.be.equal(text);
 			});
 
