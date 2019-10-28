@@ -54,13 +54,22 @@ type LineSpace = {
 export class LinesToParagraphModule extends Module<Options> {
 	public static moduleName = 'lines-to-paragraph';
 	public static dependencies = [ReadingOrderDetectionModule, WordsToLineModule];
+	private maxLineDistance: number = 0;
+
 	constructor(options?: Options) {
 		super(options, defaultOptions);
 	}
 
-	private maxLineDistance: number = 0;
-
 	public main(doc: Document): Document {
+		// get the main body font from all the words in document
+		const textBodyFont: Font = utils.findMostCommonFont(
+			this.getAllDocumentLines(doc)
+				.map((l: Line) => l.content)
+				.reduce((a, b) => a.concat(b), [])
+				.map(w => w.font)
+				.filter(f => f !== undefined),
+		);
+
 		doc.pages.forEach((page: Page) => {
 			this.maxLineDistance = page.height * 0.2;
 			if (page.getElementsOfType<Heading>(Heading).length > 0) {
@@ -72,13 +81,6 @@ export class LinesToParagraphModule extends Module<Options> {
 
 			// get all the lines
 			const lines = this.getPageLines(page);
-
-			// get the main body font from all the lines
-			const textBodyFont: Font = utils.findMostCommonFont(
-				lines
-					.map((l: Line) => utils.findMostCommonFont(l.content.map(w => w.font)))
-					.filter(f => f !== undefined),
-			);
 
 			// get the spaces between all lines
 			const interLinesSpaces: LineSpace[] = this.getInterLinesSpace(lines);
@@ -199,6 +201,10 @@ export class LinesToParagraphModule extends Module<Options> {
 
 	private getPageLines(page: Page): Line[] {
 		return page.getElementsOfType<Line>(Line, false).sort(utils.sortElementsByOrder);
+	}
+
+	private getAllDocumentLines(document: Document): Line[] {
+		return document.getElementsOfType<Line>(Line, true);
 	}
 
 	private joinLinesWithSpaces(lines: Line[], lineSpaces: LineSpace[]): Line[][] {
