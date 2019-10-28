@@ -43,9 +43,24 @@ export class ListDetectionModule extends Module {
 	 * @returns true/false representing the result of the check.
 	 */
 	public static isBullet(text: Text): boolean {
-		const bulletCharacters: string[] = ['●', '', '•', '', 'º', '■', '􏰀', '–', '·', '*', '-', '→'];
-		const bulletOr = bulletCharacters.map(b => `\\${b}`).join('|') + ' ';
-		return new RegExp(`^(${bulletOr})`).test(text.toString().trim());
+		// Creates an string array with decimal codes from 9632 to 9727
+		// See bullets in array --> https://www.w3schools.com/charsets/ref_utf_geometric.asp
+		const bulletsChars: string[] = Array.apply(null, { length: 96 })
+			.map(Number.call, Number)
+			.map(x => Number(x + 9632))
+			.map(x => String.fromCharCode(x))
+			.concat(['', '•', '–', '·', '-', '→', '􏰀', '􏰀']);
+
+		const bulletOr = bulletsChars.map(b => `\\${b}`).join('|') + ' ';
+		// There are codes like '􏰀' = 56319 and othersther that are not valid for
+		// .charCodeAt() and always return 63 represented as '?'
+		// in this case we will consider as a bullet
+		const unknownCode =
+			text
+				.toString()
+				.trim()
+				.charCodeAt(0) === 63;
+		return new RegExp(`^(${bulletOr})`).test(text.toString().trim()) || unknownCode;
 	}
 
 	/**
