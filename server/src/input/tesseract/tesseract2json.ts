@@ -134,9 +134,13 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
 					pages[elem.page_num - 1].elements.push(word);
 				});
 
-				logger.info('Assigning object...');
+				logger.debug(`Assigning a total of ${pages.length} pages to the document...`);
 				const doc: Document = new Document(pages);
-				logger.debug('Done');
+				logger.debug(
+					`The new document contains ${
+						doc.getElementsOfType(Word, false).length
+					} words at extraction.`,
+				);
 				resolve(doc);
 			} else {
 				reject(`tesseract return code is ${code}`);

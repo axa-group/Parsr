@@ -105,7 +105,7 @@ function main(): void {
 	/**
 	 * Run the extraction pipeline on the file
 	 */
-	runOrchestrator();
+	runOrchestrator(fileType);
 
 	/**
 	 * Run the pipeline - go through the extraction, cleaning, and enrichment modules.
@@ -113,26 +113,25 @@ function main(): void {
 	 * @remarks
 	 * This method contains the primary pipeline call itself.
 	 */
-	function runOrchestrator() {
+	function runOrchestrator(fileTypeInfo: { ext: string; mime: string }) {
 		orchestrator
 			.run(filePath)
 			.then((doc: Document) => {
 				const nbTexts = doc.pages.map(p => p.elements.length).reduce((a, b) => a + b, 0);
 				if (nbTexts === 0) {
-					logger.warn(
-						`No text was found in the document. Trying to treat it as an image and perform OCR using ${config.extractor.img}...`,
-					);
-					if (config.extractor.img === 'tesseract') {
-						filePath = pdfToImage(filePath);
-						orchestrator = new Orchestrator(new TesseractExtractor(config), cleaner);
-					} else {
-						orchestrator = new Orchestrator(new AbbyyTools(config), cleaner);
+					logger.warn(`No text was found in the document...`);
+					if (fileTypeInfo.ext === 'pdf') {
+						logger.info(`Since the input file is a PDF, trying to run an OCR on all pages...`);
+						if (config.extractor.img === 'tesseract') {
+							filePath = pdfToImage(filePath);
+							orchestrator = new Orchestrator(new TesseractExtractor(config), cleaner);
+						} else {
+							orchestrator = new Orchestrator(new AbbyyTools(config), cleaner);
+						}
+						return orchestrator.run(filePath);
 					}
-
-					return orchestrator.run(filePath);
-				} else {
-					return doc;
 				}
+				return doc;
 			})
 			.then((doc: Document) => {
 				const promises: Array<Promise<any>> = [];

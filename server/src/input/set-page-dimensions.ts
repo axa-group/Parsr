@@ -32,8 +32,8 @@ export function setPageDimensions(doc: Document, inputFileName: string): Promise
 				page.width = dimensions[i].width;
 				page.height = dimensions[i].height;
 				// Remove weird false positive coming from Tesseract
-				page.elements = page.elements.filter(t => {
-					return t.height !== page.height || t.width !== page.width;
+				page.elements = page.elements.filter(elem => {
+					return elem.height !== page.height || elem.width !== page.width;
 				});
 			});
 
