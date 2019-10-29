@@ -134,9 +134,13 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
 					pages[elem.page_num - 1].elements.push(word);
 				});
 
-				logger.info('Assigning object...');
+				logger.debug(`Assigning a total of ${pages.length} pages to the document...`);
 				const doc: Document = new Document(pages);
-				logger.debug('Done');
+				logger.debug(
+					`The new document contains ${
+						doc.getElementsOfType(Word, false).length
+					} words at extraction.`,
+				);
 				resolve(doc);
 			} else {
 				reject(`tesseract return code is ${code}`);
@@ -145,7 +149,7 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
 	});
 }
 
-function parseTsv(tsv: string): any[] {
+function parseTsv(tsv: string): TsvElement[] {
 	const lines: string[] = tsv.split(/\r?\n/).filter(line => line.length !== 0);
 
 	const headers: string[] = lines.shift().split('\t');
@@ -157,6 +161,6 @@ function parseTsv(tsv: string): any[] {
 			record[headers[i]] = field;
 		});
 
-		return record;
+		return new TsvElement(record);
 	});
 }

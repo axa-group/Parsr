@@ -299,12 +299,7 @@ export function isInBox(element: Element, box: BoundingBox, strict: boolean = tr
 			element.box.left + element.box.width <= box.left + box.width
 		);
 	} else {
-		return (
-			element.box.top < box.top + box.height &&
-			element.box.top + element.box.height > box.top &&
-			element.box.left < box.left + box.width &&
-			element.box.left + element.box.width > box.left
-		);
+		return BoundingBox.getOverlap(element.box, box) === 0;
 	}
 }
 
