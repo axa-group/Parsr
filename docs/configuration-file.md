@@ -73,7 +73,7 @@ _This means the module called `fontMerge` will be called, then `removeOutOfPage`
 
 Different extractors are available for each input file format.
 
-- PDF files: three extractors are currently available for PDF files: `pdf2json` which is Open Source and extracts textual data, `pdfminer`, which is an advanced python based extractor capable of extracting low and high level textual structures (from characters to paragraphs) and `abbyy` that rely on ABBYY Finereader that is paid software. It is also possible to use `tesseract` in this case. The document will then be converted as an image, so expect the accuracy to be lower on texts.
+- PDF files: three extractors are currently available for PDF files: `pdfminer`, which is an advanced python based extractor capable of extracting low and high level textual structures (from characters to paragraphs) and `abbyy` that rely on ABBYY Finereader that is paid software. It is also possible to use `tesseract` in this case. The document will then be converted as an image, so expect the accuracy to be lower on texts.
 - Images: two extractors are supporter for images: `tesseract` which is an Open Source OCR and `abbyy` that rely on ABBYY Finereader that is paid software.
 
 ### 2.2. Language
@@ -140,7 +140,7 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 {
 	"version": 0.5,
 	"extractor": {
-		"pdf": "pdf2json",
+		"pdf": "pdfminer",
 		"img": "tesseract",
 		"language": ["eng", "fra"]
 	},
