@@ -242,7 +242,7 @@ class Renderer {
 					//tesseract	
 					div.style.fontSize = e.box.h * 0.85 + 'pt';
 				} else {
-					//pdf2json		
+					//pdfminer		
 					let adjustedFontSize = parseInt(font.size) * 0.95;
 					div.style.fontSize = adjustedFontSize + 'px';
 				}							

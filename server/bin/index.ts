@@ -24,7 +24,6 @@ import { AbbyyTools } from '../src/input/abbyy/AbbyyTools';
 import { AbbyyToolsXml } from '../src/input/abbyy/AbbyyToolsXml';
 import { GoogleVisionExtractor } from '../src/input/google-vision/GoogleVisionExtractor';
 import { JsonExtractor } from '../src/input/json/JsonExtractor';
-import { PdfJsonExtractor } from '../src/input/pdf2json/PdfJsonExtractor';
 import { PdfminerExtractor } from '../src/input/pdfminer/PdfminerExtractor';
 import { TesseractExtractor } from '../src/input/tesseract/TesseractExtractor';
 import { Orchestrator } from '../src/Orchestrator';
@@ -215,10 +214,8 @@ function main(): void {
 		} else if (config.extractor.pdf === 'tesseract') {
 			filePath = pdfToImage(filePath);
 			return new Orchestrator(new TesseractExtractor(config), cleaner);
-		} else if (config.extractor.pdf === 'pdfminer') {
-			return new Orchestrator(new PdfminerExtractor(config), cleaner);
 		} else {
-			return new Orchestrator(new PdfJsonExtractor(config), cleaner);
+			return new Orchestrator(new PdfminerExtractor(config), cleaner);
 		}
 	}
 

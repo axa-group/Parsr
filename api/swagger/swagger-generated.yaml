@@ -430,7 +430,7 @@ components:
         pdf:
           type: string
           enum:
-            - pdf2json
+            - pdfminer
             - tesseract
             - abbyy
         img:
