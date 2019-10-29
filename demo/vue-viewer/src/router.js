@@ -15,8 +15,7 @@ export default new Router({
 	routes: [
 		{
 			path: '/',
-			name: 'home',
-			component: Home,
+			redirect: '/upload',
 		},
 		{
 			path: '/upload',
@@ -45,7 +44,7 @@ export default new Router({
 		},
 		{
 			path: '*',
-			redirect: { name: 'home' },
+			redirect: { name: 'upload' },
 		},
 	],
 });
