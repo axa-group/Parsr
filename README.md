@@ -105,16 +105,15 @@ pip install ghostscript camelot-py
 #### 1.2.3. Installing Dependencies under Windows
 
 1. We recommand using [Chocolatey](https://chocolatey.org) as the package manager for installing dependencies under Windows. To install Chocolatey, [follow these instructions](https://chocolatey.org/install#installing-chocolatey).
-
-2. Install **`qpdf`** and **`imagemagick`** using Powershell (Run as Administrator):
+2. [Download and install **`node.js`**](https://nodejs.org/en/download)
+3. For the **pdfminer** extractor for pdfs, [follow these steps](https://github.com/pdfminer/pdfminer.six#how-to-install).
+4. Install **`qpdf`** and **`imagemagick`** using Powershell (Run as Administrator):
 
    ```sh
    choco install qpdf imagemagick
    ```
 
-3. [Download and install **`node.js`**](https://nodejs.org/en/download)
-4. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install-deps.html#for-windows).
-5. For the **pdfminer** extractor for pdfs, [follow these steps](https://github.com/pdfminer/pdfminer.six#how-to-install).
+5. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install-deps.html#for-windows).
 
 ##### 1.2.3.1. Tesseract
 
@@ -326,6 +325,8 @@ The following _required_ dependencies need to be installed for Parsr to work pro
 ### 4.2. Extraction Dependencies
 
 Depending upon the type of documents to be treated by the platform, one or multiple of the following dependencies should be installed.
+
+If simple PDFs containing digital (or _selectable_) textual elements are to be fed into the system, the **`pdfminer`** library needs to be installed.
 
 If images (`jpg`, `png`, `tiff`, etc.) are to be used with the tool, then the tool also supports the use of the following two OCR based solutions as an underlying extraction module:
 
