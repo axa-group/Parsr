@@ -248,27 +248,28 @@ function main(): void {
 	}
 
 	/**
-	 * Returns the pdf file extraction orchestrator using tesseract as the extractor.
-	 * First, the pdf is sampled for it to be converted into an image, then, an image extraction orchestrator is returned.
-	 *
-	 * @returns The Orchestrator instance
+	 * Converts the PDF into an image and returns its location.
+	 * @param pdfPath The path of the PDF
+	 * @returns The resulting tiff image location
 	 */
 	function pdfToImage(pdfPath: string): string {
-		const tifFilePath = pdfPath + '.tiff';
-		const ret = child_process.spawnSync(utils.getConvertPath(), [
-			'convert',
-			'-density',
-			'200x200',
-			'-compress',
-			'Fax',
-			pdfPath,
-			tifFilePath,
+		const tifFilePath = utils.getTemporaryFile('.tiff');
+		const ret = child_process.spawnSync(utils.getGhostscriptPath(), [
+			'-dNOPAUSE',
+			'-q',
+			'-sDEVICE=tiff48nc',
+			'-dBATCH',
+			`-sOutputFile=${tifFilePath}`,
+			'-r300',
+			`${pdfPath}`,
+			'-c',
+			'quit',
 		]);
 
 		if (ret.status !== 0) {
 			logger.error(ret.stderr);
 			throw new Error(
-				'ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)',
+				'Ghostscript failure: could not convert pdf to images (is Ghostcript installed?)',
 			);
 		}
 

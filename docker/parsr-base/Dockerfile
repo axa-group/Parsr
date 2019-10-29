@@ -15,7 +15,7 @@ RUN git clone https://github.com/AXATechLab/pdf2json /src/pdf2json && \
 FROM debian:10 as engine
 
 RUN apt-get update && \
-    apt-get install -y imagemagick mupdf mupdf-tools qpdf pandoc tesseract-ocr-all nodejs npm python-pdfminer python-pip python3-pip python-tk python3-pdfminer python3-opencv && \
+    apt-get install -y mupdf mupdf-tools qpdf pandoc tesseract-ocr-all ghostscript nodejs npm python-pdfminer python-pip python3-pip python-tk python3-pdfminer python3-opencv && \
     pip install ghostscript camelot-py && \
     pip3 install ghostscript camelot-py 
     

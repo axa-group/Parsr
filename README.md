@@ -62,14 +62,14 @@ Under a **Debian** based distribution:
 ```sh
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
-sudo apt-get install nodejs npm qpdf imagemagick pdf2json python-pdfminer tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
+sudo apt-get install nodejs npm qpdf ghostscript pdf2json python-pdfminer tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
 pip install camelot-py
 ```
 
 Under **Arch** Linux :
 
 ```sh
-pacman -S nodejs npm qpdf imagemagick pdf2json pdfminer tesseract python-pip
+pacman -S nodejs npm qpdf ghostscript pdf2json pdfminer tesseract python-pip
 pip install camelot-py
 ```
 
@@ -85,7 +85,7 @@ To install it, launch the following in a terminal
 Next, install the required dependencies:
 
 ```sh
-brew install node qpdf imagemagick pdf2json tesseract tesseract-lang
+brew install node qpdf ghostscript pdf2json tesseract tesseract-lang
 ```
 
 To install the python based depedencies (pdfminer and camelot), install, first install `pip`:
@@ -107,10 +107,16 @@ pip install ghostscript camelot-py
 
 1. We recommand using [Chocolatey](https://chocolatey.org) as the package manager for installing dependencies under Windows. To install Chocolatey, [follow these instructions](https://chocolatey.org/install#installing-chocolatey).
 
-2. Install **`qpdf`** and **`imagemagick`** using Powershell (Run as Administrator):
+2. Install **`qpdf`** and **`ghostscript`** using Powershell (Run as Administrator):
 
    ```sh
-   choco install qpdf imagemagick
+   choco install qpdf ghostscript
+   ```
+
+   Then, you need to add `gswin64.exe` to your PATH:
+
+   ```sh
+   setx PATH "\$env:PATH;C:\Program Files\gs\gs9.50\bin" -m
    ```
 
 3. [Download and install **`node.js`**](https://nodejs.org/en/download)
@@ -333,7 +339,7 @@ The following _required_ dependencies need to be installed for Parsr to work pro
 
 1. `node.js` : The underlying framework upon which the platform is built.
 2. `qpdf` : For reading password-protected PDFs.
-3. `imagemagick` : For converting between file formats.
+3. `ghostscript` : For converting between file formats.
 
 ### 4.2. Extraction Dependencies
 
@@ -362,7 +368,7 @@ Please refer to the guidelines in [CONTRIBUTING.md](CONTRIBUTING.md).
 Third Party Libraries licenses :
 
 1. **QPDF**: Apache [http://qpdf.sourceforge.net](http://qpdf.sourceforge.net/)
-2. **ImageMagick**: Apache 2.0 [https://imagemagick.org/script/license.php](https://imagemagick.org/script/license.php)
+2. **Ghostscript**: AGPL (External calling) [https://www.ghostscript.com/license.html](https://www.ghostscript.com/license.html)
 3. **Pdf2json**: Apache 2.0 [https://github.com/modesty/pdf2json/blob/scratch/quadf-forms/license.txt](https://github.com/modesty/pdf2json/blob/scratch/quadf-forms/license.txt)
 4. **Pdfminer.six**: MIT [https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE](https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE)
 5. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)

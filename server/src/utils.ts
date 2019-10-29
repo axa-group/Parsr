@@ -79,25 +79,6 @@ export function replaceObject<T extends Element, U extends T>(
 	}
 }
 
-// Handle Windows convert.exe conflict.
-export function getConvertPath(): string {
-	const where = spawnSync(getExecLocationCommandOnSystem(), ['magick']);
-	let filepaths: string[] = [];
-
-	if (where.status === 0) {
-		filepaths = where.stdout.toString().split(os.EOL);
-		filepaths = filepaths.filter(
-			filepath => !/System/.test(filepath) && filepath.trim().length > 0,
-		);
-	}
-
-	if (filepaths.length === 0) {
-		throw new Error('Cannot find ImageMagick convert tool. Are you sure it is installed?');
-	} else {
-		return filepaths[0];
-	}
-}
-
 export function getMutoolImagesPrefix(): string {
 	return 'page';
 }
@@ -658,6 +639,29 @@ export function findMostCommonFont(fonts: Font[]): Font | undefined {
 		return baskets[0][0];
 	} else {
 		return undefined;
+	}
+}
+
+/**
+ * returns the location of the ghostscript executable on the system - 'gs'.
+ */
+export function getGhostscriptPath(): string {
+	const executableName: string = os.platform() === 'win32' ? 'gswin64' : 'gs';
+	const where = spawnSync(getExecLocationCommandOnSystem(), [executableName]);
+	let filepaths: string[] = [];
+
+	if (where.status === 0) {
+		filepaths = where.stdout.toString().split(os.EOL);
+		filepaths = filepaths.filter(
+			filepath => !/System/.test(filepath) && filepath.trim().length > 0,
+		);
+	}
+
+	if (filepaths.length === 0) {
+		logger.warn(`Cannot find Ghostscript executable 'gs'...`);
+		return '';
+	} else {
+		return filepaths[0];
 	}
 }
 
