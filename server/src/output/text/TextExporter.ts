@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Document, Paragraph, Table } from '../../types/DocumentRepresentation';
+import { Document, Paragraph, Table, List } from '../../types/DocumentRepresentation';
 import { Exporter } from '../Exporter';
 
 export class TextExporter extends Exporter {
@@ -40,6 +40,8 @@ export class TextExporter extends Exporter {
 					return;
 				}
 				if (element instanceof Paragraph) {
+					output = output.concat(element.toString());
+				} else if (element instanceof List) {
 					output = output.concat(element.toString());
 				} else if (element instanceof Table) {
 					element.content.forEach(tableRow => {

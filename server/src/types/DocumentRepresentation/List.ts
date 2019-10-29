@@ -110,10 +110,23 @@ export class List extends Element {
 		this._firstItemNumber = value;
 	}
 
+	public toString(): string {
+		return this.export('text');
+	}
+
 	public toMarkdown(): string {
+		return this.export('md');
+	}
+
+	private export(type: string): string {
 		let output: string = '';
 		this.content.forEach((para, index) => {
-			const paraText: string = para.toMarkdown();
+			let paraText: string = '';
+			if (type === 'md') {
+				paraText = para.toMarkdown();
+			} else {
+				paraText = para.toString();
+			}
 			if (this.isOrdered) {
 				output += (this.firstItemNumber + index).toString() + '. ';
 			} else {
