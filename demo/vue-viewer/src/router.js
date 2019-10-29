@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Upload from './views/Upload.vue';
-import Home from './views/Home';
 import Viewer from './views/Viewer.vue';
 import ViewerText from './views/ViewerText.vue';
 import ViewerMarkdown from './views/ViewerMarkdown.vue';
