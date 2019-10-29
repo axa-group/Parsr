@@ -8,7 +8,7 @@ RUN apt-get update && \
 WORKDIR /opt/app-root/src
 RUN chown 1001:0 /opt/app-root/src
 
-ENV PATH $PATH:/opt/app-root/src/node_modules/.bin:/opt/pdf2json/bin
+ENV PATH $PATH:/opt/app-root/src/node_modules/.bin
 ENV HOME /opt/app-root/src
 
 USER 1001
