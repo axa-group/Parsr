@@ -105,9 +105,6 @@ export function execute(pdfInputFile: string): Promise<Document> {
 					try {
 						logger.debug(`Converting pdfminer's XML output to JS object..`);
 						parseXmlToObject(xml).then((obj: any) => {
-							logger.info(
-								`Pages contain data of the following type ${Object.keys(obj.pages.page[0])}`,
-							);
 							const pages: Page[] = [];
 							obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj)));
 							resolveDocument(new Document(pages, pdfInputFile));

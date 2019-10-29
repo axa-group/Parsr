@@ -149,7 +149,7 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
 	});
 }
 
-function parseTsv(tsv: string): any[] {
+function parseTsv(tsv: string): TsvElement[] {
 	const lines: string[] = tsv.split(/\r?\n/).filter(line => line.length !== 0);
 
 	const headers: string[] = lines.shift().split('\t');
@@ -161,6 +161,6 @@ function parseTsv(tsv: string): any[] {
 			record[headers[i]] = field;
 		});
 
-		return record;
+		return new TsvElement(record);
 	});
 }

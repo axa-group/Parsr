@@ -29,4 +29,19 @@ export class TsvElement {
 	public height: number;
 	public conf: number;
 	public text: string;
+
+	constructor(obj: any) {
+		this.level = parseFloat(obj.level);
+		this.page_num = parseFloat(obj.page_num);
+		this.block_num = parseFloat(obj.block_num);
+		this.par_num = parseFloat(obj.par_num);
+		this.line_num = parseFloat(obj.line_num);
+		this.word_num = parseFloat(obj.word_num);
+		this.left = parseFloat(obj.left);
+		this.top = parseFloat(obj.top);
+		this.width = parseFloat(obj.width);
+		this.height = parseFloat(obj.height);
+		this.conf = parseFloat(obj.conf);
+		this.text = obj.text.toString();
+	}
 }
