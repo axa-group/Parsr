@@ -1,5 +1,0 @@
-pipeline
-*.json
-!package.json
-!package-lock.json
-public/css/compiled.css
