@@ -80,7 +80,7 @@ pacman -S nodejs npm qpdf imagemagick tesseract
 之后用 brew 指令安装依赖：
 
 ```sh
-brew install node qpdf imagemagick tesseract tesseract-lang
+brew install node qpdf imagemagick graphicsmagick tesseract tesseract-lang
 ```
 
 #### 1.2.3. 安装 Windows 环境下的依赖

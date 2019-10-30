@@ -84,7 +84,7 @@ To install it, launch the following in a terminal
 Next, install the required dependencies:
 
 ```sh
-brew install node qpdf imagemagick tesseract tesseract-lang
+brew install node qpdf imagemagick graphicsmagick tesseract tesseract-lang
 ```
 
 To install the python based depedencies (pdfminer and camelot), install, first install `pip`:
