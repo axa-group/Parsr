@@ -22,7 +22,7 @@
     - [2.1. 安装 npm 包](#21-install-npm-packages)
     - [2.2. 运行](#22-run)
       - [2.2.1. 配置](#221-configuration)
-      - [2.2.2. 演示: Web Viewer](#222-demo-web-viewer)
+      - [2.2.2. 演示: Web Viewer](#213-demo-web-viewer)
       - [2.2.3. 命令行的使用](#223-command-line-usage)
     - [2.3. API](#23-api)
     - [2.4. 测试](#24-test)
@@ -215,7 +215,7 @@ npm install
 要启动 web 的演示, 运行:
 
 ```sh
-npm run start:web
+npm run start:web:vue
 ```
 
 之后通过您喜欢的浏览器打开 [localhost:3000](http://localhost:3000)

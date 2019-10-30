@@ -22,30 +22,27 @@
     "build:ts": "npm run copyAssets && tsc --outDir ./dist",
     "build:ts:watch": "npm run copyAssets && tsc -w --outDir ./dist",
     "install:api": "npm install --prefix  api/server",
-    "start:web": "npm run build:ts && cd demo/web-viewer && npm run start",
     "start:web:vue": "npm run start:api:background && cd demo/vue-viewer && npm install && npm run serve",
     "run:debug": "ts-node server/bin/index.ts",
     "lint": "tslint --project . && tslint --project ./api/server",
     "lint:fix": "tslint --fix --project . && tslint --fix --project ./api/server",
     "start:api": "npm run build:ts && npm run install:api && npm run --prefix api/server start",
     "start:api:background": "npm run start:api&",
-    "start:front": "cd demo/web-viewer && node index.js",
-    "start": "npm run start:api & npm run start:front",
-    "format": "prettier --write --list-different \"{,!(dist|demo/web-viewer/public)/**/}*.{js,md,ts,css,scss}\""
+    "format": "prettier --write --list-different \"{,!(dist)/**/}*.{js,md,ts,css,scss}\""
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint",
+      "pre-commit": "lint-staged && npm test && npm audit",
       "pre-push": "npm test && npm audit"
     }
   },
   "lint-staged": {
     "linters": {
-      "{,!(dist|demo/web-viewer/public)/**/}*.{js,md,ts,css,scss}": [
+      "{,!(dist)/**/}*.{js,md,ts,css,scss}": [
         "npm run format",
         "git add"
       ],
-      "{,!(dist|demo/web-viewer/public)/**/}*.{ts}": [
+      "{,!(dist|-viewer/public)/**/}*.{ts}": [
         "tslint --fix",
         "git add"
       ]
@@ -89,7 +86,6 @@
     "leche": "^2.3.0",
     "lint-staged": "^8.2.1",
     "mocha": "^5.2.0",
-    "node-sass": "^4.12.0",
     "prettier": "^1.18.2",
     "ts-node": "^7.0.1",
     "typescript": "^3.5.3"
