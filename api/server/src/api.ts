@@ -26,6 +26,7 @@ import logger from './Logger';
 import { ProcessManager } from './ProcessManager';
 import { ConfigFile, ServerManager } from './ServerManager';
 import { Binder, PipelineProcess, QueueStatus, SingleFileType } from './types';
+import { err } from 'pino-std-serializers';
 
 export class ApiServer {
 	private outputDir: string = path.resolve(`${__dirname}/output`);
@@ -351,12 +352,12 @@ export class ApiServer {
 		const thumbFolder = path.join(os.tmpdir(), 'Doc-' + docId + '/');
 
 		if (!fs.existsSync(thumbFolder)) {
-			fs.mkdir(thumbFolder, err => {
-				if (err) {
-					res.status(500).send(err);
-					throw err;
-				}
-			});
+			try {
+				fs.mkdirSync(thumbFolder);
+			} catch (error) {
+				res.status(500).send(error);
+				return;
+			}
 		}
 
 		const filePath = thumbFolder + docId + '_' + page + '.png';
