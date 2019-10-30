@@ -62,7 +62,6 @@
 		"csv-stringify": "^5.3.3",
 		"file-type": "^9.0.0",
 		"html-entities": "^1.2.1",
-		"pdf-image": "^2.0.0",
 		"pino": "^5.13.2",
 		"pino-pretty": "^2.6.1",
 		"request": "^2.88.0",
