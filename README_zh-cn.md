@@ -59,13 +59,13 @@ Docker 容器已经上传到 [Docker Hub](https://hub.docker.com/u/axarev).
 ```sh
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
-sudo apt-get install nodejs npm qpdf imagemagick tesseract-ocr libtesseract-dev
+sudo apt-get install nodejs npm qpdf imagemagick graphicsmagick tesseract-ocr libtesseract-dev
 ```
 
 在 **Arch** 操作系统下 :
 
 ```sh
-pacman -S nodejs npm qpdf imagemagick tesseract
+pacman -S nodejs npm qpdf imagemagick graphicsmagick tesseract
 ```
 
 #### 1.2.2. 安装 MacOS 环境下的依赖
@@ -80,7 +80,7 @@ pacman -S nodejs npm qpdf imagemagick tesseract
 之后用 brew 指令安装依赖：
 
 ```sh
-brew install node qpdf imagemagick tesseract tesseract-lang
+brew install node qpdf imagemagick graphicsmagick tesseract tesseract-lang
 ```
 
 #### 1.2.3. 安装 Windows 环境下的依赖
@@ -324,11 +324,12 @@ Parsr 默认的 OCR 解决方案是 tesseract，这是 Parsr 的基本依赖。
 第三方证书 :
 
 1. **QPDF**: Apache [http://qpdf.sourceforge.net](http://qpdf.sourceforge.net/)
-2. **ImageMagick**: Apache 2.0 [https://imagemagick.org/script/license.php](https://imagemagick.org/script/license.php)
-3. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
-4. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)
-5. **MuPDF** (Optional dependency): AGPL [https://mupdf.com/license.html](https://mupdf.com/license.html)
-6. **Pandoc** (Optional dependency): GPL [https://github.com/jgm/pandoc](https://github.com/jgm/pandoc)
+2. **GraphicsMagick**: MIT [http://www.graphicsmagick.org/index.html](http://www.graphicsmagick.org/index.html)
+3. **ImageMagick**: Apache 2.0 [https://imagemagick.org/script/license.php](https://imagemagick.org/script/license.php)
+4. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
+5. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)
+6. **MuPDF** (Optional dependency): AGPL [https://mupdf.com/license.html](https://mupdf.com/license.html)
+7. **Pandoc** (Optional dependency): GPL [https://github.com/jgm/pandoc](https://github.com/jgm/pandoc)
 
 ## 7. 证书
 

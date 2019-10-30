@@ -26,6 +26,7 @@ import logger from './Logger';
 import { ProcessManager } from './ProcessManager';
 import { ConfigFile, ServerManager } from './ServerManager';
 import { Binder, PipelineProcess, QueueStatus, SingleFileType } from './types';
+import { err } from 'pino-std-serializers';
 
 export class ApiServer {
 	private outputDir: string = path.resolve(`${__dirname}/output`);
@@ -346,28 +347,50 @@ export class ApiServer {
 		res.setHeader('Access-Control-Allow-Origin', '*');
 
 		const docId: string = req.params.id;
-		const page: number = parseInt(req.params.page, 10);
+		const page: number = parseInt(req.params.page, 10) + 1;
 		const binder: Binder = this.fileManager.getBinder(docId);
-		const PDFImage = require('pdf-image').PDFImage;
-		const pdfImage = new PDFImage(binder.input, {
-			convertOptions: {
-				'-resize': '200x200',
-				'-colorspace': 'RGB',
-			},
+		const thumbFolder = path.join(os.tmpdir(), 'Doc-' + docId + '/');
+
+		if (!fs.existsSync(thumbFolder)) {
+			try {
+				fs.mkdirSync(thumbFolder);
+			} catch (error) {
+				res.status(500).send(error);
+				return;
+			}
+		}
+
+		const filePath = thumbFolder + docId + '_' + page + '.png';
+		if (fs.existsSync(filePath)) {
+			logger.info('Return Thumbnail at path ' + filePath);
+			res.sendFile(filePath, {
+				headers: {
+					responseType: 'blob',
+				},
+			});
+			return;
+		}
+		const pdf2Pic = require('pdf2pic');
+		const pdf2picConfig = new pdf2Pic({
+			density: 72, // output pixels per inch
+			savename: docId, // output file name
+			savedir: thumbFolder, // output file location
+			format: 'png', // output file format
+			size: '200x200', // output size in pixels
 		});
-		pdfImage.convertPage(page).then(
-			(imagePath: string) => {
-				logger.info(`Thumbnail path ${imagePath}!`);
-				res.sendFile(imagePath, {
+
+		try {
+			pdf2picConfig.convertBulk(binder.input, [page]).then(() => {
+				logger.info('Generated Thumbnail at path ' + filePath);
+				res.sendFile(filePath, {
 					headers: {
 						responseType: 'blob',
 					},
 				});
-			},
-			(err: Error) => {
-				res.status(500).send(err);
-			},
-		);
+			});
+		} catch (error) {
+			res.status(500).send(error);
+		}
 	}
 
 	private isValidDocument(doc: Express.Multer.File): boolean {
