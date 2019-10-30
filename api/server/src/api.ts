@@ -359,6 +359,16 @@ export class ApiServer {
 			});
 		}
 
+		const filePath = thumbFolder + docId + '_' + page + '.png';
+		if (fs.existsSync(filePath)) {
+			logger.info('Return Thumbnail at path ' + filePath);
+			res.sendFile(filePath, {
+				headers: {
+					responseType: 'blob',
+				},
+			});
+			return;
+		}
 		const pdf2Pic = require('pdf2pic');
 		const pdf2picConfig = new pdf2Pic({
 			density: 72, // output pixels per inch
@@ -370,8 +380,7 @@ export class ApiServer {
 
 		try {
 			pdf2picConfig.convertBulk(binder.input, [page]).then(() => {
-				const filePath = thumbFolder + docId + '_' + page + '.png';
-				logger.info('Thumbnail path ' + filePath);
+				logger.info('Generated Thumbnail at path ' + filePath);
 				res.sendFile(filePath, {
 					headers: {
 						responseType: 'blob',
