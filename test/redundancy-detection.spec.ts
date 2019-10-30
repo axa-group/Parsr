@@ -27,7 +27,7 @@ describe('Paragraph merge function', () => {
 	let doc: Document;
 
 	before(done => {
-		getPdf((d) => runModules(d, [new RedundancyDetectionModule()]), pdfName).then(([, docAfter]) => {
+		getPdf(d => runModules(d, [new RedundancyDetectionModule()]), pdfName).then(([, docAfter]) => {
 			doc = docAfter;
 			done();
 		});

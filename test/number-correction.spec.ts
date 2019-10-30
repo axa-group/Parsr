@@ -41,8 +41,7 @@ describe('Number correction from pdf', () => {
 			return runModules(doc, [new NumberCorrectionModule()]);
 		}
 
-		getPdf(transform, pdfName)
-		.then(([, pdfA]) => {
+		getPdf(transform, pdfName).then(([, pdfA]) => {
 			pdfAfter = pdfA;
 			done();
 		});
@@ -70,7 +69,10 @@ describe('Number correction from Abbyy-style table output', () => {
 						[
 							new TableCell(dummyBB, [
 								new Paragraph(dummyBB, [
-									new Line(dummyBB, [new Word(dummyBB, '1234', dummyFont), new Word(dummyBB, '00', dummyFont)]),
+									new Line(dummyBB, [
+										new Word(dummyBB, '1234', dummyFont),
+										new Word(dummyBB, '00', dummyFont),
+									]),
 								]),
 							]),
 						],
@@ -95,7 +97,12 @@ describe('Number correction from Abbyy-style table output', () => {
 	});
 });
 
-function testableSuggest(numberCorrectionModule, input: string, regexp: RegExp, whitelist: Set<string>) {
+function testableSuggest(
+	numberCorrectionModule,
+	input: string,
+	regexp: RegExp,
+	whitelist: Set<string>,
+) {
 	const suggestions = numberCorrectionModule.suggestNumberCorrections(input, regexp, whitelist);
 	if (suggestions.length > 0) {
 		return suggestions[0][0];
@@ -110,42 +117,58 @@ describe('Single string number correction', () => {
 
 	withData(['ooo', 'OOO', 'o.O0', 'o.oo'], test => {
 		it(`should fix number misrecognition "${test}" looking like "0.00"`, () => {
-			expect(testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist)).to.be.equal('0.00');
+			expect(
+				testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist),
+			).to.be.equal('0.00');
 		});
 	});
 	withData(['001', 'OOI'], test => {
 		it(`should fix number misrecognition "${test}" looking like "0.01"`, () => {
-			expect(testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist)).to.be.equal('0.01');
+			expect(
+				testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist),
+			).to.be.equal('0.01');
 		});
 	});
 	withData(['9,999,99'], test => {
 		it(`should fix number misrecognition "${test}" looking like "9,999.99"`, () => {
-			expect(testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist)).to.be.equal('9,999.99');
+			expect(
+				testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist),
+			).to.be.equal('9,999.99');
 		});
 	});
 	withData(['S', ' S'], test => {
 		it(`should fix number misrecognition "${test}" looking like "5"`, () => {
-			expect(testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist)).to.be.equal('5');
+			expect(
+				testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist),
+			).to.be.equal('5');
 		});
 	});
 	withData(['155', ' ISS', '1SS'], test => {
 		it(`should fix number misrecognition "${test}" looking like "155"`, () => {
-			expect(testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist)).to.be.equal('155');
+			expect(
+				testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist),
+			).to.be.equal('155');
 		});
 	});
 	withData(['ISS'], test => {
 		it(`should not change whitelisted word "${test}" looking like "155"`, () => {
-			expect(testableSuggest(numberCorrectionModule, test, accountingFormat, new Set<string>(['ISS']))).to.be.equal(test);
+			expect(
+				testableSuggest(numberCorrectionModule, test, accountingFormat, new Set<string>(['ISS'])),
+			).to.be.equal(test);
 		});
 	});
 	withData(['wooooooops', 'ooooolala', 'pony'], test => {
 		it(`should not get any suggestions for legit words "${test}"`, () => {
-			expect(testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist)).to.be.equal(test);
+			expect(
+				testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist),
+			).to.be.equal(test);
 		});
 	});
 	withData(['4000', '1234.344', '1,234.23'], test => {
 		it(`should not change legit numbers "${test}"`, () => {
-			expect(testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist)).to.be.equal(test);
+			expect(
+				testableSuggest(numberCorrectionModule, test, accountingFormat, emptyWhitelist),
+			).to.be.equal(test);
 		});
 	});
 });
