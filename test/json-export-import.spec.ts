@@ -48,8 +48,7 @@ describe('JSON export and import', () => {
 
 			before(done => {
 				function transform(pdf: Document): Promise<Document> {
-					return clean(pdf)
-					.then(doc => {
+					return clean(pdf).then(doc => {
 						const jsonExporter = new JsonExporter(doc, 'word');
 						const jsonDoc: JsonExport = jsonExporter.getJson();
 						pdfAfter = json2document(jsonDoc);
@@ -58,8 +57,7 @@ describe('JSON export and import', () => {
 				}
 
 				getPdf(transform, pdfName).then(([pdfB, pdfA]) => {
-					clean(pdfB)
-					.then(pdfBClean => {
+					clean(pdfB).then(pdfBClean => {
 						pdfAfter = pdfA;
 						pdfBefore = pdfBClean;
 						done();

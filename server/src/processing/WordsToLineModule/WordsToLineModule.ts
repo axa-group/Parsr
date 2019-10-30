@@ -142,8 +142,7 @@ export class WordsToLineModule extends Module<Options> {
 
 				if (
 					Math.abs(prev.top - curr.top) <= prev.height * opt.topUncertainty &&
-					Math.abs(prev.height - curr.height) <=
-						prev.height * (1 + opt.lineHeightUncertainty) &&
+					Math.abs(prev.height - curr.height) <= prev.height * (1 + opt.lineHeightUncertainty) &&
 					curr.left - (prev.left + prev.width) <= opt.maximumSpaceBetweenWords &&
 					// FIXME element cannot be a Heading since it is a Word
 					// (prev instanceof Heading) === (curr instanceof Heading) &&
