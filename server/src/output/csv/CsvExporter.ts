@@ -22,39 +22,39 @@ import { Page, Table } from '../../types/DocumentRepresentation';
 import { Exporter } from '../Exporter';
 
 export class CsvExporter extends Exporter {
-	public export(outputPath: string): Promise<any> {
-		const promises: Array<Promise<any>> = [];
-		const ext = '.csv';
+  public export(outputPath: string): Promise<any> {
+    const promises: Array<Promise<any>> = [];
+    const ext = '.csv';
 
-		// FIXME This is a dirty way to check if the folder already exists
-		try {
-			fs.mkdirSync(`${path.dirname(outputPath)}/csv`);
-		} catch {
-			// noop
-		}
+    // FIXME This is a dirty way to check if the folder already exists
+    try {
+      fs.mkdirSync(`${path.dirname(outputPath)}/csv`);
+    } catch {
+      // noop
+    }
 
-		outputPath = `${path.dirname(outputPath)}/csv/${path.basename(outputPath, ext)}`;
+    outputPath = `${path.dirname(outputPath)}/csv/${path.basename(outputPath, ext)}`;
 
-		this.doc.pages.forEach((page: Page) => {
-			let index = 1;
+    this.doc.pages.forEach((page: Page) => {
+      let index = 1;
 
-			page.elements
-				.filter(e => e instanceof Table)
-				.forEach((table: Table) => {
-					promises.push(
-						this.writeFile(
-							`${outputPath}-${page.pageNumber}-${index}${ext}`,
-							this.getCsvContent(table),
-						),
-					);
-					index++;
-				});
-		});
+      page.elements
+        .filter(e => e instanceof Table)
+        .forEach((table: Table) => {
+          promises.push(
+            this.writeFile(
+              `${outputPath}-${page.pageNumber}-${index}${ext}`,
+              this.getCsvContent(table),
+            ),
+          );
+          index++;
+        });
+    });
 
-		return Promise.all(promises);
-	}
+    return Promise.all(promises);
+  }
 
-	private getCsvContent(table: Table): string {
-		return stringify(table.toArray(), { delimiter: ';' });
-	}
+  private getCsvContent(table: Table): string {
+    return stringify(table.toArray(), { delimiter: ';' });
+  }
 }

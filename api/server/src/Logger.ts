@@ -17,9 +17,9 @@
 import pino from 'pino';
 
 const logger = pino({
-	name: 'parsr-api',
-	prettyPrint: { colorize: true, translateTime: "yyyy-mm-dd'T'HH:MM:ss" },
-	level: 'info',
+  name: 'parsr-api',
+  prettyPrint: { colorize: true, translateTime: "yyyy-mm-dd'T'HH:MM:ss" },
+  level: 'info',
 });
 
 export default logger;

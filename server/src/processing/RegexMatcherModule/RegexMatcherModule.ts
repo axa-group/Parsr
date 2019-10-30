@@ -22,61 +22,61 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	queries?: Array<{ regex: string; label: string }>;
-	isGlobal?: boolean;
-	isCaseSensitive?: boolean;
+  queries?: Array<{ regex: string; label: string }>;
+  isGlobal?: boolean;
+  isCaseSensitive?: boolean;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
 
 export class RegexMatcherModule extends Module<Options> {
-	public static moduleName = 'regex-matcher';
-	public static dependencies = [LinesToParagraphModule];
+  public static moduleName = 'regex-matcher';
+  public static dependencies = [LinesToParagraphModule];
 
-	constructor(options?: Options) {
-		super(options, defaultOptions);
-	}
+  constructor(options?: Options) {
+    super(options, defaultOptions);
+  }
 
-	public main(doc: Document): Document {
-		this.options.queries.forEach(query => {
-			logger.info(`Labeling Texts with label ${query.label} from regex ${query.regex}`);
+  public main(doc: Document): Document {
+    this.options.queries.forEach(query => {
+      logger.info(`Labeling Texts with label ${query.label} from regex ${query.regex}`);
 
-			let regexType: string = '';
-			if (this.options.isGlobal) {
-				regexType += 'g';
-			}
-			if (this.options.isCaseSensitive) {
-				regexType += 'i';
-			}
+      let regexType: string = '';
+      if (this.options.isGlobal) {
+        regexType += 'g';
+      }
+      if (this.options.isCaseSensitive) {
+        regexType += 'i';
+      }
 
-			const re: RegExp = new RegExp(query.regex, regexType);
-			doc.pages = doc.pages.map(page => {
-				// const labelCount = 0;
+      const re: RegExp = new RegExp(query.regex, regexType);
+      doc.pages = doc.pages.map(page => {
+        // const labelCount = 0;
 
-				const paragraphs = page.getElementsOfType<Paragraph>(Paragraph);
-				for (const paragraph of paragraphs) {
-					let result = null;
-					// tslint:disable-next-line:no-conditional-assignment
-					while ((result = re.exec(paragraph.toString()))) {
-						const matchingWords: Word[] = paragraph.findWordsFromParagraphSubstring(
-							result.index,
-							result[0].length,
-						);
+        const paragraphs = page.getElementsOfType<Paragraph>(Paragraph);
+        for (const paragraph of paragraphs) {
+          let result = null;
+          // tslint:disable-next-line:no-conditional-assignment
+          while ((result = re.exec(paragraph.toString()))) {
+            const matchingWords: Word[] = paragraph.findWordsFromParagraphSubstring(
+              result.index,
+              result[0].length,
+            );
 
-						const metadata = new RegexMetadata(matchingWords, {
-							name: query.label,
-							regex: query.regex,
-							fullMatch: result[0],
-							groups: result.slice(1),
-						});
+            const metadata = new RegexMetadata(matchingWords, {
+              name: query.label,
+              regex: query.regex,
+              fullMatch: result[0],
+              groups: result.slice(1),
+            });
 
-						matchingWords.forEach(word => word.metadata.push(metadata));
-					}
-				}
-				return page;
-			});
-		});
+            matchingWords.forEach(word => word.metadata.push(metadata));
+          }
+        }
+        return page;
+      });
+    });
 
-		return doc;
-	}
+    return doc;
+  }
 }

@@ -23,43 +23,43 @@ import { Paragraph } from './Paragraph';
  * The attributes level represents the level of the heading; 1 being the highest level.
  */
 export class Heading extends Paragraph {
-	private _level: number;
+  private _level: number;
 
-	/**
-	 * Getter level
-	 * @return {number}
-	 */
-	public get level(): number {
-		return this._level;
-	}
+  /**
+   * Getter level
+   * @return {number}
+   */
+  public get level(): number {
+    return this._level;
+  }
 
-	/**
-	 * Setter level
-	 * @param {number} value
-	 */
-	public set level(value: number) {
-		this._level = value;
-	}
+  /**
+   * Setter level
+   * @param {number} value
+   */
+  public set level(value: number) {
+    this._level = value;
+  }
 
-	constructor(boundingBox: BoundingBox, content: Line[] = [], level: number = 0) {
-		super(boundingBox, content);
-		this.level = level;
-	}
+  constructor(boundingBox: BoundingBox, content: Line[] = [], level: number = 0) {
+    super(boundingBox, content);
+    this.level = level;
+  }
 
-	/**
-	 * Converts the entire element into a html code string (needed by MD table generation).
-	 */
-	public toHTML(): string {
-		return '<b>' + this.content.map(line => line.toHTML()).join(' ') + '</b>';
-	}
+  /**
+   * Converts the entire element into a html code string (needed by MD table generation).
+   */
+  public toHTML(): string {
+    return '<b>' + this.content.map(line => line.toHTML()).join(' ') + '</b>';
+  }
 
-	/**
-	 * Converts the entire paragraph into a string form with formatting, with spaces between words.
-	 */
-	public toMarkdown(): string {
-		if (this.level === 0) {
-			return super.toMarkdown();
-		}
-		return '#'.repeat(this.level) + ' ' + this.toString();
-	}
+  /**
+   * Converts the entire paragraph into a string form with formatting, with spaces between words.
+   */
+  public toMarkdown(): string {
+    if (this.level === 0) {
+      return super.toMarkdown();
+    }
+    return '#'.repeat(this.level) + ' ' + this.toString();
+  }
 }

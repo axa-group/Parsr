@@ -23,7 +23,7 @@ import * as defaultConfig from './defaultConfig.json';
 // List of every options you need.
 // Don't forget the question mark!
 interface Options {
-	yourOption?: string;
+  yourOption?: string;
 }
 
 // Default options if none have been set in the configuration file.
@@ -33,36 +33,36 @@ const defaultOptions = (defaultConfig as any) as Options;
  * Template Module. Do not use as is.
  */
 export class TemplateModule extends Module<Options> {
-	// The module name is useful to call it in the configuration.
-	// Please keep it kebab-case.
-	public static moduleName = 'template-module';
-	// If your module can only be ran after another module, add it to the list.
-	// For instance, if your module needs a document where lines have already be created,
-	// you need to add `WordsToLineModule` as a dependency.
-	public static dependencies = [WordsToLineModule];
+  // The module name is useful to call it in the configuration.
+  // Please keep it kebab-case.
+  public static moduleName = 'template-module';
+  // If your module can only be ran after another module, add it to the list.
+  // For instance, if your module needs a document where lines have already be created,
+  // you need to add `WordsToLineModule` as a dependency.
+  public static dependencies = [WordsToLineModule];
 
-	// This constructor ensures options and default options will be correctly copied.
-	constructor(options?: Options) {
-		super(options, defaultOptions);
-	}
+  // This constructor ensures options and default options will be correctly copied.
+  constructor(options?: Options) {
+    super(options, defaultOptions);
+  }
 
-	// The main function will be called by the platform (by `../Cleaner.ts`).
-	public main(doc: Document): Document {
-		// Modify the document here as you want.
-		// You can use options with `this.options.yourOption`
-		logger.info(this.options.yourOption);
-		return doc;
-	}
+  // The main function will be called by the platform (by `../Cleaner.ts`).
+  public main(doc: Document): Document {
+    // Modify the document here as you want.
+    // You can use options with `this.options.yourOption`
+    logger.info(this.options.yourOption);
+    return doc;
+  }
 
-	// Note that you can also return a `Promise<Document>` if your process is async.
-	// In this case, use this main function instead:
-	/*
-	public main(doc: Document): Promise<Document> {
-		const promise: Promise<Document> = new Promise<Document>((resolve, reject) => {
-			resolve(doc);
-		});
+  // Note that you can also return a `Promise<Document>` if your process is async.
+  // In this case, use this main function instead:
+  /*
+  public main(doc: Document): Promise<Document> {
+    const promise: Promise<Document> = new Promise<Document>((resolve, reject) => {
+      resolve(doc);
+    });
 
-		return promise;
-	}
-	*/
+    return promise;
+  }
+  */
 }
