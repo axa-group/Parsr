@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { PdfminerFigure } from './PdfminerFigure';
 import { PdfminerTextbox } from './PdfminerTextbox';
 
 export class PdfminerPage {
@@ -23,7 +24,7 @@ export class PdfminerPage {
 		rotate: string;
 	};
 	public textbox: PdfminerTextbox[];
-	public figure: object[];
+	public figure: PdfminerFigure[];
 	public line: object[];
 	public rect: object[];
 	public curve: object[];

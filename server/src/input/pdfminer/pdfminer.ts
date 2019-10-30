@@ -16,6 +16,7 @@
 
 import { spawn } from 'child_process';
 import * as fs from 'fs';
+import * as path from 'path';
 import { parseString } from 'xml2js';
 import {
 	BoundingBox,
@@ -23,12 +24,14 @@ import {
 	Document,
 	Element,
 	Font,
+	Image,
 	Page,
 	Word,
 } from '../../types/DocumentRepresentation';
+import { PdfminerFigure } from '../../types/PdfminerFigure';
 import { PdfminerPage } from '../../types/PdfminerPage';
-import { PdfminerTextline } from '../../types/PdfminerTextline';
 import { PdfminerText } from '../../types/PdfminerText';
+import { PdfminerTextline } from '../../types/PdfminerTextline';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 
@@ -44,6 +47,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
 	return new Promise<Document>((resolveDocument, rejectDocument) => {
 		return repairPdf(pdfInputFile).then(repairedPdf => {
 			const xmlOutputFile: string = utils.getTemporaryFile('.xml');
+			const imgsLocation: string = utils.getTemporaryDirectory();
 			let pdf2txtLocation: string = utils.getCommandLocationOnSystem('pdf2txt.py');
 			if (!pdf2txtLocation) {
 				pdf2txtLocation = utils.getCommandLocationOnSystem('pdf2txt');
@@ -60,9 +64,10 @@ export function execute(pdfInputFile: string): Promise<Document> {
 				`${pdf2txtLocation} ${[
 					'-c',
 					'utf-8',
-					// '-A', crashes pdf2txt.py using Benchmark axa.uk.business.owntools.pdf
 					'-t',
 					'xml',
+					'-O',
+					imgsLocation,
 					'-o',
 					xmlOutputFile,
 					repairedPdf,
@@ -76,9 +81,10 @@ export function execute(pdfInputFile: string): Promise<Document> {
 			const pdfminer = spawn(pdf2txtLocation, [
 				'-c',
 				'utf-8',
-				// '-A', crashes pdf2txt.py using Benchmark axa.uk.business.owntools.pdf
 				'-t',
 				'xml',
+				'-O',
+				imgsLocation,
 				'-o',
 				xmlOutputFile,
 				repairedPdf,
@@ -107,7 +113,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
 						logger.debug(`Converting pdfminer's XML output to JS object..`);
 						parseXmlToObject(xml).then((obj: any) => {
 							const pages: Page[] = [];
-							obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj)));
+							obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj, imgsLocation)));
 							resolveDocument(new Document(pages, pdfInputFile));
 						});
 					} catch (err) {
@@ -122,7 +128,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
 	});
 }
 
-function getPage(pageObj: PdfminerPage): Page {
+function getPage(pageObj: PdfminerPage, imagsLocation: string): Page {
 	const boxValues: number[] = pageObj._attr.bbox.split(',').map(v => parseFloat(v));
 	const pageBbox: BoundingBox = new BoundingBox(
 		boxValues[0],
@@ -139,6 +145,13 @@ function getPage(pageObj: PdfminerPage): Page {
 			para.textline.map(line => {
 				elements = [...elements, ...breakLineIntoWords(line, ',', pageBbox.height)];
 			});
+		});
+	}
+
+	// treat figures
+	if (pageObj.figure !== undefined) {
+		pageObj.figure.forEach(fig => {
+			elements = [...elements, ...interpretImages(fig, imagsLocation, pageBbox.height)];
 		});
 	}
 	return new Page(parseFloat(pageObj._attr.id), elements, pageBbox);
@@ -201,6 +214,21 @@ function getValidCharacter(character: string): string {
 	return RegExp(/\(cid:/gm).test(character) ? '?' : character;
 }
 
+function interpretImages(
+	fig: PdfminerFigure,
+	imagsLocation: string,
+	pageHeight: number,
+	scalingFactor: number = 1,
+): Image[] {
+	const resultantImages: Image[] = fig.image.map(
+		img =>
+			new Image(
+				getBoundingBox(fig._attr.bbox, ',', pageHeight, scalingFactor),
+				path.join(imagsLocation, img._attr.src),
+			),
+	);
+	return resultantImages;
+}
 function breakLineIntoWords(
 	line: PdfminerTextline,
 	wordSeperator: string = ' ',

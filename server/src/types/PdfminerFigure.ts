@@ -14,35 +14,17 @@
  * limitations under the License.
  */
 
-import { BoundingBox } from './BoundingBox';
-import { Element } from './Element';
+import { PdfminerImage } from './PdfminerImage';
 
-/**
- * Image element represents an image in a document, with the src attribute representing the location of
- * the image.
- */
-export class Image extends Element {
-	/**
-	 * Getter src
-	 * @return {string}
-	 */
-	public get src(): string {
-		return this._src;
-	}
+export class PdfminerFigure {
+	public _attr: {
+		name: string;
+		bbox: string;
+	};
+	public image: PdfminerImage[];
 
-	/**
-	 * Setter src
-	 * @param {string} value
-	 */
-	public set src(value: string) {
-		this._src = value;
-	}
-
-	public content: null = null;
-	private _src: string;
-
-	constructor(boundingBox: BoundingBox, src?: string) {
-		super(boundingBox);
-		this.src = src;
+	constructor(textbox: PdfminerFigure) {
+		this._attr = textbox._attr;
+		this.image = textbox.image;
 	}
 }

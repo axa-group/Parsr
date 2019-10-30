@@ -42,7 +42,7 @@ export interface JsonElement {
 	box?: JsonBox;
 	content?: JsonElement[] | string;
 	font?: number;
-	url?: string;
+	src?: string;
 	codeType?: string;
 	codeValue?: string;
 	conf?: number;
