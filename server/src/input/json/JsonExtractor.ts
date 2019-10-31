@@ -21,10 +21,10 @@ import logger from '../../utils/Logger';
 import { Extractor } from '../Extractor';
 
 export class JsonExtractor extends Extractor {
-	public run(inputFile: string): Promise<Document> {
-		logger.info('processing the input file', inputFile);
-		const json: JsonExport = JSON.parse(readFileSync(inputFile, 'utf8'));
-		const doc: Document = json2document(json);
-		return Promise.resolve(doc);
-	}
+  public run(inputFile: string): Promise<Document> {
+    logger.info('processing the input file', inputFile);
+    const json: JsonExport = JSON.parse(readFileSync(inputFile, 'utf8'));
+    const doc: Document = json2document(json);
+    return Promise.resolve(doc);
+  }
 }

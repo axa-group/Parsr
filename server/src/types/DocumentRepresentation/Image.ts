@@ -22,27 +22,27 @@ import { Element } from './Element';
  * the image.
  */
 export class Image extends Element {
-	/**
-	 * Getter url
-	 * @return {string}
-	 */
-	public get url(): string {
-		return this._url;
-	}
+  /**
+   * Getter url
+   * @return {string}
+   */
+  public get url(): string {
+    return this._url;
+  }
 
-	/**
-	 * Setter url
-	 * @param {string} value
-	 */
-	public set url(value: string) {
-		this._url = value;
-	}
+  /**
+   * Setter url
+   * @param {string} value
+   */
+  public set url(value: string) {
+    this._url = value;
+  }
 
-	public content: null = null;
-	private _url: string;
+  public content: null = null;
+  private _url: string;
 
-	constructor(boundingBox: BoundingBox, url?: string) {
-		super(boundingBox);
-		this.url = url;
-	}
+  constructor(boundingBox: BoundingBox, url?: string) {
+    super(boundingBox);
+    this.url = url;
+  }
 }

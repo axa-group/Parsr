@@ -1,12 +1,19 @@
 {
 	"defaultSeverity": "error",
 	"extends": ["tslint:recommended"],
+  "linterOptions": {
+      "exclude": [
+          "/dist",
+          "/server/bin/",
+          "/api/dist"       
+      ]
+  },
 	"jsRules": {},
-	"rules": {
+	"rules": {        
 		"quotemark": false,
 		"interface-over-type-literal": [false],
 		"interface-name": [true, "never-prefix"],
-		"indent": false,
+		"indent": [true, "spaces", 2],
 		"forin": false,
 		"arrow-parens": false,
 		"object-literal-key-quotes": false,

@@ -27,49 +27,49 @@ import { Module } from '../Module';
  */
 
 export class LinkDetectionModule extends Module {
-	public static moduleName = 'link-detection';
+  public static moduleName = 'link-detection';
 
-	public main(doc: Document): Document {
-		// actionURI(http://www.axa.com):www.axa.com
-		const actionUriRegex = /(.*)actionURI\((.*)\):(.*)/;
-		// actionGoTo:7,In Real Life
-		const actionGoToRegex = /(.*)actionGoTo:(\d+),(.*)/;
-		// Ref: http://www.cs.cmu.edu/~lemur/doxygen/lemur-3.1/html/Link_8h.html
-		const actionRegex = /(.*)(actionGoToR|actionLaunch|actionNamed|actionMovie|actionUnknown)(.*)/;
+  public main(doc: Document): Document {
+    // actionURI(http://www.axa.com):www.axa.com
+    const actionUriRegex = /(.*)actionURI\((.*)\):(.*)/;
+    // actionGoTo:7,In Real Life
+    const actionGoToRegex = /(.*)actionGoTo:(\d+),(.*)/;
+    // Ref: http://www.cs.cmu.edu/~lemur/doxygen/lemur-3.1/html/Link_8h.html
+    const actionRegex = /(.*)(actionGoToR|actionLaunch|actionNamed|actionMovie|actionUnknown)(.*)/;
 
-		doc.pages.forEach((page: Page) => {
-			page.getElementsOfType<Word>(Word, true).forEach(word => {
-				if (typeof word.content !== 'string') {
-					this.matchLinksInCharacters(word);
-					return;
-				}
-				let match = [];
-				// tslint:disable-next-line:no-conditional-assignment
-				if ((match = word.content.match(actionUriRegex))) {
-					// word.content = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
-					word.content = match[3];
-					word.properties.link = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
-					// tslint:disable-next-line:no-conditional-assignment
-				} else if ((match = word.content.match(actionGoToRegex))) {
-					word.content = match[3];
-					word.properties.link = match[1] + match[3];
-					// tslint:disable-next-line:no-conditional-assignment
-				} else if ((match = word.content.match(actionRegex))) {
-					logger.debug('Unknown action: %s', word.content);
-				}
-			});
-		});
+    doc.pages.forEach((page: Page) => {
+      page.getElementsOfType<Word>(Word, true).forEach(word => {
+        if (typeof word.content !== 'string') {
+          this.matchLinksInCharacters(word);
+          return;
+        }
+        let match = [];
+        // tslint:disable-next-line:no-conditional-assignment
+        if ((match = word.content.match(actionUriRegex))) {
+          // word.content = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
+          word.content = match[3];
+          word.properties.link = `${match[1]}<a href="${match[2]}">${match[3]}</a>`;
+          // tslint:disable-next-line:no-conditional-assignment
+        } else if ((match = word.content.match(actionGoToRegex))) {
+          word.content = match[3];
+          word.properties.link = match[1] + match[3];
+          // tslint:disable-next-line:no-conditional-assignment
+        } else if ((match = word.content.match(actionRegex))) {
+          logger.debug('Unknown action: %s', word.content);
+        }
+      });
+    });
 
-		return doc;
-	}
+    return doc;
+  }
 
-	private matchLinksInCharacters(word: Word) {
-		const linkRegexp = /\b((http|https):\/\/?)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
-		const mailRegexp = /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/;
-		if (word.toString().match(linkRegexp)) {
-			word.properties.link = `<a href="${word.toString()}">${word.toString()}</a>`;
-		} else if (word.toString().match(mailRegexp)) {
-			word.properties.link = `<a href="mailto:${word.toString()}">${word.toString()}</a>`;
-		}
-	}
+  private matchLinksInCharacters(word: Word) {
+    const linkRegexp = /\b((http|https):\/\/?)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
+    const mailRegexp = /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/;
+    if (word.toString().match(linkRegexp)) {
+      word.properties.link = `<a href="${word.toString()}">${word.toString()}</a>`;
+    } else if (word.toString().match(mailRegexp)) {
+      word.properties.link = `<a href="mailto:${word.toString()}">${word.toString()}</a>`;
+    }
+  }
 }

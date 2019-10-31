@@ -20,96 +20,96 @@ import { Font } from './Font';
 import { Text } from './Text';
 
 export class Word extends Text {
-	private _content: Character[] | string;
-	private _language: string;
-	private _isInDictionary: boolean;
-	private _font: Font;
+  private _content: Character[] | string;
+  private _language: string;
+  private _isInDictionary: boolean;
+  private _font: Font;
 
-	constructor(
-		boundingBox: BoundingBox,
-		content: Character[] | string = [],
-		font: Font,
-		language: string = '',
-	) {
-		super(boundingBox);
-		this.content = content;
-		this.font = font;
-		this.language = language;
-	}
+  constructor(
+    boundingBox: BoundingBox,
+    content: Character[] | string = [],
+    font: Font,
+    language: string = '',
+  ) {
+    super(boundingBox);
+    this.content = content;
+    this.font = font;
+    this.language = language;
+  }
 
-	public toMarkDown(): string {
-		return this.properties.link ? this.properties.link : this.toString();
-	}
+  public toMarkDown(): string {
+    return this.properties.link ? this.properties.link : this.toString();
+  }
 
-	public toString(): string {
-		if (typeof this.content === 'string') {
-			return this.content.trim();
-		} else {
-			return this.content.map(c => c.toString()).reduce((c1, c2) => c1 + c2, '');
-		}
-	}
+  public toString(): string {
+    if (typeof this.content === 'string') {
+      return this.content.trim();
+    } else {
+      return this.content.map(c => c.toString()).reduce((c1, c2) => c1 + c2, '');
+    }
+  }
 
-	/**
-	 * Getter content
-	 * @return {Character[] | string}
-	 */
-	public get content(): Character[] | string {
-		return this._content;
-	}
+  /**
+   * Getter content
+   * @return {Character[] | string}
+   */
+  public get content(): Character[] | string {
+    return this._content;
+  }
 
-	/**
-	 * Getter language
-	 * @return {string}
-	 */
-	public get language(): string {
-		return this._language;
-	}
+  /**
+   * Getter language
+   * @return {string}
+   */
+  public get language(): string {
+    return this._language;
+  }
 
-	/**
-	 * Getter isInDictionary
-	 * @return {boolean}
-	 */
-	public get isInDictionary(): boolean {
-		return this._isInDictionary;
-	}
+  /**
+   * Getter isInDictionary
+   * @return {boolean}
+   */
+  public get isInDictionary(): boolean {
+    return this._isInDictionary;
+  }
 
-	/**
-	 * Setter content
-	 * @param {Character[] | string} value
-	 */
-	public set content(value: Character[] | string) {
-		this._content = value;
-	}
+  /**
+   * Setter content
+   * @param {Character[] | string} value
+   */
+  public set content(value: Character[] | string) {
+    this._content = value;
+  }
 
-	/**
-	 * Setter language
-	 * @param {string} value
-	 */
-	public set language(value: string) {
-		this._language = value;
-	}
+  /**
+   * Setter language
+   * @param {string} value
+   */
+  public set language(value: string) {
+    this._language = value;
+  }
 
-	/**
-	 * Setter isInDictionary
-	 * @param {boolean} value
-	 */
-	public set isInDictionary(value: boolean) {
-		this._isInDictionary = value;
-	}
+  /**
+   * Setter isInDictionary
+   * @param {boolean} value
+   */
+  public set isInDictionary(value: boolean) {
+    this._isInDictionary = value;
+  }
 
-	/**
-	 * Getter font
-	 * @return {Font}
-	 */
-	public get font(): Font {
-		return this._font;
-	}
+  /**
+   * Getter font
+   * @return {Font}
+   */
+  public get font(): Font {
+    return this._font;
+  }
 
-	/**
-	 * Setter font
-	 * @param {Font} value
-	 */
-	public set font(value: Font) {
-		this._font = value;
-	}
+  /**
+   * Setter font
+   * @param {Font} value
+   */
+  public set font(value: Font) {
+    this._font = value;
+  }
 }

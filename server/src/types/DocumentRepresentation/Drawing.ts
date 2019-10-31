@@ -23,26 +23,26 @@ import { SvgShape } from './SvgShape';
  * along with its bounding box.
  */
 export class Drawing extends Element {
-	private _content: SvgShape[];
+  private _content: SvgShape[];
 
-	constructor(boundingBox: BoundingBox, content?: SvgShape[]) {
-		super(boundingBox);
-		this.content = content;
-	}
+  constructor(boundingBox: BoundingBox, content?: SvgShape[]) {
+    super(boundingBox);
+    this.content = content;
+  }
 
-	/**
-	 * Getter content
-	 * @return {SvgShape[]}
-	 */
-	public get content(): SvgShape[] {
-		return this._content;
-	}
+  /**
+   * Getter content
+   * @return {SvgShape[]}
+   */
+  public get content(): SvgShape[] {
+    return this._content;
+  }
 
-	/**
-	 * Setter content
-	 * @param {SvgShape[]} value
-	 */
-	public set content(value: SvgShape[]) {
-		this._content = value;
-	}
+  /**
+   * Setter content
+   * @param {SvgShape[]} value
+   */
+  public set content(value: SvgShape[]) {
+    this._content = value;
+  }
 }

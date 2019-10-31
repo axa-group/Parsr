@@ -23,51 +23,51 @@ import { Text } from './Text';
  * element in the Document Represenation set of classes.
  */
 export class Character extends Text {
-	private _content: string;
-	private _font: Font;
+  private _content: string;
+  private _font: Font;
 
-	constructor(boundingBox: BoundingBox, content: string = '', font: Font = Font.undefinedFont) {
-		super(boundingBox);
-		this.content = content;
-		this.font = font;
-	}
+  constructor(boundingBox: BoundingBox, content: string = '', font: Font = Font.undefinedFont) {
+    super(boundingBox);
+    this.content = content;
+    this.font = font;
+  }
 
-	/**
-	 * Returns the Character content as a string.
-	 */
-	public toString(): string {
-		return this.content;
-	}
+  /**
+   * Returns the Character content as a string.
+   */
+  public toString(): string {
+    return this.content;
+  }
 
-	/**
-	 * Getter content
-	 * @return {string}
-	 */
-	public get content(): string {
-		return this._content;
-	}
+  /**
+   * Getter content
+   * @return {string}
+   */
+  public get content(): string {
+    return this._content;
+  }
 
-	/**
-	 * Setter content
-	 * @param {string} value
-	 */
-	public set content(value: string) {
-		this._content = value;
-	}
+  /**
+   * Setter content
+   * @param {string} value
+   */
+  public set content(value: string) {
+    this._content = value;
+  }
 
-	/**
-	 * Getter font
-	 * @return {Font}
-	 */
-	public get font(): Font {
-		return this._font;
-	}
+  /**
+   * Getter font
+   * @return {Font}
+   */
+  public get font(): Font {
+    return this._font;
+  }
 
-	/**
-	 * Setter font
-	 * @param {Font} value
-	 */
-	public set font(value: Font) {
-		this._font = value;
-	}
+  /**
+   * Setter font
+   * @param {Font} value
+   */
+  public set font(value: Font) {
+    this._font = value;
+  }
 }

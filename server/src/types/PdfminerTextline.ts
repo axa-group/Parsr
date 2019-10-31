@@ -17,13 +17,13 @@
 import { PdfminerText } from './PdfminerText';
 
 export class PdfminerTextline {
-	public _attr: {
-		bbox: string;
-	};
-	public text: PdfminerText[];
+  public _attr: {
+    bbox: string;
+  };
+  public text: PdfminerText[];
 
-	constructor(textline: PdfminerTextline) {
-		this._attr = textline._attr;
-		this.text = textline.text;
-	}
+  constructor(textline: PdfminerTextline) {
+    this._attr = textline._attr;
+    this.text = textline.text;
+  }
 }

@@ -24,15 +24,15 @@ import { Module } from '../Module';
  * Items that overlap with the side of the page will be kept.
  */
 export class OutOfPageRemovalModule extends Module {
-	public static moduleName = 'out-of-page-removal';
+  public static moduleName = 'out-of-page-removal';
 
-	public main(doc: Document): Document {
-		doc.pages.forEach((page: Page) => {
-			page.elements = page.elements.filter((element: Element) => {
-				return !(element instanceof Text) || utils.isInBox(element, page.box, true);
-			});
-		});
+  public main(doc: Document): Document {
+    doc.pages.forEach((page: Page) => {
+      page.elements = page.elements.filter((element: Element) => {
+        return !(element instanceof Text) || utils.isInBox(element, page.box, true);
+      });
+    });
 
-		return doc;
-	}
+    return doc;
+  }
 }

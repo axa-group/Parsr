@@ -23,170 +23,170 @@ import * as englishDictArray from 'an-array-of-english-words';
  * Template Module. Do not use as is.
  */
 export class SeparateWordsModule extends Module {
-	// The module name is useful to call it in the configuration.
-	// Please keep it kebab-case.
-	public static moduleName = 'separate-words';
-	private MEMORY_SENTENCE: any = {};
-	private englishDict: any = {};
+  // The module name is useful to call it in the configuration.
+  // Please keep it kebab-case.
+  public static moduleName = 'separate-words';
+  private MEMORY_SENTENCE: any = {};
+  private englishDict: any = {};
 
-	// The main function will be called by the platform (by `../Cleaner.ts`).
-	public main(doc: Document): Document {
-		this.init();
+  // The main function will be called by the platform (by `../Cleaner.ts`).
+  public main(doc: Document): Document {
+    this.init();
 
-		doc.pages.forEach(p =>
-			p.getElementsOfType<Word>(Word).forEach(word => {
-				if (word.toString().length > 8 && !this.englishDict[word.toString().toLowerCase()]) {
-					// Hack with dot to make it works
-					const newStr = this.addSpaces(word.toString() + '.');
-					word.content = newStr.slice(0, newStr.length - 1);
-				}
-			}),
-		);
+    doc.pages.forEach(p =>
+      p.getElementsOfType<Word>(Word).forEach(word => {
+        if (word.toString().length > 8 && !this.englishDict[word.toString().toLowerCase()]) {
+          // Hack with dot to make it works
+          const newStr = this.addSpaces(word.toString() + '.');
+          word.content = newStr.slice(0, newStr.length - 1);
+        }
+      }),
+    );
 
-		return doc;
-	}
+    return doc;
+  }
 
-	private init() {
-		for (const word of englishDictArray) {
-			this.englishDict[word] = 1;
-		}
+  private init() {
+    for (const word of englishDictArray) {
+      this.englishDict[word] = 1;
+    }
 
-		this.englishDict.abc = 1;
-		this.englishDict.axa = 1;
-		this.englishDict.allianz = 1;
-		this.englishDict.chubb = 1;
-		this.englishDict['’s'] = 1;
-		this.englishDict["'s"] = 1;
-	}
+    this.englishDict.abc = 1;
+    this.englishDict.axa = 1;
+    this.englishDict.allianz = 1;
+    this.englishDict.chubb = 1;
+    this.englishDict['’s'] = 1;
+    this.englishDict["'s"] = 1;
+  }
 
-	private isNumber(str) {
-		const numberList = '0123456789';
-		if (str.trim().length === 0) {
-			return false;
-		}
+  private isNumber(str) {
+    const numberList = '0123456789';
+    if (str.trim().length === 0) {
+      return false;
+    }
 
-		for (const s of str) {
-			if (numberList.indexOf(s) === -1) {
-				return false;
-			}
-		}
-		return true;
-	}
+    for (const s of str) {
+      if (numberList.indexOf(s) === -1) {
+        return false;
+      }
+    }
+    return true;
+  }
 
-	private breakWords(str) {
-		if (!str) {
-			return 'end';
-		}
-		if (this.MEMORY_SENTENCE[str]) {
-			return this.MEMORY_SENTENCE[str];
-		}
+  private breakWords(str) {
+    if (!str) {
+      return 'end';
+    }
+    if (this.MEMORY_SENTENCE[str]) {
+      return this.MEMORY_SENTENCE[str];
+    }
 
-		const sentences = [];
+    const sentences = [];
 
-		const punctuationsRegex = /\W+/;
-		for (let i = 0; i < str.length; ++i) {
-			if (punctuationsRegex.test(str[i])) {
-				const bestSub = this.breakWords(str.substr(i + 1));
-				if (bestSub === 'end' || !bestSub) {
-					sentences.push({
-						score: 10,
-						word: str[i],
-					});
-				} else if (bestSub) {
-					sentences.push({
-						sub: bestSub,
-						score: 10 + bestSub.score,
-						word: str[i],
-					});
-				}
+    const punctuationsRegex = /\W+/;
+    for (let i = 0; i < str.length; ++i) {
+      if (punctuationsRegex.test(str[i])) {
+        const bestSub = this.breakWords(str.substr(i + 1));
+        if (bestSub === 'end' || !bestSub) {
+          sentences.push({
+            score: 10,
+            word: str[i],
+          });
+        } else if (bestSub) {
+          sentences.push({
+            sub: bestSub,
+            score: 10 + bestSub.score,
+            word: str[i],
+          });
+        }
 
-				break;
-			}
+        break;
+      }
 
-			if (
-				this.englishDict[str.substr(0, i + 1).toLowerCase()] ||
-				(this.isNumber(str.substr(0, i + 1)) &&
-					(!this.isNumber(str.substr(0, i + 2)) || i + 2 >= str.length))
-			) {
-				const bestSub = this.breakWords(str.substr(i + 1));
+      if (
+        this.englishDict[str.substr(0, i + 1).toLowerCase()] ||
+        (this.isNumber(str.substr(0, i + 1)) &&
+          (!this.isNumber(str.substr(0, i + 2)) || i + 2 >= str.length))
+      ) {
+        const bestSub = this.breakWords(str.substr(i + 1));
 
-				const wordScore = (i + 1) * (i + 1) * (i + 1);
-				if (bestSub === 'end' || !bestSub) {
-					sentences.push({
-						score: wordScore,
-						word: str.substr(0, i + 1),
-					});
-				} else if (bestSub) {
-					sentences.push({
-						sub: bestSub,
-						score: wordScore + bestSub.score,
-						word: str.substr(0, i + 1),
-					});
-				}
-			}
-		}
+        const wordScore = (i + 1) * (i + 1) * (i + 1);
+        if (bestSub === 'end' || !bestSub) {
+          sentences.push({
+            score: wordScore,
+            word: str.substr(0, i + 1),
+          });
+        } else if (bestSub) {
+          sentences.push({
+            sub: bestSub,
+            score: wordScore + bestSub.score,
+            word: str.substr(0, i + 1),
+          });
+        }
+      }
+    }
 
-		let bestScore = -1;
-		let bestSentence = null;
+    let bestScore = -1;
+    let bestSentence = null;
 
-		for (const sentence of sentences) {
-			if (sentence.score > bestScore) {
-				bestSentence = sentence;
-				bestScore = sentence.score;
-			}
-		}
-		this.MEMORY_SENTENCE[str] = bestSentence;
-		return bestSentence;
-	}
+    for (const sentence of sentences) {
+      if (sentence.score > bestScore) {
+        bestSentence = sentence;
+        bestScore = sentence.score;
+      }
+    }
+    this.MEMORY_SENTENCE[str] = bestSentence;
+    return bestSentence;
+  }
 
-	private addSpaces(str: string): string {
-		//   console.log('SPACE', str);
-		// do not break urls
-		if (str.indexOf('www') === 0 || str.indexOf('http:') === 0) {
-			return str;
-		}
+  private addSpaces(str: string): string {
+    //   console.log('SPACE', str);
+    // do not break urls
+    if (str.indexOf('www') === 0 || str.indexOf('http:') === 0) {
+      return str;
+    }
 
-		// do not break @
-		if (str.indexOf('@') !== -1 && str.indexOf('.') !== -1) {
-			return str;
-		}
+    // do not break @
+    if (str.indexOf('@') !== -1 && str.indexOf('.') !== -1) {
+      return str;
+    }
 
-		const punctuations = '.,,(();?!-#@£$€¥元/$=*+:';
+    const punctuations = '.,,(();?!-#@£$€¥元/$=*+:';
 
-		const subSentences = [];
+    const subSentences = [];
 
-		for (let i = 0; i < str.length; i++) {
-			if (punctuations.indexOf(str[i]) !== -1) {
-				if (i > 0) {
-					subSentences.push(str.substr(0, i));
-				}
+    for (let i = 0; i < str.length; i++) {
+      if (punctuations.indexOf(str[i]) !== -1) {
+        if (i > 0) {
+          subSentences.push(str.substr(0, i));
+        }
 
-				subSentences.push(str[i]);
-				str = str.substr(i + 1);
-				i = -1;
-			}
-		}
+        subSentences.push(str[i]);
+        str = str.substr(i + 1);
+        i = -1;
+      }
+    }
 
-		let out = '';
-		for (const subSentence of subSentences) {
-			if (punctuations.indexOf(subSentence[0]) !== -1) {
-				out += subSentence[0];
-				continue;
-			}
-			let sentences = this.breakWords(subSentence);
-			while (sentences) {
-				if (sentences.word) {
-					if (out) {
-						out += ' ';
-					}
-					out += sentences.word;
-				}
-				sentences = sentences.sub;
-			}
-		}
+    let out = '';
+    for (const subSentence of subSentences) {
+      if (punctuations.indexOf(subSentence[0]) !== -1) {
+        out += subSentence[0];
+        continue;
+      }
+      let sentences = this.breakWords(subSentence);
+      while (sentences) {
+        if (sentences.word) {
+          if (out) {
+            out += ' ';
+          }
+          out += sentences.word;
+        }
+        sentences = sentences.sub;
+      }
+    }
 
-		return out;
-	}
+    return out;
+  }
 }
 
 // console.log(addSpaces('UnoccupiedHomesSecurityandHeating'));
