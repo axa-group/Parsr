@@ -60,10 +60,10 @@ curl -X GET \
 
 ```json
 {
-	"estimated-remaining-time": 30,
-	"progress-percentage": 10,
-	"start-date": "2018-12-31T12:34:56.789Z",
-	"status": "Detecting reading order..."
+  "estimated-remaining-time": 30,
+  "progress-percentage": 10,
+  "start-date": "2018-12-31T12:34:56.789Z",
+  "status": "Detecting reading order..."
 }
 ```
 
@@ -77,11 +77,11 @@ _**NB:** `estimated-remaining-time` and `progress-percentage` are not working ye
 
 ```json
 {
-	"id": "00cafe4463b9c12aac145b3ee8f00d",
-	"json": "/api/v1/json/00cafe4463b9c12aac145b3ee8f00d",
-	"csv": "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d",
-	"text": "/api/v1/text/00cafe4463b9c12aac145b3ee8f00d",
-	"markdown": "/api/v1/markdown/00cafe4463b9c12aac145b3ee8f00d"
+  "id": "00cafe4463b9c12aac145b3ee8f00d",
+  "json": "/api/v1/json/00cafe4463b9c12aac145b3ee8f00d",
+  "csv": "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d",
+  "text": "/api/v1/text/00cafe4463b9c12aac145b3ee8f00d",
+  "markdown": "/api/v1/markdown/00cafe4463b9c12aac145b3ee8f00d"
 }
 ```
 
@@ -150,10 +150,10 @@ curl -X GET \
 
 ```json
 [
-	"/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/1/1",
-	"/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/2/1",
-	"/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/2/2",
-	"/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/3/1"
+  "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/1/1",
+  "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/2/1",
+  "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/2/2",
+  "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/3/1"
 ]
 ```
 

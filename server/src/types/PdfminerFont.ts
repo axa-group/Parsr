@@ -15,7 +15,7 @@
  */
 
 export class PdfminerFont {
-	public font: string;
-	public size: number;
-	public color: string;
+  public font: string;
+  public size: number;
+  public color: string;
 }
