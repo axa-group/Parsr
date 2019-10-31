@@ -57,7 +57,7 @@ export class Heading extends Paragraph {
    * Converts the entire paragraph into a string form with formatting, with spaces between words.
    */
   public toMarkdown(): string {
-    if (this.level === 0) {
+    if (this.level === 0 || this.level > 6) {
       return super.toMarkdown();
     }
     return '#'.repeat(this.level) + ' ' + this.toString();
