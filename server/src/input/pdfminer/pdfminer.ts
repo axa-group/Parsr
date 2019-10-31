@@ -16,7 +16,6 @@
 
 import { spawn } from 'child_process';
 import * as fs from 'fs';
-import { parseString } from 'xml2js';
 import {
   BoundingBox,
   Character,
@@ -88,24 +87,12 @@ export function execute(pdfInputFile: string): Promise<Document> {
         logger.error('pdfminer error:', data.toString('utf8'));
       });
 
-      function parseXmlToObject(xml: string): Promise<object> {
-        const promise = new Promise<object>((resolveObject, rejectObject) => {
-          parseString(xml, { attrkey: '_attr' }, (error, dataObject) => {
-            if (error) {
-              rejectObject(error);
-            }
-            resolveObject(dataObject);
-          });
-        });
-        return promise;
-      }
-
       pdfminer.on('close', async code => {
         if (code === 0) {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
             logger.debug(`Converting pdfminer's XML output to JS object..`);
-            parseXmlToObject(xml).then((obj: any) => {
+            utils.parseXmlToObject(xml, { attrkey: '_attr' }).then((obj: any) => {
               const pages: Page[] = [];
               obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj)));
               resolveDocument(new Document(pages, pdfInputFile));
