@@ -15,7 +15,7 @@ Each module contains a set of configurable parameters, which can be consulted in
 ## 1. Current Modules
 
 1. [Header and Footer Detection](HeaderFooterDetectionModule/README.md)
-2. [Hirarchy Detection](HierarchyDetectionModule/README.md)
+2. [Hierarchy Detection](HierarchyDetectionModule/README.md)
 3. [Key-Value Pair Detection](KeyValueDetectionModule/README.md)
 4. [Lines to Paragraph](LinesToParagraphModule/README.md)
 5. [Link Detection](LinkDetectionModule/README.md)
@@ -26,14 +26,14 @@ Each module contains a set of configurable parameters, which can be consulted in
 10. [Reading Order Detection](ReadingOrderDetectionModule/README.md)
 11. [Redundancy Detection](RedundancyDetectionModule/README.md)
 12. [Regex Matcher](RegexMatcherModule/README.md)
-13. [Seperate Words](SeparateWordsModule/README.md)
+13. [Separate Words](SeparateWordsModule/README.md)
 14. [Table Detection](TableDetectionModule/README.md)
 15. [Whitespace Removal](WhitespaceRemovalModule/README.md)
 16. [Words To Line](WordsToLineModule/README.md)
 
 ## 2. Create your Module
 
-Creating a custom module can be very useful to add some treament on the document.
+Creating a custom module can be very useful to add some treatment on the document.
 
 You have two way to do it:
 

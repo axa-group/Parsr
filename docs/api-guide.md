@@ -2,7 +2,32 @@
 
 This page is a guide on how to use the API.
 
-- [API Guide](#api-guide) - [0. Introduction](#0-introduction) - [1. Send Your Document: POST /document](#1-send-your-document-post-document) - [`curl` command](#curl-command) - [Status: 202 - Accepted](#status-202---accepted) - [Status: 415 - Unsupported Media Type](#status-415---unsupported-media-type) - [2. Get the queue status: GET /queue/{id}](#2-get-the-queue-status-get-queueid) - [`curl` command](#curl-command-1) - [Status: 200 - OK](#status-200---ok) - [Status: 201 - Created](#status-201---created) - [Status: 404 - Not Found](#status-404---not-found) - [Status: 500 - Internal Server Error](#status-500---internal-server-error) - [3. Get the results](#3-get-the-results) - [3.1. JSON, Markdown and Text results](#31-json-markdown-and-text-results) - [`curl` command](#curl-command-2) - [Status: 200 - OK](#status-200---ok-1) - [Status: 404 - Not Found](#status-404---not-found-1) - [3.2. CSV List of Files: GET /csv/{id}](#32-csv-list-of-files-get-csvid) - [`curl` command](#curl-command-3) - [Status: 200 - OK](#status-200---ok-2) - [Status: 404 - Not Found](#status-404---not-found-2) - [3.3. CSV File: GET /csv/{id}/{page}/{table}](#33-csv-file-get-csvidpagetable) - [`curl` command](#curl-command-4) - [Status: 200 - OK](#status-200---ok-3) - [Status: 404 - Not Found](#status-404---not-found-3) - [4. Server Configuration Access](#4-server-configuration-access)
+- [API Guide](#api-guide)
+	- [0. Introduction](#0-introduction)
+	- [1. Send Your Document: POST /document](#1-send-your-document-post-document)
+		- [`curl` command](#curl-command)
+		- [Status: 202 - Accepted](#status-202---accepted)
+		- [Status: 415 - Unsupported Media Type](#status-415---unsupported-media-type)
+	- [2. Get the queue status: GET /queue/{id}](#2-get-the-queue-status-get-queueid)
+		- [`curl` command](#curl-command-1)
+		- [Status: 200 - OK](#status-200---ok)
+		- [Status: 201 - Created](#status-201---created)
+		- [Status: 404 - Not Found](#status-404---not-found)
+		- [Status: 500 - Internal Server Error](#status-500---internal-server-error)
+	- [3. Get the results](#3-get-the-results)
+		- [3.1. JSON, Markdown and Text results](#31-json-markdown-and-text-results)
+			- [`curl` command](#curl-command-2)
+			- [Status: 200 - OK](#status-200---ok-1)
+			- [Status: 404 - Not Found](#status-404---not-found-1)
+		- [3.2. CSV List of Files: GET /csv/{id}](#32-csv-list-of-files-get-csvid)
+			- [`curl` command](#curl-command-3)
+			- [Status: 200 - OK](#status-200---ok-2)
+			- [Status: 404 - Not Found](#status-404---not-found-2)
+		- [3.3. CSV File: GET /csv/{id}/{page}/{table}](#33-csv-file-get-csvidpagetable)
+			- [`curl` command](#curl-command-4)
+			- [Status: 200 - OK](#status-200---ok-3)
+			- [Status: 404 - Not Found](#status-404---not-found-3)
+	- [4. Server Configuration Access](#4-server-configuration-access)
 
 ## 0. Introduction
 
@@ -11,7 +36,7 @@ First of all there is a few things to know:
 - **The API is RESTful:** The API is over HTTP and follow REST standards.
 - **The API is asynchronous:** There is a simple queue system and every job is managed by the API server.
 
-The API has an endpoint prefix `/api` and then, optionaly, the version number `/v1.0`. That mean every request must be send to:
+The API has an endpoint prefix `/api` and then, optionally, the version number `/v1.0`. That mean every request must be send to:
 
 - `/api/v1.0`: will use the API version 1.0
 - `/api/v1`: will use the latest API version 1.x
@@ -93,7 +118,7 @@ This error means the queue ID doesn't refer to any known processing queue.
 
 ### Status: 500 - Internal Server Error
 
-This error means that something went terribly wrong on the backend, probably an error comming Parsr.
+This error means that something went terribly wrong on the backend, probably an error coming from Parsr.
 
 ## 3. Get the results
 
@@ -131,7 +156,7 @@ For more information on the JSON format, please [refer to the specific guide](js
 
 #### Status: 404 - Not Found
 
-This error means that the result file doesn't exist. Maybe it wasn't asked to be outputed in the config you sent in the first request.
+This error means that the result file doesn't exist. Maybe it wasn't asked to be outputted in the config you sent in the first request.
 
 ### 3.2. CSV List of Files: [GET /csv/{id}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getCsvList)
 
@@ -159,7 +184,7 @@ curl -X GET \
 
 #### Status: 404 - Not Found
 
-This error means that the result file doesn't exist. Maybe it wasn't asked to be outputed in the config you sent in the first request.
+This error means that the result file doesn't exist. Maybe it wasn't asked to be outputted in the config you sent in the first request.
 
 ### 3.3. CSV File: [GET /csv/{id}/{page}/{table}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getCsv)
 
@@ -190,11 +215,11 @@ This CSV output example contains multiline cells and an empty column.
 
 #### Status: 404 - Not Found
 
-This error means that the result file doesn't exist. Maybe `{page}` and `{table}` parameters doesn't refer to an or it wasn't asked to be outputed in the config you sent in the first request.
+This error means that the result file doesn't exist. Maybe `{page}` and `{table}` parameters doesn't refer to an or it wasn't asked to be outputted in the config you sent in the first request.
 
 ## 4. Server Configuration Access
 
-The API can also be queried to gain access to the following server assts:
+The API can also be queried to gain access to the following server assets:
 
 1.  **Default Configuration**: The server's default configuration can be queried (at `/api/v1/default-config`) using:
 

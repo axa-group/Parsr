@@ -37,7 +37,7 @@ enum WordStyle {
 
 /**
  * The Paragraph class represents a collection of lines, fused together to represent a block of text
- * which potentially represents a symantic grouping.
+ * which potentially represents a semantic grouping.
  */
 export class Paragraph extends Text {
   private _content: Line[];
@@ -49,7 +49,7 @@ export class Paragraph extends Text {
   }
 
   /**
-   * Converts the entire paragraph into a string form, with linebreaks between lines and spaces between
+   * Converts the entire paragraph into a string form, with line breaks between lines and spaces between
    * words.
    */
   public toString(): string {
@@ -83,8 +83,8 @@ export class Paragraph extends Text {
   }
 
   /**
-   * Get every words that compose a paragrah's substring.
-   * @param start Begining of the string
+   * Get every words that compose a paragraph's substring.
+   * @param start Beginning of the string
    * @param length Length of the string
    */
   public findWordsFromParagraphSubstring(start: number, length: number): Word[] {
@@ -347,16 +347,16 @@ export class Paragraph extends Text {
     return this.wordStyleTag(style, format, false);
   }
 
-  private wordStyleTag(style: WordStyle, format: string, clossingTag: boolean): string {
+  private wordStyleTag(style: WordStyle, format: string, closingTag: boolean): string {
     switch (style) {
       case WordStyle.BoldItalic:
         return format === 'md'
           ? '***'
-          : '<' + (clossingTag ? '/' : '') + 'i><' + (clossingTag ? '/' : '') + 'b>';
+          : '<' + (closingTag ? '/' : '') + 'i><' + (closingTag ? '/' : '') + 'b>';
       case WordStyle.Bold:
-        return format === 'md' ? '**' : '<' + (clossingTag ? '/' : '') + 'b>';
+        return format === 'md' ? '**' : '<' + (closingTag ? '/' : '') + 'b>';
       case WordStyle.Italic:
-        return format === 'md' ? '*' : '<' + (clossingTag ? '/' : '') + 'i>';
+        return format === 'md' ? '*' : '<' + (closingTag ? '/' : '') + 'i>';
     }
     return '';
   }

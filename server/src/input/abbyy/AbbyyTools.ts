@@ -156,26 +156,26 @@ export class AbbyyTools extends Extractor {
     let ff: string = '';
     let fs: number = 0;
 
-    const fontoptions: any = {};
+    const fontOptions: any = {};
     if ('bold' in formattingObj) {
       if (formattingObj.bold === '1') {
-        fontoptions.weight = 'bold';
+        fontOptions.weight = 'bold';
       }
     }
     if ('italic' in formattingObj) {
-      fontoptions.italic = formattingObj.italic === '1';
+      fontOptions.italic = formattingObj.italic === '1';
     }
     if ('underline' in formattingObj) {
-      fontoptions.underline = formattingObj.underline === '1';
+      fontOptions.underline = formattingObj.underline === '1';
     }
     if ('color' in formattingObj) {
-      fontoptions.color = this.abbyyColorToRgbHex(parseInt(formattingObj.color, 10));
+      fontOptions.color = this.abbyyColorToRgbHex(parseInt(formattingObj.color, 10));
     }
     if ('scaling' in formattingObj) {
-      fontoptions.scaling = parseInt(formattingObj.scaling, 10);
+      fontOptions.scaling = parseInt(formattingObj.scaling, 10);
     } else {
       // default scaling to use
-      fontoptions.scaling = 1000;
+      fontOptions.scaling = 1000;
     }
 
     if ('ff' in formattingObj) {
@@ -185,7 +185,7 @@ export class AbbyyTools extends Extractor {
       fs = parseInt(formattingObj.fs, 10);
     }
 
-    const font: Font = new Font(ff, fs, fontoptions);
+    const font: Font = new Font(ff, fs, fontOptions);
     return this.newFontProcess(font);
   }
 
@@ -201,12 +201,12 @@ export class AbbyyTools extends Extractor {
         if ('charParams' in lineContent) {
           // means that char level data was generated
           let charsDS: Character[] = [];
-          const characterObjs = lineContent.charParams;
+          const characterObjects = lineContent.charParams;
           let isInDictionary: boolean = false;
-          for (const thisCharKey in characterObjs) {
-            const thisChar = characterObjs[thisCharKey];
-            const charBbox: BoundingBox = this.computeBoundingBox(thisChar.$);
-            if (charBbox.areaIsEmpty()) {
+          for (const thisCharKey in characterObjects) {
+            const thisChar = characterObjects[thisCharKey];
+            const charBBox: BoundingBox = this.computeBoundingBox(thisChar.$);
+            if (charBBox.areaIsEmpty()) {
               // if it has some content, it should be dealt with
               continue;
             }
@@ -223,7 +223,7 @@ export class AbbyyTools extends Extractor {
                 isInDictionary = false;
               }
             } else {
-              const c = new Character(charBbox, thisChar._);
+              const c = new Character(charBBox, thisChar._);
               let confidence: number = 1;
               if ('charConfidence' in thisChar.$) {
                 confidence = utils.round(parseInt(thisChar.$.charConfidence, 10) * 0.01);
@@ -284,8 +284,8 @@ export class AbbyyTools extends Extractor {
     return wordDS;
   }
 
-  private lineFromWords(words: Word[], lineBbox: BoundingBox): Line {
-    const lineDS: Line = new Line(lineBbox, words);
+  private lineFromWords(words: Word[], lineBBox: BoundingBox): Line {
+    const lineDS: Line = new Line(lineBBox, words);
     if (typeof words[0].confidence !== 'undefined') {
       const confidences: number[] = words.map(word => word.confidence);
       lineDS.confidence = utils.round(
@@ -315,13 +315,13 @@ export class AbbyyTools extends Extractor {
 
   private parseAbbyyTable(tableObject: any, cleanTable: boolean = false): Element[] {
     const rowsDS: TableRow[] = [];
-    const tableBbox: BoundingBox = this.computeBoundingBox(tableObject.$);
-    let topUntilHere: number = tableBbox.top;
+    const tableBBox: BoundingBox = this.computeBoundingBox(tableObject.$);
+    let topUntilHere: number = tableBBox.top;
 
     for (const rowNum in tableObject.row) {
       const row = tableObject.row[rowNum];
       const cellsDS: TableCell[] = [];
-      let leftUntilHere = tableBbox.left;
+      let leftUntilHere = tableBBox.left;
       let maxCellHeight: number = 0;
       for (const cellNum in row.cell) {
         const cell = row.cell[cellNum];
@@ -356,14 +356,14 @@ export class AbbyyTools extends Extractor {
           cellWidth,
           cellHeight,
         );
-        const tablecellDS: TableCell = new TableCell(cellBBox, elementsDS, rowSpan, colSpan);
+        const tableCellDS: TableCell = new TableCell(cellBBox, elementsDS, rowSpan, colSpan);
         leftUntilHere += cellWidth;
-        cellsDS.push(tablecellDS);
+        cellsDS.push(tableCellDS);
       }
       topUntilHere += maxCellHeight;
       rowsDS.push(new TableRow(cellsDS, BoundingBox.merge(cellsDS.map(cell => cell.box))));
     }
-    const tableDS = new Table(rowsDS, tableBbox);
+    const tableDS = new Table(rowsDS, tableBBox);
     let elements: Element[] = [];
 
     if (cleanTable) {
@@ -382,10 +382,10 @@ export class AbbyyTools extends Extractor {
     const shapes: SvgShape[] = [];
     const separator: any = drawingObject.separator[0];
     const shapeType: string = separator.$.type.trim().toLowerCase();
-    const bbox: BoundingBox = this.computeBoundingBox(drawingObject.$);
+    const bBox: BoundingBox = this.computeBoundingBox(drawingObject.$);
     if (shapeType === 'black' || shapeType === 'dotted') {
       const line: SvgLine = new SvgLine(
-        bbox,
+        bBox,
         parseFloat(separator.$.thickness),
         parseFloat(separator.start['0'].$.x),
         parseFloat(separator.start['0'].$.y),
@@ -394,7 +394,7 @@ export class AbbyyTools extends Extractor {
       );
       shapes.push(line);
     }
-    const d: Drawing = new Drawing(bbox, shapes);
+    const d: Drawing = new Drawing(bBox, shapes);
     return d;
   }
 

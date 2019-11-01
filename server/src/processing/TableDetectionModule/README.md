@@ -10,7 +10,7 @@ Given a pdf it generates for each table detected a `table` element containing an
 
 ## Dependencies
 
-- Third-party phyton library [Camelot](https://camelot-py.readthedocs.io/en/master/index.html)
+- Third-party python library [Camelot](https://camelot-py.readthedocs.io/en/master/index.html)
 
 ## How it works
 

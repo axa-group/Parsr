@@ -188,10 +188,3 @@ export class SeparateWordsModule extends Module {
     return out;
   }
 }
-
-// console.log(addSpaces('UnoccupiedHomesSecurityandHeating'));
-// console.log(addSpaces('AmountofcoverforYourContents'));
-// console.log(addSpaces("ying,orengaginginaerialactivitiesotherthanasapassengerinanaircraft"));
-// console.log(addSpaces("Anyamountover£2,000,000forallcompensationandclaimant’s"));
-// console.log(addSpaces(":FederalLawNo.(6)of2007concerningtheestablishment\
-// ofInsuranceAuthorityandOrganizationofitswork.Agent:"));

@@ -1,4 +1,4 @@
-# Seperate Words Module Module
+# Separate Words Module Module
 
 ## Purpose
 

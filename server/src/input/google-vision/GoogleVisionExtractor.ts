@@ -106,7 +106,7 @@ type TextAnnotation = {
  */
 export class GoogleVisionExtractor extends Extractor {
   /**
-   * Runs the extraction process, first setting page dimentions, then extracting the document itself.
+   * Runs the extraction process, first setting page dimensions, then extracting the document itself.
    * @param inputFile The name of the image to be used at input for the extraction.
    * @returns The promise of a valid Document (as per the Document Representation namespace).
    */

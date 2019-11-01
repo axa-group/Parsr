@@ -76,7 +76,7 @@ function constructPagesObj(jsonPages: JsonPage[], outputPagesContainer: Page[], 
         ),
       );
     } else {
-      logger.info('[JsonExtractor] didnt construct any elements', prettifyObject(elementsDS));
+      logger.info("[JsonExtractor] didn't construct any elements", prettifyObject(elementsDS));
     }
   });
 }

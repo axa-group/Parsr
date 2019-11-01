@@ -84,7 +84,7 @@
 					},
 					{
 						"label": "Percent",
-						"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
+						"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|prozent)"
 					}
 				]
 			}

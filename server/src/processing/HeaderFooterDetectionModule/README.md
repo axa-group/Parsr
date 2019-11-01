@@ -23,7 +23,7 @@ Sets the `isHeader` or `isFooter` property flags for each one of the elements de
 
 The following two parameters are available:
 
-1. `maxMarginPercentage`: The percentage of the page upto which (both from the top and the bottom) the algorithm will search for header or footer classification.
+1. `maxMarginPercentage`: The percentage of the page up to which (both from the top and the bottom) the algorithm will search for header or footer classification.
 2. `ignorePages`: The list of pages to be ignored in the header/footer search.
    This typically includes book titles, table of contents, preface, and other pages which do not typically have the same header/footer layout as the rest of the document.
 

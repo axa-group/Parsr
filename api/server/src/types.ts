@@ -51,7 +51,7 @@ export type SingleFileType =
   | 'text'
   | 'pdf'
   | 'markdown'
-  | 'confidances';
+  | 'confidences';
 
 export type QueueStatus = {
   'progress-percentage': number;
@@ -69,7 +69,7 @@ export type OutputConfig = {
     text?: boolean;
     markdown?: boolean;
     xml?: boolean;
-    confidances?: boolean;
+    confidences?: boolean;
     csv?: boolean;
     pdf?: boolean;
   };
