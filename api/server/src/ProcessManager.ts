@@ -66,8 +66,7 @@ export class ProcessManager {
             try {
               logger.info(JSON.parse(json).msg);
             } catch (err) {
-              console.log(json);
-              console.log(err);
+              logger.info(json);
             }
           }
         });
