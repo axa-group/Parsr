@@ -26,15 +26,15 @@ Following is an example of the configuration of the key-value search module:
 
 ```json
 [
-	"key-value-detection",
-	{
-		"threshold": 0.8,
-		"keyValueDividerChars": [":", ";"],
-		"keyPatterns": {
-			"Name": ["Name", "Fullname", "User"],
-			"Date of admission": ["ADMISSION DATE & TIME", "Adm Date/Time", "Reg/Admit Date"]
-		}
-	}
+  "key-value-detection",
+  {
+    "threshold": 0.8,
+    "keyValueDividerChars": [":", ";"],
+    "keyPatterns": {
+      "Name": ["Name", "Fullname", "User"],
+      "Date of admission": ["ADMISSION DATE & TIME", "Adm Date/Time", "Reg/Admit Date"]
+    }
+  }
 ]
 ```
 

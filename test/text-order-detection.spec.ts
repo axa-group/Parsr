@@ -23,45 +23,45 @@ import { getPdf, runModules } from './helpers';
 const pdfName = 'text-order-detection.pdf';
 
 describe('Text order detection function', () => {
-	let first: Element;
-	let second: Element;
-	let third: Element;
-	let fourth: Element;
+  let first: Element;
+  let second: Element;
+  let third: Element;
+  let fourth: Element;
 
-	before(done => {
-		getPdf(d => runModules(d, [new ReadingOrderDetectionModule()]), pdfName).then(
-			([_, pdfAfter]) => {
-				pdfAfter.pages[0].elements.forEach(elt => {
-					switch (elt.toString()) {
-						case 'FIRST':
-							first = elt;
-							break;
-						case 'SECOND':
-							second = elt;
-							break;
-						case 'THIRD':
-							third = elt;
-							break;
-						case 'FOURTH':
-							fourth = elt;
-							break;
-					}
-				});
-				done();
-			},
-		);
-	});
+  before(done => {
+    getPdf(d => runModules(d, [new ReadingOrderDetectionModule()]), pdfName).then(
+      ([_, pdfAfter]) => {
+        pdfAfter.pages[0].elements.forEach(elt => {
+          switch (elt.toString()) {
+            case 'FIRST':
+              first = elt;
+              break;
+            case 'SECOND':
+              second = elt;
+              break;
+            case 'THIRD':
+              third = elt;
+              break;
+            case 'FOURTH':
+              fourth = elt;
+              break;
+          }
+        });
+        done();
+      },
+    );
+  });
 
-	it('should have order properties', () => {
-		expect(first.properties.hasOwnProperty('order'));
-		expect(second.properties.hasOwnProperty('order'));
-		expect(third.properties.hasOwnProperty('order'));
-		expect(fourth.properties.hasOwnProperty('order'));
-	});
+  it('should have order properties', () => {
+    expect(first.properties.hasOwnProperty('order'));
+    expect(second.properties.hasOwnProperty('order'));
+    expect(third.properties.hasOwnProperty('order'));
+    expect(fourth.properties.hasOwnProperty('order'));
+  });
 
-	it('should be in the right order', () => {
-		expect(first.properties.order).to.be.lessThan(second.properties.order);
-		expect(second.properties.order).to.be.lessThan(third.properties.order);
-		expect(third.properties.order).to.be.lessThan(fourth.properties.order);
-	});
+  it('should be in the right order', () => {
+    expect(first.properties.order).to.be.lessThan(second.properties.order);
+    expect(second.properties.order).to.be.lessThan(third.properties.order);
+    expect(third.properties.order).to.be.lessThan(fourth.properties.order);
+  });
 });

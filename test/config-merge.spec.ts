@@ -23,51 +23,51 @@ import { Module } from '../server/src/processing/Module';
 const rootConfigPath = '/assets/configs/';
 
 describe('Module constructor', () => {
-	withData(
-		{
-			'complete custom config': [
-				'complete-custom-config.json',
-				'module-specs-1.json',
-				'complete-custom-config.json',
-			],
-			'partial custom configuration': [
-				'partial-custom.json',
-				'module-specs-3.json',
-				'partial-expected.json',
-			],
-			'empty custom config': [null, 'module-specs-2.json', 'expected-config-2.json'],
-			'booleans as values': [
-				'with-booleans-config.json',
-				'with-booleans-module-specs.json',
-				'with-booleans-config.json',
-			],
-		},
-		(customFile, defaultModuleFile, expectedOptionsFile) => {
-			let module: Module;
-			let expectedOptions;
-			before(done => {
-				let customConfig;
-				try {
-					customConfig = JSON.parse(
-						fs.readFileSync(__dirname + rootConfigPath + customFile, { encoding: 'utf-8' }),
-					);
-				} catch (e) {
-					customConfig = {};
-				}
-				const defaultConfig = JSON.parse(
-					fs.readFileSync(__dirname + rootConfigPath + defaultModuleFile, { encoding: 'utf-8' }),
-				);
+  withData(
+    {
+      'complete custom config': [
+        'complete-custom-config.json',
+        'module-specs-1.json',
+        'complete-custom-config.json',
+      ],
+      'partial custom configuration': [
+        'partial-custom.json',
+        'module-specs-3.json',
+        'partial-expected.json',
+      ],
+      'empty custom config': [null, 'module-specs-2.json', 'expected-config-2.json'],
+      'booleans as values': [
+        'with-booleans-config.json',
+        'with-booleans-module-specs.json',
+        'with-booleans-config.json',
+      ],
+    },
+    (customFile, defaultModuleFile, expectedOptionsFile) => {
+      let module: Module;
+      let expectedOptions;
+      before(done => {
+        let customConfig;
+        try {
+          customConfig = JSON.parse(
+            fs.readFileSync(__dirname + rootConfigPath + customFile, { encoding: 'utf-8' }),
+          );
+        } catch (e) {
+          customConfig = {};
+        }
+        const defaultConfig = JSON.parse(
+          fs.readFileSync(__dirname + rootConfigPath + defaultModuleFile, { encoding: 'utf-8' }),
+        );
 
-				expectedOptions = JSON.parse(
-					fs.readFileSync(__dirname + rootConfigPath + expectedOptionsFile, { encoding: 'utf-8' }),
-				);
+        expectedOptions = JSON.parse(
+          fs.readFileSync(__dirname + rootConfigPath + expectedOptionsFile, { encoding: 'utf-8' }),
+        );
 
-				module = new Module(customConfig, defaultConfig);
-				done();
-			});
-			it('should correctly merge configurations', () => {
-				expect(module.options).to.deep.equal(expectedOptions);
-			});
-		},
-	);
+        module = new Module(customConfig, defaultConfig);
+        done();
+      });
+      it('should correctly merge configurations', () => {
+        expect(module.options).to.deep.equal(expectedOptions);
+      });
+    },
+  );
 });

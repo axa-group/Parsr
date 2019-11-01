@@ -22,11 +22,11 @@ Following is an example of the configuration of the table-detection module:
 
 ```json
 [
-	"table-detection",
-	{
-		"pages": [1, 2, 3], // or [] for all pages
-		"flavor": "lattice"
-	}
+  "table-detection",
+  {
+    "pages": [1, 2, 3], // or [] for all pages
+    "flavor": "lattice"
+  }
 ]
 ```
 
