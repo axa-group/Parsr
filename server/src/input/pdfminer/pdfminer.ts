@@ -368,7 +368,7 @@ function repairPdf(filePath: string) {
   const qpdfPath = utils.getCommandLocationOnSystem('qpdf');
   if (qpdfPath) {
     const pdfOutputFile = utils.getTemporaryFile('.pdf');
-    const process = spawnSync('false', ['--decrypt', filePath, pdfOutputFile]);
+    const process = spawnSync('qpdf', ['--decrypt', filePath, pdfOutputFile]);
 
     if (process.status === 0) {
       filePath = pdfOutputFile;
