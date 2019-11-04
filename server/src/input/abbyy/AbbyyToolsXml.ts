@@ -26,6 +26,7 @@ export class AbbyyToolsXml extends AbbyyTools {
       this.abbyyXMLToObject(xml)
         .then((obj: any) => {
           const document = new Document();
+          document.inputFile = inputFile;
           try {
             const doc = obj.document.page;
             for (const pageNumber in doc) {
