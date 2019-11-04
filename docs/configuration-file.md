@@ -128,54 +128,54 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 
 ```json
 {
-	"version": 0.5,
-	"extractor": {
-		"pdf": "pdfminer",
-		"img": "tesseract",
-		"language": ["eng", "fra"]
-	},
-	"cleaner": [
-		"out-of-page-removal",
-		"whitespace-removal",
-		"redundancy-detection",
-		"table-detection",
-		["header-footer-detection", { "maxMarginPercentage": 15 }],
-		["reading-order-detection", { "minColumnWidthInPagePercent": 15 }],
-		"link-detection",
-		["words-to-line", { "maximumSpaceBetweenWords": 100 }],
-		"lines-to-paragraph",
-		["page-number-detection", { "maxMarginPercentage": 15 }],
-		"hierarchy-detection",
-		[
-			"regex-matcher",
-			{
-				"queries": [
-					{
-						"label": "Car",
-						"regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
-					},
-					{
-						"label": "Age",
-						"regex": "(\\d+)[ -]*(ans|jarige)"
-					},
-					{
-						"label": "Percent",
-						"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
-					}
-				]
-			}
-		]
-	],
-	"output": {
-		"granularity": "word",
-		"includeMarginals": false,
-		"formats": {
-			"json": true,
-			"text": true,
-			"csv": true,
-			"markdown": true,
-			"pdf": false
-		}
-	}
+  "version": 0.5,
+  "extractor": {
+    "pdf": "pdfminer",
+    "img": "tesseract",
+    "language": ["eng", "fra"]
+  },
+  "cleaner": [
+    "out-of-page-removal",
+    "whitespace-removal",
+    "redundancy-detection",
+    "table-detection",
+    ["header-footer-detection", { "maxMarginPercentage": 15 }],
+    ["reading-order-detection", { "minColumnWidthInPagePercent": 15 }],
+    "link-detection",
+    ["words-to-line", { "maximumSpaceBetweenWords": 100 }],
+    "lines-to-paragraph",
+    ["page-number-detection", { "maxMarginPercentage": 15 }],
+    "hierarchy-detection",
+    [
+      "regex-matcher",
+      {
+        "queries": [
+          {
+            "label": "Car",
+            "regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
+          },
+          {
+            "label": "Age",
+            "regex": "(\\d+)[ -]*(ans|jarige)"
+          },
+          {
+            "label": "Percent",
+            "regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
+          }
+        ]
+      }
+    ]
+  ],
+  "output": {
+    "granularity": "word",
+    "includeMarginals": false,
+    "formats": {
+      "json": true,
+      "text": true,
+      "csv": true,
+      "markdown": true,
+      "pdf": false
+    }
+  }
 }
 ```

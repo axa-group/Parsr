@@ -38,7 +38,15 @@ export class Word extends Text {
   }
 
   public toMarkDown(): string {
-    return this.properties.link ? this.properties.link : this.toString();
+    let mdString: string;
+
+    if (this.properties.link) {
+      mdString = this.properties.link;
+    } else {
+      mdString = this.toString().replace(/([\d]+)([\.\)])/g, '$1\\$2');
+    }
+
+    return mdString;
   }
 
   public toString(): string {

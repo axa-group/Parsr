@@ -19,7 +19,7 @@ import { Metadata, Properties } from '../Metadata';
 import { BoundingBox } from './BoundingBox';
 
 /**
- * The abstract class Element, which represents the generalisation of all entities that constitute the
+ * The abstract class Element, which represents the generalization of all entities that constitute the
  * content of a document. This abstract class englobes all the shared attributes of the content classes.
  */
 export abstract class Element {
@@ -131,7 +131,7 @@ export abstract class Element {
     this._properties = value;
   }
 
-  // Syntaxic sugars for getters and setters
+  // Syntactic sugars for getters and setters
   public set left(value: number) {
     this.box.left = value;
   }
@@ -191,7 +191,7 @@ export abstract class Element {
 
   /**
    * Reset global ID counter. DO NOT USE except for testing purpose.
-   * Reseting IDs IS dangerous and WILL create inconsistencies.
+   * Resetting IDs IS dangerous and WILL create inconsistencies.
    */
   public static resetGlobalId() {
     this.globalId = 1;

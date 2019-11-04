@@ -44,8 +44,8 @@ export class ServerManager {
    */
   public getModules(): string[] {
     return readdirSync(this.defaultModulesFolder, { withFileTypes: true })
-      .filter(dirent => dirent.isDirectory())
-      .map(dirent => dirent.name)
+      .filter(dirEntry => dirEntry.isDirectory())
+      .map(dirEntry => dirEntry.name)
       .map(d => d.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase())
       .map(d => d.replace(/-module/g, ''));
   }

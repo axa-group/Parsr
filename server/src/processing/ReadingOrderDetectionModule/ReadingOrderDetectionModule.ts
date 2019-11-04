@@ -47,7 +47,7 @@ export class ReadingOrderDetectionModule extends Module<Options> {
 
   public main(doc: Document): Document {
     doc.pages = doc.pages.map((page: Page) => {
-      // FIXME Hotfix because this algo bugs with floating point number
+      // FIXME Hotfix because this algorithm bugs with floating point number
       const elements: Element[] = page.elements.filter(Element.hasBoundingBox);
 
       this.order = 0;
@@ -226,11 +226,11 @@ export class ReadingOrderDetectionModule extends Module<Options> {
       group = [];
     }
 
-    // Merge to right to small collumn
+    // Merge to right to small column
 
     for (let i = 0; i < elementsGroups.length; ++i) {
       // calculate group width
-      const columnWidth = this.calcualteGroupWidth(elementsGroups[i]);
+      const columnWidth = this.calculateGroupWidth(elementsGroups[i]);
       if (columnWidth < this.currentPageMinColumnWidth) {
         if (i < elementsGroups.length - 1) {
           // default Right merge
@@ -247,7 +247,7 @@ export class ReadingOrderDetectionModule extends Module<Options> {
     return elementsGroups;
   }
 
-  private calcualteGroupWidth(elements: Element[]) {
+  private calculateGroupWidth(elements: Element[]) {
     let minX = elements[0].left;
     let maxX = elements[0].left + elements[0].width;
 

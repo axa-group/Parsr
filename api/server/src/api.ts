@@ -80,7 +80,7 @@ export class ApiServer {
     v1_0.get('/queue/:id', this.handleGetQueue.bind(this));
     v1_0.get('/json/:id', this.handleGetJson.bind(this));
     v1_0.get('/text/:id', this.handleGetText.bind(this));
-    v1_0.get('/confidances/:id', this.handleGetConfidances.bind(this));
+    v1_0.get('/confidences/:id', this.handleGetConfidences.bind(this));
     v1_0.get('/csv/:id', this.handleGetCsvList.bind(this));
     v1_0.get('/csv/:id/:page/:table', this.handleGetCsv.bind(this));
     v1_0.get('/markdown/:id', this.handleGetMarkdown.bind(this));
@@ -279,8 +279,8 @@ export class ApiServer {
     this.handleGetFile(req, res, 'text');
   }
 
-  private handleGetConfidances(req: Request, res: Response) {
-    this.handleGetFile(req, res, 'confidances');
+  private handleGetConfidences(req: Request, res: Response) {
+    this.handleGetFile(req, res, 'confidences');
   }
 
   private handleGetCsv(req: Request, res: Response) {

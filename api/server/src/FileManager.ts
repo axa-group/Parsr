@@ -77,8 +77,8 @@ export class FileManager {
       return this.checkFile(binder, `${binder.name}.xml`);
     }
 
-    if (type === 'confidances') {
-      return this.checkFile(binder, `${binder.name}-confidances.txt`);
+    if (type === 'confidences') {
+      return this.checkFile(binder, `${binder.name}-confidences.txt`);
     }
 
     if (type === 'csvs') {

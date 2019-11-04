@@ -207,7 +207,7 @@ export class Table extends Element {
    */
   public cleanTable(): Element[] {
     let e: Element[] = [];
-    // this.fuseRedundantCells() // TODO add other cleaning algos here
+    // this.fuseRedundantCells() // TODO add other cleaning algorithms here
     e = [...e, ...this.splitTableAtGhostRows()];
     return e;
   }

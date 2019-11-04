@@ -15,7 +15,7 @@ None
 ## How it works
 
 1. It compares each word to three Regex patterns, one looking for URI based link contents, one looking for GoTo links as well as any other Action links.
-2. For each case, a suitable representation, like `<a>` for URI's, is attached with the content of the word itself.
+2. For each case, a suitable representation, like `<a>` for URIs, is attached with the content of the word itself.
 
 ## Accuracy
 

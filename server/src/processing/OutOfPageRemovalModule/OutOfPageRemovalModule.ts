@@ -19,7 +19,7 @@ import * as utils from '../../utils';
 import { Module } from '../Module';
 
 /**
- * Stabiltiy: Stable
+ * Stability: Stable
  * Remove any elements that are strictly out of the page.
  * Items that overlap with the side of the page will be kept.
  */

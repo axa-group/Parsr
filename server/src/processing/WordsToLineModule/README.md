@@ -23,4 +23,4 @@ Almost perfect
 ## Limitations
 
 - It depends on the reading order detection quality
-- It sometimes fails if lines are close to each others and there's an exponant
+- It sometimes fails if lines are close to each others and there's an exponent

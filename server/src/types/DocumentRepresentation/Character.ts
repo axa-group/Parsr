@@ -20,7 +20,7 @@ import { Text } from './Text';
 
 /**
  * The Character class is the derived class of the more general Text class which represents a textual
- * element in the Document Represenation set of classes.
+ * element in the Document Representation set of classes.
  */
 export class Character extends Text {
   private _content: string;

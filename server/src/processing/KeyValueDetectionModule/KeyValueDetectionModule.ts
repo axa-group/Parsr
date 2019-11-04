@@ -40,7 +40,7 @@ export type KeyCandidate = {
 };
 
 /**
- * Detect key value pairs in a document, of the type <Key> <Seperator> <Value>, using a thresholdRatio probability.
+ * Detect key value pairs in a document, of the type <Key> <Separator> <Value>, using a thresholdRatio probability.
  */
 export class KeyValueDetectionModule extends Module<Options> {
   public static moduleName = 'key-value-detection';
@@ -177,7 +177,7 @@ export class KeyValueDetectionModule extends Module<Options> {
         word.top <= keyBox.bottom &&
         word.left >= keyBox.right &&
         word.right <= nextKeyBox.left &&
-        keyCandidates.every(keyCandindate => !keyCandindate.words.includes(word)) &&
+        keyCandidates.every(keyCandidate => !keyCandidate.words.includes(word)) &&
         !this.options.keyValueDividerChars.includes(word.toString())
       );
     });

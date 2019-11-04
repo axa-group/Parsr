@@ -50,7 +50,7 @@ export class ListDetectionModule extends Module {
       .concat(['', '•', '–', '·', '-', '→', '􏰀', '􏰀']);
 
     const bulletOr = bulletsChars.map(b => `\\${b}`).join('|') + ' ';
-    // There are codes like '􏰀' = 56319 and othersther that are not valid for
+    // There are codes like '􏰀' = 56319 and others that are not valid for
     // .charCodeAt() and always return 63 represented as '?'
     // in this case we will consider as a bullet
     const unknownCode =

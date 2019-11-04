@@ -50,7 +50,7 @@ function main(): void {
     .option('-n, --document-name [name]', 'Name of the document')
     .option(
       '-c, --config <filename>',
-      "The file's path from which the application's parameres will be loaded",
+      "The file's path from which the application's parameters will be loaded",
     )
     .option(
       '-l, --log-level <verbosity>',

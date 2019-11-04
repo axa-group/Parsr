@@ -58,8 +58,19 @@ export class ProcessManager {
     };
 
     pipelineProcess.childProcess.stdout.on('data', data => {
+      data
+        .toString('utf-8')
+        .split(/\r?\n/)
+        .map((json: string) => {
+          if (json.trim().length > 0) {
+            try {
+              logger.info(JSON.parse(json).msg);
+            } catch (err) {
+              logger.info(json);
+            }
+          }
+        });
       pipelineProcess.stdout.push(data.toString('utf-8'));
-      logger.info(data.toString('utf-8'));
     });
 
     pipelineProcess.childProcess.stderr.on('data', data => {
