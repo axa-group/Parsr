@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import * as fs from 'fs';
 import { parseString } from 'xml2js';
 import {
@@ -361,9 +361,22 @@ function ncolourToHex(color: string) {
 
 /**
  * Repair a pdf using the external mutool utility.
+ * Use qpdf to decrcrypt the pdf to avoid errors due to DRMs.
  * @param filePath The absolute filename and path of the pdf file to be repaired.
  */
 function repairPdf(filePath: string) {
+  const qpdfPath = utils.getCommandLocationOnSystem('qpdf');
+  if (qpdfPath) {
+    const pdfOutputFile = utils.getTemporaryFile('.pdf');
+    const process = spawnSync('qpdf', ['--decrypt', filePath, pdfOutputFile]);
+
+    if (process.status === 0) {
+      filePath = pdfOutputFile;
+    } else {
+      logger.warn('qpdf error:', process.status, process.stdout.toString(), process.stderr.toString());
+    }
+  }
+
   return new Promise<string>(resolve => {
     const mutoolPath = utils.getCommandLocationOnSystem('mutool');
     if (!mutoolPath) {
