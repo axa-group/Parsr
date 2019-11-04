@@ -368,8 +368,13 @@ function repairPdf(filePath: string) {
   const qpdfPath = utils.getCommandLocationOnSystem('qpdf');
   if (qpdfPath) {
     const pdfOutputFile = utils.getTemporaryFile('.pdf');
-    spawnSync('qpdf', ['--decrypt', filePath, pdfOutputFile]);
-    filePath = pdfOutputFile;
+    const process = spawnSync('false', ['--decrypt', filePath, pdfOutputFile]);
+
+    if (process.status === 0) {
+      filePath = pdfOutputFile;
+    } else {
+      logger.warn('qpdf error:', process.status, process.stdout.toString(), process.stderr.toString());
+    }
   }
 
   return new Promise<string>(resolve => {
