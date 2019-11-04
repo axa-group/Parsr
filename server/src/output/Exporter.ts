@@ -19,25 +19,25 @@ import { Document } from '../types/DocumentRepresentation';
 import logger from '../utils/Logger';
 
 export abstract class Exporter {
-	public doc: Document;
+  public doc: Document;
 
-	constructor(doc: Document) {
-		this.doc = doc;
-	}
+  constructor(doc: Document) {
+    this.doc = doc;
+  }
 
-	public abstract export(outputPath: string): Promise<void>;
+  public abstract export(outputPath: string): Promise<void>;
 
-	protected writeFile(
-		outputPath: string,
-		content: string,
-		encoding: string = 'utf8',
-	): Promise<void> {
-		return new Promise<void>(resolve => {
-			logger.info(`Writing file: ${outputPath}`);
-			fs.writeFileSync(outputPath, content, encoding);
-			// Check that the file is correctly written on the file system
-			fs.fsyncSync(fs.openSync(outputPath, 'r+'));
-			resolve();
-		});
-	}
+  protected writeFile(
+    outputPath: string,
+    content: string,
+    encoding: string = 'utf8',
+  ): Promise<void> {
+    return new Promise<void>(resolve => {
+      logger.info(`Writing file: ${outputPath}`);
+      fs.writeFileSync(outputPath, content, encoding);
+      // Check that the file is correctly written on the file system
+      fs.fsyncSync(fs.openSync(outputPath, 'r+'));
+      resolve();
+    });
+  }
 }

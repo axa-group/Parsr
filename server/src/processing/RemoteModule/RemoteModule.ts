@@ -22,30 +22,30 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	url?: string;
-	granularity?: string;
+  url?: string;
+  granularity?: string;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
 
 export class RemoteModule extends Module<Options> {
-	public static moduleName = 'remote';
+  public static moduleName = 'remote';
 
-	constructor(options: Options) {
-		super(options, defaultOptions);
-	}
+  constructor(options: Options) {
+    super(options, defaultOptions);
+  }
 
-	public main(doc: Document): Promise<Document> {
-		const jsonExporter = new JsonExporter(doc, this.options.granularity);
-		const json: JsonExport = jsonExporter.getJson();
+  public main(doc: Document): Promise<Document> {
+    const jsonExporter = new JsonExporter(doc, this.options.granularity);
+    const json: JsonExport = jsonExporter.getJson();
 
-		return axios({
-			method: 'POST',
-			url: this.options.url,
-			data: json,
-			timeout: 0x7ffffff,
-		}).then((response: AxiosResponse<JsonExport>) => {
-			return json2document(response.data);
-		});
-	}
+    return axios({
+      method: 'POST',
+      url: this.options.url,
+      data: json,
+      timeout: 0x7ffffff,
+    }).then((response: AxiosResponse<JsonExport>) => {
+      return json2document(response.data);
+    });
+  }
 }

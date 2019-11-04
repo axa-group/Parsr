@@ -36,7 +36,7 @@ First of all there is a few things to know:
 - **The API is RESTful:** The API is over HTTP and follow REST standards.
 - **The API is asynchronous:** There is a simple queue system and every job is managed by the API server.
 
-The API has an endpoint prefix `/api` and then, optionaly, the version number `/v1.0`. That mean every request must be send to:
+The API has an endpoint prefix `/api` and then, optionally, the version number `/v1.0`. That mean every request must be send to:
 
 - `/api/v1.0`: will use the API version 1.0
 - `/api/v1`: will use the latest API version 1.x
@@ -85,10 +85,10 @@ curl -X GET \
 
 ```json
 {
-    "estimated-remaining-time": 30,
-    "progress-percentage": 10,
-    "start-date": "2018-12-31T12:34:56.789Z",
-    "status": "Detecting reading order..."
+  "estimated-remaining-time": 30,
+  "progress-percentage": 10,
+  "start-date": "2018-12-31T12:34:56.789Z",
+  "status": "Detecting reading order..."
 }
 ```
 
@@ -102,11 +102,11 @@ _**NB:** `estimated-remaining-time` and `progress-percentage` are not working ye
 
 ```json
 {
-    "id": "00cafe4463b9c12aac145b3ee8f00d",
-    "json": "/api/v1/json/00cafe4463b9c12aac145b3ee8f00d",
-    "csv": "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d",
-    "text": "/api/v1/text/00cafe4463b9c12aac145b3ee8f00d",
-    "markdown": "/api/v1/markdown/00cafe4463b9c12aac145b3ee8f00d"
+  "id": "00cafe4463b9c12aac145b3ee8f00d",
+  "json": "/api/v1/json/00cafe4463b9c12aac145b3ee8f00d",
+  "csv": "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d",
+  "text": "/api/v1/text/00cafe4463b9c12aac145b3ee8f00d",
+  "markdown": "/api/v1/markdown/00cafe4463b9c12aac145b3ee8f00d"
 }
 ```
 
@@ -118,11 +118,12 @@ This error means the queue ID doesn't refer to any known processing queue.
 
 ### Status: 500 - Internal Server Error
 
-This error means that something went terribly wrong on the backend, probably an error comming Parsr.
+This error means that something went terribly wrong on the backend, probably an error coming from Parsr.
 
 ## 3. Get the results
 
 You can have results in different formats:
+
 - JSON: [GET /json/{id}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getJson)
 - Markdown [GET /markdown/{id}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getMarkdown)
 - Raw text [GET /text/{id}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getText)
@@ -155,7 +156,7 @@ For more information on the JSON format, please [refer to the specific guide](js
 
 #### Status: 404 - Not Found
 
-This error means that the result file doesn't exist. Maybe it wasn't asked to be outputed in the config you sent in the first request.
+This error means that the result file doesn't exist. Maybe it wasn't asked to be outputted in the config you sent in the first request.
 
 ### 3.2. CSV List of Files: [GET /csv/{id}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getCsvList)
 
@@ -177,13 +178,13 @@ curl -X GET \
   "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/1/1",
   "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/2/1",
   "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/2/2",
-  "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/3/1",
+  "/api/v1/csv/00cafe4463b9c12aac145b3ee8f00d/3/1"
 ]
 ```
 
 #### Status: 404 - Not Found
 
-This error means that the result file doesn't exist. Maybe it wasn't asked to be outputed in the config you sent in the first request.
+This error means that the result file doesn't exist. Maybe it wasn't asked to be outputted in the config you sent in the first request.
 
 ### 3.3. CSV File: [GET /csv/{id}/{page}/{table}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getCsv)
 
@@ -214,25 +215,25 @@ This CSV output example contains multiline cells and an empty column.
 
 #### Status: 404 - Not Found
 
-This error means that the result file doesn't exist. Maybe `{page}` and `{table}` parameters doesn't refer to an or it wasn't asked to be outputed in the config you sent in the first request.
+This error means that the result file doesn't exist. Maybe `{page}` and `{table}` parameters doesn't refer to an or it wasn't asked to be outputted in the config you sent in the first request.
 
 ## 4. Server Configuration Access
 
-The API can also be queried to gain access to the following server assts:
+The API can also be queried to gain access to the following server assets:
 
-1. **Default Configuration**: The server's default configuration can be queried (at `/api/v1/default-config`) using:
+1.  **Default Configuration**: The server's default configuration can be queried (at `/api/v1/default-config`) using:
 
-		curl -X GET \
-		http://localhost:3001/api/v1/default-config
+        curl -X GET \
+        http://localhost:3001/api/v1/default-config
 
-2. **List of Modules**: The list of all usable modules can be queried from the server (at `/api/v1/modules`) using:
+2.  **List of Modules**: The list of all usable modules can be queried from the server (at `/api/v1/modules`) using:
 
-		curl -X GET \
-		http://localhost:3001/api/v1/modules
+        curl -X GET \
+        http://localhost:3001/api/v1/modules
 
-3. **Module Configuration**: A module's configuration file, which includes name, description and each module parameter's default value and range can be queried (at `/api/v1/module-config/<module_name>`) using:
+3.  **Module Configuration**: A module's configuration file, which includes name, description and each module parameter's default value and range can be queried (at `/api/v1/module-config/<module_name>`) using:
 
-		curl -X GET \
-		http://localhost:3001/api/v1/module-config/table-detection
+        curl -X GET \
+        http://localhost:3001/api/v1/module-config/table-detection
 
 ... which will fetch the configuration file for the table-detection module.

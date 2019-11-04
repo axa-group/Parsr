@@ -18,66 +18,66 @@ import { Properties } from '../Metadata';
 import { Color } from './Color';
 
 export interface JsonExport {
-	pages: JsonPage[];
-	fonts: JsonFont[];
-	metadata: JsonMetadata[];
+  pages: JsonPage[];
+  fonts: JsonFont[];
+  metadata: JsonMetadata[];
 }
 
 export interface JsonPage {
-	box: JsonBox;
-	pageNumber: number;
-	elements: JsonElement[];
+  box: JsonBox;
+  pageNumber: number;
+  elements: JsonElement[];
 }
 
 export interface JsonBox {
-	l: number;
-	t: number;
-	w: number;
-	h: number;
+  l: number;
+  t: number;
+  w: number;
+  h: number;
 }
 
 export interface JsonElement {
-	id: number;
-	type: string; // TODO be more precise
-	box?: JsonBox;
-	content?: JsonElement[] | string;
-	font?: number;
-	src?: string;
-	codeType?: string;
-	codeValue?: string;
-	conf?: number;
-	fromX?: number;
-	fromY?: number;
-	toX?: number;
-	toY?: number;
-	thickness?: number;
-	rowspan?: number;
-	colspan?: number;
-	isOrdered?: boolean;
-	firstItemNumber?: number;
-	properties?: JsonProperties;
-	metadata?: number[];
-	level?: number;
+  id: number;
+  type: string; // TODO be more precise
+  box?: JsonBox;
+  content?: JsonElement[] | string;
+  font?: number;
+  src?: string;
+  codeType?: string;
+  codeValue?: string;
+  conf?: number;
+  fromX?: number;
+  fromY?: number;
+  toX?: number;
+  toY?: number;
+  thickness?: number;
+  rowspan?: number;
+  colspan?: number;
+  isOrdered?: boolean;
+  firstItemNumber?: number;
+  properties?: JsonProperties;
+  metadata?: number[];
+  level?: number;
 }
 
 export type JsonProperties = Properties;
 
 export interface JsonFont {
-	id: number;
-	name: string;
-	size: number;
-	weight: string;
-	isItalic: boolean;
-	isUnderline: boolean;
-	color: Color;
-	url?: string;
-	scaling?: number;
+  id: number;
+  name: string;
+  size: number;
+  weight: string;
+  isItalic: boolean;
+  isUnderline: boolean;
+  color: Color;
+  url?: string;
+  scaling?: number;
 }
 
 export interface JsonMetadata {
-	id: number;
-	elements: number[];
-	type: string;
-	value?: number;
-	data?: any;
+  id: number;
+  elements: number[];
+  type: string;
+  value?: number;
+  data?: any;
 }

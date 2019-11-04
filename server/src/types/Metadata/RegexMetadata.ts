@@ -17,10 +17,10 @@
 import { ComplexMetadata } from './ComplexMetadata';
 
 type RegexData = {
-	regex: string;
-	fullMatch: string;
-	groups: string[];
-	name: string;
+  regex: string;
+  fullMatch: string;
+  groups: string[];
+  name: string;
 };
 
 export class RegexMetadata extends ComplexMetadata<RegexData> {}

@@ -17,7 +17,7 @@
 import { Exporter } from './Exporter';
 
 export class ConfidencesExporter extends Exporter {
-	public export(): Promise<any> {
-		throw new Error('Not implemented yet.'); // TODO
-	}
+  public export(): Promise<any> {
+    throw new Error('Not implemented yet.'); // TODO
+  }
 }

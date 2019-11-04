@@ -25,69 +25,69 @@ import { json2document } from '../../server/src/utils/json2document';
 import { runModules } from './../helpers';
 
 describe('Lines to Paragraph Module', () => {
-	withData(
-		{
-			'one paragraph doc': ['one-paragraph-with-lines.json', 1],
-			'multiple paragraphs': ['paragraph-merge.json', 4],
-			'multicolumn paragraphs': ['paragraph-merge-2.json', 5],
-			'full content page': ['paragraph-merge-5.json', 10],
-		},
-		(fileName, paragraphCount) => {
-			let docBefore: Document;
-			let docAfter: Document;
+  withData(
+    {
+      'one paragraph doc': ['one-paragraph-with-lines.json', 1],
+      'multiple paragraphs': ['paragraph-merge.json', 4],
+      'multicolumn paragraphs': ['paragraph-merge-2.json', 5],
+      'full content page': ['paragraph-merge-5.json', 10],
+    },
+    (fileName, paragraphCount) => {
+      let docBefore: Document;
+      let docAfter: Document;
 
-			before(done => {
-				const json = JSON.parse(
-					fs.readFileSync(__dirname + '/assets/' + fileName, { encoding: 'utf8' }),
-				);
+      before(done => {
+        const json = JSON.parse(
+          fs.readFileSync(__dirname + '/assets/' + fileName, { encoding: 'utf8' }),
+        );
 
-				docBefore = json2document(json);
+        docBefore = json2document(json);
 
-				runModules(docBefore, [new LinesToParagraphModule()]).then(after => {
-					docAfter = after;
-					done();
-				});
-			});
+        runModules(docBefore, [new LinesToParagraphModule()]).then(after => {
+          docAfter = after;
+          done();
+        });
+      });
 
-			it('should have the expected amount of paragraphs', () => {
-				expect(docAfter.pages[0].elements)
-					.to.be.an('array')
-					.and.to.be.of.length(paragraphCount);
-			});
+      it('should have the expected amount of paragraphs', () => {
+        expect(docAfter.pages[0].elements)
+          .to.be.an('array')
+          .and.to.be.of.length(paragraphCount);
+      });
 
-			it('should not have Lines left except inside Paragraphs', () => {
-				expect(docAfter.pages.some(page => page.elements.some(e => e instanceof Line))).to.eql(
-					false,
-				);
-			});
-		},
-	);
+      it('should not have Lines left except inside Paragraphs', () => {
+        expect(docAfter.pages.some(page => page.elements.some(e => e instanceof Line))).to.eql(
+          false,
+        );
+      });
+    },
+  );
 });
 
 describe('Heading Detection', () => {
-	let docAfter: Document;
-	let docBefore: Document;
-	withData(
-		{
-			'multiple paragraphs with headings': ['paragraph-merge-3.json', 4],
-			'complex pdf file': ['testReadingOrder.json', 5],
-		},
-		(fileName, headingCount) => {
-			before(done => {
-				const json = JSON.parse(
-					fs.readFileSync(__dirname + '/assets/' + fileName, { encoding: 'utf8' }),
-				);
+  let docAfter: Document;
+  let docBefore: Document;
+  withData(
+    {
+      'multiple paragraphs with headings': ['paragraph-merge-3.json', 4],
+      'complex pdf file': ['testReadingOrder.json', 5],
+    },
+    (fileName, headingCount) => {
+      before(done => {
+        const json = JSON.parse(
+          fs.readFileSync(__dirname + '/assets/' + fileName, { encoding: 'utf8' }),
+        );
 
-				docBefore = json2document(json);
-				runModules(docBefore, [new LinesToParagraphModule()]).then(after => {
-					docAfter = after;
-					done();
-				});
-			});
+        docBefore = json2document(json);
+        runModules(docBefore, [new LinesToParagraphModule()]).then(after => {
+          docAfter = after;
+          done();
+        });
+      });
 
-			it('should have the correct number of headings', () => {
-				expect(docAfter.pages[0].getElementsOfType<Heading>(Heading).length).to.eq(headingCount);
-			});
-		},
-	);
+      it('should have the correct number of headings', () => {
+        expect(docAfter.pages[0].getElementsOfType<Heading>(Heading).length).to.eq(headingCount);
+      });
+    },
+  );
 });

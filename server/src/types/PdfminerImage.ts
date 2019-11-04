@@ -15,13 +15,13 @@
  */
 
 export class PdfminerImage {
-	public _attr: {
-		src: string;
-		width: string;
-		height: string;
-	};
+  public _attr: {
+    src: string;
+    width: string;
+    height: string;
+};
 
-	constructor(textbox: PdfminerImage) {
-		this._attr = textbox._attr;
-	}
+constructor(textbox: PdfminerImage) {
+    this._attr = textbox._attr;
+  }
 }

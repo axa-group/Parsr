@@ -17,14 +17,14 @@
 import { PdfminerImage } from './PdfminerImage';
 
 export class PdfminerFigure {
-	public _attr: {
-		name: string;
-		bbox: string;
-	};
-	public image: PdfminerImage[];
+  public _attr: {
+    name: string;
+    bbox: string;
+  };
+  public image: PdfminerImage[];
 
-	constructor(textbox: PdfminerFigure) {
-		this._attr = textbox._attr;
-		this.image = textbox.image;
-	}
+  constructor(textbox: PdfminerFigure) {
+    this._attr = textbox._attr;
+    this.image = textbox.image;
+  }
 }

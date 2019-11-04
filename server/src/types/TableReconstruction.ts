@@ -15,9 +15,9 @@
  */
 
 export class TableReconstruction {
-	kpis: Object;
-	meta_info: string[];
-	table: string[][];
-	page_nb: number;
-	table_id: number;
+  kpis: Object;
+  meta_info: string[];
+  table: string[][];
+  page_nb: number;
+  table_id: number;
 }

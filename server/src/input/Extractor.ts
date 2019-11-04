@@ -24,11 +24,11 @@ import { Document } from '../types/DocumentRepresentation/Document';
  * information in a clever way.
  */
 export abstract class Extractor {
-	public config: Config;
+  public config: Config;
 
-	constructor(config: Config) {
-		this.config = config;
-	}
+  constructor(config: Config) {
+    this.config = config;
+  }
 
-	public abstract run(inputFile: string): Promise<Document>;
+  public abstract run(inputFile: string): Promise<Document>;
 }

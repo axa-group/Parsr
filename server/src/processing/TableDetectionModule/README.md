@@ -10,7 +10,7 @@ Given a pdf it generates for each table detected a `table` element containing an
 
 ## Dependencies
 
-- Third-party phyton library [Camelot](https://camelot-py.readthedocs.io/en/master/index.html)
+- Third-party python library [Camelot](https://camelot-py.readthedocs.io/en/master/index.html)
 
 ## How it works
 
@@ -22,11 +22,11 @@ Following is an example of the configuration of the table-detection module:
 
 ```json
 [
-	"table-detection",
-	{
-		"pages": [1, 2, 3],   // or [] for all pages
-		"flavor": "lattice"
-	}
+  "table-detection",
+  {
+    "pages": [1, 2, 3], // or [] for all pages
+    "flavor": "lattice"
+  }
 ]
 ```
 

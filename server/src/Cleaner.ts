@@ -42,174 +42,175 @@ import logger from './utils/Logger';
  * It can also add some metadata to any block to help higher level tools.
  */
 export class Cleaner {
-	private modules: Module[] = [];
-	private solvedDependencies: Array<typeof Module> = [];
+  private modules: Module[] = [];
+  private solvedDependencies: Array<typeof Module> = [];
 
-	// Every newly created module should figure in this register
-	private cleaningToolRegister: Array<typeof Module> = [
-		OutOfPageRemovalModule,
-		ReadingOrderDetectionModule,
-		WordsToLineModule,
-		KeyValueDetectionModule,
-		LinesToParagraphModule,
-		HierarchyDetectionModule,
-		LinkDetectionModule,
-		ListDetectionModule,
-		HeaderFooterDetectionModule,
-		PageNumberDetectionModule,
-		NumberCorrectionModule,
-		RedundancyDetectionModule,
-		WhitespaceRemovalModule,
-		TableDetectionModule,
-		RegexMatcherModule,
-		RemoteModule,
-		SeparateWordsModule,
-		// Add your own module here!
-	];
+  // Every newly created module should figure in this register
+  private cleaningToolRegister: Array<typeof Module> = [
+    OutOfPageRemovalModule,
+    ReadingOrderDetectionModule,
+    WordsToLineModule,
+    KeyValueDetectionModule,
+    LinesToParagraphModule,
+    HierarchyDetectionModule,
+    LinkDetectionModule,
+    ListDetectionModule,
+    HeaderFooterDetectionModule,
+    PageNumberDetectionModule,
+    NumberCorrectionModule,
+    RedundancyDetectionModule,
+    WhitespaceRemovalModule,
+    TableDetectionModule,
+    RegexMatcherModule,
+    RemoteModule,
+    SeparateWordsModule,
+    // Add your own module here!
+  ];
 
-	/**
-	 * Constructor for a cleaner based class.
-	 *
-	 * @param config Configuration for the cleaner type module.
-	 * @remarks Sets up the cleaner module with the configuration passed, along with checking if the dependencies.
-	 */
-	constructor(config: Config) {
-		if (config.version <= 0.4) {
-			this.parse0_4Config(config.cleaner);
-		} else {
-			this.parseLatestConfig(config.cleaner);
-		}
-	}
+  /**
+   * Constructor for a cleaner based class.
+   *
+   * @param config Configuration for the cleaner type module.
+   * @remarks Sets up the cleaner module with the configuration passed, along with checking if the dependencies.
+   */
+  constructor(config: Config) {
+    if (config.version <= 0.4) {
+      this.parse0_4Config(config.cleaner);
+    } else {
+      this.parseLatestConfig(config.cleaner);
+    }
+  }
 
-	/**
-	 * Get a module using just its name.
-	 *
-	 * @param config Configuration for the cleaner type module.
-	 * @returns The found module.
-	 * @remarks Sets up the cleaner module with the configuration passed, along with checking if the dependencies.
-	 */
-	public getModuleByName(name: string): typeof Module {
-		const moduleClass: typeof Module = this.cleaningToolRegister.filter(
-			M => M.moduleName === name,
-		)[0];
-		if (!moduleClass) {
-			throw new Error(
-				`Module called ${name} not found. Please check your config file with the documentation.`,
-			);
-		}
+  /**
+   * Get a module using just its name.
+   *
+   * @param config Configuration for the cleaner type module.
+   * @returns The found module.
+   * @remarks Sets up the cleaner module with the configuration passed, along with checking if the dependencies.
+   */
+  public getModuleByName(name: string): typeof Module {
+    const moduleClass: typeof Module = this.cleaningToolRegister.filter(
+      M => M.moduleName === name,
+    )[0];
+    if (!moduleClass) {
+      throw new Error(
+        `Module called ${name} not found. Please check your config file with the documentation.`,
+      );
+    }
 
-		return moduleClass;
-	}
+    return moduleClass;
+  }
 
-	/**
-	 * Runs the cleaning pipeline.
-	 *
-	 * @param document The document to be cleaned
-	 * @returns The promise of the document after the run of all the cleaning modules.
-	 * @remarks Goes through all the modules one by one and executes them, noting
-	 * the execution time for each one, then logging it.
-	 */
-	public run(document: Document): Promise<Document> {
-		const startTime: number = Date.now();
-		return this.runNextModule(document, 0).then(newDocument => {
-			const endTime: number = (Date.now() - startTime) / 1000;
-			logger.info(`Total elapsed time: ${endTime}s`);
-			return newDocument;
-		});
-	}
+  /**
+   * Runs the cleaning pipeline.
+   *
+   * @param document The document to be cleaned
+   * @returns The promise of the document after the run of all the cleaning modules.
+   * @remarks Goes through all the modules one by one and executes them, noting
+   * the execution time for each one, then logging it.
+   */
+  public run(document: Document): Promise<Document> {
+    const startTime: number = Date.now();
+    return this.runNextModule(document, 0).then(newDocument => {
+      const endTime: number = (Date.now() - startTime) / 1000;
+      logger.info(`Total elapsed time: ${endTime}s`);
+      return newDocument;
+    });
+  }
 
-	private parseLatestConfig(config: CleanerConfig) {
-		config.forEach((entry: string | [string, object]) => {
-			let toolName: string;
-			let options: object = {};
+  private parseLatestConfig(config: CleanerConfig) {
+    config.forEach((entry: string | [string, object]) => {
+      let toolName: string;
+      let options: object = {};
 
-			if (Array.isArray(entry)) {
-				toolName = entry[0];
+      if (Array.isArray(entry)) {
+        toolName = entry[0];
 
-				if (typeof entry[1] === 'object') {
-					options = entry[1];
-				}
-			} else {
-				toolName = entry;
-			}
+        if (typeof entry[1] === 'object') {
+          options = entry[1];
+        }
+      } else {
+        toolName = entry;
+      }
 
-			const moduleClass: typeof Module = this.getModuleByName(toolName);
-			this.checkDependenciesAndAdd(moduleClass);
-			this.modules.push(new moduleClass(options));
-		});
-	}
+      const moduleClass: typeof Module = this.getModuleByName(toolName);
+      this.checkDependenciesAndAdd(moduleClass);
+      this.modules.push(new moduleClass(options));
+    });
+  }
 
-	private parse0_4Config(config: CleanerConfig) {
-		for (let i = 0; i < config.length; i++) {
-			const toolName = config[i];
-			if (typeof toolName !== 'string') {
-				throw new Error(`expected tool name as string instead of options as object at index ${i}`);
-			}
+  private parse0_4Config(config: CleanerConfig) {
+    for (let i = 0; i < config.length; i++) {
+      const toolName = config[i];
+      if (typeof toolName !== 'string') {
+        throw new Error(`expected tool name as string instead of options as object at index ${i}`);
+      }
 
-			let options: object = {};
+      let options: object = {};
 
-			const opt = config[i + 1];
-			if (i + 1 < config.length && typeof opt === 'object') {
-				options = opt;
-				i++;
-			}
+      const opt = config[i + 1];
+      if (i + 1 < config.length && typeof opt === 'object') {
+        options = opt;
+        i++;
+      }
 
-			const moduleClass: typeof Module = this.getModuleByName(toolName);
-			this.checkDependenciesAndAdd(moduleClass);
-			this.modules.push(new moduleClass(options));
-		}
-	}
+      const moduleClass: typeof Module = this.getModuleByName(toolName);
+      this.checkDependenciesAndAdd(moduleClass);
+      this.modules.push(new moduleClass(options));
+    }
+  }
 
-	/**
-	 * Get a module using just its name.
-	 *
-	 * @param document The document on which the module is to be run.
-	 * @param i The index of the module to be run (among a list of modules).
-	 * @returns The promise of the document after running the next module.
-	 * @remarks Sets up the cleaner module with the configuration passed, along with checking of the dependencies.
-	 */
-	private runNextModule(document: Document, i: number): Promise<Document> {
-		if (i < this.modules.length) {
-			logger.info(
-				`Running module: ${this.modules[i].constructor.name}, Options: ${JSON.stringify(
-					this.modules[i].options,
-				)}`,
-			);
+  /**
+   * Get a module using just its name.
+   *
+   * @param document The document on which the module is to be run.
+   * @param i The index of the module to be run (among a list of modules).
+   * @returns The promise of the document after running the next module.
+   * @remarks Sets up the cleaner module with the configuration passed, along with checking of the dependencies.
+   */
 
-			const startTime: number = Date.now();
-			return this.modules[i].run(document).then((doc: Document) => {
-				const endTime: number = (Date.now() - startTime) / 1000;
-				logger.info(`  Elapsed time: ${endTime}s`);
-				return this.runNextModule(doc, i + 1);
-			});
-		} else {
-			return Promise.resolve(document);
-		}
-	}
+  private runNextModule(document: Document, i: number): Promise<Document> {
+    if (i < this.modules.length) {
+      logger.info(
+        `Running module: ${this.modules[i].constructor.name}, Options: ${JSON.stringify(
+          this.modules[i].options,
+        )}`,
+      );
 
-	/**
-	 * Check for dependencies given a type of a module, and then add it
-	 *
-	 * @param moduleClass The type of a module to be checked for.
-	 */
-	private checkDependenciesAndAdd(moduleClass: typeof Module) {
-		const unresolved: Array<typeof Module> = [];
-		let isCovered: boolean = true;
+      const startTime: number = Date.now();
+      return this.modules[i].run(document).then((doc: Document) => {
+        const endTime: number = (Date.now() - startTime) / 1000;
+        logger.info(`  Elapsed time: ${endTime}s`);
+        return this.runNextModule(doc, i + 1);
+      });
+    } else {
+      return Promise.resolve(document);
+    }
+  }
 
-		moduleClass.dependencies.forEach(dependency => {
-			if (!this.solvedDependencies.includes(dependency)) {
-				isCovered = false;
-				unresolved.push(dependency);
-			}
-		});
+  /**
+   * Check for dependencies given a type of a module, and then add it
+   *
+   * @param moduleClass The type of a module to be checked for.
+   */
+  private checkDependenciesAndAdd(moduleClass: typeof Module) {
+    const unresolved: Array<typeof Module> = [];
+    let isCovered: boolean = true;
 
-		if (isCovered) {
-			this.solvedDependencies.push(moduleClass);
-		} else {
-			const unresolvedStr: string = unresolved.map(m => m.moduleName).join(', ');
-			throw new Error(
-				`Module ${moduleClass.moduleName} has unresolved dependencies (${unresolvedStr}).`,
-			);
-		}
-	}
+    moduleClass.dependencies.forEach(dependency => {
+      if (!this.solvedDependencies.includes(dependency)) {
+        isCovered = false;
+        unresolved.push(dependency);
+      }
+    });
+
+    if (isCovered) {
+      this.solvedDependencies.push(moduleClass);
+    } else {
+      const unresolvedStr: string = unresolved.map(m => m.moduleName).join(', ');
+      throw new Error(
+        `Module ${moduleClass.moduleName} has unresolved dependencies (${unresolvedStr}).`,
+      );
+    }
+  }
 }

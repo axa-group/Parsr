@@ -14,9 +14,9 @@ Then call it in your [configuration](../../docs/configuration-file.md):
 
 ```json
 [
-	"remote",
-	{
-		"url": "http://localhost:8888"
-	}
+  "remote",
+  {
+    "url": "http://localhost:8888"
+  }
 ]
 ```

@@ -22,27 +22,27 @@ import { Element } from './Element';
  * the image.
  */
 export class Image extends Element {
-	/**
-	 * Getter src
-	 * @return {string}
-	 */
-	public get src(): string {
-		return this._src;
-	}
+  /**
+   * Getter src
+   * @return {string}
+   */
+  public get src(): string {
+    return this._src;
+  }
 
-	/**
-	 * Setter src
-	 * @param {string} value
-	 */
-	public set src(value: string) {
-		this._src = value;
-	}
+  /**
+   * Setter src
+   * @param {string} value
+   */
+  public set src(value: string) {
+    this._src = value;
+  }
 
-	public content: null = null;
-	private _src: string;
+  public content: null = null;
+  private _src: string;
 
-	constructor(boundingBox: BoundingBox, src?: string) {
-		super(boundingBox);
-		this.src = src;
-	}
+  constructor(boundingBox: BoundingBox, src?: string) {
+    super(boundingBox);
+    this.src = src;
+  }
 }
