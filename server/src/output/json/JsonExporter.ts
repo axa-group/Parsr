@@ -247,7 +247,7 @@ export class JsonExporter extends Exporter {
       jsonElement.codeType = element.type;
       jsonElement.codeValue = element.content;
     } else if (element instanceof Image) {
-      jsonElement.url = element.url;
+      jsonElement.src = element.src;  // TODO replace this with a location based on an API access point
     } else if (element instanceof Heading) {
       jsonElement.level = element.level;
     }
