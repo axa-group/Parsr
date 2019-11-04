@@ -48,7 +48,7 @@ You can install Parsr either using Docker containers, or directly on your machin
 
 ### 1.1. Docker Installation
 
-Containers are already avaiable on [Docker Hub](https://hub.docker.com/u/axarev).
+Containers are already available on [Docker Hub](https://hub.docker.com/u/axarev).
 
 The documentation to build and run Docker containers is [here](docs/docker.md).
 
@@ -87,7 +87,7 @@ Next, install the required dependencies:
 brew install node qpdf imagemagick graphicsmagick tesseract tesseract-lang
 ```
 
-To install the python based depedencies (pdfminer and camelot), install, first install `pip`:
+To install the python based dependencies (pdfminer and camelot), install, first install `pip`:
 
 ```sh
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
@@ -104,7 +104,7 @@ pip install ghostscript camelot-py
 
 #### 1.2.3. Installing Dependencies under Windows
 
-1. We recommand using [Chocolatey](https://chocolatey.org) as the package manager for installing dependencies under Windows. To install Chocolatey, [follow these instructions](https://chocolatey.org/install#installing-chocolatey).
+1. We recommend using [Chocolatey](https://chocolatey.org) as the package manager for installing dependencies under Windows. To install Chocolatey, [follow these instructions](https://chocolatey.org/install#installing-chocolatey).
 2. [Download and install **`node.js`**](https://nodejs.org/en/download)
 3. For the **pdfminer** extractor for pdfs, [follow these steps](https://github.com/pdfminer/pdfminer.six#how-to-install).
 4. Install **`qpdf`** and **`imagemagick`** using Powershell (Run as Administrator):
@@ -163,7 +163,7 @@ To install MuPDF, follow the steps corresponding to your environment:
   ```
 
 If MuPDF is not installed, a corrupt/unreadable PDF file at input will be left untreated.
-A message of such an occurance will be logged.
+A message of such an occurrence will be logged.
 
 #### 1.3.2. Pandoc
 
@@ -337,7 +337,7 @@ If images (`jpg`, `png`, `tiff`, etc.) are to be used with the tool, then the to
 
 The following _optional_ dependencies may to be installed:
 
-1. `mupdf-tools`: For error-correcting corrupt PDF's at input.
+1. `mupdf-tools`: For error-correcting corrupt PDFs at input.
 2. `pandoc`: Generate PDF files from an intermediate Markdown output after the cleaning operation in the pipeline.
 
 ## 5. Contribute

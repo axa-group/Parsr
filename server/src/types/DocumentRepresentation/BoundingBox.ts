@@ -118,8 +118,8 @@ export class BoundingBox {
 
   /**
    * Returns true if two bounding boxes are equal
-   * @param b1 first bbox
-   * @param b2 second bbox
+   * @param b1 first bounding box
+   * @param b2 second bounding box
    */
   public static isEqual(b1: BoundingBox, b2: BoundingBox): boolean {
     return (
@@ -129,8 +129,8 @@ export class BoundingBox {
 
   /**
    * Computes the amount (between 0 to 1) of overlap between two bounding boxes
-   * @param box1 First boundingbox
-   * @param box2 Second boundingbox
+   * @param box1 First bounding box
+   * @param box2 Second bounding box
    */
   public static getOverlap(box1: BoundingBox, box2: BoundingBox): number {
     let overlapValue: number;
@@ -139,11 +139,11 @@ export class BoundingBox {
     const intersectionRectangleLeft: number = Math.max(box1.left, box2.left);
     const intersectionRectangleRight: number = Math.min(box1.right, box2.right);
     const intersectionRectangleBottom: number = Math.min(box1.bottom, box2.bottom);
-    const intintersectionRectangleTop: number = Math.max(box1.top, box2.top);
+    const intersectionRectangleTop: number = Math.max(box1.top, box2.top);
 
     if (
       intersectionRectangleRight < intersectionRectangleLeft &&
-      intersectionRectangleBottom < intintersectionRectangleTop
+      intersectionRectangleBottom < intersectionRectangleTop
     ) {
       overlapValue = 0.0; // no intersectionRectangle at all
     } else {
@@ -151,7 +151,7 @@ export class BoundingBox {
       const elem2Area: number = box2.height * box2.width;
       const intersectionRectangleArea: number =
         (intersectionRectangleRight - intersectionRectangleLeft) *
-        (intersectionRectangleBottom - intintersectionRectangleTop);
+        (intersectionRectangleBottom - intersectionRectangleTop);
       const commonArea: number = elem1Area + elem2Area - intersectionRectangleArea;
 
       overlapValue = intersectionRectangleArea / commonArea;

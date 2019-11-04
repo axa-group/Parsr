@@ -82,19 +82,19 @@ export function replaceObject<T extends Element, U extends T>(
 // Handle Windows convert.exe conflict.
 export function getConvertPath(): string {
   const where = spawnSync(getExecLocationCommandOnSystem(), ['magick']);
-  let filepaths: string[] = [];
+  let filePaths: string[] = [];
 
   if (where.status === 0) {
-    filepaths = where.stdout.toString().split(os.EOL);
-    filepaths = filepaths.filter(
-      filepath => !/System/.test(filepath) && filepath.trim().length > 0,
+    filePaths = where.stdout.toString().split(os.EOL);
+    filePaths = filePaths.filter(
+      filePath => !/System/.test(filePath) && filePath.trim().length > 0,
     );
   }
 
-  if (filepaths.length === 0) {
+  if (filePaths.length === 0) {
     throw new Error('Cannot find ImageMagick convert tool. Are you sure it is installed?');
   } else {
-    return filepaths[0];
+    return filePaths[0];
   }
 }
 
@@ -149,9 +149,9 @@ export function sortElementsByOrder(elem1: Element, elem2: Element): number {
 }
 
 /**
- * Make subcollections of a predetermined size based on a collection.
+ * Make subCollections of a predetermined size based on a collection.
  * @param collection The collection to be used as the basis for the division.
- * @param subCollectionSize The size of the smaller subcollections to be made
+ * @param subCollectionSize The size of the smaller subCollections to be made
  */
 export function getSubCollections<T>(collection: T[], subCollectionSize: number): T[][] {
   if (subCollectionSize >= collection.length) {
@@ -497,9 +497,9 @@ export function getAnglesOfPolygon(orderedVertices: number[][]): number[] {
 
 /**
  * Computes addition of two vectors. If they're of different sizes, the extra
- * dimentions are copied as-is at the trailing end of the result.
- * @param vec1: first vector in n dimentions
- * @param vec2: second vector in m dimentions
+ * dimensions are copied as-is at the trailing end of the result.
+ * @param vec1: first vector in n dimensions
+ * @param vec2: second vector in m dimensions
  */
 export function addVectors(vec1: number[], vec2: number[]): number[] {
   let smallerVector: number[];
@@ -527,11 +527,11 @@ export function addVectors(vec1: number[], vec2: number[]): number[] {
 }
 
 /**
- * Computes eucledian distance between two vectors.
- * @param vec1: first vector in n dimentions
- * @param vec2: second vector in n dimentions
+ * Computes euclidean distance between two vectors.
+ * @param vec1: first vector in n dimensions
+ * @param vec2: second vector in n dimensions
  */
-export function getEucledianDistance(vec1: number[], vec2: number[]): number {
+export function getEuclideanDistance(vec1: number[], vec2: number[]): number {
   if (vec1.length !== vec2.length) {
     return -1;
   } // maybe resize? TODO
@@ -555,8 +555,8 @@ export function getMagnitude(vec: number[]): number {
 
 /**
  * Computes the dot product between two vectors.
- * @param vec1: first vector in n dimentions
- * @param vec2: second vector in n dimentions
+ * @param vec1: first vector in n dimensions
+ * @param vec2: second vector in n dimensions
  */
 export function getDotProduct(vec1: number[], vec2: number[]): number {
   let result: number = 0;
@@ -572,7 +572,7 @@ export function getDotProduct(vec1: number[], vec2: number[]): number {
 }
 
 /**
- * Finds the occurance of an element in an array and returns the positions.
+ * Finds the occurrence of an element in an array and returns the positions.
  * @param array: an array of type T
  * @param element: element to be looked for in the array
  * @return an array of position(s)

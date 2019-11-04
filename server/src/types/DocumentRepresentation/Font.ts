@@ -26,7 +26,7 @@ export interface FontOptions {
 }
 
 /**
- * The Font class representing a font, including all the attiributes necessary to represent an instance
+ * The Font class representing a font, including all the attributes necessary to represent an instance
  * of the format of text, including the font name, size, italics, weight, color, etc.
  */
 export class Font {

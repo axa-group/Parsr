@@ -28,7 +28,7 @@ export type directionType = 'horizontal' | 'vertical';
  * occupancy areas, and a page number.
  */
 export class Page {
-  // Syntaxic sugars for getters and setters
+  // Syntactic sugars for getters and setters
   public set left(value: number) {
     this.box.left = value;
   }

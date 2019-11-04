@@ -25,7 +25,7 @@ interface Options {
 const defaultOptions = (defaultConfig as any) as Options;
 
 /**
- * Stabiltiy: Stable
+ * Stability: Stable
  * Remove any text block that contains nothing but whitespace.
  */
 export class WhitespaceRemovalModule extends Module<Options> {

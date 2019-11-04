@@ -124,7 +124,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
 
 function getPage(pageObj: PdfminerPage): Page {
   const boxValues: number[] = pageObj._attr.bbox.split(',').map(v => parseFloat(v));
-  const pageBbox: BoundingBox = new BoundingBox(
+  const pageBBox: BoundingBox = new BoundingBox(
     boxValues[0],
     boxValues[1],
     boxValues[2],
@@ -137,11 +137,11 @@ function getPage(pageObj: PdfminerPage): Page {
   if (pageObj.textbox !== undefined) {
     pageObj.textbox.forEach(para => {
       para.textline.map(line => {
-        elements = [...elements, ...breakLineIntoWords(line, ',', pageBbox.height)];
+        elements = [...elements, ...breakLineIntoWords(line, ',', pageBBox.height)];
       });
     });
   }
-  return new Page(parseFloat(pageObj._attr.id), elements, pageBbox);
+  return new Page(parseFloat(pageObj._attr.id), elements, pageBBox);
 }
 
 // Pdfminer's bboxes are of the format: x0, y0, x1, y1. Our BoundingBox dims are as: left, top, width, height
@@ -192,7 +192,7 @@ function getMostCommonFont(theFonts: Font[]): Font {
 
 /**
  * Fetches the character a particular pdfminer's textual output represents
- * TODO: This placeholder will accomodate the solution at https://github.com/aarohijohal/pdfminer.six/issues/1 ...
+ * TODO: This placeholder will accommodate the solution at https://github.com/aarohijohal/pdfminer.six/issues/1 ...
  * TODO: ... For now, it returns a '?' when a (cid:) is encountered
  * @param character the character value outputted by pdfminer
  * @param font the font associated with the character  -- TODO to be taken into consideration here
@@ -203,7 +203,7 @@ function getValidCharacter(character: string): string {
 
 function breakLineIntoWords(
   line: PdfminerTextline,
-  wordSeperator: string = ' ',
+  wordSeparator: string = ' ',
   pageHeight: number,
   scalingFactor: number = 1,
 ): Word[] {
@@ -230,10 +230,10 @@ function breakLineIntoWords(
         );
       }
     });
-  if (chars[0] === undefined || chars[0].content === wordSeperator) {
+  if (chars[0] === undefined || chars[0].content === wordSeparator) {
     chars.splice(0, 1);
   }
-  if (chars[chars.length - 1] === undefined || chars[chars.length - 1].content === wordSeperator) {
+  if (chars[chars.length - 1] === undefined || chars[chars.length - 1].content === wordSeparator) {
     chars.splice(chars.length - 1, chars.length);
   }
 
@@ -309,7 +309,7 @@ function breakLineIntoWords(
 
 function thereAreFakeSpaces(lines: PdfminerTextline): boolean {
   // Will remove all <text> </text> only if in line we found
-  // <text> </text> follwed by empty <text> but with attributes
+  // <text> </text> followed by empty <text> but with attributes
   // <text font="W" bbox="W" colourspace="X" ncolour="Y" size="Z"> </text>
   const emptyWithAttr = lines.text
     .map((word, index) => {

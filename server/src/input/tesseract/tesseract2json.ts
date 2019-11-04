@@ -25,7 +25,7 @@ import logger from '../../utils/Logger';
 /**
  * Executes the tesseract to json conversion module, which entails calling
  * @param imageInputFile The input image file to be executed using the tesseract OCR tool.
- * @param config The input configuraiton for tesseract.
+ * @param config The input configuration for tesseract.
  * @returns The promise of a valid Document (as in the Document Representation data structure).
  */
 export function execute(imageInputFile: string, config: Config): Promise<Document> {

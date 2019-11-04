@@ -128,7 +128,7 @@ export class NumberCorrectionModule extends Module<Options> {
       return results;
     }
 
-    function checkAndPopulateCanditates(list: string[], score: number): Map<string, number> {
+    function checkAndPopulateCandidates(list: string[], score: number): Map<string, number> {
       const candidates = new Map<string, number>();
       list.forEach(edit => {
         if (isValidNumber(edit) /* && !candidates.has(edit) */) {
@@ -156,14 +156,14 @@ export class NumberCorrectionModule extends Module<Options> {
         candidates.set(input, 0);
       }
       const editsLevel1 = generateEdits(input);
-      candidates = new Map([...checkAndPopulateCanditates(editsLevel1, 1), ...candidates]);
+      candidates = new Map([...checkAndPopulateCandidates(editsLevel1, 1), ...candidates]);
       editsLevel1.forEach(edit1 => {
         // Generate 2nd level edits
         // We need at least 2 level edits to get from ooo => 000 (level 1) => 0.00 (level 2)
         // We could consider going deeper with generators (to save a bit of memory).
         const editsLevel2 = generateEdits(edit1);
         // Scoring might be improved, we currently consider bigger changes as better changes.
-        candidates = new Map([...checkAndPopulateCanditates(editsLevel2, 2), ...candidates]);
+        candidates = new Map([...checkAndPopulateCandidates(editsLevel2, 2), ...candidates]);
       });
 
       const sortedCandidates = Array.from(candidates.keys())

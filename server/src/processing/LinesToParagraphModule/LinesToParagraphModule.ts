@@ -92,7 +92,7 @@ export class LinesToParagraphModule extends Module<Options> {
       let otherElements: Element[] = this.getElementsExcept(page, lines);
       otherElements = this.joinLinesInElements(otherElements, textBodyFont);
 
-      // Clean the properties.cr  information as it is not usefull down the line
+      // Clean the properties.cr  information as it is not useful down the line
       joinedLines.forEach((theseLines: Line[]) => {
         theseLines.forEach((thisLine: Line) => {
           thisLine.content.forEach((thisWord: Word) => {
@@ -227,7 +227,7 @@ export class LinesToParagraphModule extends Module<Options> {
         let currentLineDistance = this.getInterLineDistance(line, nextLine);
 
         if (this.shouldAdjustLineDistance(currentLineDistance, lineSpaces)) {
-          currentLineDistance = this.findAccuratedDistance(currentLineDistance, lineSpaces);
+          currentLineDistance = this.findAccurateDistance(currentLineDistance, lineSpaces);
         }
 
         if (currentLineDistance != null && currentLineDistance <= space.distance) {
@@ -269,8 +269,8 @@ export class LinesToParagraphModule extends Module<Options> {
     return toBeMerged;
   }
 
-  private findAccuratedDistance(distance: number, lineSpaces: LineSpace[]): number {
-    const accurated = lineSpaces
+  private findAccurateDistance(distance: number, lineSpaces: LineSpace[]): number {
+    const accurate = lineSpaces
       .map(space => {
         return {
           distance: space.distance,
@@ -279,8 +279,8 @@ export class LinesToParagraphModule extends Module<Options> {
       })
       .sort((a, b) => a.dif - b.dif);
 
-    if (accurated.length > 0) {
-      return accurated[0].distance;
+    if (accurate.length > 0) {
+      return accurate[0].distance;
     }
     return distance;
   }
@@ -419,7 +419,7 @@ export class LinesToParagraphModule extends Module<Options> {
   /**
    * Takes into account potential headings inside a paragraph
    * splits a paragraph into multiple ones and returns heading candidates
-   * @param lineGroups List of joined lines to be alterered
+   * @param lineGroups List of joined lines to be altered
    */
   private extractHeadings(
     lineGroups: Line[][],
