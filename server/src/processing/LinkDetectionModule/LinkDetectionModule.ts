@@ -39,22 +39,17 @@ export class LinkDetectionModule extends Module {
     }));
 
     doc.pages.forEach((page: Page) => {
-      let unusedLinksInPage = mdLinks.filter(link => parseInt((link as any).page, 10) === page.pageNumber);
-      const alreadyUsedIds = [];
+      const links = mdLinks.filter(link => parseInt((link as any).page, 10) === page.pageNumber);
 
       page.getElementsOfType<Word>(Word, true).forEach(word => {
-
         // for a given word, check if the word matches any not used link position.
-        unusedLinksInPage.forEach(link => {
+        links.forEach(link => {
           const l = link as any;
           const linkBB = new BoundingBox(l.box.l, l.box.t, l.box.w, l.box.h);
-          if (BoundingBox.getOverlap(word.box, linkBB) > 0.1) {
+          if (Math.abs(BoundingBox.getPercentageOfInclusion(linkBB, word.box)) > 0.7) {
             word.properties.link = this.buildLinkMD(word, l);
-            alreadyUsedIds.push(l.id);
           }
         });
-        // if there was a link match, that link is removed from the array to avoid iterating it
-        unusedLinksInPage = unusedLinksInPage.filter(l => !alreadyUsedIds.includes((l as any).id));
 
         if (!word.properties.link) {
           this.matchTextualLinks(word);
