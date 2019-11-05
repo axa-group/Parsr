@@ -181,6 +181,8 @@ export class Paragraph extends Text {
     let biWordsIdx: number[][] = Array<number[]>(1).fill([]);
     let bWordsIdx: number[][] = Array<number[]>(1).fill([]);
     let iWordsIdx: number[][] = Array<number[]>(1).fill([]);
+    const linkWordsIdx = {};
+
     words.forEach((w, index) => {
       const style = this.wordStyle(w);
       if (style === WordStyle.BoldItalic) {
@@ -190,10 +192,26 @@ export class Paragraph extends Text {
       } else if (style === WordStyle.Italic) {
         iWordsIdx[0].push(index);
       }
+
+      // grouping word ids in line by link target
+      if (w.properties.link) {
+        const link = w.properties.link.replace(/\[.*?\]\((.*?)\)/, "$1");
+        if (link) {
+          if (!linkWordsIdx[link]) {
+            linkWordsIdx[link] = Array<number[]>(1).fill([]);
+          }
+          linkWordsIdx[link][0].push(index);
+        }
+      }
     });
+
     biWordsIdx = utils.groupConsecutiveNumbersInArray(biWordsIdx[0]).filter(p => p.length !== 0);
     bWordsIdx = utils.groupConsecutiveNumbersInArray(bWordsIdx[0]).filter(p => p.length !== 0);
     iWordsIdx = utils.groupConsecutiveNumbersInArray(iWordsIdx[0]).filter(p => p.length !== 0);
+
+    Object.keys(linkWordsIdx).forEach((link) => {
+      linkWordsIdx[link] = utils.groupConsecutiveNumbersInArray(linkWordsIdx[link][0] as number[]);
+    });
 
     // prepare the result
     const result: string[] = words.map(w => w.toMarkDown());
@@ -213,7 +231,26 @@ export class Paragraph extends Text {
       result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '*';
     });
 
+    /*
+      merging consecutive words with the same link
+        ex:
+        input: [Google](https://www.google.com) [link](https://www.google.com)
+        returns: [Google link](https://www.google.com)
+    */
+    Object.keys(linkWordsIdx).forEach(lw => {
+      linkWordsIdx[lw].forEach(idGroup => {
+        const linkDescription = idGroup.map(id => result[id].replace(/\[(.*?)\]\(.*?\)/, "$1")).join(' ');
+        result[idGroup[0]] = `[${linkDescription.trim()}](${lw.trim()})`;
+
+        // after the merging, i set as null the rest of the words with that link so it doesn't repeat.
+        for (let i = 1; i < idGroup.length; i++) {
+          result[idGroup[i]] = null;
+        }
+      });
+    });
+
     return result
+      .filter(w => !!w)
       .map(w => w.trim())
       .reduce((w1, w2) => w1 + ' ' + w2, '')
       .trim();
