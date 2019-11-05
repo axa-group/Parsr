@@ -72,9 +72,11 @@ export class LinesToParagraphModule extends Module<Options> {
 
     doc.pages.forEach((page: Page) => {
       this.maxLineDistance = page.height * 0.2;
-      if (page.getElementsOfType<Heading>(Heading).length > 0) {
+      const existingHeadings = page.getElementsOfType<Heading>(Heading);
+      const existingParagraphs = page.getElementsOfType<Paragraph>(Paragraph);
+      if (existingHeadings.length > 0 || existingParagraphs.length > 0) {
         logger.warn(
-          'Warning: this page already has some paragraphs in it. Not performing paragraph merge.',
+          'Warning: this page already has some headings or pragrpahs in it. Not performing paragraph merge.',
         );
         return page;
       }
