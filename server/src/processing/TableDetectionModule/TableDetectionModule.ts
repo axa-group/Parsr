@@ -100,7 +100,7 @@ export class TableDetectionModule extends Module<Options> {
     // options is already merged in constructor!!!
     // const options: Options = { ...defaultOptions, ...this.options };
     const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
-    if (fileType.ext !== 'pdf') {
+    if (fileType === null || fileType.ext !== 'pdf') {
       logger.warn(
         `Warning: The input file ${doc.inputFile} is not a PDF; Not performing table detection.`,
       );
