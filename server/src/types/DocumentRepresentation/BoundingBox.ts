@@ -132,8 +132,19 @@ export class BoundingBox {
    * @param box1 First bounding box
    * @param box2 Second bounding box
    */
-  public static getOverlap(box1: BoundingBox, box2: BoundingBox): number {
-    let overlapValue: number;
+  public static getOverlap(
+    box1: BoundingBox,
+    box2: BoundingBox,
+    ): {
+      overlapOfCommonArea: number,
+      box1Overlap: number,
+      box2Overlap: number,
+    } {
+    const result = {
+      overlapOfCommonArea: 0.0,
+      box1Overlap: 0.0,
+      box2Overlap: 0.0,
+    };
 
     // coordinates of the intersection rectangle
     const intersectionRectangleLeft: number = Math.max(box1.left, box2.left);
@@ -142,21 +153,20 @@ export class BoundingBox {
     const intersectionRectangleTop: number = Math.max(box1.top, box2.top);
 
     if (
-      intersectionRectangleRight < intersectionRectangleLeft &&
-      intersectionRectangleBottom < intersectionRectangleTop
+      intersectionRectangleRight > intersectionRectangleLeft &&
+      intersectionRectangleBottom > intersectionRectangleTop
     ) {
-      overlapValue = 0.0; // no intersectionRectangle at all
-    } else {
       const elem1Area: number = box1.height * box1.width;
       const elem2Area: number = box2.height * box2.width;
       const intersectionRectangleArea: number =
         (intersectionRectangleRight - intersectionRectangleLeft) *
         (intersectionRectangleBottom - intersectionRectangleTop);
-      const commonArea: number = elem1Area + elem2Area - intersectionRectangleArea;
 
-      overlapValue = intersectionRectangleArea / commonArea;
+      result.overlapOfCommonArea = intersectionRectangleArea / (elem1Area + elem2Area - intersectionRectangleArea);
+      result.box1Overlap = intersectionRectangleArea / elem1Area;
+      result.box2Overlap = intersectionRectangleArea / elem2Area;
     }
-    return overlapValue;
+    return result;
   }
 
   /**
