@@ -18,6 +18,9 @@ import { spawn, spawnSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { parseString } from 'xml2js';
+import { Cleaner } from '../../Cleaner';
+import { Orchestrator } from '../../Orchestrator';
+import { Config } from '../../types/Config';
 import {
   BoundingBox,
   Character,
@@ -34,6 +37,8 @@ import { PdfminerText } from '../../types/PdfminerText';
 import { PdfminerTextline } from '../../types/PdfminerTextline';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
+import { AbbyyTools } from '../abbyy/AbbyyTools';
+import { TesseractExtractor } from '../tesseract/TesseractExtractor';
 
 /**
  * Executes the pdfminer extraction function, reading an input pdf file and extracting a document representation.
@@ -43,7 +48,7 @@ import logger from '../../utils/Logger';
  * @param pdfInputFile The path including the name of the pdf file for input.
  * @returns The promise of a valid document (in the format DocumentRepresentation).
  */
-export function execute(pdfInputFile: string): Promise<Document> {
+export function execute(pdfInputFile: string, config: Config): Promise<Document> {
   return new Promise<Document>((resolveDocument, rejectDocument) => {
     return repairPdf(pdfInputFile).then(repairedPdf => {
       const xmlOutputFile: string = utils.getTemporaryFile('.xml');
@@ -113,10 +118,12 @@ export function execute(pdfInputFile: string): Promise<Document> {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
             logger.debug(`Converting pdfminer's XML output to JS object..`);
-            parseXmlToObject(xml).then((obj: any) => {
-              const pages: Page[] = [];
-              obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj, imgsLocation)));
-              resolveDocument(new Document(pages, pdfInputFile));
+            parseXmlToObject(xml).then(async (obj: any) => {
+              const pagePromises: Array<Promise<Page>> = obj.pages.page.map(
+                (pageObj: PdfminerPage) => getPage(pageObj, imgsLocation, config),
+              );
+              resolveDocument(new Document(await Promise.all(pagePromises), pdfInputFile));
+              logger.debug(`...............RESOLVING DOCUMENT.............`);
             });
           } catch (err) {
             rejectDocument(`parseXml failed: ${err}`);
@@ -130,7 +137,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
   });
 }
 
-function getPage(pageObj: PdfminerPage, imagsLocation: string): Page {
+async function getPage(pageObj: PdfminerPage, imagsLocation: string, config: Config): Promise<Page> {
   const boxValues: number[] = pageObj._attr.bbox.split(',').map(v => parseFloat(v));
   const pageBBox: BoundingBox = new BoundingBox(
     boxValues[0],
@@ -151,12 +158,43 @@ function getPage(pageObj: PdfminerPage, imagsLocation: string): Page {
   }
 
   // treat figures
+  const imgOCRPromises: Array<Promise<Document>> = [];
   if (pageObj.figure !== undefined) {
+    const imageExtractionConfig: Config = new Config(config);  // Prepare to extract data from the images
+    imageExtractionConfig.cleaner = [];
+    imageExtractionConfig.output.formats = {
+      json: true,
+      text: false,
+      markdown: false,
+      csv: false,
+      pdf: false,
+    };
+    const imageCleaner: Cleaner = new Cleaner(imageExtractionConfig);
+    let orchestrator: Orchestrator;
+    if (config.extractor.img === 'tesseract') {
+      orchestrator = new Orchestrator(new TesseractExtractor(imageExtractionConfig), imageCleaner);
+    } else {
+      orchestrator = new Orchestrator(new AbbyyTools(imageExtractionConfig), imageCleaner);
+    }
+
     pageObj.figure.forEach(fig => {
-      elements = [...elements, ...interpretImages(fig, imagsLocation, pageBBox.height)];
+      const newImageElements: Image[] = interpretImages(fig, imagsLocation, pageBBox.height);
+      elements = [...elements, ...newImageElements];         // Add the new image elmenets
+
+      imgOCRPromises.concat(
+        newImageElements.map(
+          (imgElement: Image) => orchestrator.run(imgElement.src),
+        ),
+      );
     });
   }
-  return new Page(parseFloat(pageObj._attr.id), elements, pageBBox);
+
+  // resolve all the OCR promises
+  return await Promise.all(imgOCRPromises)
+  .then((docs: Document[]) => {
+    const newElements: Element[] = [].concat(...docs.map((doc: Document) => doc.getAllElements()));
+    return new Page(parseFloat(pageObj._attr.id), elements.concat(newElements), pageBBox);
+  });
 }
 
 // Pdfminer's bboxes are of the format: x0, y0, x1, y1. Our BoundingBox dims are as: left, top, width, height
