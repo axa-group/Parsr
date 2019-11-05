@@ -458,14 +458,16 @@ export class LinesToParagraphModule extends Module<Options> {
               newLineGroups.push(newLines);
             }
           });
-          utils.groupConsecutiveNumbersInArray(headingIdx).forEach((group: number[]) => {
-            const newHeadings: Line[] = [];
-            group.forEach((id: number) => {
-              newHeadings.push(lineGroup[id]);
+          this.groupHeadingsByFont(headingIdx, lineGroup).forEach(headingGroup => {
+            utils.groupConsecutiveNumbersInArray(headingGroup).forEach((group: number[]) => {
+              const newHeadings: Line[] = [];
+              group.forEach((id: number) => {
+                newHeadings.push(lineGroup[id]);
+              });
+              if (newHeadings.length > 0) {
+                newHeadingGroups.push(newHeadings);
+              }
             });
-            if (newHeadings.length > 0) {
-              newHeadingGroups.push(newHeadings);
-            }
           });
         } else {
           newLineGroups.push(lineGroup);
@@ -517,5 +519,26 @@ export class LinesToParagraphModule extends Module<Options> {
         .indexOf(serializeFont(h));
       h.level = level + 1;
     });
+  }
+
+  private groupHeadingsByFont(headingIndexes: number[], lines: Line[]): number[][] {
+    // Skip join heading lines if they doesn't have same font
+    const fontGroupedHeadings: number[][] = [];
+    let joinedHeadings: number[] = [];
+    headingIndexes.forEach((pos, index) => {
+      const currentHeadingLineFont = lines[pos].getMainFont();
+      const prevHeadingLineFont = index > 0 ? lines[index - 1].getMainFont() : null;
+      if (!prevHeadingLineFont || currentHeadingLineFont.isEqual(prevHeadingLineFont)) {
+        joinedHeadings.push(pos);
+      } else {
+        fontGroupedHeadings.push(joinedHeadings);
+        joinedHeadings = [pos];
+      }
+    });
+    if (joinedHeadings.length > 0) {
+      fontGroupedHeadings.push(joinedHeadings);
+    }
+
+    return fontGroupedHeadings;
   }
 }
