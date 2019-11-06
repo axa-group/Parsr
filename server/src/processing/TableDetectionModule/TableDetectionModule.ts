@@ -112,6 +112,23 @@ export class TableDetectionModule extends Module<Options> {
       );
       return doc;
     }
+
+    try {
+      if (fs.existsSync(doc.inputFile)) {
+        logger.info(
+          `Attempting table detection on ${doc.inputFile}..`,
+        );
+      } else {
+        logger.warn(
+          `Warning: The configured input filename ${doc.inputFile} cannot be found. Not performing table detection.`,
+        );
+        return doc;
+      }
+    } catch (err) {
+      logger.error(`Could not check if the input file ${doc.inputFile} exists: ${err}..`);
+      return doc;
+    }
+
     const tableExtractor = this.extractor.readTables(doc.inputFile, this.options);
 
     if (tableExtractor.status !== 0) {
