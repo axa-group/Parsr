@@ -14,29 +14,14 @@
  * limitations under the License.
  */
 
-import { PdfminerFigure } from './PdfminerFigure';
-import { PdfminerTextbox } from './PdfminerTextbox';
-
-export class PdfminerPage {
+export class PdfminerImage {
   public _attr: {
-    id: string;
-    bbox: string;
-    rotate: string;
-  };
-  public textbox: PdfminerTextbox[];
-  public figure: PdfminerFigure[];
-  public line: object[];
-  public rect: object[];
-  public curve: object[];
-  public layout: object[];
+    src: string;
+    width: string;
+    height: string;
+};
 
-  constructor(page: PdfminerPage) {
-    this._attr = page._attr;
-    this.textbox = page.textbox;
-    this.figure = page.figure;
-    this.line = page.line;
-    this.rect = page.rect;
-    this.curve = page.curve;
-    this.layout = page.layout;
+constructor(textbox: PdfminerImage) {
+    this._attr = textbox._attr;
   }
 }

@@ -72,7 +72,7 @@ export class AbbyyTools extends Extractor {
   }
 
   public run(inputFile: string): Promise<Document> {
-    const host: string = process.env.ABBYY_SERVER_URL || '10.0.0.252';
+    const host: string = process.env.ABBYY_SERVER_URL || '172.23.132.137';
     const serverVersion: string = process.env.ABBYY_SERVER_VER || '14';
     const workflowName: string = process.env.ABBYY_WORKFLOW || 'workflow-hotfolder-d_drive';
     const serverTimeout: number = 50000;

@@ -250,7 +250,7 @@ function tableFromJson(tableObj: JsonElement, fonts: Font[]): Table {
 function imageFromJson(imageObj: JsonElement): Image {
   const newImg: Image = new Image(
     new BoundingBox(imageObj.box.l, imageObj.box.t, imageObj.box.w, imageObj.box.h),
-    imageObj.url,
+    imageObj.src,
   );
   newImg.id = imageObj.id;
   newImg.properties = propertiesFromJson(imageObj.properties);

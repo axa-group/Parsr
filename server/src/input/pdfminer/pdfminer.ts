@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import * as fs from 'fs';
+import * as path from 'path';
 import {
   BoundingBox,
   Character,
   Document,
   Element,
   Font,
+  Image,
   Page,
   Word,
 } from '../../types/DocumentRepresentation';
+import { PdfminerFigure } from '../../types/PdfminerFigure';
+import { PdfminerImage } from '../../types/PdfminerImage';
 import { PdfminerPage } from '../../types/PdfminerPage';
 import { PdfminerText } from '../../types/PdfminerText';
-import { PdfminerTextline } from '../../types/PdfminerTextline';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 
@@ -43,6 +46,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
   return new Promise<Document>((resolveDocument, rejectDocument) => {
     return repairPdf(pdfInputFile).then(repairedPdf => {
       const xmlOutputFile: string = utils.getTemporaryFile('.xml');
+      const imgsLocation: string = utils.getTemporaryDirectory();
       let pdf2txtLocation: string = utils.getCommandLocationOnSystem('pdf2txt.py');
       if (!pdf2txtLocation) {
         pdf2txtLocation = utils.getCommandLocationOnSystem('pdf2txt');
@@ -62,6 +66,8 @@ export function execute(pdfInputFile: string): Promise<Document> {
           // '-A', crashes pdf2txt.py using Benchmark axa.uk.business.owntools.pdf
           '-t',
           'xml',
+          '-O',
+          imgsLocation,
           '-o',
           xmlOutputFile,
           repairedPdf,
@@ -78,6 +84,8 @@ export function execute(pdfInputFile: string): Promise<Document> {
         // '-A', crashes pdf2txt.py using Benchmark axa.uk.business.owntools.pdf
         '-t',
         'xml',
+        '-O',
+        imgsLocation,
         '-o',
         xmlOutputFile,
         repairedPdf,
@@ -94,8 +102,8 @@ export function execute(pdfInputFile: string): Promise<Document> {
             logger.debug(`Converting pdfminer's XML output to JS object..`);
             utils.parseXmlToObject(xml, { attrkey: '_attr' }).then((obj: any) => {
               const pages: Page[] = [];
-              obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj)));
-              resolveDocument(new Document(pages, pdfInputFile));
+              obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj, imgsLocation)));
+              resolveDocument(new Document(pages, repairedPdf));
             });
           } catch (err) {
             rejectDocument(`parseXml failed: ${err}`);
@@ -109,7 +117,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
   });
 }
 
-function getPage(pageObj: PdfminerPage): Page {
+function getPage(pageObj: PdfminerPage, imagesLocation: string): Page {
   const boxValues: number[] = pageObj._attr.bbox.split(',').map(v => parseFloat(v));
   const pageBBox: BoundingBox = new BoundingBox(
     boxValues[0],
@@ -124,10 +132,23 @@ function getPage(pageObj: PdfminerPage): Page {
   if (pageObj.textbox !== undefined) {
     pageObj.textbox.forEach(para => {
       para.textline.map(line => {
-        elements = [...elements, ...breakLineIntoWords(line, ',', pageBBox.height)];
+        elements = [...elements, ...breakLineIntoWords(line.text, ',', pageBBox.height)];
       });
     });
   }
+
+  // treat figures
+  if (pageObj.figure !== undefined) {
+    pageObj.figure.forEach(fig => {
+      if (fig.image !== undefined) {
+        elements = [...elements, ...interpretImages(fig, imagesLocation, pageBBox.height)];
+      }
+      if (fig.text !== undefined) {
+        elements = [...elements, ...breakLineIntoWords(fig.text, ',', pageBBox.height)];
+      }
+    });
+  }
+
   return new Page(parseFloat(pageObj._attr.id), elements, pageBBox);
 }
 
@@ -188,16 +209,31 @@ function getValidCharacter(character: string): string {
   return RegExp(/\(cid:/gm).test(character) ? '?' : character;
 }
 
+function interpretImages(
+  fig: PdfminerFigure,
+  imagsLocation: string,
+  pageHeight: number,
+  scalingFactor: number = 1,
+): Image[] {
+  return fig.image.map(
+    (img: PdfminerImage) =>
+      new Image(
+        getBoundingBox(fig._attr.bbox, ',', pageHeight, scalingFactor),
+        path.join(imagsLocation, img._attr.src),
+      ),
+  );
+}
+
 function breakLineIntoWords(
-  line: PdfminerTextline,
+  texts: PdfminerText[],
   wordSeparator: string = ' ',
   pageHeight: number,
   scalingFactor: number = 1,
 ): Word[] {
   const notAllowedChars = ['\u200B']; // &#8203 Zero Width Space
   const words: Word[] = [];
-  const fakeSpaces = thereAreFakeSpaces(line);
-  const chars: Character[] = line.text
+  const fakeSpaces = thereAreFakeSpaces(texts);
+  const chars: Character[] = texts
     .filter(char => !notAllowedChars.includes(char._) && !isFakeChar(char, fakeSpaces))
     .map(char => {
       if (char._ === undefined) {
@@ -294,17 +330,17 @@ function breakLineIntoWords(
   return words;
 }
 
-function thereAreFakeSpaces(lines: PdfminerTextline): boolean {
+function thereAreFakeSpaces(texts: PdfminerText[]): boolean {
   // Will remove all <text> </text> only if in line we found
   // <text> </text> followed by empty <text> but with attributes
   // <text font="W" bbox="W" colourspace="X" ncolour="Y" size="Z"> </text>
-  const emptyWithAttr = lines.text
+  const emptyWithAttr = texts
     .map((word, index) => {
       return { text: word, pos: index };
     })
     .filter(word => word.text._ === undefined && word.text._attr !== undefined)
     .map(word => word.pos);
-  const emptyWithNoAttr = lines.text
+  const emptyWithNoAttr = texts
     .map((word, index) => {
       return { text: word, pos: index };
     })
@@ -347,22 +383,44 @@ function ncolourToHex(color: string) {
 }
 
 /**
- * Repair a pdf using the external mutool utility.
+ * Repair a pdf using the external qpdf and mutool utilities.
+ * Use qpdf to decrcrypt the pdf to avoid errors due to DRMs.
  * @param filePath The absolute filename and path of the pdf file to be repaired.
  */
 function repairPdf(filePath: string) {
+  const qpdfPath = utils.getCommandLocationOnSystem('qpdf');
+  let qpdfOutputFile = utils.getTemporaryFile('.pdf');
+  if (qpdfPath) {
+    const process = spawnSync('qpdf', ['--decrypt', filePath, qpdfOutputFile]);
+
+    if (process.status === 0) {
+      logger.info(`qpdf repair successfully performed on file ${filePath}. New file at: ${qpdfOutputFile}`);
+    } else {
+      logger.warn(
+        'qpdf error for file ${filePath}:', process.status, process.stdout.toString(), process.stderr.toString(),
+      );
+      qpdfOutputFile = filePath;
+    }
+  } else {
+    logger.warn(`qpdf not found on the system. Not repairing the PDF...`);
+    qpdfOutputFile = filePath;
+  }
+
   return new Promise<string>(resolve => {
     const mutoolPath = utils.getCommandLocationOnSystem('mutool');
     if (!mutoolPath) {
       logger.warn('MuPDF not installed !! Skip clean PDF.');
-      resolve(filePath);
+      resolve(qpdfOutputFile);
     } else {
-      const pdfOutputFile = utils.getTemporaryFile('.pdf');
-      const pdfFixer = spawn('mutool', ['clean', filePath, pdfOutputFile]);
+      const mupdfOutputFile = utils.getTemporaryFile('.pdf');
+      const pdfFixer = spawn('mutool', ['clean', qpdfOutputFile, mupdfOutputFile]);
       pdfFixer.on('close', () => {
         // Check that the file is correctly written on the file system
-        fs.fsyncSync(fs.openSync(filePath, 'r+'));
-        resolve(pdfOutputFile);
+        fs.fsyncSync(fs.openSync(qpdfOutputFile, 'r+'));
+        logger.info(
+          `mupdf cleaning successfully performed on file ${qpdfOutputFile}. Resulting file: ${mupdfOutputFile}`,
+        );
+        resolve(mupdfOutputFile);
       });
     }
   });
