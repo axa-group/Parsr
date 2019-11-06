@@ -29,9 +29,9 @@ import {
   Word,
 } from '../../types/DocumentRepresentation';
 import { PdfminerFigure } from '../../types/PdfminerFigure';
+import { PdfminerImage } from '../../types/PdfminerImage';
 import { PdfminerPage } from '../../types/PdfminerPage';
 import { PdfminerText } from '../../types/PdfminerText';
-import { PdfminerTextline } from '../../types/PdfminerTextline';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 
@@ -130,7 +130,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
   });
 }
 
-function getPage(pageObj: PdfminerPage, imagsLocation: string): Page {
+function getPage(pageObj: PdfminerPage, imagesLocation: string): Page {
   const boxValues: number[] = pageObj._attr.bbox.split(',').map(v => parseFloat(v));
   const pageBBox: BoundingBox = new BoundingBox(
     boxValues[0],
@@ -145,7 +145,7 @@ function getPage(pageObj: PdfminerPage, imagsLocation: string): Page {
   if (pageObj.textbox !== undefined) {
     pageObj.textbox.forEach(para => {
       para.textline.map(line => {
-        elements = [...elements, ...breakLineIntoWords(line, ',', pageBBox.height)];
+        elements = [...elements, ...breakLineIntoWords(line.text, ',', pageBBox.height)];
       });
     });
   }
@@ -153,9 +153,15 @@ function getPage(pageObj: PdfminerPage, imagsLocation: string): Page {
   // treat figures
   if (pageObj.figure !== undefined) {
     pageObj.figure.forEach(fig => {
-      elements = [...elements, ...interpretImages(fig, imagsLocation, pageBBox.height)];
+      if (fig.image !== undefined) {
+        elements = [...elements, ...interpretImages(fig, imagesLocation, pageBBox.height)];
+      }
+      if (fig.text !== undefined) {
+        elements = [...elements, ...breakLineIntoWords(fig.text, ',', pageBBox.height)];
+      }
     });
   }
+
   return new Page(parseFloat(pageObj._attr.id), elements, pageBBox);
 }
 
@@ -222,25 +228,25 @@ function interpretImages(
   pageHeight: number,
   scalingFactor: number = 1,
 ): Image[] {
-  const resultantImages: Image[] = fig.image.map(
-    img =>
+  return fig.image.map(
+    (img: PdfminerImage) =>
       new Image(
         getBoundingBox(fig._attr.bbox, ',', pageHeight, scalingFactor),
         path.join(imagsLocation, img._attr.src),
       ),
   );
-  return resultantImages;
 }
+
 function breakLineIntoWords(
-  line: PdfminerTextline,
+  texts: PdfminerText[],
   wordSeparator: string = ' ',
   pageHeight: number,
   scalingFactor: number = 1,
 ): Word[] {
   const notAllowedChars = ['\u200B']; // &#8203 Zero Width Space
   const words: Word[] = [];
-  const fakeSpaces = thereAreFakeSpaces(line);
-  const chars: Character[] = line.text
+  const fakeSpaces = thereAreFakeSpaces(texts);
+  const chars: Character[] = texts
     .filter(char => !notAllowedChars.includes(char._) && !isFakeChar(char, fakeSpaces))
     .map(char => {
       if (char._ === undefined) {
@@ -337,17 +343,17 @@ function breakLineIntoWords(
   return words;
 }
 
-function thereAreFakeSpaces(lines: PdfminerTextline): boolean {
+function thereAreFakeSpaces(texts: PdfminerText[]): boolean {
   // Will remove all <text> </text> only if in line we found
   // <text> </text> followed by empty <text> but with attributes
   // <text font="W" bbox="W" colourspace="X" ncolour="Y" size="Z"> </text>
-  const emptyWithAttr = lines.text
+  const emptyWithAttr = texts
     .map((word, index) => {
       return { text: word, pos: index };
     })
     .filter(word => word.text._ === undefined && word.text._attr !== undefined)
     .map(word => word.pos);
-  const emptyWithNoAttr = lines.text
+  const emptyWithNoAttr = texts
     .map((word, index) => {
       return { text: word, pos: index };
     })
