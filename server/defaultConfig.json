@@ -54,7 +54,7 @@
       "lines-to-paragraph",
       {
         "tolerance": 0.25,
-        "computeHeadings": false
+        "computeHeadings": true
       }
     ],
     "list-detection",
