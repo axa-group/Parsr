@@ -178,7 +178,7 @@ export class Paragraph extends Text {
       const lastLinkMDDescription = firstLinkMDInLine[0].replace(/\[(.*?)\]\(.*?\)/, '$1');
 
       // merges the last link in previous line with the description of the first link in current line
-      const mergedLinkMD = lastWordLinkMD.replace(/\[(.*?)\]\((.*?)\)/s, `[$1 ${lastLinkMDDescription}]($2)`);
+      const mergedLinkMD = lastWordLinkMD.replace(/\[(.*?)\]\((.*?)\)/s, `[$1  \n${lastLinkMDDescription}]($2)`);
       output.paragraphOutput = output.paragraphOutput.replace(lastWordLinkMD, mergedLinkMD).trim();
 
       // removes the first link in current line, to avoid duplicated (it's already merged in the previous line)

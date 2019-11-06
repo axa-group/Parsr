@@ -47,8 +47,9 @@ export class LinkDetectionModule extends Module {
           const l = link as any;
           const linkBB = new BoundingBox(l.box.l, l.box.t, l.box.w, l.box.h);
           if (Math.abs(BoundingBox.getPercentageOfInclusion(linkBB, word.box)) > 0.7) {
-            word.properties.link = this.buildLinkMD(word, l);
-            word.properties.targetURL = l.link.target;
+            const { link: mdLink, targetURL } = this.buildLinkMD(word, l);
+            word.properties.link = mdLink;
+            word.properties.targetURL = targetURL;
           }
         });
 
@@ -131,14 +132,7 @@ export class LinkDetectionModule extends Module {
         pdf: { object: objects },
       } = await this.getFileMetadata(file);
 
-      const pages = objects.filter(o => {
-        return o.dict
-          && o.dict[0]
-          && o.dict[0].value
-          && o.dict[0].value[0]
-          && o.dict[0].value[0].literal
-          && o.dict[0].value[0].literal[0] === 'Page';
-      });
+      const pages = objects.filter(o => o.dict && o.dict[0].value.some(v => v.literal && v.literal.includes('Page')));
       const pagesWithAnnots = pages.filter(o => o.dict && o.dict[0].key.includes('Annots'));
       pagesWithAnnots.forEach(pageObject => {
         const pageHeightIndex = pageObject.dict[0].key.indexOf('MediaBox');
@@ -207,11 +201,14 @@ export class LinkDetectionModule extends Module {
     };
   }
 
-  private buildLinkMD(word: Word, l: any): string {
+  private buildLinkMD(word: Word, l: any): { link: string, targetURL: string } {
     let target = l.link.target;
     if (l.link.type === 'GoTo') {
       target = '#'.concat(target);
     }
-    return `[${word.toString()}](${target})`;
+    return {
+      link: `[${word.toString()}](${target})`,
+      targetURL: target,
+    };
   }
 }
