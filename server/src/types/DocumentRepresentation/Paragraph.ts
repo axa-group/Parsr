@@ -165,6 +165,18 @@ export class Paragraph extends Text {
       return;
     }
 
+    if (line.lineBreak) {
+      return;
+    }
+
+    if (prevLine.lastWordStyle != null && prevLine.lastWordStyle === line.firstWordStyle) {
+      const endTag = this.wordStyleEndTag(prevLine.lastWordStyle, format);
+      const end = output.paragraphOutput.length - (endTag.length + 1);
+      output.paragraphOutput = output.paragraphOutput.slice(0, end) + ' ';
+      const startTag = this.wordStyleStartTag(prevLine.lastWordStyle, format);
+      output.lineOutput = output.lineOutput.slice(startTag.length);
+    }
+
     if (!!prevLine.lastWordLink && prevLine.lastWordLink === line.firstWordLink) {
       // gets the last link MD in the previous line
       const mdLinksInPreviousLine = output.paragraphOutput.match(new RegExp(/\[.*?\]\(.*?\)/gs));
@@ -183,18 +195,6 @@ export class Paragraph extends Text {
 
       // removes the first link in current line, to avoid duplicated (it's already merged in the previous line)
       output.lineOutput = output.lineOutput.slice(firstLinkMDInLine[0].length);
-    }
-
-    if (line.lineBreak) {
-      return;
-    }
-
-    if (prevLine.lastWordStyle != null && prevLine.lastWordStyle === line.firstWordStyle) {
-      const endTag = this.wordStyleEndTag(prevLine.lastWordStyle, format);
-      const end = output.paragraphOutput.length - (endTag.length + 1);
-      output.paragraphOutput = output.paragraphOutput.slice(0, end) + ' ';
-      const startTag = this.wordStyleStartTag(prevLine.lastWordStyle, format);
-      output.lineOutput = output.lineOutput.slice(startTag.length);
     }
   }
 
