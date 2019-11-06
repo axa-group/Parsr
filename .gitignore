@@ -90,7 +90,6 @@ typings/
 .next
 
 *dist*
-samples
 mutool-extraction
 mutool-images
 pipeline
@@ -110,3 +109,6 @@ __pycache__
 # drone
 .drone-secret*
 .tags
+
+# temporary output folder in the root - by default used for temporary output storage in launch.json
+tmp

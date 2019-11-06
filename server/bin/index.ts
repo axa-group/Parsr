@@ -67,6 +67,15 @@ function main(): void {
 
   let filePath: string = path.resolve(commander.inputFile);
   const outputFolder: string = path.resolve(commander.outputFolder);
+  if (!fs.existsSync(outputFolder)) {
+    logger.info(`Requested output folder ${outputFolder} did not exist. Creating... `);
+    try {
+      fs.mkdirSync(outputFolder);
+    } catch (err) {
+      logger.error(`Error creating the requested output folder ${outputFolder}: ${err}`);
+      throw(err);
+    }
+  }
   const documentName: string = commander.documentName;
   const configPath: string = path.resolve(commander.config);
   let fileType: { ext: string; mime: string } = filetype(fs.readFileSync(filePath));
