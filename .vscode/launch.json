@@ -13,9 +13,9 @@
       "sourceMaps": true,
       "args": [
         "-f",
-        "${workspaceRoot}/pipeline/samples/foo.xml",
+        "${workspaceRoot}/samples/README.pdf",
         "-o",
-        "${workspaceRoot}/pipeline/samples/output",
+        "${workspaceRoot}/tmp",
         "-n",
         "example",
         "-c",
