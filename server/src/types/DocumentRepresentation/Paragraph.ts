@@ -27,6 +27,8 @@ export type LineInfo = {
   lineBreak: boolean;
   firstWordStyle: WordStyle;
   lastWordStyle: WordStyle;
+  firstWordLink: string;
+  lastWordLink: string;
 };
 
 enum WordStyle {
@@ -161,6 +163,26 @@ export class Paragraph extends Text {
   public mergeStyleLines(prevLine: LineInfo, line: LineInfo, output: any, format: string) {
     if (!prevLine) {
       return;
+    }
+
+    if (!!prevLine.lastWordLink && prevLine.lastWordLink === line.firstWordLink) {
+      // gets the last link MD in the previous line
+      const mdLinksInPreviousLine = output.paragraphOutput.match(new RegExp(/\[.*?\]\(.*?\)/gs));
+      if (!mdLinksInPreviousLine) { return; }
+
+      const lastWordLinkMD = mdLinksInPreviousLine[mdLinksInPreviousLine.length - 1];
+      // gets the first link MD and description in the current line
+      const firstLinkMDInLine = output.lineOutput.match(new RegExp(/\[.*?\]\((.*?)\)/));
+
+      if (!firstLinkMDInLine) { return; }
+      const lastLinkMDDescription = firstLinkMDInLine[0].replace(/\[(.*?)\]\(.*?\)/, '$1');
+
+      // merges the last link in previous line with the description of the first link in current line
+      const mergedLinkMD = lastWordLinkMD.replace(/\[(.*?)\]\((.*?)\)/s, `[$1 ${lastLinkMDDescription}]($2)`);
+      output.paragraphOutput = output.paragraphOutput.replace(lastWordLinkMD, mergedLinkMD).trim();
+
+      // removes the first link in current line, to avoid duplicated (it's already merged in the previous line)
+      output.lineOutput = output.lineOutput.slice(firstLinkMDInLine[0].length);
     }
 
     if (line.lineBreak) {
@@ -303,6 +325,8 @@ export class Paragraph extends Text {
         lineBreak: this.isLineBreak(index),
         firstWordStyle: this.wordStyle(l.content[0]),
         lastWordStyle: this.wordStyle(l.content[l.content.length - 1]),
+        firstWordLink: l.content[0].properties.targetURL,
+        lastWordLink: l.content[l.content.length - 1].properties.targetURL,
       };
     });
   }
