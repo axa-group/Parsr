@@ -95,7 +95,7 @@ export class RedundancyDetectionModule extends Module<Options> {
         decision = false;
       } else {
         for (const e of group) {
-          const overlap: number = BoundingBox.getOverlap(e.box, newElement.box).overlapOfCommonArea;
+          const overlap: number = BoundingBox.getOverlap(e.box, newElement.box).jaccardIndex;
           if (!(overlap >= this.options.minOverlap)) {
             decision = false;
             break;

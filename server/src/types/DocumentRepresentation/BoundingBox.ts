@@ -128,43 +128,44 @@ export class BoundingBox {
   }
 
   /**
-   * Computes the amount (between 0 to 1) of overlap between two bounding boxes
+   * Computes values of overlap between two bounding boxes
    * @param box1 First bounding box
    * @param box2 Second bounding box
+   * @returns the jaccard index between two areas, and overlap proportions for both
    */
   public static getOverlap(
     box1: BoundingBox,
     box2: BoundingBox,
     ): {
-      overlapOfCommonArea: number,
-      box1Overlap: number,
-      box2Overlap: number,
+      jaccardIndex: number,
+      box1OverlapProportion: number,
+      box2OverlapProportion: number,
     } {
     const result = {
-      overlapOfCommonArea: 0.0,
-      box1Overlap: 0.0,
-      box2Overlap: 0.0,
+      jaccardIndex: 0.0,
+      box1OverlapProportion: 0.0,
+      box2OverlapProportion: 0.0,
     };
 
     // coordinates of the intersection rectangle
-    const intersectionRectangleLeft: number = Math.max(box1.left, box2.left);
-    const intersectionRectangleRight: number = Math.min(box1.right, box2.right);
-    const intersectionRectangleBottom: number = Math.min(box1.bottom, box2.bottom);
-    const intersectionRectangleTop: number = Math.max(box1.top, box2.top);
+    const intRectL: number = Math.max(box1.left, box2.left);
+    const intRectR: number = Math.min(box1.right, box2.right);
+    const intRectB: number = Math.min(box1.bottom, box2.bottom);
+    const intRectT: number = Math.max(box1.top, box2.top);
 
     if (
-      intersectionRectangleRight > intersectionRectangleLeft &&
-      intersectionRectangleBottom > intersectionRectangleTop
+      (intRectR - intRectL > 0) &&
+      (intRectB - intRectT > 0)
     ) {
       const elem1Area: number = box1.height * box1.width;
       const elem2Area: number = box2.height * box2.width;
-      const intersectionRectangleArea: number =
-        (intersectionRectangleRight - intersectionRectangleLeft) *
-        (intersectionRectangleBottom - intersectionRectangleTop);
+      const intRectArea: number =
+        (intRectR - intRectL) *
+        (intRectB - intRectT);
 
-      result.overlapOfCommonArea = intersectionRectangleArea / (elem1Area + elem2Area - intersectionRectangleArea);
-      result.box1Overlap = intersectionRectangleArea / elem1Area;
-      result.box2Overlap = intersectionRectangleArea / elem2Area;
+      result.jaccardIndex = intRectArea / (elem1Area + elem2Area - intRectArea);
+      result.box1OverlapProportion = intRectArea / elem1Area;
+      result.box2OverlapProportion = intRectArea / elem2Area;
     }
     return result;
   }
