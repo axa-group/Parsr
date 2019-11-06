@@ -143,17 +143,30 @@ export class LinesToParagraphModule extends Module<Options> {
     const decisions: boolean[] = [];
     lines.forEach((line: Line) => {
       decisions.push(
-        line.getMainFont().size > mostCommonFont.size ||
-          (line.getMainFont().weight === 'bold' && mostCommonFont.weight !== 'bold') ||
-          (line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
-            .length > 0 &&
-            (line.toString().toUpperCase() === line.toString() && !generalUpperCase)) ||
-          (line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p)
-            .length > 0 &&
-            (utils.toTitleCase(line.toString()) === line.toString() && !generalTitleCase)),
+        line.isUniqueFont()
+          ? this.isHeadingLine(line, mostCommonFont, generalUpperCase, generalTitleCase)
+          : false,
       );
     });
     return decisions.filter(d => !d).length === 0;
+  }
+
+  private isHeadingLine(
+    line: Line,
+    commonFont: Font,
+    upperCase: boolean,
+    titleCase: boolean,
+  ): boolean {
+    return (
+      line.getMainFont().size > commonFont.size ||
+      (line.getMainFont().weight === 'bold' && commonFont.weight !== 'bold') ||
+      (line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p).length >
+        0 &&
+        (line.toString().toUpperCase() === line.toString() && !upperCase)) ||
+      (line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p).length >
+        0 &&
+        (utils.toTitleCase(line.toString()) === line.toString() && !titleCase))
+    );
   }
 
   private joinLinesInElements(elements: Element[], textBodyFont: Font): Element[] {

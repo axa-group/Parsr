@@ -58,6 +58,20 @@ export class Line extends Text {
   }
 
   /**
+   * Returns if the line has only one font.
+   */
+  public isUniqueFont(): boolean {
+    const allFonts = this.content.map(w => w.font);
+    const uniqueFonts: Font[] = [];
+    allFonts.forEach(font => {
+      if (uniqueFonts.filter(f => f.isEqual(font)).length === 0) {
+        uniqueFonts.push(font);
+      }
+    });
+    return uniqueFonts.length === 1;
+  }
+
+  /**
    * Getter content
    * @return {Word[]}
    */
