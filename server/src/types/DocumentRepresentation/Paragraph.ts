@@ -194,14 +194,11 @@ export class Paragraph extends Text {
       }
 
       // grouping word ids in line by link target
-      if (w.properties.link) {
-        const link = w.properties.link.replace(/\[.*?\]\((.*?)\)/, "$1");
-        if (link) {
-          if (!linkWordsIdx[link]) {
-            linkWordsIdx[link] = Array<number[]>(1).fill([]);
-          }
-          linkWordsIdx[link][0].push(index);
+      if (w.properties.targetURL) {
+        if (!linkWordsIdx[w.properties.targetURL]) {
+          linkWordsIdx[w.properties.targetURL] = Array<number[]>(1).fill([]);
         }
+        linkWordsIdx[w.properties.targetURL][0].push(index);
       }
     });
 

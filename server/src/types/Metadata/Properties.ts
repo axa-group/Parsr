@@ -38,4 +38,5 @@ export interface Properties {
   // column left
   cl?: number;
   link?: string;
+  targetURL?: string;
 }
