@@ -72,9 +72,11 @@ export class LinesToParagraphModule extends Module<Options> {
 
     doc.pages.forEach((page: Page) => {
       this.maxLineDistance = page.height * 0.2;
-      if (page.getElementsOfType<Heading>(Heading).length > 0) {
+      const existingHeadings = page.getElementsOfType<Heading>(Heading);
+      const existingParagraphs = page.getElementsOfType<Paragraph>(Paragraph);
+      if (existingHeadings.length > 0 || existingParagraphs.length > 0) {
         logger.warn(
-          'Warning: this page already has some paragraphs in it. Not performing paragraph merge.',
+          'Warning: this page already has some headings or pragrpahs in it. Not performing paragraph merge.',
         );
         return page;
       }
@@ -92,7 +94,7 @@ export class LinesToParagraphModule extends Module<Options> {
       let otherElements: Element[] = this.getElementsExcept(page, lines);
       otherElements = this.joinLinesInElements(otherElements, textBodyFont);
 
-      // Clean the properties.cr  information as it is not useful down the line
+      // Clean the properties.cr  information as it is not usefull down the line
       joinedLines.forEach((theseLines: Line[]) => {
         theseLines.forEach((thisLine: Line) => {
           thisLine.content.forEach((thisWord: Word) => {
@@ -188,7 +190,9 @@ export class LinesToParagraphModule extends Module<Options> {
         withLines.push(element);
       } else if (Array.isArray(element.content)) {
         element.content.forEach(child => {
-          this.getElementsWithLines(child.content as Element[], withLines);
+          if (child.content as Element[]) {
+            this.getElementsWithLines(child.content as Element[], withLines);
+          }
         });
       }
     });
@@ -227,7 +231,7 @@ export class LinesToParagraphModule extends Module<Options> {
         let currentLineDistance = this.getInterLineDistance(line, nextLine);
 
         if (this.shouldAdjustLineDistance(currentLineDistance, lineSpaces)) {
-          currentLineDistance = this.findAccurateDistance(currentLineDistance, lineSpaces);
+          currentLineDistance = this.findAccuratedDistance(currentLineDistance, lineSpaces);
         }
 
         if (currentLineDistance != null && currentLineDistance <= space.distance) {
@@ -269,8 +273,8 @@ export class LinesToParagraphModule extends Module<Options> {
     return toBeMerged;
   }
 
-  private findAccurateDistance(distance: number, lineSpaces: LineSpace[]): number {
-    const accurate = lineSpaces
+  private findAccuratedDistance(distance: number, lineSpaces: LineSpace[]): number {
+    const accurated = lineSpaces
       .map(space => {
         return {
           distance: space.distance,
@@ -279,8 +283,8 @@ export class LinesToParagraphModule extends Module<Options> {
       })
       .sort((a, b) => a.dif - b.dif);
 
-    if (accurate.length > 0) {
-      return accurate[0].distance;
+    if (accurated.length > 0) {
+      return accurated[0].distance;
     }
     return distance;
   }
@@ -419,7 +423,7 @@ export class LinesToParagraphModule extends Module<Options> {
   /**
    * Takes into account potential headings inside a paragraph
    * splits a paragraph into multiple ones and returns heading candidates
-   * @param lineGroups List of joined lines to be altered
+   * @param lineGroups List of joined lines to be alterered
    */
   private extractHeadings(
     lineGroups: Line[][],
@@ -458,14 +462,16 @@ export class LinesToParagraphModule extends Module<Options> {
               newLineGroups.push(newLines);
             }
           });
-          utils.groupConsecutiveNumbersInArray(headingIdx).forEach((group: number[]) => {
-            const newHeadings: Line[] = [];
-            group.forEach((id: number) => {
-              newHeadings.push(lineGroup[id]);
+          this.groupHeadingsByFont(headingIdx, lineGroup).forEach(headingGroup => {
+            utils.groupConsecutiveNumbersInArray(headingGroup).forEach((group: number[]) => {
+              const newHeadings: Line[] = [];
+              group.forEach((id: number) => {
+                newHeadings.push(lineGroup[id]);
+              });
+              if (newHeadings.length > 0) {
+                newHeadingGroups.push(newHeadings);
+              }
             });
-            if (newHeadings.length > 0) {
-              newHeadingGroups.push(newHeadings);
-            }
           });
         } else {
           newLineGroups.push(lineGroup);
@@ -517,5 +523,26 @@ export class LinesToParagraphModule extends Module<Options> {
         .indexOf(serializeFont(h));
       h.level = level + 1;
     });
+  }
+
+  private groupHeadingsByFont(headingIndexes: number[], lines: Line[]): number[][] {
+    // Skip join heading lines if they doesn't have same font
+    const fontGroupedHeadings: number[][] = [];
+    let joinedHeadings: number[] = [];
+    headingIndexes.forEach((pos, index) => {
+      const currentHeadingLineFont = lines[pos].getMainFont();
+      const prevHeadingLineFont = index > 0 ? lines[index - 1].getMainFont() : null;
+      if (!prevHeadingLineFont || currentHeadingLineFont.isEqual(prevHeadingLineFont)) {
+        joinedHeadings.push(pos);
+      } else {
+        fontGroupedHeadings.push(joinedHeadings);
+        joinedHeadings = [pos];
+      }
+    });
+    if (joinedHeadings.length > 0) {
+      fontGroupedHeadings.push(joinedHeadings);
+    }
+
+    return fontGroupedHeadings;
   }
 }

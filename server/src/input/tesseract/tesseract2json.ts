@@ -135,7 +135,7 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
         });
 
         logger.debug(`Assigning a total of ${pages.length} pages to the document...`);
-        const doc: Document = new Document(pages);
+        const doc: Document = new Document(pages, imageInputFile);
         logger.debug(
           `The new document contains ${
             doc.getElementsOfType(Word, false).length

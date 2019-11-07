@@ -25,9 +25,9 @@ export class PdfminerFigure {
   public image: PdfminerImage[];
   public text: PdfminerText[];
 
-  constructor(textbox: PdfminerFigure) {
-    this._attr = textbox._attr;
-    this.image = textbox.image;
-    this.text = textbox.text;
+  constructor(figure: PdfminerFigure) {
+    this._attr = figure._attr;
+    this.image = figure.image;
+    this.text = figure.text;
   }
 }

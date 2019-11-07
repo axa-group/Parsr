@@ -30,7 +30,7 @@ describe('Lines to Paragraph Module', () => {
       'one paragraph doc': ['one-paragraph-with-lines.json', 1],
       'multiple paragraphs': ['paragraph-merge.json', 4],
       'multicolumn paragraphs': ['paragraph-merge-2.json', 5],
-      'full content page': ['paragraph-merge-5.json', 10],
+      'full content page': ['paragraph-merge-5.json', 11],
     },
     (fileName, paragraphCount) => {
       let docBefore: Document;
@@ -70,7 +70,7 @@ describe('Heading Detection', () => {
   withData(
     {
       'multiple paragraphs with headings': ['paragraph-merge-3.json', 4],
-      'complex pdf file': ['testReadingOrder.json', 5],
+      'complex pdf file': ['testReadingOrder.json', 8],
     },
     (fileName, headingCount) => {
       before(done => {
