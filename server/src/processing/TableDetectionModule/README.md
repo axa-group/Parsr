@@ -24,14 +24,19 @@ Following is an example of the configuration of the table-detection module:
 [
   "table-detection",
   {
-    "pages": [1, 2, 3], // or [] for all pages
-    "flavor": "lattice"
+        "pageConfig": [
+          {
+            "pages": [1, 2, 3], // or [] for all pages
+            "flavor": "lattice"
+          }
+        ]
   }
 ]
 ```
 
-- pages: List of numbers representing pages.
-- flavor: The parsing method to use ('lattice' or 'stream'). Lattice is used by default.
+- pageConfig: Array of different configurations for the doc
+  - pages: List of numbers representing pages.
+  - flavor: The parsing method to use ('lattice' or 'stream'). Lattice is used by default.
 
 ## Accuracy
 
@@ -40,4 +45,3 @@ The accuracy is high.
 ## Limitations
 
 - Only works with text-based PDFs and not scanned documents.
-- Currently we can not configure this module to use a specific configuration for each page.
