@@ -27,7 +27,7 @@ import * as pdfminer from './pdfminer';
  */
 export class PdfminerExtractor extends Extractor {
   public run(inputFile: string): Promise<Document> {
-    const pdfminerExtract: Promise<Document> = pdfminer.execute(inputFile, this.config);
+    const pdfminerExtract: Promise<Document> = pdfminer.execute(inputFile);
 
     const extractFont = extractFonts(inputFile);
 

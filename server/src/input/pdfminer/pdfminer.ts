@@ -18,9 +18,6 @@ import { spawn, spawnSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { parseString } from 'xml2js';
-import { Cleaner } from '../../Cleaner';
-import { Orchestrator } from '../../Orchestrator';
-import { Config } from '../../types/Config';
 import {
   BoundingBox,
   Character,
@@ -32,13 +29,11 @@ import {
   Word,
 } from '../../types/DocumentRepresentation';
 import { PdfminerFigure } from '../../types/PdfminerFigure';
+import { PdfminerImage } from '../../types/PdfminerImage';
 import { PdfminerPage } from '../../types/PdfminerPage';
 import { PdfminerText } from '../../types/PdfminerText';
-import { PdfminerTextline } from '../../types/PdfminerTextline';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
-import { AbbyyTools } from '../abbyy/AbbyyTools';
-import { TesseractExtractor } from '../tesseract/TesseractExtractor';
 
 /**
  * Executes the pdfminer extraction function, reading an input pdf file and extracting a document representation.
@@ -48,11 +43,21 @@ import { TesseractExtractor } from '../tesseract/TesseractExtractor';
  * @param pdfInputFile The path including the name of the pdf file for input.
  * @returns The promise of a valid document (in the format DocumentRepresentation).
  */
-export function execute(pdfInputFile: string, config: Config): Promise<Document> {
+export function execute(pdfInputFile: string): Promise<Document> {
   return new Promise<Document>((resolveDocument, rejectDocument) => {
     return repairPdf(pdfInputFile).then(repairedPdf => {
       const xmlOutputFile: string = utils.getTemporaryFile('.xml');
       const imgsLocation: string = utils.getTemporaryDirectory();
+      const pdf2txtArguments: string[] = [
+        '-c',
+        'utf-8',
+        '-t',
+        'xml',
+        '-o',
+        xmlOutputFile,
+        repairedPdf,
+      ];
+
       let pdf2txtLocation: string = utils.getCommandLocationOnSystem('pdf2txt.py');
       if (!pdf2txtLocation) {
         pdf2txtLocation = utils.getCommandLocationOnSystem('pdf2txt');
@@ -66,36 +71,14 @@ export function execute(pdfInputFile: string, config: Config): Promise<Document>
       }
       logger.info(`Extracting PDF contents using pdfminer...`);
       logger.debug(
-        `${pdf2txtLocation} ${[
-          '-c',
-          'utf-8',
-          // '-A', crashes pdf2txt.py using Benchmark axa.uk.business.owntools.pdf
-          '-t',
-          'xml',
-          '-O',
-          imgsLocation,
-          '-o',
-          xmlOutputFile,
-          repairedPdf,
-        ].join(' ')}`,
+        `${pdf2txtLocation} ${pdf2txtArguments.join(' ')}`,
       );
 
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const pdfminer = spawn(pdf2txtLocation, [
-        '-c',
-        'utf-8',
-        // '-A', crashes pdf2txt.py using Benchmark axa.uk.business.owntools.pdf
-        '-t',
-        'xml',
-        '-O',
-        imgsLocation,
-        '-o',
-        xmlOutputFile,
-        repairedPdf,
-      ]);
+      const pdfminer = spawn(pdf2txtLocation, pdf2txtArguments);
 
       pdfminer.stderr.on('data', data => {
         logger.error('pdfminer error:', data.toString('utf8'));
@@ -118,12 +101,10 @@ export function execute(pdfInputFile: string, config: Config): Promise<Document>
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
             logger.debug(`Converting pdfminer's XML output to JS object..`);
-            parseXmlToObject(xml).then(async (obj: any) => {
-              const pagePromises: Array<Promise<Page>> = obj.pages.page.map(
-                (pageObj: PdfminerPage) => getPage(pageObj, imgsLocation, config),
-              );
-              resolveDocument(new Document(await Promise.all(pagePromises), pdfInputFile));
-              logger.debug(`...............RESOLVING DOCUMENT.............`);
+            parseXmlToObject(xml).then((obj: any) => {
+              const pages: Page[] = [];
+              obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj, imgsLocation)));
+              resolveDocument(new Document(pages, pdfInputFile));
             });
           } catch (err) {
             rejectDocument(`parseXml failed: ${err}`);
@@ -137,7 +118,7 @@ export function execute(pdfInputFile: string, config: Config): Promise<Document>
   });
 }
 
-async function getPage(pageObj: PdfminerPage, imagsLocation: string, config: Config): Promise<Page> {
+function getPage(pageObj: PdfminerPage, imagesLocation: string): Page {
   const boxValues: number[] = pageObj._attr.bbox.split(',').map(v => parseFloat(v));
   const pageBBox: BoundingBox = new BoundingBox(
     boxValues[0],
@@ -152,49 +133,24 @@ async function getPage(pageObj: PdfminerPage, imagsLocation: string, config: Con
   if (pageObj.textbox !== undefined) {
     pageObj.textbox.forEach(para => {
       para.textline.map(line => {
-        elements = [...elements, ...breakLineIntoWords(line, ',', pageBBox.height)];
+        elements = [...elements, ...breakLineIntoWords(line.text, ',', pageBBox.height)];
       });
     });
   }
 
   // treat figures
-  const imgOCRPromises: Array<Promise<Document>> = [];
   if (pageObj.figure !== undefined) {
-    const imageExtractionConfig: Config = new Config(config);  // Prepare to extract data from the images
-    imageExtractionConfig.cleaner = [];
-    imageExtractionConfig.output.formats = {
-      json: true,
-      text: false,
-      markdown: false,
-      csv: false,
-      pdf: false,
-    };
-    const imageCleaner: Cleaner = new Cleaner(imageExtractionConfig);
-    let orchestrator: Orchestrator;
-    if (config.extractor.img === 'tesseract') {
-      orchestrator = new Orchestrator(new TesseractExtractor(imageExtractionConfig), imageCleaner);
-    } else {
-      orchestrator = new Orchestrator(new AbbyyTools(imageExtractionConfig), imageCleaner);
-    }
-
     pageObj.figure.forEach(fig => {
-      const newImageElements: Image[] = interpretImages(fig, imagsLocation, pageBBox.height);
-      elements = [...elements, ...newImageElements];         // Add the new image elmenets
-
-      imgOCRPromises.concat(
-        newImageElements.map(
-          (imgElement: Image) => orchestrator.run(imgElement.src),
-        ),
-      );
+      if (fig.image !== undefined) {
+        elements = [...elements, ...interpretImages(fig, imagesLocation, pageBBox.height)];
+      }
+      if (fig.text !== undefined) {
+        elements = [...elements, ...breakLineIntoWords(fig.text, ',', pageBBox.height)];
+      }
     });
   }
 
-  // resolve all the OCR promises
-  return await Promise.all(imgOCRPromises)
-  .then((docs: Document[]) => {
-    const newElements: Element[] = [].concat(...docs.map((doc: Document) => doc.getAllElements()));
-    return new Page(parseFloat(pageObj._attr.id), elements.concat(newElements), pageBBox);
-  });
+  return new Page(parseFloat(pageObj._attr.id), elements, pageBBox);
 }
 
 // Pdfminer's bboxes are of the format: x0, y0, x1, y1. Our BoundingBox dims are as: left, top, width, height
@@ -256,29 +212,28 @@ function getValidCharacter(character: string): string {
 
 function interpretImages(
   fig: PdfminerFigure,
-  imagsLocation: string,
+  imagesLocation: string,
   pageHeight: number,
   scalingFactor: number = 1,
 ): Image[] {
-  const resultantImages: Image[] = fig.image.map(
-    img =>
-      new Image(
-        getBoundingBox(fig._attr.bbox, ',', pageHeight, scalingFactor),
-        path.join(imagsLocation, img._attr.src),
-      ),
-  );
-  return resultantImages;
+    return fig.image.map(
+      (img: PdfminerImage) =>
+        new Image(
+          getBoundingBox(fig._attr.bbox, ',', pageHeight, scalingFactor),
+          img._attr.src !== undefined ? path.join(imagesLocation, img._attr.src) : "",
+        ),
+    );
 }
 function breakLineIntoWords(
-  line: PdfminerTextline,
+  texts: PdfminerText[],
   wordSeparator: string = ' ',
   pageHeight: number,
   scalingFactor: number = 1,
 ): Word[] {
   const notAllowedChars = ['\u200B']; // &#8203 Zero Width Space
   const words: Word[] = [];
-  const fakeSpaces = thereAreFakeSpaces(line);
-  const chars: Character[] = line.text
+  const fakeSpaces = thereAreFakeSpaces(texts);
+  const chars: Character[] = texts
     .filter(char => !notAllowedChars.includes(char._) && !isFakeChar(char, fakeSpaces))
     .map(char => {
       if (char._ === undefined) {
@@ -375,17 +330,17 @@ function breakLineIntoWords(
   return words;
 }
 
-function thereAreFakeSpaces(lines: PdfminerTextline): boolean {
+function thereAreFakeSpaces(texts: PdfminerText[]): boolean {
   // Will remove all <text> </text> only if in line we found
   // <text> </text> followed by empty <text> but with attributes
   // <text font="W" bbox="W" colourspace="X" ncolour="Y" size="Z"> </text>
-  const emptyWithAttr = lines.text
+  const emptyWithAttr = texts
     .map((word, index) => {
       return { text: word, pos: index };
     })
     .filter(word => word.text._ === undefined && word.text._attr !== undefined)
     .map(word => word.pos);
-  const emptyWithNoAttr = lines.text
+  const emptyWithNoAttr = texts
     .map((word, index) => {
       return { text: word, pos: index };
     })

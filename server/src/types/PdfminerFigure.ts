@@ -15,6 +15,7 @@
  */
 
 import { PdfminerImage } from './PdfminerImage';
+import { PdfminerText } from './PdfminerText';
 
 export class PdfminerFigure {
   public _attr: {
@@ -22,9 +23,11 @@ export class PdfminerFigure {
     bbox: string;
   };
   public image: PdfminerImage[];
+  public text: PdfminerText[];
 
   constructor(textbox: PdfminerFigure) {
     this._attr = textbox._attr;
     this.image = textbox.image;
+    this.text = textbox.text;
   }
 }
