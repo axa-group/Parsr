@@ -23,10 +23,8 @@ import { Document, Word } from '../../server/src/types/DocumentRepresentation';
 import { json2document } from '../../server/src/utils/json2document';
 
 import { runModules } from './../helpers';
-import logger from '../../server/src/utils/Logger';
 
 const mdLinkRegExp = new RegExp(/\[(.*?)\]\(.*?\)/);
-const htmlLinkRegexp = new RegExp(/<a href="(.*?)">.*?<\/a>/);
 
 describe('Link Detection Module', () => {
   withData(
