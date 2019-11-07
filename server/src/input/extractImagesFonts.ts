@@ -24,7 +24,7 @@ import logger from '../utils/Logger';
  * Stability: Experimental
  * Use Mutool to extract fonts files in a specific folder.
  */
-export function extractFonts(pdfInputFile: string): Promise<void> {
+export function extractImagesAndFonts(pdfInputFile: string): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     const mutoolPath = utils.getCommandLocationOnSystem('mutool');
     if (!mutoolPath) {
@@ -32,7 +32,7 @@ export function extractFonts(pdfInputFile: string): Promise<void> {
       resolve();
     } else {
       const folder = utils.getMutoolExtractionFolder();
-      logger.info(`Extracting fonts to ${folder} using command 'mutool extract ${pdfInputFile}'...`);
+      logger.info(`Extracting images and fonts to ${folder} using command 'mutool extract ${pdfInputFile}'...`);
       const ret = spawnSync('mutool', ['extract', pdfInputFile], { cwd: folder });
 
       if (ret.status !== 0) {
