@@ -37,6 +37,5 @@ export interface Properties {
   cr?: number;
   // column left
   cl?: number;
-  link?: string;
   targetURL?: string;
 }

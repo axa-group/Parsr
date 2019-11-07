@@ -47,13 +47,11 @@ export class LinkDetectionModule extends Module {
           const l = link as any;
           const linkBB = new BoundingBox(l.box.l, l.box.t, l.box.w, l.box.h);
           if (Math.abs(BoundingBox.getPercentageOfInclusion(linkBB, word.box)) > 0.7) {
-            const { link: mdLink, targetURL } = this.buildLinkMD(word, l);
-            word.properties.link = mdLink;
-            word.properties.targetURL = targetURL;
+            word.properties.targetURL = this.buildLinkTarget(l);
           }
         });
 
-        if (!word.properties.link) {
+        if (!word.properties.targetURL) {
           this.matchTextualLinks(word);
         }
       });
@@ -65,10 +63,8 @@ export class LinkDetectionModule extends Module {
     const linkRegexp = /\b((http|https):\/\/?)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
     const mailRegexp = /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/;
     if (word.toString().match(linkRegexp)) {
-      word.properties.link = `[${word.toString()}](${word.toString()})`;
       word.properties.targetURL = word.toString();
     } else if (word.toString().match(mailRegexp)) {
-      word.properties.link = `[${word.toString()}](mailto:${word.toString()})`;
       word.properties.targetURL = `mailto:${word.toString()}`;
     }
   }
@@ -201,14 +197,11 @@ export class LinkDetectionModule extends Module {
     };
   }
 
-  private buildLinkMD(word: Word, l: any): { link: string, targetURL: string } {
-    let target = l.link.target;
+  private buildLinkTarget(l: any): string {
+    let targetURL = l.link.target;
     if (l.link.type === 'GoTo') {
-      target = '#'.concat(target);
+      targetURL = '#'.concat(targetURL);
     }
-    return {
-      link: `[${word.toString()}](${target})`,
-      targetURL: target,
-    };
+    return targetURL;
   }
 }

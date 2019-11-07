@@ -23,6 +23,10 @@ import { Document, Word } from '../../server/src/types/DocumentRepresentation';
 import { json2document } from '../../server/src/utils/json2document';
 
 import { runModules } from './../helpers';
+import logger from '../../server/src/utils/Logger';
+
+const mdLinkRegExp = new RegExp(/\[(.*?)\]\(.*?\)/);
+const htmlLinkRegexp = new RegExp(/<a href="(.*?)">.*?<\/a>/);
 
 describe('Link Detection Module', () => {
   withData(
@@ -79,13 +83,19 @@ describe('Link Detection Module', () => {
       });
 
       it('should have the expected amount of links', () => {
-        const links = docAfter.pages[0].getElementsOfType<Word>(Word).filter(w => !!w.properties.link);
+        const links = docAfter.pages[0].getElementsOfType<Word>(Word).filter(w => !!w.properties.targetURL);
         expect(links.length).to.be.equal(wordWithLinkCount);
       });
 
       it('each word should have the correct targetURL', () => {
-        const links = docAfter.pages[0].getElementsOfType<Word>(Word).filter(w => !!w.properties.link);
+        const links = docAfter.pages[0].getElementsOfType<Word>(Word).filter(w => !!w.properties.targetURL);
         expect(linksData.map((l, i) => links[i].properties.targetURL === l))
+          .to.be.an('array').that.does.not.include(false);
+      });
+
+      it('links to MarkDown should be correctly formatted', () => {
+        const links = docAfter.pages[0].getElementsOfType<Word>(Word).filter(w => !!w.properties.targetURL);
+        expect(links.map((link: Word) => mdLinkRegExp.test(link.toMarkDown())))
           .to.be.an('array').that.does.not.include(false);
       });
     },

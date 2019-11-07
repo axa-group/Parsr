@@ -200,9 +200,6 @@ function propertiesFromJson(propertiesObj: JsonProperties): Properties {
   if (propertiesObj.hasOwnProperty('targetURL')) {
     prop.targetURL = propertiesObj.targetURL;
   }
-  if (propertiesObj.hasOwnProperty('link')) {
-    prop.targetURL = propertiesObj.link;
-  }
   return prop;
 }
 
