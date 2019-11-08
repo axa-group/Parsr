@@ -100,6 +100,54 @@ export function getConvertPath(): string {
   }
 }
 
+/**
+ * Returns the location of the python command on the system
+ */
+export function getPythonLocation(): string {
+  const pythonLocation: string = getCommandLocationOnSystem('python3', 'python');
+  if (!pythonLocation) {
+    logger.warn(
+      `Unable to find python. Are you sure it is installed?`,
+    );
+    return "";
+  } else {
+    logger.debug(`python was found at ${pythonLocation}`);
+    return pythonLocation;
+  }
+}
+
+/**
+ * Returns the location of the pdf2txt command on the system
+ */
+export function getPdf2txtLocation(): string {
+  const pdf2txtLocation: string = getCommandLocationOnSystem('pdf2txt.py', 'pdf2txt');
+  if (!pdf2txtLocation) {
+    logger.warn(
+      `Unable to find pdf2txt, the pdfminer tool on the system. Are you sure it is installed?`,
+    );
+    return "";
+  } else {
+    logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
+    return pdf2txtLocation;
+  }
+}
+
+/**
+ * Returns the location of the dumppdf command on the system
+ */
+export function getDumppdfLocation(): string {
+  const dumppdfLocation: string = getCommandLocationOnSystem('dumppdf.py', 'dumppdf');
+  if (!dumppdfLocation) {
+    logger.warn(
+      `Unable to find dump, the pdfminer tool on the system. Are you sure it is installed?`,
+    );
+    return "";
+  } else {
+    logger.debug(`dumppdf was found at ${dumppdfLocation}`);
+    return dumppdfLocation;
+  }
+}
+
 export function getMutoolImagesPrefix(): string {
   return 'page';
 }
@@ -668,11 +716,21 @@ export function getExecLocationCommandOnSystem(): string {
 
 /**
  * returns the location of a command on a system.
- * @param executableName the name of the executable to be located
+ * @param firstChoice the first choice name of the executable to be located
+ * @param secondChoice the second choice name of the executable to be located
+ * @param thirdChoice the third choice name of the executable to be located
  */
-export function getCommandLocationOnSystem(executableName: string): string {
-  const info = spawnSync(getExecLocationCommandOnSystem(), [executableName]);
-  return info.status === 0 ? info.stdout.toString().split(os.EOL)[0] : null;
+export function getCommandLocationOnSystem(
+  firstChoice: string,
+  secondChoice: string = "",
+  thirdChoice: string = "",
+): string {
+  const info = spawnSync(getExecLocationCommandOnSystem(), [firstChoice]);
+  const result = info.status === 0 ? info.stdout.toString().split(os.EOL)[0] : null;
+  if (result === null && secondChoice !== "") {
+    return getCommandLocationOnSystem(secondChoice, thirdChoice);
+  }
+  return result;
 }
 
 /**
