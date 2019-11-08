@@ -70,6 +70,9 @@ export class LinesToParagraphModule extends Module<Options> {
         .filter(f => f !== undefined),
     );
 
+    // const ratioFonts = this.avgFontUse(doc);
+    // console.log(ratioFonts.length);
+
     doc.pages.forEach((page: Page) => {
       this.maxLineDistance = page.height * 0.2;
       const existingHeadings = page.getElementsOfType<Heading>(Heading);
@@ -84,6 +87,9 @@ export class LinesToParagraphModule extends Module<Options> {
       // get all the lines
       const lines = this.getPageLines(page);
 
+      // get all the fonts to use for heading
+      const headingFonts = this.heagingFonts(doc);
+
       // get the spaces between all lines
       const interLinesSpaces: LineSpace[] = this.getInterLinesSpace(lines);
 
@@ -92,7 +98,7 @@ export class LinesToParagraphModule extends Module<Options> {
 
       // perform line merge for all the lines inside other elements
       let otherElements: Element[] = this.getElementsExcept(page, lines);
-      otherElements = this.joinLinesInElements(otherElements, textBodyFont);
+      otherElements = this.joinLinesInElements(otherElements, textBodyFont, headingFonts);
 
       // Clean the properties.cr  information as it is not usefull down the line
       joinedLines.forEach((theseLines: Line[]) => {
@@ -107,7 +113,7 @@ export class LinesToParagraphModule extends Module<Options> {
       });
 
       if (this.options.computeHeadings) {
-        const newStructures = this.extractHeadings(joinedLines, textBodyFont);
+        const newStructures = this.extractHeadings(joinedLines, textBodyFont, headingFonts);
         const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
         const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
         page.elements = otherElements.concat([...headings, ...paras]);
@@ -135,20 +141,20 @@ export class LinesToParagraphModule extends Module<Options> {
   }
 
   private isHeadingCandidate(
-    lines: Line[],
+    line: Line,
     mostCommonFont: Font,
+    headingFonts: Font[],
     generalUpperCase: boolean,
     generalTitleCase: boolean,
   ): boolean {
-    const decisions: boolean[] = [];
-    lines.forEach((line: Line) => {
-      decisions.push(
-        line.isUniqueFont()
-          ? this.isHeadingLine(line, mostCommonFont, generalUpperCase, generalTitleCase)
-          : false,
-      );
-    });
-    return decisions.filter(d => !d).length === 0;
+    const serializedHeadingFonts = headingFonts.map(font => JSON.stringify(font));
+    if (!serializedHeadingFonts.includes(JSON.stringify(this.noColourFont(line.getMainFont())))) {
+      /*console.log(
+        'Line ' + line.id + ' has not heading font ' + this.noColourFont(line.getMainFont()),
+      );*/
+      return false;
+    }
+    return this.isHeadingLine(line, mostCommonFont, generalUpperCase, generalTitleCase);
   }
 
   private isHeadingLine(
@@ -169,7 +175,11 @@ export class LinesToParagraphModule extends Module<Options> {
     );
   }
 
-  private joinLinesInElements(elements: Element[], textBodyFont: Font): Element[] {
+  private joinLinesInElements(
+    elements: Element[],
+    textBodyFont: Font,
+    headingFonts: Font[],
+  ): Element[] {
     const withLines: Element[] = [];
     this.getElementsWithLines(elements, withLines);
     withLines.forEach(element => {
@@ -177,7 +187,7 @@ export class LinesToParagraphModule extends Module<Options> {
       const interLinesSpaces = this.getInterLinesSpace(lines);
       const joinedLines: Line[][] = this.joinLinesWithSpaces(lines, interLinesSpaces);
       if (this.options.computeHeadings) {
-        const newStructures = this.extractHeadings(joinedLines, textBodyFont);
+        const newStructures = this.extractHeadings(joinedLines, textBodyFont, headingFonts);
         const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newStructures.newLines);
         const headings: Heading[] = this.mergeLinesIntoHeadings(newStructures.headingLines);
         element.content = [...headings, ...paras];
@@ -441,6 +451,7 @@ export class LinesToParagraphModule extends Module<Options> {
   private extractHeadings(
     lineGroups: Line[][],
     textBodyFont: Font,
+    headingFonts: Font[],
   ): { headingLines: Line[][]; newLines: Line[][] } {
     const newLineGroups: Line[][] = [];
     const newHeadingGroups: Line[][] = [];
@@ -450,8 +461,9 @@ export class LinesToParagraphModule extends Module<Options> {
           .map((line: Line, pos: number) => {
             if (
               this.isHeadingCandidate(
-                [line],
+                line,
                 textBodyFont,
+                headingFonts,
                 utils.isGeneralUpperCase(lineGroup),
                 utils.isGeneralTitleCase(lineGroup),
               )
@@ -557,5 +569,83 @@ export class LinesToParagraphModule extends Module<Options> {
     }
 
     return fontGroupedHeadings;
+  }
+
+  /**
+   * Returns an array of fonts to be used for heading detection
+   * @param doc The document to extract heading fonts
+   */
+  private heagingFonts(doc: Document): Font[] {
+    const allWords = doc.getElementsOfType<Word>(Word, true);
+    // console.log('Total Words ' + allWords.length.toString());
+    // const allLines = doc.getElementsOfType<Line>(Line, true).filter(line => line.isUniqueFont());
+    // const allFonts = allLines.map(line => this.noColouredFont(line.getMainFont()));
+    const allFonts = [...allWords.map(w => this.noColourFont(w.font)).filter(f => f !== undefined)];
+
+    let uniqueFonts: Font[] = [];
+    allFonts.forEach(font => {
+      if (uniqueFonts.filter(f => f.isEqual(font)).length === 0) {
+        uniqueFonts.push(font);
+      }
+    });
+
+    // console.log('Total Fonts ' + uniqueFonts.length.toString());
+    uniqueFonts = uniqueFonts.filter(font => {
+      const avg = allWords.filter(w => this.noColourFont(w.font).isEqual(font)).length;
+      // Only fonts that are used less than 10% of
+      // all words will be used to exctract headings
+      // TODO: Add a module param to change this value
+      return avg / allWords.length < 0.02;
+    });
+
+    // console.log('Heading Fonts');
+    // console.log(uniqueFonts);
+    // console.log('Heading Fonts ' + uniqueFonts.length.toString());
+    // .map(font => this.noColouredFont(font)); // Skip fonts that only have diferent color
+
+    return uniqueFonts;
+  }
+
+  /*
+  private heagingFonts(doc: Document): Font[] {
+    const allWords = doc.getElementsOfType<Word>(Word, true);
+    const allFonts = [
+      ...allWords.map(w => this.noColouredFont(w.font)).filter(f => f !== undefined),
+    ];
+
+    let uniqueFonts: Font[] = [];
+    allFonts.forEach(font => {
+      if (uniqueFonts.filter(f => f.isEqual(font)).length === 0) {
+        uniqueFonts.push(font);
+      }
+    });
+
+    console.log('All fonts');
+
+    uniqueFonts = uniqueFonts.filter(font => {
+      const avg = allWords.filter(w => this.noColouredFont(w.font).isEqual(font)).length;
+      // Only fonts that are less used than 20% of
+      // all words will be used to exctract headings
+      console.log(font);
+      console.log('AVG ' + (avg / allWords.length).toString());
+      // TODO: Add a module param to change this value
+      return avg / allWords.length < 0.2;
+    });
+    // .map(font => this.noColouredFont(font)); // Skip fonts that only have diferent color
+
+    console.log('Heading fonts');
+    console.log(uniqueFonts);
+
+    return uniqueFonts;
+  }
+  */
+
+  private noColourFont(font: Font): Font {
+    const newFont = new Font(font.name, font.size);
+    newFont.weight = font.weight;
+    newFont.isItalic = font.isItalic;
+    newFont.isUnderline = font.isUnderline;
+    newFont.color = null;
+    return newFont;
   }
 }
