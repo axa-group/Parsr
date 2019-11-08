@@ -19,8 +19,11 @@
           : 'spacingAndGlyphs'
       "
       :style="{
-        fontSize: props.fonts.filter(font => font.id === props.element.font).shift().size * 0.6,        
-        fill: props.fonts.filter(font => font.id === props.element.font).shift().color != '#ffffff' ? props.fonts.filter(font => font.id === props.element.font).shift().color : '#000',
+        fontSize: props.fonts.filter(font => font.id === props.element.font).shift().size * 0.6,
+        fill:
+          props.fonts.filter(font => font.id === props.element.font).shift().color != '#ffffff'
+            ? props.fonts.filter(font => font.id === props.element.font).shift().color
+            : '#000',
         fontWeight: props.fonts.filter(font => font.id === props.element.font).shift().weight,
         fontStyle: props.fonts.filter(font => font.id === props.element.font).shift().isItalic
           ? 'italic'

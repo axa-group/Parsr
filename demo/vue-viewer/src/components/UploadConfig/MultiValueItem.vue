@@ -10,7 +10,7 @@
       />
       <ul v-if="v !== null && typeof v === 'object'">
         <li v-for="(key, i) in Object.keys(v)" :key="i">
-          <small>{{key}}</small>
+          <small>{{ key }}</small>
           <input type="text" class="large" :value="v[key]" />
         </li>
       </ul>
@@ -19,7 +19,8 @@
         size="20"
         color="#cccccc"
         @click="removeValue(i)"
-      >mdi-minus-circle-outline</v-icon>
+        >mdi-minus-circle-outline</v-icon
+      >
     </li>
   </ul>
 </template>
