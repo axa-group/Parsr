@@ -15,7 +15,7 @@
  */
 
 import { Document } from '../../types/DocumentRepresentation';
-import { extractFonts } from '../extract-fonts';
+import { extractImagesAndFonts } from '../extractImagesFonts';
 import { Extractor } from '../Extractor';
 import * as pdfminer from './pdfminer';
 
@@ -29,7 +29,7 @@ export class PdfminerExtractor extends Extractor {
   public run(inputFile: string): Promise<Document> {
     const pdfminerExtract: Promise<Document> = pdfminer.execute(inputFile);
 
-    const extractFont = extractFonts(inputFile);
+    const extractFont = extractImagesAndFonts(inputFile);
 
     return Promise.all([pdfminerExtract, extractFont]).then(([doc]: [Document, void]) => doc);
   }

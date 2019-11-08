@@ -22,8 +22,12 @@
     [
       "table-detection",
       {
-        "pages": [],
-        "flavor": "lattice"
+        "pageConfig": [
+          {
+            "pages": [],
+            "flavor": "lattice"
+          }
+        ]
       }
     ],
     [

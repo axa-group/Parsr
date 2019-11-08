@@ -1,0 +1,279 @@
+{
+    "metadata": [],
+    "pages": [
+        {
+            "box": {
+                "l": 0,
+                "t": 0,
+                "w": 595,
+                "h": 842
+            },
+            "pageNumber": 1,
+            "elements": [
+                {
+                    "id": 20,
+                    "type": "word",
+                    "properties": {
+                        "order": 0,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 85.03,
+                        "t": 73.28,
+                        "w": 19.45,
+                        "h": 12
+                    },
+                    "content": "This",
+                    "font": 1
+                },
+                {
+                    "id": 21,
+                    "type": "word",
+                    "properties": {
+                        "order": 1,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 107.25,
+                        "t": 73.28,
+                        "w": 7.45,
+                        "h": 12
+                    },
+                    "content": "is",
+                    "font": 1
+                },
+                {
+                    "id": 22,
+                    "type": "word",
+                    "properties": {
+                        "order": 2,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 117.47,
+                        "t": 73.28,
+                        "w": 5.75,
+                        "h": 12
+                    },
+                    "content": "a",
+                    "font": 1
+                },
+                {
+                    "id": 23,
+                    "type": "word",
+                    "properties": {
+                        "order": 3,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 125.96,
+                        "t": 73.28,
+                        "w": 17.21,
+                        "h": 12
+                    },
+                    "content": "link",
+                    "font": 1
+                },
+                {
+                    "id": 24,
+                    "type": "word",
+                    "properties": {
+                        "order": 4,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 145.93,
+                        "t": 73.28,
+                        "w": 10.34,
+                        "h": 12
+                    },
+                    "content": "to",
+                    "font": 1
+                },
+                {
+                    "id": 25,
+                    "type": "word",
+                    "properties": {
+                        "order": 5,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 158.91,
+                        "t": 73.28,
+                        "w": 28.14,
+                        "h": 12
+                    },
+                    "content": "par.sr",
+                    "font": 1
+                },
+                {
+                    "id": 45,
+                    "type": "word",
+                    "properties": {
+                        "order": 6,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 85.03,
+                        "t": 102.53,
+                        "w": 30.08,
+                        "h": 12
+                    },
+                    "content": "Below",
+                    "font": 2
+                },
+                {
+                    "id": 46,
+                    "type": "word",
+                    "properties": {
+                        "order": 7,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 117.76,
+                        "t": 102.53,
+                        "w": 7.45,
+                        "h": 12
+                    },
+                    "content": "is",
+                    "font": 2
+                },
+                {
+                    "id": 47,
+                    "type": "word",
+                    "properties": {
+                        "order": 8,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 127.99,
+                        "t": 102.53,
+                        "w": 5.75,
+                        "h": 12
+                    },
+                    "content": "a",
+                    "font": 2
+                },
+                {
+                    "id": 48,
+                    "type": "word",
+                    "properties": {
+                        "order": 9,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 136.47,
+                        "t": 102.53,
+                        "w": 34,
+                        "h": 12
+                    },
+                    "content": "textual",
+                    "font": 2
+                },
+                {
+                    "id": 49,
+                    "type": "word",
+                    "properties": {
+                        "order": 10,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 173.18,
+                        "t": 102.53,
+                        "w": 17.24,
+                        "h": 12
+                    },
+                    "content": "link",
+                    "font": 2
+                },
+                {
+                    "id": 72,
+                    "type": "word",
+                    "properties": {
+                        "order": 11,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 85.03,
+                        "t": 131.8,
+                        "w": 123.04,
+                        "h": 12
+                    },
+                    "content": "https://www.google.com",
+                    "font": 2
+                },
+                {
+                    "id": 81,
+                    "type": "word",
+                    "properties": {
+                        "order": 12,
+                        "cr": 313.42,
+                        "cl": 85.02
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 281.63,
+                        "t": 794.23,
+                        "w": 31.79,
+                        "h": 10
+                    },
+                    "content": "Internal",
+                    "font": 3
+                }
+            ]
+        }
+    ],
+    "fonts": [
+        {
+            "id": 1,
+            "name": "BCDEEE+Calibri",
+            "size": 12,
+            "weight": "medium",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#NaN63NaN"
+        },
+        {
+            "id": 2,
+            "name": "BCDEEE+Calibri",
+            "size": 12,
+            "weight": "medium",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#000000"
+        },
+        {
+            "id": 3,
+            "name": "BCDEEE+Calibri",
+            "size": 10,
+            "weight": "medium",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#000000"
+        }
+    ]
+}
