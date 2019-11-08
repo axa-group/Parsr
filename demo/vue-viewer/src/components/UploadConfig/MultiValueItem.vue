@@ -1,6 +1,6 @@
 <template>
   <ul class="multi-value">
-    <li v-for="(v, i) in [...value, newValue]" :key="i">
+    <li v-for="(v, i) in [...value, emptyValue]" :key="i">
       <input
         v-if="v === null || typeof v !== 'object'"
         type="text"
@@ -9,9 +9,9 @@
         :ref="`input_${i}`"
       />
       <ul v-if="v !== null && typeof v === 'object'">
-        <li v-for="(key, i) in Object.keys(v)" :key="i">
+        <li v-for="(key, j) in Object.keys(v)" :key="j">
           <small>{{ key }}</small>
-          <input type="text" class="large" :value="v[key]" />
+          <input type="text" class="large" :value="v[key]" @change="objectChanged($event, i, key)" />
         </li>
       </ul>
       <v-icon
@@ -19,33 +19,39 @@
         size="20"
         color="#cccccc"
         @click="removeValue(i)"
-        >mdi-minus-circle-outline</v-icon
-      >
+      >mdi-minus-circle-outline</v-icon>
     </li>
   </ul>
 </template>
 
 <script>
 export default {
+  data: () => ({
+    emptyValue: null,
+  }),
   props: {
     value: {
       type: Array,
       default: () => [],
     },
   },
-  computed: {
-    newValue() {
-      let newValue = null;
-      if (this.value && this.value[0] && typeof this.value[0] === 'object') {
-        newValue = {};
-        Object.keys(this.value[0]).forEach(key => {
-          newValue[key] = null;
-        });
-      }
-      return newValue;
-    },
+  mounted() {
+    this.emptyValue = this.newEmptyValue(this.value && this.value[0]);
   },
   methods: {
+    newEmptyValue(value) {
+      if (Array.isArray(value)) {
+        return [];
+      }
+      if (typeof value === 'object') {
+        const newValue = {};
+        Object.keys(value).forEach(key => {
+          newValue[key] = this.newEmptyValue(value[key]);
+        });
+        return newValue;
+      }
+      return null;
+    },
     removeValue(index) {
       this.$emit('change', {
         target: {
@@ -68,6 +74,21 @@ export default {
       this.$nextTick(() => {
         this.$refs[`input_${this.value.length}`][0].focus();
       });
+    },
+    objectChanged($event, j, key) {
+      const target = {
+        value: [...this.value],
+      };
+      let newValue;
+      if (j === this.value.length) {
+        newValue = Object.assign({}, this.emptyValue);
+        newValue[key] = $event.target.value;
+        target.value = target.value.concat(newValue);
+      } else {
+        target.value[j][key] = $event.target.value;
+      }
+
+      this.$emit('change', { target });
     },
   },
 };
@@ -96,6 +117,7 @@ export default {
 
 .multi-value .v-icon {
   cursor: pointer;
+  float: right;
 }
 .multi-value .v-icon:hover {
   color: #aaa !important;
