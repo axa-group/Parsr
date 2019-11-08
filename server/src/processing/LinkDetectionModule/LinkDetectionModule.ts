@@ -46,7 +46,7 @@ export class LinkDetectionModule extends Module {
         links.forEach(link => {
           const l = link as any;
           const linkBB = new BoundingBox(l.box.l, l.box.t, l.box.w, l.box.h);
-          if (Math.abs(BoundingBox.getPercentageOfInclusion(linkBB, word.box)) > 0.7) {
+          if (Math.abs(BoundingBox.getOverlap(linkBB, word.box).box2OverlapProportion) > 0.7) {
             word.properties.targetURL = this.buildLinkTarget(l);
           }
         });
@@ -75,25 +75,23 @@ export class LinkDetectionModule extends Module {
   private getFileMetadata(pdfFilePath: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-      let dumppdfLocation: string = utils.getCommandLocationOnSystem('dumppdf.py');
-      if (!dumppdfLocation) {
-        dumppdfLocation = utils.getCommandLocationOnSystem('dumppdf');
+      const pythonLocation: string = utils.getPythonLocation();
+      const dumppdfLocation: string = utils.getDumppdfLocation();
+      if (dumppdfLocation === "" || pythonLocation === "") {
+        reject(`Could not find the necessary libraries..`);
       }
-      if (!dumppdfLocation) {
-        logger.debug(
-          `Unable to find dumppdf, the pdfminer metadata extractor on the system. Are you sure it is installed?`,
-        );
-      } else {
-        logger.debug(`dumppdf was found at ${dumppdfLocation}`);
-      }
+
       logger.info(`Extracting metadata with 's dumppdf...`);
-      logger.debug(`${dumppdfLocation} ${['-a', '-o', xmlOutputFile, pdfFilePath].join(' ')}`);
+
+      const dumppdfArguments = [dumppdfLocation, '-a', '-o', xmlOutputFile, pdfFilePath];
+
+      logger.debug(`${pythonLocation} ${dumppdfArguments.join(' ')}`);
 
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const dumppdf = spawn(dumppdfLocation, ['-a', '-o', xmlOutputFile, pdfFilePath]);
+      const dumppdf = spawn(pythonLocation, dumppdfArguments);
 
       dumppdf.stderr.on('data', data => {
         logger.error('dumppdf error:', data.toString('utf8'));
