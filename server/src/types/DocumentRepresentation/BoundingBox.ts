@@ -170,6 +170,25 @@ export class BoundingBox {
     return result;
   }
 
+  /*
+    returns the percentage (between 0 and 1) of the target that is inside the box.
+  */
+  public static getPercentageOfInclusion(box: BoundingBox, target: BoundingBox): number {
+    if (target.right <= box.left || target.left >= box.right || target.bottom <= box.top || target.top >= box.bottom) {
+      return 0;
+    }
+
+    const maxLeft = Math.max(box.left, target.left);
+    const minRight = Math.min(box.right, target.right);
+    const minBottom = Math.min(box.bottom, target.bottom);
+    const maxTop = Math.max(box.top, target.top);
+
+    const intersectionArea = (minRight - maxLeft) * (minBottom - maxTop);
+    const targetArea = target.width * target.height;
+
+    return intersectionArea / targetArea;
+  }
+
   /**
    * Merges a list of bounding boxes and returns a single one englobing all
    * the others
