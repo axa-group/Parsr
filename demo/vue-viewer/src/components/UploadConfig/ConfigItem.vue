@@ -16,12 +16,13 @@
               <ul>
                 <li v-for="(option, index) in Object.keys(itemOptions)" :key="'Item_' + index">
                   <span v-if="!optionIsSelect(option)" v-html="option" />
+                  <multi-value-item
+                    v-if="optionValueIsArray(option)"
+                    :value="itemOptions[option].value"
+                    @change="optionChange(option, $event)"
+                  />
                   <input
-                    v-if="
-                      optionIsFreeText(option) ||
-                        optionIsSlider(option) ||
-                        optionValueIsArray(option)
-                    "
+                    v-if="optionIsFreeText(option) || optionIsSlider(option)"
                     type="text"
                     :value="itemOptions[option].value"
                     @change="optionChange(option, $event)"
@@ -63,7 +64,10 @@
 </template>
 
 <script>
+import MultiValueItem from './MultiValueItem';
+
 export default {
+  components: { MultiValueItem },
   data() {
     return {
       isSelected: this.model.includes(this.value),
