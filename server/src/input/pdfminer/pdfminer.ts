@@ -44,9 +44,22 @@ import logger from '../../utils/Logger';
  */
 export function execute(pdfInputFile: string): Promise<Document> {
   return new Promise<Document>((resolveDocument, rejectDocument) => {
-    return repairPdf(pdfInputFile).then(repairedPdf => {
+    return repairPdf(pdfInputFile).then((repairedPdf: string) => {
       const xmlOutputFile: string = utils.getTemporaryFile('.xml');
+
+      // find python
+      const pythonLocation: string = utils.getPythonLocation();
+
+      // find pdfminer's pdf2txt.py script
+      const pdf2txtLocation: string = utils.getPdf2txtLocation();
+
+      // If either of the tools could not be found, return an empty document and display warning
+      if (pythonLocation === "" || pdf2txtLocation === "") {
+        rejectDocument(`Could not find the necessary libraries..`);
+      }
+
       const pdf2txtArguments: string[] = [
+        pdf2txtLocation,
         '-c',
         'utf-8',
         '-t',
@@ -56,29 +69,17 @@ export function execute(pdfInputFile: string): Promise<Document> {
         repairedPdf,
       ];
 
-      let pdf2txtLocation: string = utils.getCommandLocationOnSystem('pdf2txt.py');
-      if (!pdf2txtLocation) {
-        pdf2txtLocation = utils.getCommandLocationOnSystem('pdf2txt');
-      }
-      if (!pdf2txtLocation) {
-        logger.debug(
-          `Unable to find pdf2txt, the pdfminer executable on the system. Are you sure it is installed?`,
-        );
-      } else {
-        logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
-      }
-      logger.info(`Extracting PDF contents using pdfminer...`);
       logger.debug(
-        `${pdf2txtLocation} ${pdf2txtArguments.join(' ')}`,
+        `${pythonLocation} ${pdf2txtArguments.join(' ')}`,
       );
 
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const pdfminer = spawn(pdf2txtLocation, pdf2txtArguments);
+      const pdf2txt = spawn(pythonLocation, pdf2txtArguments);
 
-      pdfminer.stderr.on('data', data => {
+      pdf2txt.stderr.on('data', data => {
         logger.error('pdfminer error:', data.toString('utf8'));
       });
 
@@ -94,8 +95,8 @@ export function execute(pdfInputFile: string): Promise<Document> {
         return promise;
       }
 
-      pdfminer.on('close', async code => {
-        if (code === 0) {
+      pdf2txt.on('close', pdf2txtReturnCode => {
+        if (pdf2txtReturnCode === 0) {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
             logger.debug(`Converting pdfminer's XML output to JS object..`);
@@ -108,7 +109,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
             rejectDocument(`parseXml failed: ${err}`);
           }
         } else {
-          rejectDocument(`pdfminer return code is ${code}`);
+          rejectDocument(`pdf2txt return code is ${pdf2txtReturnCode}`);
         }
       });
       // return doc;
