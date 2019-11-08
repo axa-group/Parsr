@@ -18,9 +18,9 @@ import { Element } from '../DocumentRepresentation/Element';
 import { ComplexMetadata } from './ComplexMetadata';
 
 type KeyValueData = {
-	keyName: string;
-	keyElements: Element[];
-	valueElements: Element[];
+  keyName: string;
+  keyElements: Element[];
+  valueElements: Element[];
 };
 
 export class KeyValueMetadata extends ComplexMetadata<KeyValueData> {}

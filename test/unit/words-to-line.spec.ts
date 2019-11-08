@@ -25,65 +25,65 @@ import { json2document } from '../../server/src/utils/json2document';
 import { runModules } from './../helpers';
 
 describe('Words to Line Module', () => {
-	withData(
-		{
-			'line-merge.pdfminer.json': [
-				'line-merge.pdfminer.json',
-				1,
-				'I’m a sentence with multiple words.',
-			],
-			'slightly unaligned words': [
-				'line-merge-2-unaligned.pdfminer.json',
-				1,
-				'Lorem ipsum, sagittis a, dolor. Nullam turpis lacus.',
-			],
-			'one paragraph': [
-				'one-paragraph.pdfminer.json',
-				7,
-				"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-			],
-		},
-		(fileName, lineCount, textContent) => {
-			let docBefore: Document;
-			let docAfter: Document;
+  withData(
+    {
+      'line-merge.pdfminer.json': [
+        'line-merge.pdfminer.json',
+        1,
+        'I’m a sentence with multiple words.',
+      ],
+      'slightly unaligned words': [
+        'line-merge-2-unaligned.pdfminer.json',
+        1,
+        'Lorem ipsum, sagittis a, dolor. Nullam turpis lacus.',
+      ],
+      'one paragraph': [
+        'one-paragraph.pdfminer.json',
+        7,
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+      ],
+    },
+    (fileName, lineCount, textContent) => {
+      let docBefore: Document;
+      let docAfter: Document;
 
-			before(done => {
-				const json = JSON.parse(
-					fs.readFileSync(__dirname + '/assets/' + fileName, { encoding: 'utf8' }),
-				);
+      before(done => {
+        const json = JSON.parse(
+          fs.readFileSync(__dirname + '/assets/' + fileName, { encoding: 'utf8' }),
+        );
 
-				// sets each word 'order' property for WordsToLine module to work properly
-				json.pages.forEach(page => {
-					page.elements.forEach((element, order) => {
-						element.properties = { order };
-					});
-				});
+        // sets each word 'order' property for WordsToLine module to work properly
+        json.pages.forEach(page => {
+          page.elements.forEach((element, order) => {
+            element.properties = { order };
+          });
+        });
 
-				docBefore = json2document(json);
+        docBefore = json2document(json);
 
-				runModules(docBefore, [new WordsToLineModule()]).then(after => {
-					docAfter = after;
-					done();
-				});
-			});
+        runModules(docBefore, [new WordsToLineModule()]).then(after => {
+          docAfter = after;
+          done();
+        });
+      });
 
-			it('should merge side-by-side words into a single block', () => {
-				expect(docAfter.pages[0].elements)
-					.to.be.an('array')
-					.and.to.be.of.length(lineCount);
-			});
+      it('should merge side-by-side words into a single block', () => {
+        expect(docAfter.pages[0].elements)
+          .to.be.an('array')
+          .and.to.be.of.length(lineCount);
+      });
 
-			it('should not alter the content', () => {
-				expect(
-					(docAfter.pages[0].elements as Line[]).map(line => line.toString()).join(' '),
-				).to.be.equal(textContent);
-			});
+      it('should not alter the content', () => {
+        expect(
+          (docAfter.pages[0].elements as Line[]).map(line => line.toString()).join(' '),
+        ).to.be.equal(textContent);
+      });
 
-			it('should not have Words left except inside Lines', () => {
-				expect(docAfter.pages.some(page => page.elements.some(e => e instanceof Word))).to.eql(
-					false,
-				);
-			});
-		},
-	);
+      it('should not have Words left except inside Lines', () => {
+        expect(docAfter.pages.some(page => page.elements.some(e => e instanceof Word))).to.eql(
+          false,
+        );
+      });
+    },
+  );
 });

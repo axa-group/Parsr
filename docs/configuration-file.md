@@ -1,16 +1,6 @@
 # Configuration File
 
-- [Configuration File](#configuration-file)
-	- [1. Structure](#1-structure)
-	- [2. Extractor Config](#2-extractor-config)
-		- [2.1. Extractor Tools](#21-extractor-tools)
-		- [2.2. Language](#22-language)
-	- [3. Cleaner Config](#3-cleaner-config)
-	- [4. Output Config](#4-output-config)
-		- [4.1. Output Format](#41-output-format)
-		- [4.2. Granularity](#42-granularity)
-		- [4.3. Include Marginals](#43-include-marginals)
-	- [5. Exempli gratia](#5-exempli-gratia)
+- [Configuration File](#configuration-file) - [1. Structure](#1-structure) - [2. Extractor Config](#2-extractor-config) - [2.1. Extractor Tools](#21-extractor-tools) - [2.2. Language](#22-language) - [3. Cleaner Config](#3-cleaner-config) - [4. Output Config](#4-output-config) - [4.1. Output Format](#41-output-format) - [4.2. Granularity](#42-granularity) - [4.3. Include Marginals](#43-include-marginals) - [5. Exempli gratia](#5-exempli-gratia)
 
 To configure the pipeline and choose what modules will be called and with what parameters, you have to provide a JSON file.
 There is only a few required keys:
@@ -138,54 +128,54 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 
 ```json
 {
-	"version": 0.5,
-	"extractor": {
-		"pdf": "pdfminer",
-		"img": "tesseract",
-		"language": ["eng", "fra"]
-	},
-	"cleaner": [
-		"out-of-page-removal",
-		"whitespace-removal",
-		"redundancy-detection",
-		"table-detection",
-		["header-footer-detection", { "maxMarginPercentage": 15 }],
-		["reading-order-detection", { "minColumnWidthInPagePercent": 15 } ],
-		"link-detection",
-		["words-to-line", { "maximumSpaceBetweenWords": 100 }],
-		"lines-to-paragraph",
-		["page-number-detection", { "maxMarginPercentage": 15 }],
-		"hierarchy-detection",
-		[
-			"regex-matcher",
-			{
-				"queries": [
-					{
-						"label": "Car",
-						"regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
-					},
-					{
-						"label": "Age",
-						"regex": "(\\d+)[ -]*(ans|jarige)"
-					},
-					{
-						"label": "Percent",
-						"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
-					}
-				]
-			}
-		]
-	],
-	"output": {
-		"granularity": "word",
-		"includeMarginals": false,
-		"formats": {
-			"json": true,
-			"text": true,
-			"csv": true,
-			"markdown": true,
-			"pdf": false
-		}
-	}
+  "version": 0.5,
+  "extractor": {
+    "pdf": "pdfminer",
+    "img": "tesseract",
+    "language": ["eng", "fra"]
+  },
+  "cleaner": [
+    "out-of-page-removal",
+    "whitespace-removal",
+    "redundancy-detection",
+    "table-detection",
+    ["header-footer-detection", { "maxMarginPercentage": 15 }],
+    ["reading-order-detection", { "minColumnWidthInPagePercent": 15 }],
+    "link-detection",
+    ["words-to-line", { "maximumSpaceBetweenWords": 100 }],
+    "lines-to-paragraph",
+    ["page-number-detection", { "maxMarginPercentage": 15 }],
+    "hierarchy-detection",
+    [
+      "regex-matcher",
+      {
+        "queries": [
+          {
+            "label": "Car",
+            "regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
+          },
+          {
+            "label": "Age",
+            "regex": "(\\d+)[ -]*(ans|jarige)"
+          },
+          {
+            "label": "Percent",
+            "regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
+          }
+        ]
+      }
+    ]
+  ],
+  "output": {
+    "granularity": "word",
+    "includeMarginals": false,
+    "formats": {
+      "json": true,
+      "text": true,
+      "csv": true,
+      "markdown": true,
+      "pdf": false
+    }
+  }
 }
 ```

@@ -27,55 +27,53 @@ import { json2document } from '../server/src/utils/json2document';
 import { getPdf, runModules } from './helpers';
 
 describe('JSON export and import', () => {
-	withData(
-		{
-			'one line': 'line-merge.pdf',
-			'big text': 'text-order-detection.pdf',
-		},
-		pdfName => {
-			let pdfBefore: Document;
-			let pdfAfter: Document;
+  withData(
+    {
+      'one line': 'line-merge.pdf',
+      'big text': 'text-order-detection.pdf',
+    },
+    pdfName => {
+      let pdfBefore: Document;
+      let pdfAfter: Document;
 
-			function clean(pdf: Document): Promise<Document> {
-				Element.resetGlobalId();
-				return runModules(pdf, [
-					new ReadingOrderDetectionModule(),
-					new WordsToLineModule(),
-					new LinesToParagraphModule(),
-					new HierarchyDetectionModule(),
-				]);
-			}
+      function clean(pdf: Document): Promise<Document> {
+        Element.resetGlobalId();
+        return runModules(pdf, [
+          new ReadingOrderDetectionModule(),
+          new WordsToLineModule(),
+          new LinesToParagraphModule(),
+          new HierarchyDetectionModule(),
+        ]);
+      }
 
-			before(done => {
-				function transform(pdf: Document): Promise<Document> {
-					return clean(pdf)
-					.then(doc => {
-						const jsonExporter = new JsonExporter(doc, 'word');
-						const jsonDoc: JsonExport = jsonExporter.getJson();
-						pdfAfter = json2document(jsonDoc);
-						return pdfAfter;
-					});
-				}
+      before(done => {
+        function transform(pdf: Document): Promise<Document> {
+          return clean(pdf).then(doc => {
+            const jsonExporter = new JsonExporter(doc, 'word');
+            const jsonDoc: JsonExport = jsonExporter.getJson();
+            pdfAfter = json2document(jsonDoc);
+            return pdfAfter;
+          });
+        }
 
-				getPdf(transform, pdfName).then(([pdfB, pdfA]) => {
-					clean(pdfB)
-					.then(pdfBClean => {
-						pdfAfter = pdfA;
-						pdfBefore = pdfBClean;
-						done();
-					});
-				});
-			});
+        getPdf(transform, pdfName).then(([pdfB, pdfA]) => {
+          clean(pdfB).then(pdfBClean => {
+            pdfAfter = pdfA;
+            pdfBefore = pdfBClean;
+            done();
+          });
+        });
+      });
 
-			it('should not change the document structure', () => {
-				const jsonBefore: JsonExport = new JsonExporter(pdfBefore, 'word').getJson();
-				const jsonAfter: JsonExport = new JsonExporter(pdfAfter, 'word').getJson();
+      it('should not change the document structure', () => {
+        const jsonBefore: JsonExport = new JsonExporter(pdfBefore, 'word').getJson();
+        const jsonAfter: JsonExport = new JsonExporter(pdfAfter, 'word').getJson();
 
-				const jsonObjBefore: object = jsonBefore;
-				const jsonObjAfter: object = jsonAfter;
+        const jsonObjBefore: object = jsonBefore;
+        const jsonObjAfter: object = jsonAfter;
 
-				expect(jsonObjBefore).to.eql(jsonObjAfter);
-			});
-		},
-	);
+        expect(jsonObjBefore).to.eql(jsonObjAfter);
+      });
+    },
+  );
 });

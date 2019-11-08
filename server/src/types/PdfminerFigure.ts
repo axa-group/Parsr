@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-.clause {
-	margin: 16px;
-	padding: 16px;
-	border: 1px solid #eee;
-	border-radius: 2px;
-	border-left: 2px solid #888;
-}
+import { PdfminerImage } from './PdfminerImage';
+import { PdfminerText } from './PdfminerText';
 
-.block {
-	margin: 16px;
-	padding: 16px;
-	border: 1px solid #eee;
-	border-radius: 2px;
-	border-left: 2px solid #888;
-	background-color: #666;
-	color: #eee;
+export class PdfminerFigure {
+  public _attr: {
+    name: string;
+    bbox: string;
+  };
+  public image: PdfminerImage[];
+  public text: PdfminerText[];
+
+  constructor(figure: PdfminerFigure) {
+    this._attr = figure._attr;
+    this.image = figure.image;
+    this.text = figure.text;
+  }
 }

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import { ComplexMetadata } from './ComplexMetadata';
-
-type RegexData = {
-  regex: string;
-  fullMatch: string;
-  groups: string[];
-  name: string;
+export class PdfminerImage {
+  public _attr: {
+    src: string;
+    width: string;
+    height: string;
 };
 
-export class RegexMetadata extends ComplexMetadata<RegexData> {}
+constructor(textbox: PdfminerImage) {
+    this._attr = textbox._attr;
+  }
+}

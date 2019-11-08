@@ -15,17 +15,17 @@
  */
 
 export class PdfminerText {
-	public _attr: {
-		bbox: string;
-		font: string;
-		colourspace: string;
-		ncolour: string;
-		size: string;
-	};
-	public _: string;
+  public _attr: {
+    bbox: string;
+    font: string;
+    colourspace: string;
+    ncolour: string;
+    size: string;
+  };
+  public _: string;
 
-	constructor(text: PdfminerText) {
-		this._attr = text._attr;
-		this._ = text._;
-	}
+  constructor(text: PdfminerText) {
+    this._attr = text._attr;
+    this._ = text._;
+  }
 }

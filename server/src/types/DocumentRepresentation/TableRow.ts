@@ -19,37 +19,37 @@ import { Element } from './Element';
 import { TableCell } from './TableCell';
 
 export class TableRow extends Element {
-	private _content: TableCell[];
+  private _content: TableCell[];
 
-	constructor(cells: TableCell[], boundingBox: BoundingBox) {
-		super(boundingBox);
-		this.content = cells;
-	}
+  constructor(cells: TableCell[], boundingBox: BoundingBox) {
+    super(boundingBox);
+    this.content = cells;
+  }
 
-	/**
-	 * Getter cells
-	 * @return {TableCell[]}
-	 */
-	public get content(): TableCell[] {
-		return this._content;
-	}
+  /**
+   * Getter cells
+   * @return {TableCell[]}
+   */
+  public get content(): TableCell[] {
+    return this._content;
+  }
 
-	/**
-	 * Setter cells
-	 * @param {TableCell[]} value
-	 */
-	public set content(value: TableCell[]) {
-		this._content = value;
-	}
+  /**
+   * Setter cells
+   * @param {TableCell[]} value
+   */
+  public set content(value: TableCell[]) {
+    this._content = value;
+  }
 
-	/**
-	 * Converts the entire row into a md code string.
-	 */
-	public toMarkdown(): string {
-		let output: string = "<tr style='background-color:#fff'>  \n";
-		this.content.forEach(cell => {
-			output += cell.toMarkdown();
-		});
-		return output + '</tr>';
-	}
+  /**
+   * Converts the entire row into a md code string.
+   */
+  public toMarkdown(): string {
+    let output: string = "<tr style='background-color:#fff'>  \n";
+    this.content.forEach(cell => {
+      output += cell.toMarkdown();
+    });
+    return output + '</tr>';
+  }
 }

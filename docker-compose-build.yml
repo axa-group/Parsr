@@ -1,7 +1,7 @@
 version: '3.3'
 
 services:
-  # parsr-base is the baseimage with all the dependencies already installed on it
+  # parsr-base is the base image with all the dependencies already installed on it
   # just build it if you need new dependencies otherwise use the publish one
   parsr-base:
     image: axarev/parsr-base

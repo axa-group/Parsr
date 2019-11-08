@@ -19,42 +19,42 @@ import logger from '../../utils/Logger';
 import { Exporter } from '../Exporter';
 
 export class MarkdownExporter extends Exporter {
-	private includeHeaderFooter: boolean;
+  private includeHeaderFooter: boolean;
 
-	constructor(doc: Document, includeHeaderFooter: boolean) {
-		super(doc);
-		this.includeHeaderFooter = includeHeaderFooter;
-	}
+  constructor(doc: Document, includeHeaderFooter: boolean) {
+    super(doc);
+    this.includeHeaderFooter = includeHeaderFooter;
+  }
 
-	public export(outputPath: string): Promise<any> {
-		logger.info('Exporting markdown...');
-		return this.writeFile(outputPath, this.getMarkdown());
-	}
+  public export(outputPath: string): Promise<any> {
+    logger.info('Exporting markdown...');
+    return this.writeFile(outputPath, this.getMarkdown());
+  }
 
-	private getMarkdown(): string {
-		let output: string = '';
-		this.doc.pages.forEach(page => {
-			page.elements.forEach(element => {
-				if (
-					(element.properties.isHeader || element.properties.isFooter) &&
-					!this.includeHeaderFooter
-				) {
-					return;
-				}
-				if (element instanceof Heading) {
-					output += element.toMarkdown();
-				} else if (element instanceof Paragraph) {
-					output += element.toMarkdown();
-				} else if (element instanceof List) {
-					output += element.toMarkdown();
-				} else if (element instanceof Table) {
-					output += element.toMarkdown();
-				}
-				output += '\n'.repeat(2);
-			});
-			// end of page
-			// output += '\n'.repeat(10);
-		});
-		return output;
-	}
+  private getMarkdown(): string {
+    let output: string = '';
+    this.doc.pages.forEach(page => {
+      page.elements.forEach(element => {
+        if (
+          (element.properties.isHeader || element.properties.isFooter) &&
+          !this.includeHeaderFooter
+        ) {
+          return;
+        }
+        if (element instanceof Heading) {
+          output += element.toMarkdown();
+        } else if (element instanceof Paragraph) {
+          output += element.toMarkdown();
+        } else if (element instanceof List) {
+          output += element.toMarkdown();
+        } else if (element instanceof Table) {
+          output += element.toMarkdown();
+        }
+        output += '\n'.repeat(2);
+      });
+      // end of page
+      // output += '\n'.repeat(10);
+    });
+    return output;
+  }
 }

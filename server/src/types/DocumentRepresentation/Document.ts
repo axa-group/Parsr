@@ -22,10 +22,10 @@ import { Font } from './Font';
 import { Page } from './Page';
 
 type Margins = {
-	top: number;
-	left: number;
-	bottom: number;
-	right: number;
+  top: number;
+  left: number;
+  bottom: number;
+  right: number;
 };
 
 /**
@@ -34,110 +34,110 @@ type Margins = {
  * like the top, left, right and bottom margins, which are set by an external module named HeaderFooterDetection.
  */
 export class Document {
-	/**
-	 * Getter inputFile
-	 * @return {string}
-	 */
-	public get inputFile(): string {
-		return this._inputFile;
-	}
+  /**
+   * Getter inputFile
+   * @return {string}
+   */
+  public get inputFile(): string {
+    return this._inputFile;
+  }
 
-	/**
-	 * Getter pages
-	 * @return {Page[]}
-	 */
-	public get pages(): Page[] {
-		return this._pages;
-	}
+  /**
+   * Getter pages
+   * @return {Page[]}
+   */
+  public get pages(): Page[] {
+    return this._pages;
+  }
 
-	/**
-	 * Getter margins
-	 * @return {Margins}
-	 */
-	public get margins(): Margins {
-		return this._margins;
-	}
+  /**
+   * Getter margins
+   * @return {Margins}
+   */
+  public get margins(): Margins {
+    return this._margins;
+  }
 
-	/**
-	 * Setter inputFile
-	 * @param {string} value
-	 */
-	public set inputFile(value: string) {
-		this._inputFile = value;
-	}
+  /**
+   * Setter inputFile
+   * @param {string} value
+   */
+  public set inputFile(value: string) {
+    this._inputFile = value;
+  }
 
-	/**
-	 * Setter pages
-	 * @param {Page[]} value
-	 */
-	public set pages(value: Page[]) {
-		this._pages = value;
-	}
+  /**
+   * Setter pages
+   * @param {Page[]} value
+   */
+  public set pages(value: Page[]) {
+    this._pages = value;
+  }
 
-	/**
-	 * Setter margins
-	 * @param {Margins} value
-	 */
-	public set margins(value: Margins) {
-		this._margins = value;
-	}
+  /**
+   * Setter margins
+   * @param {Margins} value
+   */
+  public set margins(value: Margins) {
+    this._margins = value;
+  }
 
-	/**
-	 * Generates a valid Document object from an input json.
-	 * @param json The input json from which the Document is to be constructed
-	 */
-	public static fromJson(json: Page[]): Document {
-		const copy = clone(json);
+  /**
+   * Generates a valid Document object from an input json.
+   * @param json The input json from which the Document is to be constructed
+   */
+  public static fromJson(json: Page[]): Document {
+    const copy = clone(json);
 
-		return new Document(copy);
-	}
-	private _pages: Page[];
-	private _inputFile: string;
-	private _margins: Margins;
+    return new Document(copy);
+  }
+  private _pages: Page[];
+  private _inputFile: string;
+  private _margins: Margins;
 
-	constructor(pages: Page[] = [], inputFile?: string) {
-		this.pages = pages;
-		this.inputFile = inputFile;
-		this.margins = { top: -1, left: -1, bottom: -1, right: -1 };
-	}
+  constructor(pages: Page[] = [], inputFile?: string) {
+    this.pages = pages;
+    this.inputFile = inputFile;
+    this.margins = { top: -1, left: -1, bottom: -1, right: -1 };
+  }
 
-	/**
-	 * Returns all the elements of a document, traversing all the pages
-	 */
-	public getAllElements(): Element[] {
-		return this.pages.map(p => p.getAllElements()).reduce((acc, val) => acc.concat(val), []);
-	}
+  /**
+   * Returns all the elements of a document, traversing all the pages
+   */
+  public getAllElements(): Element[] {
+    return this.pages.map(p => p.getAllElements()).reduce((acc, val) => acc.concat(val), []);
+  }
 
-	/**
-	 * Return an element of a particular ID in the Document
-	 * @param id the id of the element to be matched to find the corresponding element
-	 */
-	public getElementById(id: number): Element {
-		return this.getAllElements().find(x => x.id === id);
-	}
+  /**
+   * Return an element of a particular ID in the Document
+   * @param id the id of the element to be matched to find the corresponding element
+   */
+  public getElementById(id: number): Element {
+    return this.getAllElements().find(x => x.id === id);
+  }
 
-	public getElementsOfType<T extends Element>(
-		type: new (...args: any[]) => T,
-		deepSearch: boolean = true,
-	): T[] {
-		return this.pages
-			.map(p => p.getElementsOfType(type), deepSearch)
-			.reduce((acc, val) => acc.concat(val), []);
-	}
+  public getElementsOfType<T extends Element>(
+    type: new (...args: any[]) => T,
+    deepSearch: boolean = true,
+  ): T[] {
+    return this.pages
+      .map(p => p.getElementsOfType(type), deepSearch)
+      .reduce((acc, val) => acc.concat(val), []);
+  }
 
-	/**
-	 * Returns the main font of the document using the pages' basket + voting
-	 * mechanism. The most used font will be returned as a valid Font object.
-	 */
-	public getMainFont(): Font | undefined {
-		const result: Font = utils.findMostCommonFont(
-			this.pages.map(p => p.getMainFont()).filter(f => f !== undefined),
-		);
-		if (result !== undefined) {
-			return result;
-		} else {
-			logger.warn(`No font found for the document`);
-			return undefined;
-		}
-	}
+  /**
+   * Returns the main font of the document using the pages' basket + voting
+   * mechanism. The most used font will be returned as a valid Font object.
+   */
+  public getMainFont(): Font | undefined {
+    const result: Font = utils.findMostCommonFont(
+      this.pages.map(p => p.getMainFont()).filter(f => f !== undefined),
+    );
+    if (result !== undefined) {
+      return result;
+    } else {
+      logger.warn(`No font found for the document`);
+      return undefined;
+    }
+  }
 }

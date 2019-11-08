@@ -4,7 +4,7 @@ info:
   contact:
     name: Parsr
     url: https://github.com/axa-group/Parsr
-    email: sacha.bron.ats@axa.com
+    email: opensource@axa.com
   version: 1.0.0
 servers:
   - url: https://localhost:3000/api/v1

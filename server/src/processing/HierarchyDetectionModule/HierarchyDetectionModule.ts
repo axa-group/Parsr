@@ -30,114 +30,114 @@ type Parent = Heading | Paragraph | List;
  */
 
 export class HierarchyDetectionModule extends Module {
-	public static moduleName = 'hierarchy-detection';
+  public static moduleName = 'hierarchy-detection';
 
-	public main(doc: Document): Document {
-		const parents: Parent[] = [];
-		let previousElement: Parent = null;
-		let currentHeadingLevel: number = -1;
+  public main(doc: Document): Document {
+    const parents: Parent[] = [];
+    let previousElement: Parent = null;
+    let currentHeadingLevel: number = -1;
 
-		doc.pages.forEach(page => {
-			// TODO Remove when Cleaner modules have proper dependencies
-			page.elements.sort(utils.sortElementsByOrder);
-			page.elements.forEach((element: Element) => {
-				if (element instanceof Heading) {
-					if (element.level > currentHeadingLevel) {
-						associate(element, getLastHeading());
-					} else {
-						removeParentsToHeading(element.level);
-					}
+    doc.pages.forEach(page => {
+      // TODO Remove when Cleaner modules have proper dependencies
+      page.elements.sort(utils.sortElementsByOrder);
+      page.elements.forEach((element: Element) => {
+        if (element instanceof Heading) {
+          if (element.level > currentHeadingLevel) {
+            associate(element, getLastHeading());
+          } else {
+            removeParentsToHeading(element.level);
+          }
 
-					parents.push(element);
-					currentHeadingLevel = element.level;
-					previousElement = element;
-				} else if (element instanceof List) {
-					if (previousElement instanceof List) {
-						if (element.level > previousElement.level) {
-							parents.push(previousElement);
-							associate(element, previousElement);
-						} else {
-							removeListsFromParents(element.level);
-							associate(element, getLastParent());
-						}
-					} else if (previousElement instanceof Heading) {
-						associate(element, previousElement);
-					} else if (previousElement instanceof Paragraph) {
-						parents.push(previousElement);
-						associate(element, previousElement);
-					}
+          parents.push(element);
+          currentHeadingLevel = element.level;
+          previousElement = element;
+        } else if (element instanceof List) {
+          if (previousElement instanceof List) {
+            if (element.level > previousElement.level) {
+              parents.push(previousElement);
+              associate(element, previousElement);
+            } else {
+              removeListsFromParents(element.level);
+              associate(element, getLastParent());
+            }
+          } else if (previousElement instanceof Heading) {
+            associate(element, previousElement);
+          } else if (previousElement instanceof Paragraph) {
+            parents.push(previousElement);
+            associate(element, previousElement);
+          }
 
-					previousElement = element;
-				} else if (element instanceof Paragraph) {
-					associate(element, getLastParent());
-					previousElement = element;
-				} else {
-					associate(element, getLastParent());
-				}
+          previousElement = element;
+        } else if (element instanceof Paragraph) {
+          associate(element, getLastParent());
+          previousElement = element;
+        } else {
+          associate(element, getLastParent());
+        }
 
-				if (!(element instanceof List)) {
-					removeParentsToHeading();
-				}
-			});
-		});
+        if (!(element instanceof List)) {
+          removeParentsToHeading();
+        }
+      });
+    });
 
-		return doc;
+    return doc;
 
-		function getLastParent(): Parent | void {
-			return parents.length > 0 ? parents[parents.length - 1] : null;
-		}
+    function getLastParent(): Parent | void {
+      return parents.length > 0 ? parents[parents.length - 1] : null;
+    }
 
-		function getLastHeading(): Heading | void {
-			for (const parent of parents) {
-				if (parent instanceof Heading) {
-					return parent;
-				} else {
-					return null;
-				}
-			}
-		}
+    function getLastHeading(): Heading | void {
+      for (const parent of parents) {
+        if (parent instanceof Heading) {
+          return parent;
+        } else {
+          return null;
+        }
+      }
+    }
 
-		function associate(child: Element | void, parent: Parent | void) {
-			if (child && parent) {
-				child.parent = parent;
-				parent.children.push(child);
-			}
-		}
+    function associate(child: Element | void, parent: Parent | void) {
+      if (child && parent) {
+        child.parent = parent;
+        parent.children.push(child);
+      }
+    }
 
-		/**
-		 * Remove parents one by one until the level is strictly lower then level.
-		 * @param headingLevel
-		 */
-		function removeParentsToHeading(headingLevel: number = Infinity): void {
-			let i = parents.length - 1;
+    /**
+     * Remove parents one by one until the level is strictly lower then level.
+     * @param headingLevel
+     */
+    function removeParentsToHeading(headingLevel: number = Infinity): void {
+      let i = parents.length - 1;
 
-			while (i >= 0) {
-				const parent: Parent = parents[i];
+      while (i >= 0) {
+        const parent: Parent = parents[i];
 
-				if (!(parent instanceof Heading) || parent.level >= headingLevel) {
-					parents.pop();
-				} else {
-					return;
-				}
+        if (!(parent instanceof Heading) || parent.level >= headingLevel) {
+          parents.pop();
+        } else {
+          return;
+        }
 
-				i--;
-			}
-		}
+        i--;
+      }
+    }
 
-		function removeListsFromParents(listLevel: number = -1): void {
-			let i = parents.length - 1;
+    function removeListsFromParents(listLevel: number = -1): void {
+      let i = parents.length - 1;
 
-			while (i >= 0) {
-				const parent: Parent = parents[i];
+      while (i >= 0) {
+        const parent: Parent = parents[i];
 
-				if (!(parent instanceof List) || parent.level < listLevel) {
-					return;
-				} else {
-					parents.pop();
-				}
+        if (!(parent instanceof List) || parent.level < listLevel) {
+          return;
+        } else {
+          parents.pop();
+        }
 
-				i--;
-			}
-		}
-	}
+        i--;
+      }
+    }
+  }
 }

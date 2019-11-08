@@ -24,39 +24,39 @@ const pdfName = 'number-digits-preservation.pdf';
 const expectedWords = ['FR76', '1234', '5678', '0004', '0066', '9012', '345'];
 
 describe('Number parsing on images', () => {
-	let words: string[];
+  let words: string[];
 
-	before(async () => {
-		const [, imageAfter] = await getImage(
-			d => runModules(d, [new ReadingOrderDetectionModule()]),
-			imageName,
-		);
+  before(async () => {
+    const [, imageAfter] = await getImage(
+      d => runModules(d, [new ReadingOrderDetectionModule()]),
+      imageName,
+    );
 
-		words = imageAfter.pages[0].elements
-			.sort((a, b) => a.properties.order - b.properties.order)
-			.map(elem => elem.toString());
-	});
+    words = imageAfter.pages[0].elements
+      .sort((a, b) => a.properties.order - b.properties.order)
+      .map(elem => elem.toString());
+  });
 
-	it('should preserve all digits in a number', () => {
-		expect(words).to.eql(expectedWords);
-	});
+  it('should preserve all digits in a number', () => {
+    expect(words).to.eql(expectedWords);
+  });
 });
 
 describe('Number parsing on PDFs', () => {
-	let words: string[];
+  let words: string[];
 
-	before(async () => {
-		const [, pdfAfter] = await getPdf(
-			d => runModules(d, [new ReadingOrderDetectionModule()]),
-			pdfName,
-		);
+  before(async () => {
+    const [, pdfAfter] = await getPdf(
+      d => runModules(d, [new ReadingOrderDetectionModule()]),
+      pdfName,
+    );
 
-		words = pdfAfter.pages[0].elements
-			.sort((a, b) => a.properties.order - b.properties.order)
-			.map(elem => elem.toString());
-	});
+    words = pdfAfter.pages[0].elements
+      .sort((a, b) => a.properties.order - b.properties.order)
+      .map(elem => elem.toString());
+  });
 
-	it('should preserve all digits in a number', () => {
-		expect(words).to.eql(expectedWords);
-	});
+  it('should preserve all digits in a number', () => {
+    expect(words).to.eql(expectedWords);
+  });
 });

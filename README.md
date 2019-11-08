@@ -48,7 +48,7 @@ You can install Parsr either using Docker containers, or directly on your machin
 
 ### 1.1. Docker Installation
 
-Containers are already avaiable on [Docker Hub](https://hub.docker.com/u/axarev).
+Containers are already available on [Docker Hub](https://hub.docker.com/u/axarev).
 
 The documentation to build and run Docker containers is [here](docs/docker.md).
 
@@ -61,14 +61,14 @@ Under a **Debian** based distribution:
 ```sh
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
-sudo apt-get install nodejs npm qpdf pdf2json python-pdfminer tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
+sudo apt-get install nodejs npm qpdf imagemagick graphicsmagick python-pdfminer tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
 pip install camelot-py
 ```
 
 Under **Arch** Linux :
 
 ```sh
-pacman -S nodejs npm qpdf ghostscript pdf2json pdfminer tesseract python-pip
+pacman -S nodejs npm qpdf imagemagick graphicsmagick pdfminer tesseract ghostscript python-pip
 pip install camelot-py
 ```
 
@@ -84,10 +84,10 @@ To install it, launch the following in a terminal
 Next, install the required dependencies:
 
 ```sh
-brew install node qpdf ghostscript pdf2json tesseract tesseract-lang
+brew install node qpdf imagemagick graphicsmagick tesseract tesseract-lang ghostscript
 ```
 
-To install the python based depedencies (pdfminer and camelot), install, first install `pip`:
+To install the python based dependencies (pdfminer and camelot), install, first install `pip`:
 
 ```sh
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
@@ -104,7 +104,7 @@ pip install ghostscript camelot-py
 
 #### 1.2.3. Installing Dependencies under Windows
 
-1. We recommand using [Chocolatey](https://chocolatey.org) as the package manager for installing dependencies under Windows. To install Chocolatey, [follow these instructions](https://chocolatey.org/install#installing-chocolatey).
+1. We recommend using [Chocolatey](https://chocolatey.org) as the package manager for installing dependencies under Windows. To install Chocolatey, [follow these instructions](https://chocolatey.org/install#installing-chocolatey).
 2. [Download and install **`node.js`**](https://nodejs.org/en/download)
 3. For the **pdfminer** extractor for pdfs, [follow these steps](https://github.com/pdfminer/pdfminer.six#how-to-install).
 4. Install **`qpdf`** and **`ghostscript`** using Powershell (Run as Administrator):
@@ -169,7 +169,7 @@ To install MuPDF, follow the steps corresponding to your environment:
   ```
 
 If MuPDF is not installed, a corrupt/unreadable PDF file at input will be left untreated.
-A message of such an occurance will be logged.
+A message of such an occurrence will be logged.
 
 #### 1.3.2. Pandoc
 
@@ -326,7 +326,6 @@ The following _required_ dependencies need to be installed for Parsr to work pro
 
 1. `node.js` : The underlying framework upon which the platform is built.
 2. `qpdf` : For reading password-protected PDFs.
-3. `ghostscript` : For converting between file formats.
 
 ### 4.2. Extraction Dependencies
 
@@ -343,8 +342,9 @@ If images (`jpg`, `png`, `tiff`, etc.) are to be used with the tool, then the to
 
 The following _optional_ dependencies may to be installed:
 
-1. `mupdf-tools`: For error-correcting corrupt PDF's at input.
-2. `pandoc`: Generate PDF files from an intermediate Markdown output after the cleaning operation in the pipeline.
+1. `mupdf-tools`: For extracting images from inside PDFs, and error-correcting corrupt PDFs at input.
+2. `ghostscript` : For converting between file formats.
+3. `pandoc`: Generate PDF files from an intermediate Markdown output after the cleaning operation in the pipeline.
 
 ## 5. Contribute
 
@@ -355,12 +355,13 @@ Please refer to the guidelines in [CONTRIBUTING.md](CONTRIBUTING.md).
 Third Party Libraries licenses :
 
 1. **QPDF**: Apache [http://qpdf.sourceforge.net](http://qpdf.sourceforge.net/)
-2. **ImageMagick**: Apache 2.0 [https://imagemagick.org/script/license.php](https://imagemagick.org/script/license.php)
-3. **Pdfminer.six**: MIT [https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE](https://github.com/pdfminer/pfminer.six/blob/master/LICENSE)
-4. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
-5. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)
-6. **MuPDF** (Optional dependency): AGPL [https://mupdf.com/license.html](https://mupdf.com/license.html)
-7. **Pandoc** (Optional dependency): GPL [https://github.com/jgm/pandoc](https://github.com/jgm/pandoc)
+2. **GraphicsMagick**: MIT [http://www.graphicsmagick.org/index.html](http://www.graphicsmagick.org/index.html)
+3. **ImageMagick**: Apache 2.0 [https://imagemagick.org/script/license.php](https://imagemagick.org/script/license.php)
+4. **Pdfminer.six**: MIT [https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE](https://github.com/pdfminer/pfminer.six/blob/master/LICENSE)
+5. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
+6. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)
+7. **MuPDF** (Optional dependency): AGPL [https://mupdf.com/license.html](https://mupdf.com/license.html)
+8. **Pandoc** (Optional dependency): GPL [https://github.com/jgm/pandoc](https://github.com/jgm/pandoc)
 
 ## 7. License
 

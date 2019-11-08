@@ -26,11 +26,11 @@ import * as pdfminer from './pdfminer';
  * information in a clever way.
  */
 export class PdfminerExtractor extends Extractor {
-	public run(inputFile: string): Promise<Document> {
-		const pdfminerExtract: Promise<Document> = pdfminer.execute(inputFile);
+  public run(inputFile: string): Promise<Document> {
+    const pdfminerExtract: Promise<Document> = pdfminer.execute(inputFile);
 
-		const extractFont = extractFonts(inputFile);
+    const extractFont = extractFonts(inputFile);
 
-		return Promise.all([pdfminerExtract, extractFont]).then(([doc]: [Document, void]) => doc);
-	}
+    return Promise.all([pdfminerExtract, extractFont]).then(([doc]: [Document, void]) => doc);
+  }
 }
