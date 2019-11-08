@@ -102,10 +102,7 @@ export function getConvertPath(): string {
  * Returns the location of the python command on the system
  */
 export function getPythonLocation(): string {
-  let pythonLocation: string = getCommandLocationOnSystem('python3');
-  if (!pythonLocation) {
-    pythonLocation = getCommandLocationOnSystem('python');
-  }
+  const pythonLocation: string = getCommandLocationOnSystem('python3', 'python');
   if (!pythonLocation) {
     logger.warn(
       `Unable to find python. Are you sure it is installed?`,
@@ -121,10 +118,7 @@ export function getPythonLocation(): string {
  * Returns the location of the pdf2txt command on the system
  */
 export function getPdf2txtLocation(): string {
-  let pdf2txtLocation: string = getCommandLocationOnSystem('pdf2txt.py');
-  if (!pdf2txtLocation) {
-    pdf2txtLocation = getCommandLocationOnSystem('pdf2txt');
-  }
+  const pdf2txtLocation: string = getCommandLocationOnSystem('pdf2txt.py', 'pdf2txt');
   if (!pdf2txtLocation) {
     logger.warn(
       `Unable to find pdf2txt, the pdfminer executable on the system. Are you sure it is installed?`,
@@ -704,11 +698,21 @@ export function getExecLocationCommandOnSystem(): string {
 
 /**
  * returns the location of a command on a system.
- * @param executableName the name of the executable to be located
+ * @param firstChoice the first choice name of the executable to be located
+ * @param secondChoice the second choice name of the executable to be located
+ * @param thirdChoice the third choice name of the executable to be located
  */
-export function getCommandLocationOnSystem(executableName: string): string {
-  const info = spawnSync(getExecLocationCommandOnSystem(), [executableName]);
-  return info.status === 0 ? info.stdout.toString().split(os.EOL)[0] : null;
+export function getCommandLocationOnSystem(
+  firstChoice: string,
+  secondChoice: string = "",
+  thirdChoice: string = "",
+): string {
+  const info = spawnSync(getExecLocationCommandOnSystem(), [firstChoice]);
+  const result = info.status === 0 ? info.stdout.toString().split(os.EOL)[0] : null;
+  if (result === null && secondChoice !== "") {
+    return getCommandLocationOnSystem(secondChoice, thirdChoice);
+  }
+  return result;
 }
 
 /**
