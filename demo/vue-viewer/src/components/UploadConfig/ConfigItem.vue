@@ -142,95 +142,95 @@ export default {
 
 <style lang="scss">
 .slider div.v-input__control {
-	width: 100%;
+  width: 100%;
 }
 .slider div.v-input__control div.v-slider--horizontal {
-	margin: 0;
+  margin: 0;
 }
 .selectOption div.v-input__control {
-	min-height: auto !important;
+  min-height: auto !important;
 }
 .selectOption div.v-input__control div.v-input__slot {
-	padding: 0 !important;
+  padding: 0 !important;
 }
 .selectOption div.v-input__control div.v-input__slot div.v-select__selection {
-	border: solid 1px #cccccc;
-	min-width: 60px;
-	text-align: center;
-	display: block;
+  border: solid 1px #cccccc;
+  min-width: 60px;
+  text-align: center;
+  display: block;
 }
 .selectOption div.v-input__control div.v-input__slot input {
-	width: 0;
+  width: 0;
 }
 .switch div.v-expansion-panels div.v-expansion-panel {
-	background-color: transparent;
+  background-color: transparent;
 }
 .switch div.v-expansion-panels div.v-expansion-panel:before {
-	box-shadow: none;
+  box-shadow: none;
 }
 .switch div.v-expansion-panels {
-	margin-left: 40px;
-	width: 273px;
+  margin-left: 40px;
+  width: 273px;
 }
 .switch div.v-expansion-panels button.v-expansion-panel-header {
-	padding: 0;
-	min-height: 10px;
-	font-size: 0.8em;
-	color: rgba(0, 0, 0, 0.54);
+  padding: 0;
+  min-height: 10px;
+  font-size: 0.8em;
+  color: rgba(0, 0, 0, 0.54);
 }
 
 .switch div.v-expansion-panels button.v-expansion-panel-header .v-icon {
-	color: rgba(0, 0, 0, 0.24) !important;
+  color: rgba(0, 0, 0, 0.24) !important;
 }
 
 .switch div.v-expansion-panels div.v-expansion-panel-content__wrap {
-	padding-bottom: 0;
+  padding-bottom: 0;
 }
 </style>
 <style lang="scss" scoped>
 .selectOption {
-	font-size: 0.8em;
-	vertical-align: middle;
-	color: rgba(0, 0, 0, 0.54);
+  font-size: 0.8em;
+  vertical-align: middle;
+  color: rgba(0, 0, 0, 0.54);
 }
 .selectOption div {
-	min-height: auto !important;
+  min-height: auto !important;
 }
 
 .switch {
-	border-bottom: 1px solid #ebebf1;
-	margin: 0;
-	padding: 10px;
-	display: inline-block;
-	vertical-align: top;
-	width: 300px;
+  border-bottom: 1px solid #ebebf1;
+  margin: 0;
+  padding: 10px;
+  display: inline-block;
+  vertical-align: top;
+  width: 300px;
 }
 
 .switch span {
-	font-size: 0.8em;
-	vertical-align: middle;
-	color: rgba(0, 0, 0, 0.54);
-	margin-top: 3px;
+  font-size: 0.8em;
+  vertical-align: middle;
+  color: rgba(0, 0, 0, 0.54);
+  margin-top: 3px;
 }
 .switch ul {
-	margin-left: 0px;
-	margin-top: 10px;
-	padding: 0;
+  margin-left: 0px;
+  margin-top: 10px;
+  padding: 0;
 }
 .switch ul li:not(:last-child) {
-	margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .switch input {
-	border: solid 1px #cccccc;
-	width: 60px;
-	font-size: 0.8em;
-	vertical-align: middle;
-	margin-left: 5px;
-	text-align: center;
+  border: solid 1px #cccccc;
+  width: 60px;
+  font-size: 0.8em;
+  vertical-align: middle;
+  margin-left: 5px;
+  text-align: center;
 }
 .switch + a {
-	margin-top: 10px;
-	display: inline-block;
+  margin-top: 10px;
+  display: inline-block;
 }
 </style>

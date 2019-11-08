@@ -27,6 +27,8 @@ export type LineInfo = {
   lineBreak: boolean;
   firstWordStyle: WordStyle;
   lastWordStyle: WordStyle;
+  firstWordLink: string;
+  lastWordLink: string;
 };
 
 enum WordStyle {
@@ -163,6 +165,26 @@ export class Paragraph extends Text {
       return;
     }
 
+    if (!!prevLine.lastWordLink && prevLine.lastWordLink === line.firstWordLink) {
+      // gets the last link MD in the previous line
+      const mdLinksInPreviousLine = output.paragraphOutput.match(new RegExp(/\[.*?\]\(.*?\)/gs));
+      if (!mdLinksInPreviousLine) { return; }
+
+      const lastWordLinkMD = mdLinksInPreviousLine[mdLinksInPreviousLine.length - 1];
+      // gets the first link MD and description in the current line
+      const firstLinkMDInLine = output.lineOutput.match(new RegExp(/\[.*?\]\((.*?)\)/));
+
+      if (!firstLinkMDInLine) { return; }
+      const lastLinkMDDescription = firstLinkMDInLine[0].replace(/\[(.*?)\]\(.*?\)/, '$1');
+
+      // merges the last link in previous line with the description of the first link in current line
+      const mergedLinkMD = lastWordLinkMD.replace(/\[(.*?)\]\((.*?)\)/s, `[$1  \n${lastLinkMDDescription}]($2)`);
+      output.paragraphOutput = output.paragraphOutput.replace(lastWordLinkMD, mergedLinkMD).trim();
+
+      // removes the first link in current line, to avoid duplicated (it's already merged in the previous line)
+      output.lineOutput = output.lineOutput.slice(firstLinkMDInLine[0].length);
+    }
+
     if (line.lineBreak) {
       return;
     }
@@ -181,6 +203,8 @@ export class Paragraph extends Text {
     let biWordsIdx: number[][] = Array<number[]>(1).fill([]);
     let bWordsIdx: number[][] = Array<number[]>(1).fill([]);
     let iWordsIdx: number[][] = Array<number[]>(1).fill([]);
+    const linkWordsIdx = {};
+
     words.forEach((w, index) => {
       const style = this.wordStyle(w);
       if (style === WordStyle.BoldItalic) {
@@ -190,10 +214,23 @@ export class Paragraph extends Text {
       } else if (style === WordStyle.Italic) {
         iWordsIdx[0].push(index);
       }
+
+      // grouping word ids in line by link target
+      if (w.properties.targetURL) {
+        if (!linkWordsIdx[w.properties.targetURL]) {
+          linkWordsIdx[w.properties.targetURL] = Array<number[]>(1).fill([]);
+        }
+        linkWordsIdx[w.properties.targetURL][0].push(index);
+      }
     });
+
     biWordsIdx = utils.groupConsecutiveNumbersInArray(biWordsIdx[0]).filter(p => p.length !== 0);
     bWordsIdx = utils.groupConsecutiveNumbersInArray(bWordsIdx[0]).filter(p => p.length !== 0);
     iWordsIdx = utils.groupConsecutiveNumbersInArray(iWordsIdx[0]).filter(p => p.length !== 0);
+
+    Object.keys(linkWordsIdx).forEach((link) => {
+      linkWordsIdx[link] = utils.groupConsecutiveNumbersInArray(linkWordsIdx[link][0] as number[]);
+    });
 
     // prepare the result
     const result: string[] = words.map(w => w.toMarkDown());
@@ -213,7 +250,26 @@ export class Paragraph extends Text {
       result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '*';
     });
 
+    /*
+      merging consecutive words with the same link
+        ex:
+        input: [Google](https://www.google.com) [link](https://www.google.com)
+        returns: [Google link](https://www.google.com)
+    */
+    Object.keys(linkWordsIdx).forEach(lw => {
+      linkWordsIdx[lw].forEach(idGroup => {
+        const linkDescription = idGroup.map(id => result[id].replace(/\[(.*?)\]\(.*?\)/, "$1")).join(' ');
+        result[idGroup[0]] = `[${linkDescription.trim()}](${lw.trim()})`;
+
+        // after the merging, i set as null the rest of the words with that link so it doesn't repeat.
+        for (let i = 1; i < idGroup.length; i++) {
+          result[idGroup[i]] = null;
+        }
+      });
+    });
+
     return result
+      .filter(w => !!w)
       .map(w => w.trim())
       .reduce((w1, w2) => w1 + ' ' + w2, '')
       .trim();
@@ -224,6 +280,8 @@ export class Paragraph extends Text {
     let biWordsIdx: number[][] = Array<number[]>(1).fill([]);
     let bWordsIdx: number[][] = Array<number[]>(1).fill([]);
     let iWordsIdx: number[][] = Array<number[]>(1).fill([]);
+    const linkWordsIdx = {};
+
     words.forEach((w, index) => {
       const style = this.wordStyle(w);
       if (style === WordStyle.BoldItalic) {
@@ -233,10 +291,22 @@ export class Paragraph extends Text {
       } else if (style === WordStyle.Italic) {
         iWordsIdx[0].push(index);
       }
+
+      // grouping word ids in line by link target
+      if (w.properties.targetURL) {
+        if (!linkWordsIdx[w.properties.targetURL]) {
+          linkWordsIdx[w.properties.targetURL] = Array<number[]>(1).fill([]);
+        }
+        linkWordsIdx[w.properties.targetURL][0].push(index);
+      }
     });
     biWordsIdx = utils.groupConsecutiveNumbersInArray(biWordsIdx[0]).filter(p => p.length !== 0);
     bWordsIdx = utils.groupConsecutiveNumbersInArray(bWordsIdx[0]).filter(p => p.length !== 0);
     iWordsIdx = utils.groupConsecutiveNumbersInArray(iWordsIdx[0]).filter(p => p.length !== 0);
+
+    Object.keys(linkWordsIdx).forEach((link) => {
+      linkWordsIdx[link] = utils.groupConsecutiveNumbersInArray(linkWordsIdx[link][0] as number[]);
+    });
 
     // prepare the result
     const result: string[] = words.map(w => w.toMarkDown());
@@ -256,7 +326,26 @@ export class Paragraph extends Text {
       result[idGroup[idGroup.length - 1]] = result[idGroup[idGroup.length - 1]] + '</i>';
     });
 
+    /*
+    merging consecutive words with the same link
+      ex:
+      input: [Google](https://www.google.com) [link](https://www.google.com)
+      returns: <a href="https://www.google.com">Google link</a>
+    */
+    Object.keys(linkWordsIdx).forEach(lw => {
+      linkWordsIdx[lw].forEach(idGroup => {
+        const linkDescription = idGroup.map(id => result[id].replace(/\[(.*?)\]\(.*?\)/, "$1")).join(' ');
+        result[idGroup[0]] = `<a href="${lw.trim()}">${linkDescription.trim()}</a>`;
+
+        // after the merging, i set as null the rest of the words with that link so it doesn't repeat.
+        for (let i = 1; i < idGroup.length; i++) {
+          result[idGroup[i]] = null;
+        }
+      });
+    });
+
     return result
+      .filter(w => !!w)
       .map(w => w.trim())
       .reduce((w1, w2) => w1 + ' ' + w2, '')
       .trim();
@@ -269,6 +358,8 @@ export class Paragraph extends Text {
         lineBreak: this.isLineBreak(index),
         firstWordStyle: this.wordStyle(l.content[0]),
         lastWordStyle: this.wordStyle(l.content[l.content.length - 1]),
+        firstWordLink: l.content[0].properties.targetURL,
+        lastWordLink: l.content[l.content.length - 1].properties.targetURL,
       };
     });
   }

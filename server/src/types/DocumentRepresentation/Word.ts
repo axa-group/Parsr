@@ -40,8 +40,8 @@ export class Word extends Text {
   public toMarkDown(): string {
     let mdString: string;
 
-    if (this.properties.link) {
-      mdString = this.properties.link;
+    if (this.properties.targetURL) {
+      mdString = `[${this.toString()}](${this.properties.targetURL})`;
     } else {
       mdString = this.toString().replace(/([\d]+)([\.\)])/g, '$1\\$2');
     }

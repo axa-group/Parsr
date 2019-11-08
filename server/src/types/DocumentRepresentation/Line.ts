@@ -105,6 +105,10 @@ export class Line extends Text {
     this._scaling = value;
   }
 
+  public toMarkdown(): string {
+    return this.content.map(w => w.toMarkDown()).join(' ');
+  }
+
   /**
    * Converts the entire element into a html code string (needed by MD table generation).
    */
