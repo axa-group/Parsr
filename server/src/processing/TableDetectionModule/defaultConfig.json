@@ -1,13 +1,14 @@
 {
-	"name": "table-detection",
-	"description": "Table extraction from the PDF file",
-	"specs": {
-		"pages": {
-			"value": []
-		},
-		"flavor": {
-			"value": "lattice",
-			"range": ["lattice", "stream"]
-		}
-	}
+  "name": "table-detection",
+  "description": "Table extraction from the PDF file",
+  "specs": {
+    "pageConfig": {
+      "value": [
+        {
+          "pages": [],
+          "flavor": "lattice"
+        }
+      ]
+    }
+  }
 }
