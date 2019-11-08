@@ -45,52 +45,41 @@ import logger from '../../utils/Logger';
  */
 export function execute(pdfInputFile: string): Promise<Document> {
   return new Promise<Document>((resolveDocument, rejectDocument) => {
-    return repairPdf(pdfInputFile).then(repairedPdf => {
+    return repairPdf(pdfInputFile).then((repairedPdf: string) => {
       const xmlOutputFile: string = utils.getTemporaryFile('.xml');
       const imgsLocation: string = utils.getTemporaryDirectory();
-      let pdf2txtLocation: string = utils.getCommandLocationOnSystem('pdf2txt.py');
-      if (!pdf2txtLocation) {
-        pdf2txtLocation = utils.getCommandLocationOnSystem('pdf2txt');
+
+      // find python
+      const pythonLocation: string = utils.getPythonLocation();
+
+      // find pdfminer's pdf2txt.py script
+      const pdf2txtLocation: string = utils.getPdf2txtLocation();
+
+      // If either of the tools could not be found, return an empty document and display warning
+      if (pythonLocation === "" || pdf2txtLocation === "") {
+        rejectDocument(`Could not find the necessary libraries..`);
       }
-      if (!pdf2txtLocation) {
-        logger.debug(
-          `Unable to find pdf2txt, the pdfminer executable on the system. Are you sure it is installed?`,
-        );
-      } else {
-        logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
-      }
-      logger.info(`Extracting PDF contents using pdfminer...`);
+
+      const pdf2txtArguments: string[] = [
+        pdf2txtLocation,
+        '-c',
+        'utf-8',
+        '-t',
+        'xml',
+        '-o',
+        xmlOutputFile,
+        repairedPdf,
+      ];
+
       logger.debug(
-        `${pdf2txtLocation} ${[
-          '-c',
-          'utf-8',
-          // '-A', crashes pdf2txt.py using Benchmark axa.uk.business.owntools.pdf
-          '-t',
-          'xml',
-          '-O',
-          imgsLocation,
-          '-o',
-          xmlOutputFile,
-          repairedPdf,
-        ].join(' ')}`,
+        `${pythonLocation} ${pdf2txtArguments.join(' ')}`,
       );
 
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const pdfminer = spawn(pdf2txtLocation, [
-        '-c',
-        'utf-8',
-        // '-A', crashes pdf2txt.py using Benchmark axa.uk.business.owntools.pdf
-        '-t',
-        'xml',
-        '-O',
-        imgsLocation,
-        '-o',
-        xmlOutputFile,
-        repairedPdf,
-      ]);
+      const pdfminer = spawn(pythonLocation, pdf2txtArguments);
 
       pdfminer.stderr.on('data', data => {
         logger.error('pdfminer error:', data.toString('utf8'));

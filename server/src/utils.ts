@@ -98,6 +98,44 @@ export function getConvertPath(): string {
   }
 }
 
+/**
+ * Returns the location of the python command on the system
+ */
+export function getPythonLocation(): string {
+  let pythonLocation: string = getCommandLocationOnSystem('python3');
+  if (!pythonLocation) {
+    pythonLocation = getCommandLocationOnSystem('python');
+  }
+  if (!pythonLocation) {
+    logger.warn(
+      `Unable to find python. Are you sure it is installed?`,
+    );
+    return "";
+  } else {
+    logger.debug(`python was found at ${pythonLocation}`);
+    return pythonLocation;
+  }
+}
+
+/**
+ * Returns the location of the pdf2txt command on the system
+ */
+export function getPdf2txtLocation(): string {
+  let pdf2txtLocation: string = getCommandLocationOnSystem('pdf2txt.py');
+  if (!pdf2txtLocation) {
+    pdf2txtLocation = getCommandLocationOnSystem('pdf2txt');
+  }
+  if (!pdf2txtLocation) {
+    logger.warn(
+      `Unable to find pdf2txt, the pdfminer executable on the system. Are you sure it is installed?`,
+    );
+    return "";
+  } else {
+    logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
+    return pdf2txtLocation;
+  }
+}
+
 export function getMutoolImagesPrefix(): string {
   return 'page';
 }
