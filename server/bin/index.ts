@@ -208,7 +208,7 @@ function main(): void {
         return Promise.all(promises);
       })
       .catch(err => {
-        logger.error(err);
+        logger.error(`There was an error running the orchestrator: ${err}`);
       });
   }
 
