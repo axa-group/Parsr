@@ -28,7 +28,7 @@ export function extractImagesAndFonts(pdfInputFile: string): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     const mutoolPath = utils.getCommandLocationOnSystem('mutool');
     if (!mutoolPath) {
-      logger.warn('MuPDF not installed. Skipping fonts extraction...');
+      logger.warn('MuPDF not installed. Will not treats images inside documents...');
       resolve();
     } else {
       const folder = utils.getMutoolExtractionFolder();
