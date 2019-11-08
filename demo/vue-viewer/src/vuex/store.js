@@ -224,5 +224,41 @@ export default new Vuex.Store({
     fontInspectorSwitchState(state) {
       return state.expansionPanels.fontInspector;
     },
+    fontUsageRatio: state => fontId => {
+      const flattenElement = element => {
+        var flattend = [];
+        !(function flat(element) {
+          flattend.push(element);
+          if (element.content) {
+            element.content.forEach(function(el) {
+              flattend.push(el);
+              if (Array.isArray(el.content)) {
+                flat(el);
+              }
+            });
+          }
+        })(element);
+        return flattend;
+      };
+      //console.log('Search words with font ' + fontId);
+      const allWords = state.document.pages
+        .map(page => page.elements)
+        .reduce((prev, curr) => prev.concat(curr), [])
+        .map(flattenElement)
+        .reduce((prev, curr) => prev.concat(curr), [])
+        .filter(element => element.type == 'word');
+
+      const wordsWithFont = allWords.filter(w => w.font == fontId);
+      //console.log('Words with font ' + wordsWithFont.length);
+      //console.log('Total Words ' + allWords.length);
+      return (
+        Number(wordsWithFont.length / allWords.length).toFixed(3) +
+        ' (' +
+        wordsWithFont.length +
+        '/' +
+        allWords.length +
+        ')'
+      );
+    },
   },
 });

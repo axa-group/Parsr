@@ -15,6 +15,7 @@
                   {{ fontKey }}: <span class="fontValue">{{ font[fontKey] }}</span>
                   <br />
                 </span>
+                <span>Ratio: {{ fontUsageRatio(font.id) }}</span>
               </li>
             </ul>
           </div>
@@ -28,7 +29,7 @@
 import { mapMutations, mapGetters } from 'vuex';
 export default {
   computed: {
-    ...mapGetters(['fontInspectorSwitchState', 'fonts']),
+    ...mapGetters(['fontInspectorSwitchState', 'fonts', 'fontUsageRatio']),
     fontInspectorSwitch: {
       get() {
         return this.fontInspectorSwitchState;

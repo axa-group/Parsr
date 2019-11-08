@@ -41,12 +41,14 @@ export default {
       var flattend = [];
       !(function flat(element, buildID) {
         flattend.push({ text: buildID(element), value: element });
-        element.content.forEach(function(el) {
-          flattend.push({ text: buildID(el), value: el });
-          if (Array.isArray(el.content)) {
-            flat(el, buildID);
-          }
-        });
+        if (element.content) {
+          element.content.forEach(function(el) {
+            flattend.push({ text: buildID(el), value: el });
+            if (Array.isArray(el.content)) {
+              flat(el, buildID);
+            }
+          });
+        }
       })(element, this.buildID);
       return flattend;
     },
