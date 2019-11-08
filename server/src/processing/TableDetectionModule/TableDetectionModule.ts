@@ -97,8 +97,6 @@ export class TableDetectionModule extends Module<Options> {
   }
 
   public main(doc: Document): Document {
-    // options is already merged in constructor!!!
-    // const options: Options = { ...defaultOptions, ...this.options };
     const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
     if (fileType === null || fileType.ext !== 'pdf') {
       logger.warn(
@@ -129,15 +127,16 @@ export class TableDetectionModule extends Module<Options> {
       return doc;
     }
 
-    const tableExtractor = this.extractor.readTables(doc.inputFile, this.options);
-
-    if (tableExtractor.status !== 0) {
-      logger.error(tableExtractor.stderr);
-    } else {
-      const tablesData = JSON.parse(tableExtractor.stdout);
-      this.addTables(tablesData, doc);
-      this.removeWordsUsedInCells(doc);
-    }
+    this.options.pageConfig.forEach(config => {
+      const tableExtractor = this.extractor.readTables(doc.inputFile, config);
+      if (tableExtractor.status !== 0) {
+        logger.error(tableExtractor.stderr);
+      } else {
+        const tablesData = JSON.parse(tableExtractor.stdout);
+        this.addTables(tablesData, doc);
+        this.removeWordsUsedInCells(doc);
+      }
+    });
     return doc;
   }
 
