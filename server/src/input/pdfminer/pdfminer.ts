@@ -79,9 +79,9 @@ export function execute(pdfInputFile: string): Promise<Document> {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const pdfminer = spawn(pythonLocation, pdf2txtArguments);
+      const pdf2txt = spawn(pythonLocation, pdf2txtArguments);
 
-      pdfminer.stderr.on('data', data => {
+      pdf2txt.stderr.on('data', data => {
         logger.error('pdfminer error:', data.toString('utf8'));
       });
 
@@ -97,8 +97,8 @@ export function execute(pdfInputFile: string): Promise<Document> {
         return promise;
       }
 
-      pdfminer.on('close', async code => {
-        if (code === 0) {
+      pdf2txt.on('close', pdf2txtReturnCode => {
+        if (pdf2txtReturnCode === 0) {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
             logger.debug(`Converting pdfminer's XML output to JS object..`);
@@ -111,7 +111,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
             rejectDocument(`parseXml failed: ${err}`);
           }
         } else {
-          rejectDocument(`pdfminer return code is ${code}`);
+          rejectDocument(`pdf2txt return code is ${pdf2txtReturnCode}`);
         }
       });
       // return doc;

@@ -121,12 +121,28 @@ export function getPdf2txtLocation(): string {
   const pdf2txtLocation: string = getCommandLocationOnSystem('pdf2txt.py', 'pdf2txt');
   if (!pdf2txtLocation) {
     logger.warn(
-      `Unable to find pdf2txt, the pdfminer executable on the system. Are you sure it is installed?`,
+      `Unable to find pdf2txt, the pdfminer tool on the system. Are you sure it is installed?`,
     );
     return "";
   } else {
     logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
     return pdf2txtLocation;
+  }
+}
+
+/**
+ * Returns the location of the dumppdf command on the system
+ */
+export function getDumppdfLocation(): string {
+  const dumppdfLocation: string = getCommandLocationOnSystem('dumppdf.py', 'dumppdf');
+  if (!dumppdfLocation) {
+    logger.warn(
+      `Unable to find dump, the pdfminer tool on the system. Are you sure it is installed?`,
+    );
+    return "";
+  } else {
+    logger.debug(`dumppdf was found at ${dumppdfLocation}`);
+    return dumppdfLocation;
   }
 }
 
