@@ -16,7 +16,6 @@
 
 import { spawn, spawnSync } from 'child_process';
 import * as fs from 'fs';
-import * as path from 'path';
 import { parseString } from 'xml2js';
 import {
   BoundingBox,
@@ -47,7 +46,16 @@ export function execute(pdfInputFile: string): Promise<Document> {
   return new Promise<Document>((resolveDocument, rejectDocument) => {
     return repairPdf(pdfInputFile).then(repairedPdf => {
       const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-      const imgsLocation: string = utils.getTemporaryDirectory();
+      const pdf2txtArguments: string[] = [
+        '-c',
+        'utf-8',
+        '-t',
+        'xml',
+        '-o',
+        xmlOutputFile,
+        repairedPdf,
+      ];
+
       let pdf2txtLocation: string = utils.getCommandLocationOnSystem('pdf2txt.py');
       if (!pdf2txtLocation) {
         pdf2txtLocation = utils.getCommandLocationOnSystem('pdf2txt');
@@ -61,36 +69,14 @@ export function execute(pdfInputFile: string): Promise<Document> {
       }
       logger.info(`Extracting PDF contents using pdfminer...`);
       logger.debug(
-        `${pdf2txtLocation} ${[
-          '-c',
-          'utf-8',
-          // '-A', crashes pdf2txt.py using Benchmark axa.uk.business.owntools.pdf
-          '-t',
-          'xml',
-          '-O',
-          imgsLocation,
-          '-o',
-          xmlOutputFile,
-          repairedPdf,
-        ].join(' ')}`,
+        `${pdf2txtLocation} ${pdf2txtArguments.join(' ')}`,
       );
 
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const pdfminer = spawn(pdf2txtLocation, [
-        '-c',
-        'utf-8',
-        // '-A', crashes pdf2txt.py using Benchmark axa.uk.business.owntools.pdf
-        '-t',
-        'xml',
-        '-O',
-        imgsLocation,
-        '-o',
-        xmlOutputFile,
-        repairedPdf,
-      ]);
+      const pdfminer = spawn(pdf2txtLocation, pdf2txtArguments);
 
       pdfminer.stderr.on('data', data => {
         logger.error('pdfminer error:', data.toString('utf8'));
@@ -115,7 +101,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
             logger.debug(`Converting pdfminer's XML output to JS object..`);
             parseXmlToObject(xml).then((obj: any) => {
               const pages: Page[] = [];
-              obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj, imgsLocation)));
+              obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj)));
               resolveDocument(new Document(pages, repairedPdf));
             });
           } catch (err) {
@@ -130,7 +116,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
   });
 }
 
-function getPage(pageObj: PdfminerPage, imagesLocation: string): Page {
+function getPage(pageObj: PdfminerPage): Page {
   const boxValues: number[] = pageObj._attr.bbox.split(',').map(v => parseFloat(v));
   const pageBBox: BoundingBox = new BoundingBox(
     boxValues[0],
@@ -154,7 +140,7 @@ function getPage(pageObj: PdfminerPage, imagesLocation: string): Page {
   if (pageObj.figure !== undefined) {
     pageObj.figure.forEach(fig => {
       if (fig.image !== undefined) {
-        elements = [...elements, ...interpretImages(fig, imagesLocation, pageBBox.height)];
+        elements = [...elements, ...interpretImages(fig, pageBBox.height)];
       }
       if (fig.text !== undefined) {
         elements = [...elements, ...breakLineIntoWords(fig.text, ',', pageBBox.height)];
@@ -224,17 +210,16 @@ function getValidCharacter(character: string): string {
 
 function interpretImages(
   fig: PdfminerFigure,
-  imagsLocation: string,
   pageHeight: number,
   scalingFactor: number = 1,
 ): Image[] {
-  return fig.image.map(
-    (img: PdfminerImage) =>
-      new Image(
-        getBoundingBox(fig._attr.bbox, ',', pageHeight, scalingFactor),
-        path.join(imagsLocation, img._attr.src),
-      ),
-  );
+    return fig.image.map(
+      (_img: PdfminerImage) =>
+        new Image(
+          getBoundingBox(fig._attr.bbox, ',', pageHeight, scalingFactor),
+          "",  // TODO: to be filled with the location of the image once resolved
+        ),
+    );
 }
 
 function breakLineIntoWords(
