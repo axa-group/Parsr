@@ -49,18 +49,13 @@ const defaultExtractor: TableExtractor = {
     }
 
     // find python executable name
-    let pythonLocation: string = utils.getCommandLocationOnSystem('python3');
-    if (!pythonLocation) {
-      pythonLocation = utils.getCommandLocationOnSystem('python');
-    }
-    if (!pythonLocation) {
+    const pythonLocation: string = utils.getPythonLocation();
+    if (pythonLocation === "") {
       return {
         stdout: '',
         stderr: 'Unable to find python on the system. Are you sure it is installed?',
         status: 10,
       };
-    } else {
-      logger.debug(`python was found at ${pythonLocation}`);
     }
 
     const tableExtractor = child_process.spawnSync(pythonLocation, [

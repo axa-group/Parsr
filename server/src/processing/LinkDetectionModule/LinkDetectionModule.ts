@@ -81,7 +81,7 @@ export class LinkDetectionModule extends Module {
         reject(`Could not find the necessary libraries..`);
       }
 
-      logger.info(`Extracting metadata with 's dumppdf...`);
+      logger.info(`Extracting metadata with pdfminer's dumppdf.py tool...`);
 
       const dumppdfArguments = [dumppdfLocation, '-a', '-o', xmlOutputFile, pdfFilePath];
 

@@ -58,6 +58,8 @@ export function execute(pdfInputFile: string): Promise<Document> {
         rejectDocument(`Could not find the necessary libraries..`);
       }
 
+      logger.info(`Extracting file contents with pdfminer's pdf2txt.py tool...`);
+
       const pdf2txtArguments: string[] = [
         pdf2txtLocation,
         '-c',
