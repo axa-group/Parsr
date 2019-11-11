@@ -18,6 +18,7 @@ import * as defaultConfig from './defaultConfig.json';
 export interface Options {
   pages?: number[];
   flavor?: string;
+  table_areas?: string[];
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -58,13 +59,19 @@ const defaultExtractor: TableExtractor = {
       };
     }
 
-    const tableExtractor = child_process.spawnSync(pythonLocation, [
+    const scriptArgs = [
       __dirname + '/../../../assets/TableDetectionScript.py',
       inputFile,
       flavor,
       lineScale,
       pages,
-    ]);
+    ];
+
+    if ((options.table_areas || []).length > 0) {
+      scriptArgs.push(options.table_areas.join(';'));
+    }
+
+    const tableExtractor = child_process.spawnSync(pythonLocation, scriptArgs);
 
     if (!tableExtractor.stdout || !tableExtractor.stderr) {
       return {
@@ -122,9 +129,10 @@ export class TableDetectionModule extends Module<Options> {
       return doc;
     }
 
-    this.options.pageConfig.forEach(config => {
+    this.options.pageConfig.forEach((config, n) => {
       const tableExtractor = this.extractor.readTables(doc.inputFile, config);
       if (tableExtractor.status !== 0) {
+        logger.error(`there was a problem executing table config no. ${n + 1}: ${JSON.stringify(config)}`);
         logger.error(tableExtractor.stderr);
       } else {
         const tablesData = JSON.parse(tableExtractor.stdout);

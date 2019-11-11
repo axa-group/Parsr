@@ -138,10 +138,14 @@ def main():
     if len(sys.argv) > 4:
         pages = str(sys.argv[4])
 
+    tableAreas = None
+    if len(sys.argv) > 5:
+        tableAreas = sys.argv[5].split(';')
+    
     if flavor == 'lattice':
         tables = camelot.read_pdf(pdfFile,  pages=pages, flavor=flavor, line_scale=lineScale)
     else: 
-        tables = camelot.read_pdf(pdfFile,  pages=pages, flavor=flavor)
+        tables = camelot.read_pdf(pdfFile,  pages=pages, flavor=flavor, table_areas=tableAreas)
 
     if len(tables) == 0:
         #print('No tables detected ', tables)
