@@ -45,27 +45,11 @@ export class TableRow extends Element {
   /**
    * Converts the entire row into a md code string.
    */
-  public toMarkdown(type?: string): string {
-    if (type === 'html') {
-      return this.exportAsHtml();
-    }
-
-    return this.exportAsMD();
-  }
-
-  public exportAsHtml(): string {
+  public toMarkdown(): string {
     let output: string = "<tr style='background-color:#fff'>  \n";
     this.content.forEach(cell => {
       output += cell.toMarkdown();
     });
     return output + '</tr>';
-  }
-
-  public exportAsMD(): string {
-    let output: string = '|';
-    this.content.forEach(cell => {
-      output += cell.toMarkdown() + '|';
-    });
-    return output;
   }
 }

@@ -292,8 +292,7 @@ export class Table extends Element {
             }
           }
 
-          // arr[i][j] = cell.content.toString().trim();
-          arr[i][j] = cell.toMarkdown() !== 'null' ? cell.toMarkdown().trim() : '';
+          arr[i][j] = cell.content.toString().trim();
           jumpLine = Math.min(jumpLine, cell.rowspan);
 
           j += cell.colspan - 1;
@@ -311,35 +310,12 @@ export class Table extends Element {
   /**
    * Converts the entire table into a md code string.
    */
-  public toMarkdown(type?: string): string {
-    if (type === 'html') {
-      return this.exportAsHtml();
-    }
-
-    return this.exportAsMD();
-  }
-
-  public exportAsHtml(): string {
+  public toMarkdown(): string {
     let output: string = '<table>  \n';
     this.content.forEach(row => {
       output += row.toMarkdown() + '  \n';
     });
     return output + '</table>';
-  }
-
-  public exportAsMD(): string {
-    const tableArray = this.toArray();
-    let output: string = '';
-    tableArray.forEach((row, index) => {
-      row.forEach(cellMDCode => {
-        output += '|' + (cellMDCode != null ? cellMDCode : '');
-      });
-      output += '|  \n';
-      if (index === 0) {
-        output += '|---'.repeat(row.length) + '|  \n';
-      }
-    });
-    return output;
   }
 
   private calculateShape(): void {

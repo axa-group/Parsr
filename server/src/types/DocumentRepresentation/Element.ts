@@ -219,11 +219,4 @@ export abstract class Element {
   public toHTML(): string {
     return "To be implemented in '" + this.constructor.name + "'";
   }
-
-  /**
-   * Converts the entire element into a MD code string.
-   */
-  public toMarkdown(): string {
-    return "To be implemented in '" + this.constructor.name + "'";
-  }
 }

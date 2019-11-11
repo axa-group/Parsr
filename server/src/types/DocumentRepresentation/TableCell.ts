@@ -90,15 +90,7 @@ export class TableCell extends Element {
   /**
    * Converts the entire row into a md code string.
    */
-  public toMarkdown(type?: string): string {
-    if (type === 'html') {
-      return this.exportAsHtml();
-    }
-
-    return this.exportAsMD();
-  }
-
-  public exportAsHtml(): string {
+  public toMarkdown(): string {
     let output: string = '   <td';
     if (this.colspan > 1) {
       output += ' colspan=' + this.colspan;
@@ -117,14 +109,6 @@ export class TableCell extends Element {
       output += element.toHTML();
     });
     return output + '</td>  \n';
-  }
-
-  public exportAsMD(): string {
-    let output: string = '';
-    this.content.forEach(element => {
-      output += element.toMarkdown();
-    });
-    return output;
   }
 
   private isCenterAligned(): boolean {
