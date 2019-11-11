@@ -595,7 +595,7 @@ export class LinesToParagraphModule extends Module<Options> {
       // Only fonts that are used less than 10% of
       // all words will be used to exctract headings
       // TODO: Add a module param to change this value
-      return avg / allWords.length < 0.02;
+      return avg / allWords.length < 0.15;
     });
 
     // console.log('Heading Fonts');
