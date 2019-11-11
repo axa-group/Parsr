@@ -22,6 +22,7 @@
               <li v-if="currentElement.font">
                 <span>Font:</span> {{ currentElement.font }}
                 <span>{{ fontInfo(currentElement.font) }}</span>
+                <div>Ratio: {{ fontUsageRatio(currentElement.font) }}</div>
               </li>
               <li v-if="!Array.isArray(currentElement.content)">
                 <span>Content:</span> <span class="wordContent">{{ currentElement.content }}</span>
@@ -82,7 +83,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['elementInspectorSwitchState']),
+    ...mapGetters(['elementInspectorSwitchState', 'fontUsageRatio']),
     elementInspectorSwitch: {
       get() {
         return this.elementInspectorSwitchState;
