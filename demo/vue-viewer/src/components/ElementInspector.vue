@@ -23,8 +23,9 @@
                 <span>Font:</span> {{ currentElement.font }}
                 <span>{{ fontInfo(currentElement.font) }}</span>
               </li>
-              <li v-if="!Array.isArray(currentElement.content)">
-                <span>Content:</span> <span class="wordContent">{{ currentElement.content }}</span>
+              <li>
+                <span>Content:</span>
+                <span class="wordContent">{{ recursiveGetContent(currentElement.content) }}</span>
               </li>
               <li v-if="Object.keys(currentElement.properties).length > 0">
                 <span>Properties:</span>
@@ -101,6 +102,16 @@ export default {
       const font = this.fonts.filter(font => font.id === fontId).shift();
       if (font) {
         return '(' + font.name + ', ' + font.weight + ', size ' + font.size + ')';
+      }
+      return null;
+    },
+    recursiveGetContent(content) {
+      if (typeof content === 'string') {
+        return content;
+      } else if (Array.isArray(content)) {
+        return content.map(c => this.recursiveGetContent(c)).join(' ');
+      } else if (typeof content === 'object') {
+        return this.recursiveGetContent(content.content || '');
       }
       return null;
     },
