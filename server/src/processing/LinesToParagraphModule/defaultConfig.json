@@ -1,18 +1,14 @@
 {
-	"name": "lines-to-paragraph",
-	"description": "Create paragraphs from a collection of lines.",
-	"specs": {
-		"tolerance": {
-			"value": 0.25,
-			"range": {
-				"min": 0.0,
-				"max": 1.0,
-				"step": 0.01
-			}
-		},
-		"computeHeadings": {
-			"value": true,
-			"range": [true, false]
-		}
-	}
+  "name": "lines-to-paragraph",
+  "description": "Create paragraphs from a collection of lines.",
+  "specs": {
+    "tolerance": {
+      "value": 0.25,
+      "range": {
+        "min": 0.0,
+        "max": 1.0,
+        "step": 0.01
+      }
+    }
+  }
 }
