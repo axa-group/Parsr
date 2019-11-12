@@ -57,8 +57,7 @@
     [
       "lines-to-paragraph",
       {
-        "tolerance": 0.25,
-        "computeHeadings": true
+        "tolerance": 0.25
       }
     ],
     "heading-detection",
