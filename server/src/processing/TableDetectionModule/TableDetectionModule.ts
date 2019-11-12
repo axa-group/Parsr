@@ -207,7 +207,7 @@ export class TableDetectionModule extends Module<Options> {
     const pageWords = page.getElementsOfType<Word>(Word);
     return tableData.cells.map(row => {
       const tableCells: TableCell[] = this.createRowCells(row, page.box.height, pageWords);
-      const rowWidth = tableCells.map(cell => cell.box.width).reduce((a, b) => a + b);
+      const rowWidth = tableCells.map(cell => cell.box.width).reduce((a, b) => a + b, 0);
       return new TableRow(
         tableCells,
         new BoundingBox(
@@ -241,15 +241,7 @@ export class TableDetectionModule extends Module<Options> {
   }
 
   private wordsInCellBox(cellBounds: BoundingBox, pageWords: Word[]): Word[] {
-    const isInBox = (element, box) => {
-      return (
-        element.box.top + element.box.height * 0.2 >= box.top &&
-        element.box.top + element.box.height <= box.top + box.height &&
-        element.box.left >= box.left &&
-        element.box.left + element.box.width <= box.left + box.width
-      );
-    };
-    return pageWords.filter(word => isInBox(word, cellBounds));
+    return pageWords.filter(w => (BoundingBox.getOverlap(w.box, cellBounds).box1OverlapProportion > 0.80));
   }
 
   private removeWordsUsedInCells(document: Document) {
