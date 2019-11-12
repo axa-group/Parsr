@@ -14,7 +14,7 @@ It creates new heading elements by detecting headings lines from all lines conta
 
 ## How it works
 
-It simply takes every line one by one of each paragraph and creates a heading if the satisfaction of at least one of the following criteria:
+It simply takes every line one by one of each paragraph and creates a heading if at least one of the following criteria is satisfyed:
 
 1.  Superior font size to the most common font size in the document.
 2.  **Entirely bold lines**
