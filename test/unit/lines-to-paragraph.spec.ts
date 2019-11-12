@@ -30,7 +30,7 @@ describe('Lines to Paragraph Module', () => {
       'one paragraph doc': ['one-paragraph-with-lines.json', 1],
       'multiple paragraphs': ['paragraph-merge.json', 4],
       'multicolumn paragraphs': ['paragraph-merge-2.json', 5],
-      'full content page': ['paragraph-merge-5.json', 11],
+      'full content page': ['paragraph-merge-5.json', 9 + 1], // There is one table
     },
     (fileName, paragraphCount) => {
       let docBefore: Document;
