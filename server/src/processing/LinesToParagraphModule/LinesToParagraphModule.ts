@@ -354,13 +354,12 @@ export class LinesToParagraphModule extends Module<Options> {
   }
 
   private paragraphsDetected(doc: Document): boolean {
-    return (
-      doc.pages
-        .map(page => {
-          page.getElementsOfType<Paragraph>(Paragraph, true);
-        })
-        .reduce((prev, curr) => prev.concat(curr), [])
-        .filter(heading => heading !== undefined).length > 0
-    );
+    let detected = false;
+    doc.pages.forEach(page => {
+      if (page.getElementsOfType<Paragraph>(Paragraph, true).length > 0) {
+        detected = true;
+      }
+    });
+    return detected;
   }
 }

@@ -341,14 +341,13 @@ export class HeadingDetectionModule extends Module {
   }
 
   private headingsDetected(doc: Document): boolean {
-    return (
-      doc.pages
-        .map(page => {
-          page.getElementsOfType<Heading>(Heading, true);
-        })
-        .reduce((prev, curr) => prev.concat(curr), [])
-        .filter(heading => heading !== undefined).length > 0
-    );
+    let detected = false;
+    doc.pages.forEach(page => {
+      if (page.getElementsOfType<Heading>(Heading, true).length > 0) {
+        detected = true;
+      }
+    });
+    return detected;
   }
 
   private computeHeadingLevels(document: Document) {
