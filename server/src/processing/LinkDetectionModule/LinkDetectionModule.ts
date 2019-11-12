@@ -155,20 +155,24 @@ export class LinkDetectionModule extends Module {
         pageAnnots = pageAnnots.map(annot => {
           const rectValueIndex = annot.dict[0].key.indexOf('Rect');
           const linkValueIndex = annot.dict[0].key.indexOf('A');
-          const numbers = annot.dict[0].value[rectValueIndex].list[0].number;
-          return {
-            box: {
-              l: parseFloat(numbers[0]),
-              t: pageHeight - numbers[3],
-              w: numbers[2] - numbers[0],
-              h: numbers[3] - numbers[1],
-            },
-            link: this.parseLinkByActionType(annot.dict[0].value[linkValueIndex].dict[0]),
-            page: pages.map(p => p.$.id).findIndex(p => p === pageObject.$.id) + 1,
-          };
+          if (rectValueIndex !== -1 && linkValueIndex !== -1) {
+            const numbers = annot.dict[0].value[rectValueIndex].list[0].number;
+            return {
+              box: {
+                l: parseFloat(numbers[0]),
+                t: pageHeight - numbers[3],
+                w: numbers[2] - numbers[0],
+                h: numbers[3] - numbers[1],
+              },
+              link: this.parseLinkByActionType(annot.dict[0].value[linkValueIndex].dict[0]),
+              page: pages.map(p => p.$.id).findIndex(p => p === pageObject.$.id) + 1,
+            };
+          } else {
+            return undefined;
+          }
         });
 
-        annots.push(...pageAnnots);
+        annots.push(...pageAnnots.filter(a => a !== undefined));
       });
 
       logger.info('Found ' + annots.length + ' links in PDF metadata.');
