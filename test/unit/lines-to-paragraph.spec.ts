@@ -67,10 +67,17 @@ describe('Lines to Paragraph Module', () => {
 describe('Heading Detection', () => {
   let docAfter: Document;
   let docBefore: Document;
-  withData(
+  /*  TODO: Create Headings test cases using correct
+      module instead of lines to paragraph
     {
       'multiple paragraphs with headings': ['paragraph-merge-3.json', 4],
       'complex pdf file': ['testReadingOrder.json', 6], // Real headings count should be 5 but as we have one issue in reading order detection then we have 1 heading splitted into 2
+    },
+  */
+  withData(
+    {
+      'multiple paragraphs with headings': ['paragraph-merge-3.json', 0],
+      'complex pdf file': ['testReadingOrder.json', 0], // Real headings count should be 5 but as we have one issue in reading order detection then we have 1 heading splitted into 2
     },
     (fileName, headingCount) => {
       before(done => {
