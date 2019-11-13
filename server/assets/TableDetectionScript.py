@@ -85,7 +85,7 @@ def updateCellRowSpan(cell, allRows, index, cellInfo):
     cellInfo['size']['height'] = height
     return cellInfo
 
-def extractRowData(row, allRows):
+def extractRowData(row, allRows, flavor):
     cellsData = []
     cellHSpan = 0    
     for index, cell in enumerate(row, 0):
@@ -98,24 +98,25 @@ def extractRowData(row, allRows):
                 cellInfo = updateCellRowSpan(cell, allRows, index, cellInfo)
 
         cellHSpan += cellInfo['colSpan']
-        if cell.text != '' or (index + 1 >= cellHSpan and cell.text == '' and len(cellsData) > 0):
+        if flavor == 'stream' or cell.text != '' or (index + 1 >= cellHSpan and cell.text == '' and len(cellsData) > 0):
             cellsData.append(cellInfo)        
         
     return cellsData
 
-def extractRowsData(table):
-    rowsData = [extractRowData(row, table.cells) for row in table.cells]    
+def extractRowsData(table, flavor):
+    rowsData = [extractRowData(row, table.cells, flavor) for row in table.cells]    
     noEmptyRowsData = list(filter(lambda x: len(x) > 0, rowsData))    
     if len(noEmptyRowsData) == 0:
         return None
 
     return noEmptyRowsData
 
-def extractTableData(table):    
+def extractTableData(table, flavor):    
     tableData = dict()
     tableData['size'] = getTableSize(table)
     tableData['location'] = getTableLocation(table)
-    cellsData = extractRowsData(table)
+    tableData['content'] = table.data
+    cellsData = extractRowsData(table, flavor)
     if cellsData != None:
         tableData['cells'] = cellsData
         return tableData
@@ -159,7 +160,7 @@ def main():
         tablesInPage = list(filter(lambda x: x.page == page, tables))
         #print('Current page', page)
         #print('Tables found', tablesInPage)
-        tablesData = list(map(lambda x: extractTableData(x), tablesInPage))
+        tablesData = list(map(lambda x: extractTableData(x, flavor), tablesInPage))
         tablesData = list(filter(lambda x: x != None, tablesData))
         output.append(createPageData(page, tablesData))
 

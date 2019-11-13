@@ -155,9 +155,88 @@ export class TableDetectionModule extends Module<Options> {
     const pageHeight = page.box.height;
     const table: Table = this.createTable(tableData, pageHeight);
     table.content = this.createRows(tableData, page);
+
+    table.content = this.joinCellsByContent(table.content, tableData.content);
     if (!this.isFalseTable(table)) {
       page.elements = page.elements.concat(table);
     }
+  }
+
+  private joinCellsByContent(tableContent: TableRow[], tableData: string[][]): TableRow[] {
+    const mergeCandidateCells = this.getMergeCandidateCellPositions(tableContent, tableData);
+    Object.keys(mergeCandidateCells).forEach(cellRow => {
+      mergeCandidateCells[cellRow].forEach(cellColGroup => {
+        let cellSubGroup = [cellColGroup[0]];
+        for (let i = 0; i < cellColGroup.length; i += 1) {
+          const expectedTextInSubGroup =
+            cellSubGroup.map(cellCol => tableData[cellRow][cellCol].trim()).join(' ').trim();
+
+          const tableContentSubGroup = tableContent[cellRow].content.filter((_, index) => cellSubGroup.includes(index));
+          const subgroupText = tableContentSubGroup.map(cell => cell.toString().trim()).join(' ').trim();
+
+          if (expectedTextInSubGroup === subgroupText) {
+            logger.info('CELLS TO JOIN!', `ROW ${cellRow}, COLS: ${JSON.stringify(cellSubGroup)}`);
+          }
+
+          if (subgroupText.length > expectedTextInSubGroup.length || expectedTextInSubGroup === subgroupText) {
+            cellSubGroup = [];
+          }
+
+          if (cellColGroup.length > i + 1) {
+            cellSubGroup.push(cellColGroup[i + 1]);
+          }
+        }
+      });
+    });
+
+    return tableContent;
+  }
+
+  private getMergeCandidateCellPositions(tableContent: TableRow[], tableData: string[][]): object {
+    const mergeCandidateCells = {};
+
+    /*
+      having the expected text content in each cell in tableData,
+      this looks for cells in tableContent whose text content is different from the expected
+      ex:
+        tableContent: | this is only one      | cell  |
+                      | foo                   | bar   |
+
+        tableData:    | this is only one cell |       |
+                      | foo                   | bar   |
+
+        will give mergeCandidateCells = { '0': [0,1] }
+        because content in [0,0] and [0,1] is different than the expected
+    */
+    tableData.forEach((dataRow, nRow) => {
+      dataRow.forEach((cellStr, nCol) => {
+        const tableCellContent = tableContent[nRow].content[nCol].toString();
+        const expectedCellContent = cellStr.toString();
+        if (tableCellContent !== expectedCellContent) {
+          if (!mergeCandidateCells[nRow]) {
+            mergeCandidateCells[nRow] = [];
+          }
+          mergeCandidateCells[nRow].push(nCol);
+        }
+      });
+    });
+
+    /*
+      now I group the candidate Cells by consecutive numbers.
+      Grouped results will tell which cells could be joined together into one Cell
+      and check if that new content matches the expected content
+
+      For now groups with only one value are not considered (possible vertical join or string encoding problem)
+    */
+    Object.keys(mergeCandidateCells).forEach(nRow => {
+      mergeCandidateCells[nRow] = utils.groupConsecutiveNumbersInArray(mergeCandidateCells[nRow])
+        .filter(group => group.length > 1);
+      if (mergeCandidateCells[nRow].length === 0) {
+        delete mergeCandidateCells[nRow];
+      }
+    });
+
+    return mergeCandidateCells;
   }
 
   private isFalseTable(table: Table): boolean {
