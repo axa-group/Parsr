@@ -156,7 +156,10 @@ export class TableDetectionModule extends Module<Options> {
     const table: Table = this.createTable(tableData, pageHeight);
     table.content = this.createRows(tableData, page);
 
-    table.content = this.joinCellsByContent(table.content, tableData.content);
+    if (tableData.content) {
+      table.content = this.joinCellsByContent(table.content, tableData.content);
+    }
+
     if (!this.isFalseTable(table)) {
       page.elements = page.elements.concat(table);
     }
