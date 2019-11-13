@@ -22,7 +22,11 @@
               <li v-if="currentElement.font">
                 <span>Font:</span> {{ currentElement.font }}
                 <span>{{ fontInfo(currentElement.font) }}</span>
-                <div>Ratio: {{ fontUsageRatio(currentElement.font) }}</div>
+                <ul style="list-style-type: none; margin:0px; padding:0px">
+                  <li><span>Usage ratio:</span></li>
+                  <li style="padding-left:10px;"><span>- Document {{ fontUsageRatio(currentElement.font).documentRatio }}</span></li>
+                  <li style="padding-left:10px;"><span>- Page {{ fontUsageRatio(currentElement.font).pageRatio }}</span></li>
+                </ul>
               </li>
               <li v-if="!Array.isArray(currentElement.content)">
                 <span>Content:</span> <span class="wordContent">{{ currentElement.content }}</span>
