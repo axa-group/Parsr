@@ -1,0 +1,363 @@
+{
+    "metadata": [],
+    "pages": [
+        {
+            "box": {
+                "l": 0,
+                "t": 0,
+                "w": 596,
+                "h": 843
+            },
+            "pageNumber": 1,
+            "elements": [
+                {
+                    "id": 11,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 39.78,
+                        "t": 90.93,
+                        "w": 31.19,
+                        "h": 14.99
+                    },
+                    "content": "Lorem",
+                    "font": 1
+                },
+                {
+                    "id": 12,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 74.02,
+                        "t": 90.93,
+                        "w": 29.35,
+                        "h": 14.99
+                    },
+                    "content": "ipsum",
+                    "font": 1
+                },
+                {
+                    "id": 26,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 132.11,
+                        "t": 90.93,
+                        "w": 24.46,
+                        "h": 14.99
+                    },
+                    "content": "dolor",
+                    "font": 1
+                },
+                {
+                    "id": 27,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 159.63,
+                        "t": 90.93,
+                        "w": 11,
+                        "h": 14.99
+                    },
+                    "content": "sit",
+                    "font": 1
+                },
+                {
+                    "id": 28,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 173.69,
+                        "t": 90.93,
+                        "w": 27.52,
+                        "h": 14.99
+                    },
+                    "content": "amet,",
+                    "font": 1
+                },
+                {
+                    "id": 41,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 216.18,
+                        "t": 90.93,
+                        "w": 62.99,
+                        "h": 14.99
+                    },
+                    "content": "consectetuer",
+                    "font": 1
+                },
+                {
+                    "id": 65,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 298.75,
+                        "t": 90.93,
+                        "w": 48.93,
+                        "h": 14.99
+                    },
+                    "content": "adipiscing",
+                    "font": 1
+                },
+                {
+                    "id": 66,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 350.73,
+                        "t": 90.93,
+                        "w": 17.12,
+                        "h": 14.99
+                    },
+                    "content": "elit.",
+                    "font": 1
+                },
+                {
+                    "id": 67,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 383.57,
+                        "t": 90.93,
+                        "w": 50.76,
+                        "h": 14.99
+                    },
+                    "content": "Maecenas",
+                    "font": 1
+                },
+                {
+                    "id": 83,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 451.13,
+                        "t": 90.93,
+                        "w": 37.3,
+                        "h": 14.99
+                    },
+                    "content": "porttitor",
+                    "font": 1
+                },
+                {
+                    "id": 84,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 491.48,
+                        "t": 90.93,
+                        "w": 36.1,
+                        "h": 14.99
+                    },
+                    "content": "congue",
+                    "font": 1
+                },
+                {
+                    "id": 97,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 39.78,
+                        "t": 117.21,
+                        "w": 29.96,
+                        "h": 14.99
+                    },
+                    "content": "Fusce",
+                    "font": 1
+                },
+                {
+                    "id": 98,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 72.8,
+                        "t": 117.21,
+                        "w": 39.76,
+                        "h": 14.99
+                    },
+                    "content": "posuere",
+                    "font": 1
+                },
+                {
+                    "id": 104,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 132.11,
+                        "t": 117.21,
+                        "w": 31.19,
+                        "h": 14.99
+                    },
+                    "content": "Lorem",
+                    "font": 1
+                },
+                {
+                    "id": 110,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 216.18,
+                        "t": 117.21,
+                        "w": 29.35,
+                        "h": 14.99
+                    },
+                    "content": "ipsum",
+                    "font": 1
+                },
+                {
+                    "id": 115,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 451.13,
+                        "t": 117.21,
+                        "w": 24.46,
+                        "h": 14.99
+                    },
+                    "content": "amet",
+                    "font": 1
+                },
+                {
+                    "id": 121,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 298.75,
+                        "t": 117.21,
+                        "w": 24.46,
+                        "h": 14.99
+                    },
+                    "content": "dolor",
+                    "font": 1
+                },
+                {
+                    "id": 125,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 383.57,
+                        "t": 117.21,
+                        "w": 11,
+                        "h": 14.99
+                    },
+                    "content": "sit",
+                    "font": 1
+                },
+                {
+                    "id": 138,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 39.78,
+                        "t": 143.48,
+                        "w": 62.99,
+                        "h": 14.99
+                    },
+                    "content": "consectetuer",
+                    "font": 1
+                },
+                {
+                    "id": 147,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 216.18,
+                        "t": 143.48,
+                        "w": 50.76,
+                        "h": 14.99
+                    },
+                    "content": "Maecenas",
+                    "font": 1
+                },
+                {
+                    "id": 157,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 298.75,
+                        "t": 143.48,
+                        "w": 37.3,
+                        "h": 14.99
+                    },
+                    "content": "porttitor",
+                    "font": 1
+                },
+                {
+                    "id": 164,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 383.57,
+                        "t": 143.48,
+                        "w": 36.09,
+                        "h": 14.99
+                    },
+                    "content": "congue",
+                    "font": 1
+                },
+                {
+                    "id": 170,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 451.13,
+                        "t": 143.48,
+                        "w": 32.41,
+                        "h": 14.99
+                    },
+                    "content": "massa",
+                    "font": 1
+                },
+                {
+                    "id": 175,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 132.11,
+                        "t": 143.48,
+                        "w": 14.06,
+                        "h": 14.99
+                    },
+                    "content": "elit",
+                    "font": 1
+                }
+            ]
+        }
+    ],
+    "fonts": [
+        {
+            "id": 1,
+            "name": "ArialMT",
+            "size": 14.986,
+            "weight": "medium",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#NaNNaNNaN"
+        }
+    ]
+}
