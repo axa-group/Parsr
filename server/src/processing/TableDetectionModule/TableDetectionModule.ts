@@ -168,17 +168,19 @@ export class TableDetectionModule extends Module<Options> {
   private joinCellsByContent(tableContent: TableRow[], tableData: string[][]): TableRow[] {
     const mergeCandidateCells = this.getMergeCandidateCellPositions(tableContent, tableData);
     Object.keys(mergeCandidateCells).forEach(cellRow => {
+      const groupsToMerge = [];
       mergeCandidateCells[cellRow].forEach(cellColGroup => {
         let cellSubGroup = [cellColGroup[0]];
         for (let i = 0; i < cellColGroup.length; i += 1) {
           const expectedTextInSubGroup =
             cellSubGroup.map(cellCol => tableData[cellRow][cellCol].trim()).join(' ').trim();
 
-          const tableContentSubGroup = tableContent[cellRow].content.filter((_, index) => cellSubGroup.includes(index));
+          const tableContentSubGroup: TableCell[] =
+            tableContent[cellRow].content.filter((_, index) => cellSubGroup.includes(index));
           const subgroupText = tableContentSubGroup.map(cell => cell.toString().trim()).join(' ').trim();
 
           if (expectedTextInSubGroup === subgroupText) {
-            logger.info('CELLS TO JOIN!', `ROW ${cellRow}, COLS: ${JSON.stringify(cellSubGroup)}`);
+            groupsToMerge.push(cellSubGroup);
           }
 
           if (subgroupText.length > expectedTextInSubGroup.length || expectedTextInSubGroup === subgroupText) {
@@ -190,6 +192,9 @@ export class TableDetectionModule extends Module<Options> {
           }
         }
       });
+      if (groupsToMerge.length > 0) {
+        tableContent[cellRow].mergeCells(groupsToMerge);
+      }
     });
 
     return tableContent;
