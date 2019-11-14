@@ -74,7 +74,7 @@ _This means the module called `fontMerge` will be called, then `removeOutOfPage`
 Different extractors are available for each input file format.
 
 - PDF files: three extractors are currently available for PDF files: `pdfminer`, which is an advanced python based extractor capable of extracting low and high level textual structures (from characters to paragraphs) and `abbyy` that rely on ABBYY Finereader that is paid software. It is also possible to use `tesseract` in this case. The document will then be converted as an image, so expect the accuracy to be lower on texts.
-- Images: two extractors are supporter for images: `tesseract` which is an Open Source OCR and `abbyy` that rely on ABBYY Finereader that is paid software.
+- Images: three extractors are supported for images: `tesseract` which is an Open Source OCR software, `google-vision`, which uses the Google Vision API to detect the contents of an image (see the [google vision documentation for more](google-vision.md)) and `abbyy`, that relies on ABBYY Finereader, a paid solution for OCR on documents and images.
 
 ### 2.2. Language
 
