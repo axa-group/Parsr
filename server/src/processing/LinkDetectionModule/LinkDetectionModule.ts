@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { spawn } from 'child_process';
+import * as filetype from 'file-type';
 import * as fs from 'fs';
 import { BoundingBox, Document, Page, Word } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
@@ -33,6 +34,10 @@ export class LinkDetectionModule extends Module {
 
   public async main(doc: Document): Promise<Document> {
     let mdLinks = await this.extractLinksFromMetadata(doc.inputFile);
+    if (mdLinks === undefined) {
+      return doc;
+    }
+
     mdLinks = mdLinks.map((link, id) => ({
       ...link,
       id,
@@ -121,6 +126,11 @@ export class LinkDetectionModule extends Module {
   */
   private async extractLinksFromMetadata(file: string): Promise<JSON[]> {
     const annots = [];
+    const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(file));
+    if (fileType === null || fileType.ext !== 'pdf') {
+      logger.warn(`Warning: The input file ${file} is not a PDF (${utils.prettifyObject(fileType)}); not fetching meta information for link detection..`);
+      return undefined;
+    }
     try {
       const {
         pdf: { object: objects },
