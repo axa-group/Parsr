@@ -23,41 +23,41 @@ import { Document, Element } from '../server/src/types/DocumentRepresentation';
 import { getPdf, runModules } from './helpers';
 
 describe('Line merge function', () => {
-	withData(
-		{
-			'one line': ['line-merge.pdf', 'I’m a sentence with multiple words.'],
-			'justified text': [
-				'line-merge-2.pdf',
-				'Lorem ipsum, sagittis a, dolor. Nullam turpis lacus.',
-			],
-		},
-		(pdfName, text) => {
-			let pdfAfter: Document;
+  withData(
+    {
+      'one line': ['line-merge.pdf', 'I’m a sentence with multiple words.'],
+      'justified text': [
+        'line-merge-2.pdf',
+        'Lorem ipsum, sagittis a, dolor. Nullam turpis lacus.',
+      ],
+    },
+    (pdfName, text) => {
+      let pdfAfter: Document;
 
-			before(done => {
-				function transform(pdf: Document) {
-					return runModules(pdf, [new ReadingOrderDetectionModule(), new WordsToLineModule()]);
-				}
+      before(done => {
+        function transform(pdf: Document) {
+          return runModules(pdf, [new ReadingOrderDetectionModule(), new WordsToLineModule()]);
+        }
 
-				getPdf(transform, pdfName).then(([, pdfA]) => {
-					pdfAfter = pdfA;
-					done();
-				});
-			});
+        getPdf(transform, pdfName).then(([, pdfA]) => {
+          pdfAfter = pdfA;
+          done();
+        });
+      });
 
-			it('should merge side-by-side words into a single block', () => {
-				expect(pdfAfter.pages[0].elements)
-					.to.be.an('array')
-					.and.to.be.of.length(1);
-			});
+      it('should merge side-by-side words into a single block', () => {
+        expect(pdfAfter.pages[0].elements)
+          .to.be.an('array')
+          .and.to.be.of.length(1);
+      });
 
-			it('should not alter the content', () => {
-				expect(
-					(pdfAfter.pages[0].elements[0].content as Element[]).map(t => t.content).join(' '),
-				).to.be.equal(text);
-			});
+      it('should not alter the content', () => {
+        expect(
+          (pdfAfter.pages[0].elements[0].content as Element[]).map(t => t.toString()).join(' '),
+        ).to.be.equal(text);
+      });
 
-			// TODO Page should not have any Words left except in Lines (same for Paragraph-merge)
-		},
-	);
+      // TODO Page should not have any Words left except in Lines (same for Paragraph-merge)
+    },
+  );
 });

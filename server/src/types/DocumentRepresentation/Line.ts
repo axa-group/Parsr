@@ -27,88 +27,92 @@ import { Word } from './Word';
  * multiple physical Line objects, or, multiple sentences can coexist in a single Line object.
  */
 export class Line extends Text {
-	private _content: Word[];
-	private _language: string;
-	private _scaling: number;
+  private _content: Word[];
+  private _language: string;
+  private _scaling: number;
 
-	constructor(boundingBox: BoundingBox, content: Word[] = []) {
-		super(boundingBox);
-		this.content = content;
-	}
+  constructor(boundingBox: BoundingBox, content: Word[] = []) {
+    super(boundingBox);
+    this.content = content;
+  }
 
-	public toString(): string {
-		return this.content
-			.map(w => w.toString().trim())
-			.reduce((w1, w2) => w1 + ' ' + w2, '')
-			.trim();
-	}
+  public toString(): string {
+    return this.content
+      .map(w => w.toString().trim())
+      .reduce((w1, w2) => w1 + ' ' + w2, '')
+      .trim();
+  }
 
-	/**
-	 * Returns the main font of the line using a basket + voting mechanism. The most used font will be returned
-	 * as a valid Font object.
-	 */
-	public getMainFont(): Font | undefined {
-		const result: Font = utils.findMostCommonFont(this.content.map((word: Word) => word.font));
-		if (result !== undefined) {
-			return result;
-		} else {
-			logger.debug(`No font found for word id ${this.id}`);
-			return undefined;
-		}
-	}
+  /**
+   * Returns the main font of the line using a basket + voting mechanism. The most used font will be returned
+   * as a valid Font object.
+   */
+  public getMainFont(): Font | undefined {
+    const result: Font = utils.findMostCommonFont(this.content.map((word: Word) => word.font));
+    if (result !== undefined) {
+      return result;
+    } else {
+      logger.debug(`No font found for word id ${this.id}`);
+      return undefined;
+    }
+  }
 
-	/**
-	 * Getter content
-	 * @return {Word[]}
-	 */
-	public get content(): Word[] {
-		return this._content;
-	}
+  /**
+   * Getter content
+   * @return {Word[]}
+   */
+  public get content(): Word[] {
+    return this._content;
+  }
 
-	/**
-	 * Getter language
-	 * @return {string}
-	 */
-	public get language(): string {
-		return this._language;
-	}
+  /**
+   * Getter language
+   * @return {string}
+   */
+  public get language(): string {
+    return this._language;
+  }
 
-	/**
-	 * Getter scaling
-	 * @return {number}
-	 */
-	public get scaling(): number {
-		return this._scaling;
-	}
+  /**
+   * Getter scaling
+   * @return {number}
+   */
+  public get scaling(): number {
+    return this._scaling;
+  }
 
-	/**
-	 * Setter content
-	 * @param {Word[]} value
-	 */
-	public set content(value: Word[]) {
-		this._content = value;
-	}
+  /**
+   * Setter content
+   * @param {Word[]} value
+   */
+  public set content(value: Word[]) {
+    this._content = value;
+  }
 
-	/**
-	 * Setter language
-	 * @param {string} value
-	 */
-	public set language(value: string) {
-		this._language = value;
-	}
+  /**
+   * Setter language
+   * @param {string} value
+   */
+  public set language(value: string) {
+    this._language = value;
+  }
 
-	/**
-	 * Setter scaling
-	 * @param {number} value
-	 */
-	public set scaling(value: number) {
-		this._scaling = value;
-	}
+  /**
+   * Setter scaling
+   * @param {number} value
+   */
+  public set scaling(value: number) {
+    this._scaling = value;
+  }
 
-	/**
-	 * Converts the entire element into a html code string (needed by MD table generation).
-	 */
-	public toHTML(): string {
-		return this.toString();
-	}
+  public toMarkdown(): string {
+    return this.content.map(w => w.toMarkDown()).join(' ');
+  }
+
+  /**
+   * Converts the entire element into a html code string (needed by MD table generation).
+   */
+  public toHTML(): string {
+    return this.toString();
+  }
 }

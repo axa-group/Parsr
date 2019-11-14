@@ -17,5 +17,5 @@
 import { Element } from '../DocumentRepresentation/Element';
 
 export interface Metadata {
-	elements: Element[];
+  elements: Element[];
 }

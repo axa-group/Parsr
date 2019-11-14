@@ -15,27 +15,27 @@
  */
 
 export interface Properties {
-	titleScores?: {
-		size: number;
-		wordHeight: number;
-		weight: number;
-		color: number;
-		name: number;
-		italic: number;
-		underline: number;
-		capitalCase: number;
-		titleCase: number;
-	};
+  titleScores?: {
+    size: number;
+    wordHeight: number;
+    weight: number;
+    color: number;
+    name: number;
+    italic: number;
+    underline: number;
+    capitalCase: number;
+    titleCase: number;
+  };
 
-	isRedundant?: boolean;
-	isHeader?: boolean;
-	isFooter?: boolean;
-	isPageNumber?: boolean;
-	bulletList?: boolean;
-	order?: number;
-	// column right
-	cr?: number;
-	// column left
-	cl?: number;
-	link?: string;
+  isRedundant?: boolean;
+  isHeader?: boolean;
+  isFooter?: boolean;
+  isPageNumber?: boolean;
+  bulletList?: boolean;
+  order?: number;
+  // column right
+  cr?: number;
+  // column left
+  cl?: number;
+  targetURL?: string;
 }

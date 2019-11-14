@@ -20,7 +20,7 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	minOverlap?: number;
+  minOverlap?: number;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -36,90 +36,90 @@ const defaultOptions = (defaultConfig as any) as Options;
  */
 
 export class RedundancyDetectionModule extends Module<Options> {
-	public static moduleName = 'redundancy-detection';
+  public static moduleName = 'redundancy-detection';
 
-	constructor(options?: Options) {
-		super(options, defaultOptions);
-	}
+  constructor(options?: Options) {
+    super(options, defaultOptions);
+  }
 
-	public main(doc: Document): Document {
-		doc.pages.forEach(page => {
-			const groups: Text[][] = this.regroupTextsByLocation(page.getElementsOfType(Word));
-			this.removeDuplicateElements(page, groups.filter(g => g.length !== 1));
-		});
+  public main(doc: Document): Document {
+    doc.pages.forEach(page => {
+      const groups: Text[][] = this.regroupTextsByLocation(page.getElementsOfType(Word));
+      this.removeDuplicateElements(page, groups.filter(g => g.length !== 1));
+    });
 
-		return doc;
-	}
+    return doc;
+  }
 
-	/**
-	 * Returns groups of texts which are the same and have a sufficient overlap to be
-	 * potential duplicates
-	 * @param texts a group of texts
-	 */
-	private regroupTextsByLocation(texts: Text[]): Text[][] {
-		const resultGroups: Text[][] = [];
+  /**
+   * Returns groups of texts which are the same and have a sufficient overlap to be
+   * potential duplicates
+   * @param texts a group of texts
+   */
+  private regroupTextsByLocation(texts: Text[]): Text[][] {
+    const resultGroups: Text[][] = [];
 
-		texts.forEach(element => {
-			for (const group of resultGroups) {
-				if (this.checkGroupOverlapWithNewElement(group, element)) {
-					group.push(element);
-					group.sort((a, b) => b.content.length - a.content.length);
-					return;
-				}
-			}
-			resultGroups.push([element]);
-		});
-		return resultGroups;
-	}
+    texts.forEach(element => {
+      for (const group of resultGroups) {
+        if (this.checkGroupOverlapWithNewElement(group, element)) {
+          group.push(element);
+          group.sort((a, b) => b.content.length - a.content.length);
+          return;
+        }
+      }
+      resultGroups.push([element]);
+    });
+    return resultGroups;
+  }
 
-	/**
-	 * Decides if a new element can be added to a group depending on weather if it has sufficient overlap,
-	 * and if it has the same text
-	 * @param group group of texts to be compared against
-	 * @param newElement the new element to be compared with the group
-	 */
-	private checkGroupOverlapWithNewElement(group: Text[], newElement: Text): boolean {
-		let decision: boolean = true;
-		if (group.length === 0) {
-			decision = false;
-		} else {
-			const refString: string =
-				group[0].toString().length >= newElement.toString().length
-					? group[0].toString()
-					: newElement.toString();
-			const newString: string =
-				group[0].toString().length < newElement.toString().length
-					? group[0].toString()
-					: newElement.toString();
-			if (!refString.includes(newString)) {
-				decision = false;
-			} else {
-				for (const e of group) {
-					const overlap: number = BoundingBox.getOverlap(e.box, newElement.box);
-					if (!(overlap >= this.options.minOverlap)) {
-						decision = false;
-						break;
-					}
-				}
-			}
-		}
-		return decision;
-	}
+  /**
+   * Decides if a new element can be added to a group depending on weather if it has sufficient overlap,
+   * and if it has the same text
+   * @param group group of texts to be compared against
+   * @param newElement the new element to be compared with the group
+   */
+  private checkGroupOverlapWithNewElement(group: Text[], newElement: Text): boolean {
+    let decision: boolean = true;
+    if (group.length === 0) {
+      decision = false;
+    } else {
+      const refString: string =
+        group[0].toString().length >= newElement.toString().length
+          ? group[0].toString()
+          : newElement.toString();
+      const newString: string =
+        group[0].toString().length < newElement.toString().length
+          ? group[0].toString()
+          : newElement.toString();
+      if (!refString.includes(newString)) {
+        decision = false;
+      } else {
+        for (const e of group) {
+          const overlap: number = BoundingBox.getOverlap(e.box, newElement.box).jaccardIndex;
+          if (!(overlap >= this.options.minOverlap)) {
+            decision = false;
+            break;
+          }
+        }
+      }
+    }
+    return decision;
+  }
 
-	/**
-	 * Keeps one from a group of texts, removes the others.
-	 * TODO: promote candidates which will favor a better wordsToLine performance later on
-	 * @param page the page in question
-	 * @param groups groups of text from which only one is to be kept
-	 */
-	private removeDuplicateElements(page: Page, groups: Text[][]) {
-		groups.forEach(group => {
-			logger.debug(
-				`--> ${group.length} duplicate words with text ${group[0].toString()} found on page ${
-					page.pageNumber
-				}`,
-			);
-			group.slice(1, group.length).forEach(e => page.removeElement(e));
-		});
-	}
+  /**
+   * Keeps one from a group of texts, removes the others.
+   * TODO: promote candidates which will favor a better wordsToLine performance later on
+   * @param page the page in question
+   * @param groups groups of text from which only one is to be kept
+   */
+  private removeDuplicateElements(page: Page, groups: Text[][]) {
+    groups.forEach(group => {
+      logger.debug(
+        `--> ${group.length} duplicate words with text ${group[0].toString()} found on page ${
+          page.pageNumber
+        }`,
+      );
+      group.slice(1, group.length).forEach(e => page.removeElement(e));
+    });
+  }
 }

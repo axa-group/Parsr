@@ -1,6 +1,6 @@
 # API - DEPRECATED
 
-## :warning: This API is now deprecated. Please refer to the new version: [api-guide.md](docs/api-guide.md). :warning:
+### :warning: This API is now deprecated. Please refer to the new version: [api-guide.md](api-guide.md). :warning:
 
 The version of this API is 0.3.
 
@@ -23,9 +23,9 @@ In the end, the full request may look like this:
 ```http
 POST /upload HTTP/1.1
 Host: localhost:3000
-Content-Type: multipart/form-data; boundary=MultipartBoundry
+Content-Type: multipart/form-data; boundary=MultipartBoundary
 
---MultipartBoundry
+--MultipartBoundary
 Content-Disposition: form-data; name="config"
 Content-Type: application/json
 
@@ -51,12 +51,12 @@ Content-Type: application/json
         "paragraphLastLine"
     ]
 }
---MultipartBoundry--
+--MultipartBoundary--
 Content-Disposition: form-data; name="file"; filename="example.pdf"
 Content-Type: application/pdf
 
 <pdf_content>
---MultipartBoundry
+--MultipartBoundary
 ```
 
 ## Response
@@ -65,7 +65,7 @@ The response will be of the following format:
 
 ```json
 {
-	"filename": "example.json"
+  "filename": "example.json"
 }
 ```
 

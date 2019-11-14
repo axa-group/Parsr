@@ -1,7 +1,7 @@
 {
 	"version": 0.5,
 	"extractor": {
-		"pdf": "pdf2json",
+		"pdf": "pdfminer",
 		"img": "tesseract",
 		"language": ["eng", "fra"]
 	},
@@ -25,7 +25,7 @@
 					"regex": "(\\d+)[ -]*(ans|jarige)"
 				}, {
 					"label": "Percent",
-					"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
+					"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|prozent)"
 				}]
 		}]
 	],

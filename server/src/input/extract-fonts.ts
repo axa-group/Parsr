@@ -26,35 +26,35 @@ import logger from '../utils/Logger';
  * Use Mutool to extract fonts files in a specific folder.
  */
 export function extractFonts(pdfInputFile: string): Promise<void> {
-	return new Promise<void>((resolve, reject) => {
-		const mutoolPath = spawnSync(utils.getExecLocationCommandOnSystem(), ['mutool']).output.join(
-			'',
-		);
-		if (mutoolPath === '' || (/^win/i.test(os.platform()) && /no mutool in/.test(mutoolPath))) {
-			logger.warn('MuPDF not installed !! Skip fonts extraction.');
-			resolve();
-		} else {
-			const folder = utils.getMutoolExtractionFolder();
-			logger.info(`Extracting fonts to ${folder}...`);
-			const command = `mutool extract '${pdfInputFile}'`;
-			logger.debug(command);
-			const ret = spawnSync('mutool', ['extract', pdfInputFile], { cwd: folder });
+  return new Promise<void>((resolve, reject) => {
+    const mutoolPath = spawnSync(utils.getExecLocationCommandOnSystem(), ['mutool']).output.join(
+      '',
+    );
+    if (mutoolPath === '' || (/^win/i.test(os.platform()) && /no mutool in/.test(mutoolPath))) {
+      logger.warn('MuPDF not installed !! Skip fonts extraction.');
+      resolve();
+    } else {
+      const folder = utils.getMutoolExtractionFolder();
+      logger.info(`Extracting fonts to ${folder}...`);
+      const command = `mutool extract '${pdfInputFile}'`;
+      logger.debug(command);
+      const ret = spawnSync('mutool', ['extract', pdfInputFile], { cwd: folder });
 
-			if (ret.status !== 0) {
-				logger.error(ret.stderr.toString());
-				reject(ret.stderr.toString());
-			}
+      if (ret.status !== 0) {
+        logger.error(ret.stderr.toString());
+        reject(ret.stderr.toString());
+      }
 
-			const ttfRegExp = /^[A-Z]{6}\+(.*)\-[0-9]+\.ttf$/;
-			fs.readdirSync(folder).forEach(file => {
-				const match = file.match(ttfRegExp);
+      const ttfRegExp = /^[A-Z]{6}\+(.*)\-[0-9]+\.ttf$/;
+      fs.readdirSync(folder).forEach(file => {
+        const match = file.match(ttfRegExp);
 
-				if (match) {
-					fs.renameSync(`${folder}/${file}`, `${folder}/${match[1]}` + '.ttf');
-				}
-			});
+        if (match) {
+          fs.renameSync(`${folder}/${file}`, `${folder}/${match[1]}` + '.ttf');
+        }
+      });
 
-			resolve();
-		}
-	});
+      resolve();
+    }
+  });
 }

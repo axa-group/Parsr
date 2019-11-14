@@ -1,99 +1,94 @@
 {
-	"name": "parsr",
-	"version": "1.0.0",
-	"description": "Turn your documents into data!",
-	"main": "dist/bin/index.js",
-	"repository": {
-		"type": "git",
-		"url": "git+ssh://git@github.com/axa-group/Parsr.git"
-	},
-	"author": "AXA rev",
-	"license": "Apache-2.0",
-	"bugs": {
-		"url": "https://github.com/axa-group/Parsr/issues"
-	},
-	"homepage": "https://github.com/axa-group/Parsr#readme",
-	"directories": {
-		"test": "test"
-	},
-	"scripts": {
-		"test": "mocha -t 10000 -r ts-node/register **/*.spec.ts",
-		"copyAssets": "copyfiles -u 2 \"./server/assets/*\" \"./dist/assets/\"",
-		"build:ts": "npm run copyAssets && tsc --outDir ./dist",
-		"build:ts:watch": "npm run copyAssets && tsc -w --outDir ./dist",
-		"install:api": "npm install --prefix  api/server",
-		"start:web": "npm run build:ts && cd demo/web-viewer && npm run start",
-		"start:web:vue": "npm run start:api:background && cd demo/vue-viewer && npm install && npm run serve",
-		"run:debug": "ts-node server/bin/index.ts",
-		"lint": "tslint --project . && tslint --project ./api/server",
-		"lint:fix": "tslint --fix --project . && tslint --fix --project ./api/server",
-		"start:api": "npm run build:ts && npm run install:api && npm run --prefix api/server start",
-		"start:api:background": "npm run start:api&",
-		"start:front": "cd demo/web-viewer && node index.js",
-		"start": "npm run start:api & npm run start:front",
-		"format": "prettier --write --list-different \"{,!(dist|demo/web-viewer/public)/**/}*.{js,md,ts,css,scss}\""
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged && npm test && npm audit",
-			"pre-push": "npm test && npm audit"
-		}
-	},
-	"lint-staged": {
-		"linters": {
-			"{,!(dist|demo/web-viewer/public)/**/}*.{js,md,ts,css,scss}": [
-				"npm run format",
-				"git add"
-			],
-			"{,!(dist|demo/web-viewer/public)/**/}*.{ts}": [
-				"tslint --fix",
-				"git add"
-			]
-		}
-	},
-	"dependencies": {
-		"@google-cloud/vision": "^1.3.0",
-		"an-array-of-english-words": "^1.3.1",
-		"axios": "^0.19.0",
-		"clone": "^2.1.2",
-		"commander": "^2.20.0",
-		"concaveman": "^1.1.1",
-		"copyfiles": "^2.1.1",
-		"csv-stringify": "^5.3.3",
-		"file-type": "^9.0.0",
-		"html-entities": "^1.2.1",
-		"pdf-image": "^2.0.0",
-		"pino": "^5.13.2",
-		"pino-pretty": "^2.6.1",
-		"request": "^2.88.0",
-		"string-similarity": "^1.2.1",
-		"svgson": "^3.1.0",
-		"tslint": "^5.19.0",
-		"tsv": "^0.2.0",
-		"xml2js": "^0.4.19"
-	},
-	"devDependencies": {
-		"@types/axios": "^0.14.0",
-		"@types/chai": "^4.2.0",
-		"@types/clone": "^0.1.30",
-		"@types/commander": "^2.12.2",
-		"@types/concaveman": "^1.1.3",
-		"@types/file-type": "^10.9.1",
-		"@types/gapi.client.vision": "^1.0.1",
-		"@types/html-entities": "^1.2.16",
-		"@types/mocha": "^5.2.7",
-		"@types/node": "^10.14.16",
-		"@types/pino": "^5.8.9",
-		"@types/string-similarity": "^3.0.0",
-		"@types/xml2js": "^0.4.4",
-		"chai": "^4.1.2",
-		"husky": "^1.3.1",
-		"leche": "^2.3.0",
-		"lint-staged": "^8.2.1",
-		"mocha": "^5.2.0",
-		"node-sass": "^4.12.0",
-		"prettier": "^1.18.2",
-		"ts-node": "^7.0.1",
-		"typescript": "^3.5.3"
-	}
+  "name": "parsr",
+  "version": "1.0.0",
+  "description": "Turn your documents into data!",
+  "main": "dist/bin/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/axa-group/Parsr.git"
+  },
+  "author": "AXA rev",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/axa-group/Parsr/issues"
+  },
+  "homepage": "https://github.com/axa-group/Parsr#readme",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha -t 10000 -r ts-node/register test/**/**/*.spec.ts",
+    "copyAssets": "copyfiles -u 2 \"./server/assets/*\" \"./dist/assets/\"",
+    "build:ts": "npm run copyAssets && tsc --outDir ./dist",
+    "build:ts:watch": "npm run copyAssets && tsc -w --outDir ./dist",
+    "install:api": "npm install --prefix  api/server",
+    "start:web:vue": "npm run start:api:background && cd demo/vue-viewer && npm install && npm run serve",
+    "run:debug": "ts-node server/bin/index.ts",
+    "lint": "tslint --project . && tslint --project ./api/server",
+    "lint:fix": "tslint --fix --project . && tslint --fix --project ./api/server",
+    "start:api": "npm run build:ts && npm run install:api && npm run --prefix api/server start",
+    "start:api:background": "npm run start:api&",
+    "format": "prettier --write --list-different \"{,!(dist)/**/}*.{js,md,ts,css,scss}\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "pre-push": "npm test && npm audit"
+    }
+  },
+  "lint-staged": {
+    "linters": {
+      "{,!(dist)/**/}*.{js,md,ts,css,scss}": [
+        "npm run format",
+        "git add"
+      ],
+      "{,!(dist|-viewer/public)/**/}*.{ts}": [
+        "tslint --fix",
+        "git add"
+      ]
+    }
+  },
+  "dependencies": {
+    "@google-cloud/vision": "^1.3.0",
+    "an-array-of-english-words": "^1.3.1",
+    "axios": "^0.19.0",
+    "clone": "^2.1.2",
+    "commander": "^2.20.0",
+    "concaveman": "^1.1.1",
+    "copyfiles": "^2.1.1",
+    "csv-stringify": "^5.3.3",
+    "file-type": "^9.0.0",
+    "html-entities": "^1.2.1",
+    "pino": "^5.13.2",
+    "pino-pretty": "^2.6.1",
+    "request": "^2.88.0",
+    "string-similarity": "^1.2.1",
+    "svgson": "^3.1.0",
+    "tslint": "^5.19.0",
+    "xml2js": "^0.4.19",
+    "xmldom": "^0.1.27"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/chai": "^4.2.0",
+    "@types/clone": "^0.1.30",
+    "@types/commander": "^2.12.2",
+    "@types/concaveman": "^1.1.3",
+    "@types/file-type": "^10.9.1",
+    "@types/gapi.client.vision": "^1.0.1",
+    "@types/html-entities": "^1.2.16",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^10.14.16",
+    "@types/pino": "^5.8.9",
+    "@types/string-similarity": "^3.0.0",
+    "@types/xml2js": "^0.4.4",
+    "chai": "^4.1.2",
+    "husky": "^1.3.1",
+    "leche": "^2.3.0",
+    "lint-staged": "^8.2.1",
+    "mocha": "^5.2.0",
+    "prettier": "^1.18.2",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.5.3"
+  }
 }

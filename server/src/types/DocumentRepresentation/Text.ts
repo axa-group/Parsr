@@ -17,42 +17,42 @@
 import { Element } from './Element';
 
 export abstract class Text extends Element {
-	private _redundant: boolean;
-	private _confidence: number;
+  private _redundant: boolean;
+  private _confidence: number;
 
-	public abstract toString(): string;
-	public abstract get content(): Text[] | string;
-	public abstract set content(value: Text[] | string);
+  public abstract toString(): string;
+  public abstract get content(): Text[] | string;
+  public abstract set content(value: Text[] | string);
 
-	/**
-	 * Getter redundant
-	 * @return {boolean}
-	 */
-	public get redundant(): boolean {
-		return this._redundant;
-	}
+  /**
+   * Getter redundant
+   * @return {boolean}
+   */
+  public get redundant(): boolean {
+    return this._redundant;
+  }
 
-	/**
-	 * Getter confidence
-	 * @return {number}
-	 */
-	public get confidence(): number {
-		return this._confidence;
-	}
+  /**
+   * Getter confidence
+   * @return {number}
+   */
+  public get confidence(): number {
+    return this._confidence;
+  }
 
-	/**
-	 * Setter redundant
-	 * @param {boolean} value
-	 */
-	public set redundant(value: boolean) {
-		this._redundant = value;
-	}
+  /**
+   * Setter redundant
+   * @param {boolean} value
+   */
+  public set redundant(value: boolean) {
+    this._redundant = value;
+  }
 
-	/**
-	 * Setter confidence
-	 * @param {number} value
-	 */
-	public set confidence(value: number) {
-		this._confidence = value;
-	}
+  /**
+   * Setter confidence
+   * @param {number} value
+   */
+  public set confidence(value: number) {
+    this._confidence = value;
+  }
 }

@@ -18,31 +18,31 @@ import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
 
 /**
- * Image element represents an image in a document, with the url attribute representing the location of
+ * Image element represents an image in a document, with the src attribute representing the location of
  * the image.
  */
 export class Image extends Element {
-	/**
-	 * Getter url
-	 * @return {string}
-	 */
-	public get url(): string {
-		return this._url;
-	}
+  /**
+   * Getter src
+   * @return {string}
+   */
+  public get src(): string {
+    return this._src;
+  }
 
-	/**
-	 * Setter url
-	 * @param {string} value
-	 */
-	public set url(value: string) {
-		this._url = value;
-	}
+  /**
+   * Setter src
+   * @param {string} value
+   */
+  public set src(value: string) {
+    this._src = value;
+  }
 
-	public content: null = null;
-	private _url: string;
+  public content: null = null;
+  private _src: string;
 
-	constructor(boundingBox: BoundingBox, url?: string) {
-		super(boundingBox);
-		this.url = url;
-	}
+  constructor(boundingBox: BoundingBox, src?: string) {
+    super(boundingBox);
+    this.src = src;
+  }
 }

@@ -19,44 +19,44 @@ import { Document } from '../types/DocumentRepresentation';
 import logger from '../utils/Logger';
 
 interface Dimensions {
-	width: number;
-	height: number;
+  width: number;
+  height: number;
 }
 
 export function setPageDimensions(doc: Document, inputFileName: string): Promise<Document> {
-	logger.debug('Setting page dimensions...');
+  logger.debug('Setting page dimensions...');
 
-	return new Promise<Document>(resolve => {
-		getPageDimensions(inputFileName).then(dimensions => {
-			doc.pages.forEach((page, i) => {
-				page.width = dimensions[i].width;
-				page.height = dimensions[i].height;
-				// Remove weird false positive coming from Tesseract
-				page.elements = page.elements.filter(t => {
-					return t.height !== page.height || t.width !== page.width;
-				});
-			});
+  return new Promise<Document>(resolve => {
+    getPageDimensions(inputFileName).then(dimensions => {
+      doc.pages.forEach((page, i) => {
+        page.width = dimensions[i].width;
+        page.height = dimensions[i].height;
+        // Remove weird false positive coming from Tesseract
+        page.elements = page.elements.filter(elem => {
+          return elem.height !== page.height || elem.width !== page.width;
+        });
+      });
 
-			resolve(doc);
-		});
-	});
+      resolve(doc);
+    });
+  });
 
-	function getPageDimensions(filename: string): Promise<Dimensions[]> {
-		return new Promise<Dimensions[]>((resolve, reject) => {
-			const ret = spawnSync('identify', ['-format', '%[fx:w]x%[fx:h],', filename]);
+  function getPageDimensions(filename: string): Promise<Dimensions[]> {
+    return new Promise<Dimensions[]>((resolve, reject) => {
+      const ret = spawnSync('identify', ['-format', '%[fx:w]x%[fx:h],', filename]);
 
-			if (ret.status !== 0) {
-				logger.error(ret.stderr);
-				reject(`Can't get dimensions of file ${filename}`);
-			}
+      if (ret.status !== 0) {
+        logger.error(ret.stderr);
+        reject(`Can't get dimensions of file ${filename}`);
+      }
 
-			const dimensions = ret.stdout.toString().split(',');
-			const retDimension: Dimensions[] = dimensions.map(dimension => {
-				const [width, height] = dimension.split('x').map(s => parseInt(s, 10));
-				return { width, height };
-			});
+      const dimensions = ret.stdout.toString().split(',');
+      const retDimension: Dimensions[] = dimensions.map(dimension => {
+        const [width, height] = dimension.split('x').map(s => parseInt(s, 10));
+        return { width, height };
+      });
 
-			resolve(retDimension);
-		});
-	}
+      resolve(retDimension);
+    });
+  }
 }
