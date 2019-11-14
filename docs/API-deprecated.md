@@ -1,6 +1,6 @@
 # API - DEPRECATED
 
-## :warning: This API is now deprecated. Please refer to the new version: [api-guide.md](api-guide.md). :warning:
+### :warning: This API is now deprecated. Please refer to the new version: [api-guide.md](api-guide.md). :warning:
 
 The version of this API is 0.3.
 
