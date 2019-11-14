@@ -6,7 +6,8 @@
       "value": [
         {
           "pages": [],
-          "flavor": "lattice"
+          "flavor": "lattice",
+          "table_areas": []
         }
       ]
     }
