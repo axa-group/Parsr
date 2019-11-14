@@ -113,7 +113,9 @@ pip install ghostscript camelot-py
    choco install qpdf imagemagick
    ```
 
-5. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install-deps.html#for-windows).
+5. Install [**graphicsmagick**](http://www.graphicsmagick.org/).
+
+6. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install-deps.html#for-windows).
 
 ##### 1.2.3.1. Tesseract
 
