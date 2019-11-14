@@ -27,51 +27,77 @@ import { runModules, TableExtractorStub } from './../helpers';
 const assetsDir = __dirname + '/assets/table-reconstruction/';
 
 describe('Table Reconstruction Module', () => {
-  withData(
-    {
-      'table with no joined cells': [
-        'very-simple-output.json', [
-          { row: 1, col: 0, colspan: 1, rowspan: 1 },
-          { row: 1, col: 1, colspan: 1, rowspan: 1 },
-          { row: 1, col: 2, colspan: 1, rowspan: 1 },
-          { row: 1, col: 3, colspan: 1, rowspan: 1 },
-          { row: 1, col: 4, colspan: 1, rowspan: 1 },
-          { row: 1, col: 5, colspan: 1, rowspan: 1 },
+  describe('horizontal cell merge', () => {
+    withData(
+      {
+        'table with no joined cells': [
+          'very-simple-output.json', [
+            [1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1]],
         ],
-      ],
-    },
-    (fileName, cellInfo) => {
-      let docBefore: Document;
-      let docAfter: Document;
+        'only one cell merge': [
+          'one-cell-merged.json', [
+            [2, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1],
+          ],
+        ],
+        'two different merges in same row': [
+          'two-different-merges-in-same-row.json', [
+            [2, 1, 1, 2],
+            [1, 2, 2, 1],
+            [1, 1, 1, 1, 1, 1],
+          ],
+        ],
+        'two different consecutive merges in same row': [
+          'two-different-consecutive-merges-in-same-row.json', [
+            [2, 2, 1, 1],
+            [1, 1, 1, 1, 1, 1],
+            [1, 2, 2, 1],
+          ],
+        ],
+        'multiple colspan merge in multiple rows': [
+          'multiple-colspan-merge.json', [
+            [4, 1, 1],
+            [1, 3, 2],
+            [6],
+          ],
+        ],
+      },
+      (fileName, cellInfo) => {
+        let docBefore: Document;
+        let table: Table;
 
-      before(done => {
-        const json = JSON.parse(
-          fs.readFileSync(assetsDir + 'test-table-reconstruction.json', { encoding: 'utf8' }),
-        );
-        const camelotOutput = fs.readFileSync(assetsDir + fileName, { encoding: 'utf8' });
+        before(done => {
+          const json = JSON.parse(
+            fs.readFileSync(assetsDir + 'test-table-reconstruction.json', { encoding: 'utf8' }),
+          );
+          const camelotOutput = fs.readFileSync(assetsDir + fileName, { encoding: 'utf8' });
 
-        docBefore = json2document(json);
-        docBefore.inputFile = assetsDir + 'test-table-reconstruction.pdf';
-        const tableExtractor = new TableExtractorStub(0, '', camelotOutput);
-        runModules(docBefore, [new TableDetectionModule(null, tableExtractor)]).then(after => {
-          docAfter = after;
-          done();
+          docBefore = json2document(json);
+          docBefore.inputFile = assetsDir + 'test-table-reconstruction.pdf';
+          const tableExtractor = new TableExtractorStub(0, '', camelotOutput);
+          runModules(docBefore, [new TableDetectionModule(null, tableExtractor)]).then(after => {
+            table = after.getElementsOfType<Table>(Table)[0];
+            done();
+          });
         });
-      });
 
-      it('should have correctly merged cells', () => {
-        const table = docAfter.getElementsOfType<Table>(Table)[0];
-        cellInfo.forEach(cell => {
-          const { row, col, colspan, rowspan } = cell;
-          if (colspan) {
-            expect(table.content[row].content[col].colspan).to.equal(colspan);
-          }
-          if (rowspan) {
-            expect(table.content[row].content[col].rowspan).to.equal(rowspan);
-          }
+        it(`should have correctly merged cells`, () => {
+          cellInfo.forEach((row, rowIndex) => {
+            row.forEach((colspan, colIndex) => {
+              expect(table.content[rowIndex].content[colIndex].colspan).to.equal(colspan);
+            });
+          });
         });
-      });
 
-    },
-  );
+        it(`row should have correct amount of cells`, () => {
+          cellInfo.forEach((row, rowIndex) => {
+            expect(table.content[rowIndex].content.length).to.equal(row.length);
+          });
+        });
+      },
+    );
+  });
 });
