@@ -33,7 +33,7 @@ import { MarkdownExporter } from '../src/output/markdown/MarkdownExporter';
 import { PdfExporter } from '../src/output/pdf/PdfExporter';
 import { TextExporter } from '../src/output/text/TextExporter';
 import { Config } from '../src/types/Config';
-import { Document } from '../src/types/DocumentRepresentation/';
+import { Document, Image } from '../src/types/DocumentRepresentation/';
 import * as utils from '../src/utils';
 import logger from '../src/utils/Logger';
 
@@ -125,7 +125,10 @@ function main(): void {
     orchestrator
       .run(filePath)
       .then((doc: Document) => {
-        const nbTexts = doc.pages.map(p => p.elements.length).reduce((a, b) => a + b, 0);
+        // TODO: when we start OCRing all the images inside a pdf, the part '- p.getElementsOfType(Image).length'
+        // should be removed
+        const nbTexts = doc.pages.map(p => p.elements.length - p.getElementsOfType(Image).length)
+        .reduce((a, b) => a + b, 0);
         if (nbTexts === 0) {
           logger.warn(`No text was found in the document...`);
           if (fileTypeInfo.ext === 'pdf') {
