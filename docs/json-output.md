@@ -11,7 +11,8 @@ This page describes the components of the JSON output file in detail.
       - [1.2.2. Table type](#122-table-type)
       - [1.2.3. List type](#123-list-type)
       - [1.2.4. Barcode type](#124-barcode-type)
-      - [1.2.5. Drawing type](#125-drawing-type)
+      - [1.2.5. Image type](#125-image-type)
+      - [1.2.6. Drawing type](#126-drawing-type)
     - [1.3. Properties of an Element](#13-properties-of-an-element)
   - [2. `fonts` component](#2-fonts-component)
   - [3. `metadata` component](#3-metadata-component)
@@ -255,7 +256,23 @@ A barcode type element represents a barcode element, including the barcode type,
 }
 ```
 
-#### 1.2.5. Drawing type
+#### 1.2.5. Image type
+
+An image is a component representing an image found on the source document, which can (or cannot, depending on its extractability) contain a location on where an extracted version can be found.
+An image also contains location and embedded size information.
+
+```js
+{
+  "id": 146,
+  "type": "image",
+  "properties": {/* ... */},
+  "metadata": [/* ... */],
+  "box": {/* ... */},
+  "src": "/tmp/imageFile.jpg"   // location of the image
+}
+```
+
+#### 1.2.6. Drawing type
 
 A drawing is an SVG element, which for now, can be of subtype 'svg-line'.
 An SVG-line represents a line in 2D space with a thickness.
