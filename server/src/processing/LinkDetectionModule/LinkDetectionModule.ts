@@ -33,10 +33,12 @@ export class LinkDetectionModule extends Module {
   public static moduleName = 'link-detection';
 
   public async main(doc: Document): Promise<Document> {
-    let mdLinks = await this.extractLinksFromMetadata(doc.inputFile);
-    if (mdLinks === undefined) {
-      return doc;
+    const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
+    if (fileType === null || fileType.ext !== 'pdf') {
+      logger.warn(`Warning: The input file ${doc.inputFile} is not a PDF (${utils.prettifyObject(fileType)}); not fetching meta information for link detection..`);
+      return undefined;
     }
+    let mdLinks = await this.extractLinksFromMetadata(doc.inputFile);
 
     mdLinks = mdLinks.map((link, id) => ({
       ...link,
@@ -126,11 +128,6 @@ export class LinkDetectionModule extends Module {
   */
   private async extractLinksFromMetadata(file: string): Promise<JSON[]> {
     const annots = [];
-    const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(file));
-    if (fileType === null || fileType.ext !== 'pdf') {
-      logger.warn(`Warning: The input file ${file} is not a PDF (${utils.prettifyObject(fileType)}); not fetching meta information for link detection..`);
-      return undefined;
-    }
     try {
       const {
         pdf: { object: objects },
