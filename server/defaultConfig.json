@@ -22,7 +22,7 @@
     [
       "table-detection",
       {
-        "pageConfig": [
+        "runConfig": [
           {
             "pages": [],
             "flavor": "lattice"

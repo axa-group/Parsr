@@ -24,7 +24,7 @@ Following is an example of the configuration of the table-detection module:
 [
   "table-detection",
   {
-        "pageConfig": [
+        "runConfig": [
           {
             "pages": [1, 2, 3], // or [] for all pages
             "flavor": "lattice",
@@ -35,7 +35,7 @@ Following is an example of the configuration of the table-detection module:
 ]
 ```
 
-- pageConfig: Array of different configurations for the doc
+- runConfig: Array of different configurations for the doc
   - pages: List of numbers representing pages.
   - flavor: The parsing method to use ('lattice' or 'stream'). Lattice is used by default. For more information on each parsing method, [check this information](https://camelot-py.readthedocs.io/en/master/user/how-it-works.html).
   - table_areas: Array of coordinates forming a box to indicate the position of a table with no outlines or visible borders.

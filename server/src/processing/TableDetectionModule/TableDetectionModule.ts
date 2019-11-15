@@ -129,7 +129,7 @@ export class TableDetectionModule extends Module<Options> {
       return doc;
     }
 
-    this.options.pageConfig.forEach((config, n) => {
+    this.options.runConfig.forEach((config, n) => {
       const tableExtractor = this.extractor.readTables(doc.inputFile, config);
       if (tableExtractor.status !== 0) {
         logger.error(`there was a problem executing table config no. ${n + 1}: ${JSON.stringify(config)}`);
