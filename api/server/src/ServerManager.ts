@@ -83,7 +83,7 @@ export class ServerManager {
         && specs[key].value[0].hasOwnProperty('flavor')) {
         specs[key].value = specs[key].value.map((v: any) => ({
           ...v,
-          table_areas: [],
+          table_areas: v.table_areas || [],
         }));
       }
     });
