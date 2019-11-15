@@ -116,6 +116,7 @@ def extractTableData(table, flavor):
     tableData['size'] = getTableSize(table)
     tableData['location'] = getTableLocation(table)
     tableData['content'] = table.data
+    tableData['flavor'] = flavor
     cellsData = extractRowsData(table, flavor)
     if cellsData != None:
         tableData['cells'] = cellsData

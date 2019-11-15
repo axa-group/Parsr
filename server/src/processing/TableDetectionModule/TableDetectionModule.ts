@@ -156,7 +156,7 @@ export class TableDetectionModule extends Module<Options> {
     const table: Table = this.createTable(tableData, pageHeight);
     table.content = this.createRows(tableData, page);
 
-    if (tableData.content) {
+    if (tableData.content && tableData.flavor === 'stream') {
       table.content = this.joinCellsByContent(table.content, tableData.content);
     }
 
