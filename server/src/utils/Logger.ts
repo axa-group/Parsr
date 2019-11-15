@@ -24,7 +24,7 @@ class logger {
   public static init(isPrettyLogs: boolean = false): void {
     const options: any = {
       name: 'parsr',
-      level: 'info',
+      level: process.env.NODE_ENV === 'test' ? 'silent' : 'info',
     };
 
     if (isPrettyLogs) {
