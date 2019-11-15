@@ -1,7 +1,17 @@
 # Configuration File
 
-- [Configuration File](#configuration-file) - [1. Structure](#1-structure) - [2. Extractor Config](#2-extractor-config) - [2.1. Extractor Tools](#21-extractor-tools) - [2.2. Language](#22-language) - [3. Cleaner Config](#3-cleaner-config) - [4. Output Config](#4-output-config) - [4.1. Output Format](#41-output-format) - [4.2. Granularity](#42-granularity) - [4.3. Include Marginals](#43-include-marginals) - [5. Exempli gratia](#5-exempli-gratia)
-
+- [Configuration File](#configuration-file)
+  - [1. Structure](#1-structure)
+  - [2. Extractor Config](#2-extractor-config)
+    - [2.1. Extractor Tools](#21-extractor-tools)
+    - [2.2. Language](#22-language)
+  - [3. Cleaner Config](#3-cleaner-config)
+  - [4. Output Config](#4-output-config)
+    - [4.1. Output Format](#41-output-format)
+    - [4.2. Granularity](#42-granularity)
+    - [4.3. Include Marginals](#43-include-marginals)
+  - [5. Exempli gratia](#5-exempli-gratia)
+  
 To configure the pipeline and choose what modules will be called and with what parameters, you have to provide a JSON file.
 There is only a few required keys:
 
@@ -64,7 +74,7 @@ _This means the module called `fontMerge` will be called, then `removeOutOfPage`
 Different extractors are available for each input file format.
 
 - PDF files: three extractors are currently available for PDF files: `pdfminer`, which is an advanced python based extractor capable of extracting low and high level textual structures (from characters to paragraphs) and `abbyy` that rely on ABBYY Finereader that is paid software. It is also possible to use `tesseract` in this case. The document will then be converted as an image, so expect the accuracy to be lower on texts.
-- Images: two extractors are supporter for images: `tesseract` which is an Open Source OCR and `abbyy` that rely on ABBYY Finereader that is paid software.
+- Images: three extractors are supported for images: `tesseract` which is an Open Source OCR software, `google-vision`, which uses the Google Vision API to detect the contents of an image (see the [google vision documentation for more](google-vision.md)) and `abbyy`, that relies on ABBYY Finereader, a paid solution for OCR on documents and images.
 
 ### 2.2. Language
 

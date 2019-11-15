@@ -125,22 +125,15 @@ function main(): void {
     orchestrator
       .run(filePath)
       .then((doc: Document) => {
-        // TODO: when we start OCRing all the images inside a pdf, the part '- p.getElementsOfType(Image).length'
-        // should be removed
-        const nbTexts = doc.pages.map(p => p.elements.length - p.getElementsOfType(Image).length)
-        .reduce((a, b) => a + b, 0);
-        if (nbTexts === 0) {
-          logger.warn(`No text was found in the document...`);
-          if (fileTypeInfo.ext === 'pdf') {
-            logger.info(`Since the input file is a PDF, trying to run an OCR on all pages...`);
-            if (config.extractor.img === 'tesseract') {
-              filePath = pdfToImage(filePath);
-              orchestrator = new Orchestrator(new TesseractExtractor(config), cleaner);
-            } else {
-              orchestrator = new Orchestrator(new AbbyyTools(config), cleaner);
-            }
-            return orchestrator.run(filePath);
+        if (fileTypeInfo.ext === 'pdf' && isDocumentImageBased(doc)) {
+          logger.info(`Since the input file is a PDF with only images, trying to run an OCR on all pages...`);
+          if (config.extractor.img === 'tesseract') {
+            filePath = pdfToImage(filePath);
+            orchestrator = new Orchestrator(new TesseractExtractor(config), cleaner);
+          } else {
+            orchestrator = new Orchestrator(new AbbyyTools(config), cleaner);
           }
+          return orchestrator.run(filePath);
         }
         return doc;
       })
@@ -213,6 +206,14 @@ function main(): void {
       .catch(err => {
         logger.error(`There was an error running the orchestrator: ${err}`);
       });
+  }
+
+  /**
+   * Tests if a PDF file only contains an image on each and every one of its pages
+   * This is true for example, in the case of scanned documents as PDFs
+   */
+  function isDocumentImageBased(doc: Document): boolean {
+    return !doc.pages.map(p => (p.elements.length === 1) && (p.elements[0] instanceof Image)).includes(false);
   }
 
   /**
