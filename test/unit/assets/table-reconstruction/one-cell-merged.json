@@ -3,6 +3,7 @@
         "page": 1,
         "tables": [
             {
+                "flavor": "stream",
                 "size": {
                     "width": 509.37837293596453,
                     "height": 79.07249412894964
