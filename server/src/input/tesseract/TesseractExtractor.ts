@@ -15,6 +15,7 @@
  */
 
 import { Document } from '../../types/DocumentRepresentation';
+import logger from '../../utils/Logger';
 import { Extractor } from '../Extractor';
 import { setPageDimensions } from '../set-page-dimensions';
 import * as tesseract2json from './tesseract2json';
@@ -30,7 +31,16 @@ export class TesseractExtractor extends Extractor {
    */
   public run(inputFile: string): Promise<Document> {
     return tesseract2json
-      .execute(inputFile, this.config)
-      .then((doc: Document) => setPageDimensions(doc, inputFile));
+      .execute(inputFile, false, this.config)
+      .then((doc1: Document) => {
+        if (doc1.getAllElements().length !== 0) {
+          return setPageDimensions(doc1, inputFile);
+        } else {
+          logger.info(`Cannot see any text in the image. Trying with rotation correction...`);
+          return tesseract2json
+          .execute(inputFile, true, this.config)
+          .then((doc2: Document) => setPageDimensions(doc2, inputFile));
+          }
+      });
   }
 }

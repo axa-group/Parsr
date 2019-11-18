@@ -28,7 +28,7 @@ import logger from '../../utils/Logger';
  * @param config The input configuration for tesseract.
  * @returns The promise of a valid Document (as in the Document Representation data structure).
  */
-export function execute(imageInputFile: string, config: Config): Promise<Document> {
+export function execute(imageInputFile: string, fixRotation: boolean, config: Config): Promise<Document> {
   return new Promise<Document>(async (resolve, reject) => {
     const tsvOutputFile: string = utils.getTemporaryFile('.json');
 
@@ -73,7 +73,9 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
     const tesseractLanguages = validLanguages.map(lang => lang.trim()).join('+');
 
     // correct for the rotation in the image
-    const rotatedImage: string = await utils.correctImageForRotation(imageInputFile);
+    if (fixRotation) {
+      imageInputFile = await utils.correctImageForRotation(imageInputFile);
+    }
 
     /**
      * From man page
@@ -84,12 +86,12 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
     const tesseract = spawn('tesseract', [
       '-l',
       tesseractLanguages,
-      rotatedImage,
+      imageInputFile,
       tsvOutputFile,
       'tsv',
     ]);
     logger.debug(
-      `tesseract ${['-l', tesseractLanguages, rotatedImage, tsvOutputFile, 'tsv'].join(' ')}`,
+      `tesseract ${['-l', tesseractLanguages, imageInputFile, tsvOutputFile, 'tsv'].join(' ')}`,
     );
 
     tesseract.stdout.on('data', data => {
@@ -138,7 +140,7 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
         });
 
         logger.debug(`Assigning a total of ${pages.length} pages to the document...`);
-        const doc: Document = new Document(pages, rotatedImage);
+        const doc: Document = new Document(pages, imageInputFile);
         logger.debug(
           `The new document contains ${
             doc.getElementsOfType(Word, false).length
