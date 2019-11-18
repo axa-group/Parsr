@@ -33,17 +33,17 @@ export class LinkDetectionModule extends Module {
   public static moduleName = 'link-detection';
 
   public async main(doc: Document): Promise<Document> {
+    let mdLinks: JSON[] = [];
     const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
     if (fileType === null || fileType.ext !== 'pdf') {
-      logger.warn(`Warning: The input file ${doc.inputFile} is not a PDF (${utils.prettifyObject(fileType)}); not fetching meta information for link detection..`);
-      return undefined;
+      logger.warn(`Warning: The input file ${doc.inputFile} is not a PDF (${utils.prettifyObject(fileType)}); not using meta information for link detection..`);
+    } else {
+      mdLinks = await this.extractLinksFromMetadata(doc.inputFile);
+      mdLinks = mdLinks.map((link, id) => ({
+        ...link,
+        id,
+      }));
     }
-    let mdLinks = await this.extractLinksFromMetadata(doc.inputFile);
-
-    mdLinks = mdLinks.map((link, id) => ({
-      ...link,
-      id,
-    }));
 
     doc.pages.forEach((page: Page) => {
       const links = mdLinks.filter(link => parseInt((link as any).page, 10) === page.pageNumber);
