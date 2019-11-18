@@ -120,7 +120,13 @@ export class Line extends Text {
   }
 
   public toMarkdown(): string {
-    return this.content.map(w => w.toMarkDown()).join(' ');
+    // Escape '.' or ')' when line starts with number followed by '.' or ')'
+    // to avoid MD detect this line as a list item.
+    // List item MD compliant generation is managed by List element
+    return this.content
+      .map(w => w.toMarkDown())
+      .join(' ')
+      .replace(/\^([\d]+)([\.\)])/g, '$1\\$2');
   }
 
   /**
