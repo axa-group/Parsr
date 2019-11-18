@@ -36,7 +36,7 @@ def compute_rotation_in_degrees(filename):
     sinogram = radon(J)
     r = array([rms_flat(line) for line in sinogram.transpose()])
     rotation = argmax(r)
-    return 90 - rotation
+    return rotation
 
 def main():
     try:

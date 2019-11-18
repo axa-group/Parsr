@@ -78,7 +78,7 @@ export async function getImage(
   );
 
   const te = new TesseractExtractor(config);
-  const doc = await te.run(`${__dirname}/assets/${filename}`);
+  const doc = await te.run(`${__dirname}/assets/${filename}`, false);
   const docBefore = clone(doc);
   const docAfter = await func(doc);
 
