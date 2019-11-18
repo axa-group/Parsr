@@ -114,20 +114,24 @@ export class HeadingDetectionModule extends Module {
     paragraphs
       .map(paragraph => paragraph.content)
       .forEach(linesInParagraph => {
+        let initiatedHeading = false;
         if (commonFont instanceof Font) {
           const headingIdx: number[] = linesInParagraph
             .map((line: Line, pos: number) => {
               if (
+                (pos === 0 || initiatedHeading) &&
                 this.isHeadingCandidate(
                   line,
                   commonFont,
                   headingFonts,
-                  utils.isGeneralUpperCase(linesInParagraph),
-                  utils.isGeneralTitleCase(linesInParagraph),
+                  // utils.isGeneralUpperCase(linesInParagraph),
+                  // utils.isGeneralTitleCase(linesInParagraph),
                 )
               ) {
+                initiatedHeading = true;
                 return pos;
               } else {
+                initiatedHeading = false;
                 return undefined;
               }
             })
@@ -178,23 +182,27 @@ export class HeadingDetectionModule extends Module {
     line: Line,
     mostCommonFont: Font,
     headingFonts: Font[],
-    generalUpperCase: boolean,
-    generalTitleCase: boolean,
+    // generalUpperCase: boolean,
+    // generalTitleCase: boolean,
   ): boolean {
     const serializedHeadingFonts = headingFonts.map(font => JSON.stringify(font));
     if (!serializedHeadingFonts.includes(JSON.stringify(this.noColourFont(line.getMainFont())))) {
       return false;
     }
-    return this.isHeadingLine(line, mostCommonFont, generalUpperCase, generalTitleCase);
+    return this.isHeadingLine(line, mostCommonFont); // , generalUpperCase, generalTitleCase);
   }
 
   private isHeadingLine(
     line: Line,
     commonFont: Font,
-    upperCase: boolean,
-    titleCase: boolean,
+    // upperCase: boolean,
+    // titleCase: boolean,
   ): boolean {
-    return (
+    // console.log(upperCase + ' ' + titleCase + ' ' + line.parent);
+    const isBigger = Math.round(line.getMainFont().size) > Math.round(commonFont.size);
+    const isDifferentStyle = line.getMainFont().weight !== commonFont.weight;
+    return isBigger || (isDifferentStyle && line.isUniqueFont());
+    /*return (
       line.getMainFont().size > commonFont.size ||
       (line.getMainFont().weight === 'bold' && commonFont.weight !== 'bold') ||
       (line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p).length >
@@ -203,7 +211,7 @@ export class HeadingDetectionModule extends Module {
       (line.content.map(w => RegExp(/^[a-z][A-z]*$/gm).test(w.toString())).filter(p => p).length >
         0 &&
         (utils.toTitleCase(line.toString()) === line.toString() && !titleCase))
-    );
+    );*/
   }
 
   private groupHeadingsByFont(headingIndexes: number[], lines: Line[]): number[][] {
@@ -362,6 +370,12 @@ export class HeadingDetectionModule extends Module {
     // get all heading fonts sorted by size & upperCase
     // TODO: ¿ sort also by weight ?
     const sortedFonts = headings
+      /*.filter(h => {
+        console.log(
+          h.toString() + ' Footer ' + h.properties.isFooter + ' header ' + h.properties.isHeader,
+        );
+        return !h.properties.isFooter && !h.properties.isHeader;
+      })*/
       .map(h => fontInfo(h))
       .sort((a, b) => {
         if (a.size !== b.size) {
@@ -379,6 +393,8 @@ export class HeadingDetectionModule extends Module {
         fontInfo(heading).size + '|' + fontInfo(heading).weight + '|' + fontInfo(heading).upperCase
       );
     };
+
+    // console.log(uniqueSortedFonts);
 
     headings.forEach(h => {
       const level = uniqueSortedFonts
