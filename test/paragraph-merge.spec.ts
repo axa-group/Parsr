@@ -130,6 +130,6 @@ describe('Paragraph merge function with tables ans more', () => {
   it('should merge side-by-side lines into paragraphs', () => {
     expect(docAfter.pages[0].getElementsOfType<Paragraph>(Paragraph, true))
       .to.be.an('array')
-      .and.to.be.of.length(53);
+      .and.to.be.of.length(52);
   });
 });

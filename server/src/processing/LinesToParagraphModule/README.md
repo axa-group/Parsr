@@ -10,8 +10,8 @@ It creates new paragraph elements that contains arrays of line elements.
 
 ## Dependencies
 
-[Words to Lines](words-to-line-module.md)
-[Reading Order Module](reading-order-module.md)
+- [Words to Lines](../WordsToLineModule/README.md)
+- [Reading Order Module](../ReadingOrderDetectionModule/README.md)
 
 ## How it works
 
@@ -28,17 +28,6 @@ It simply takes every line one by one according to the reading order and stops a
 
 - Tolerance 0.25
   ![](../../../../docs/assets/Paragraph_025.png)
-
-2. `computeHeadings`: True/False.
-
-   Computes the headings while merging lines into paragraphs. It is calculated by using the satisfaction of at least one of the following criteria for a group of lines:
-
-   1. Superior font size to the most common font size in the document.
-   2. **Entirely bold lines**
-   3. Title Case presence across the entire line - with the presence of at least one entirely non-numeric string token (a word).
-   4. UPPER CASE presence across the entire line - with the presence of at least one entirely non-numeric string token (a word).
-
-   The level of headings is decided based on font size differences - the lines with the largest fonts become superior level headings.
 
 ## Accuracy
 

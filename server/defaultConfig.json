@@ -57,10 +57,10 @@
     [
       "lines-to-paragraph",
       {
-        "tolerance": 0.25,
-        "computeHeadings": false
+        "tolerance": 0.25
       }
     ],
+    "heading-detection",
     "list-detection",
     [
       "page-number-detection",
