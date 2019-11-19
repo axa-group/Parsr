@@ -44,11 +44,20 @@ export class HeadingDetectionModule extends Module {
 
     // get the main body font from all the words in document
     const mainCommonFont = this.commonFont(doc);
+
+    // get the main body font from all the words in document
+    // const mainCommonLineHeight = this.commonLineHeight(doc);
+
     // get all the fonts to use for heading
     const headingFonts = this.heagingFonts(doc);
 
     doc.pages.forEach((page: Page) => {
-      const newContents = this.extractHeadings(page, mainCommonFont, headingFonts);
+      const newContents = this.extractHeadings(
+        page,
+        mainCommonFont,
+        headingFonts,
+        // mainCommonLineHeight,
+      );
       const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
       const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
       page.elements = newContents.rootElements.concat([...headings, ...paras]);
@@ -71,15 +80,22 @@ export class HeadingDetectionModule extends Module {
     page: Page,
     commonFont: Font,
     headingFonts: Font[],
+    // commonLineHeight: number,
   ): { headingLines: Line[][]; paragraphLines: Line[][]; rootElements: Element[] } {
     // get all paragraphs in page root
     const pageParagraphs = this.pageParagraphs(page);
     return {
-      ...this.extractHeadingsInParagraphs(pageParagraphs, commonFont, headingFonts),
+      ...this.extractHeadingsInParagraphs(
+        pageParagraphs,
+        commonFont,
+        headingFonts,
+        // commonLineHeight,
+      ),
       rootElements: this.createHeadingsInOtherElements(
         this.pageOtherElements(page),
         commonFont,
         headingFonts,
+        // commonLineHeight,
       ),
     };
   }
@@ -88,12 +104,14 @@ export class HeadingDetectionModule extends Module {
     elements: Element[],
     commonFont: Font,
     headingFonts: Font[],
+    // commonLineHeight: number,
   ): Element[] {
     this.getElementsWithParagraphs(elements, []).forEach(element => {
       const newContents = this.extractHeadingsInParagraphs(
         this.getParagraphsInElement(element),
         commonFont,
         headingFonts,
+        // commonLineHeight,
       );
       const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
       const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
@@ -107,6 +125,7 @@ export class HeadingDetectionModule extends Module {
     paragraphs: Paragraph[],
     commonFont: Font,
     headingFonts: Font[],
+    // commonLineHeight: number,
   ): { headingLines: Line[][]; paragraphLines: Line[][] } {
     const paragraphLines: Line[][] = [];
     const headingLines: Line[][] = [];
@@ -124,6 +143,7 @@ export class HeadingDetectionModule extends Module {
                   line,
                   commonFont,
                   headingFonts,
+                  // commonLineHeight,
                   // utils.isGeneralUpperCase(linesInParagraph),
                   // utils.isGeneralTitleCase(linesInParagraph),
                 )
@@ -182,6 +202,7 @@ export class HeadingDetectionModule extends Module {
     line: Line,
     mostCommonFont: Font,
     headingFonts: Font[],
+    // commonLineHeight: number,
     // generalUpperCase: boolean,
     // generalTitleCase: boolean,
   ): boolean {
@@ -189,19 +210,27 @@ export class HeadingDetectionModule extends Module {
     if (!serializedHeadingFonts.includes(JSON.stringify(this.noColourFont(line.getMainFont())))) {
       return false;
     }
-    return this.isHeadingLine(line, mostCommonFont); // , generalUpperCase, generalTitleCase);
+    return this.isHeadingLine(line, mostCommonFont); // , commonLineHeight); // , generalUpperCase, generalTitleCase);
   }
 
   private isHeadingLine(
     line: Line,
     commonFont: Font,
+    // commonLineHeight: number,
     // upperCase: boolean,
     // titleCase: boolean,
   ): boolean {
     // console.log(upperCase + ' ' + titleCase + ' ' + line.parent);
-    const isBigger = Math.round(line.getMainFont().size) > Math.round(commonFont.size);
+    // const isBigger = Math.round(line.getMainFont().size) > Math.round(commonFont.size);
+
+    // const isLineHeightBigger = line.height > commonLineHeight;
     const isDifferentStyle = line.getMainFont().weight !== commonFont.weight;
-    return isBigger || (isDifferentStyle && line.isUniqueFont());
+    // return isBigger || isLineHeightBigger || (isDifferentStyle && line.isUniqueFont());
+    const isFontBigger = line.getMainFont().size > commonFont.size;
+    // const lineHeightFontRatio = line.height / line.getMainFont().size;
+
+    return isFontBigger || (isDifferentStyle && line.isUniqueFont()); // || lineHeightFontRatio > 1.0;
+    // return isFontBigger || (isDifferentStyle && line.isUniqueFont());
     /*return (
       line.getMainFont().size > commonFont.size ||
       (line.getMainFont().weight === 'bold' && commonFont.weight !== 'bold') ||
@@ -280,6 +309,28 @@ export class HeadingDetectionModule extends Module {
         .filter(f => f !== undefined),
     );
   }
+
+  /**
+   * Returns most used line height in document
+   * @param doc The document to extract main line height
+   */
+  /*private commonLineHeight(doc: Document): number {
+    const allHeights = doc
+      .getElementsOfType<Line>(Line, true)
+      .map((l: Line) => l.height)
+      .reduce((a, b) => a.concat(b), []);
+
+    const groupedHeights = {};
+    allHeights.forEach(i => {
+      groupedHeights[i] = (groupedHeights[i] || 0) + 1;
+    });
+
+    const mostUsed = Object.keys(groupedHeights).sort(
+      (a, b) => groupedHeights[b] - groupedHeights[a],
+    );
+
+    return Number(mostUsed[0]);
+  }*/
 
   private pageOtherElements(page: Page): Element[] {
     return page.elements.filter(element => !(element instanceof Paragraph));
