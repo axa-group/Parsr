@@ -39,6 +39,19 @@
                   </li>
                 </ul>
               </li>
+              <li v-if="currentElement.type === 'table-cell'">
+                <span>Cell spans:</span>
+                <ul>
+                  <li>
+                    <span>colspan:</span>
+                    <span class="wordContent">{{currentElement.colspan}}</span>
+                  </li>
+                  <li>
+                    <span>rowspan:</span>
+                    <span class="wordContent">{{currentElement.rowspan}}</span>
+                  </li>
+                </ul>
+              </li>
               <li>
                 <span>Box:</span>
                 <ul>
