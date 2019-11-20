@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,44 +22,44 @@ import { Element } from './Element';
  * represented by it in the form of a string of characters.
  */
 export class Barcode extends Element {
-	private _type: string;
-	private _content: string;
+  private _type: string;
+  private _content: string;
 
-	constructor(boundingBox: BoundingBox, type?: string, content?: string) {
-		super(boundingBox);
-		this.type = type;
-		this.content = content;
-	}
+  constructor(boundingBox: BoundingBox, type?: string, content?: string) {
+    super(boundingBox);
+    this.type = type;
+    this.content = content;
+  }
 
-	/**
-	 * Getter type
-	 * @return {string}
-	 */
-	public get type(): string {
-		return this._type;
-	}
+  /**
+   * Getter type
+   * @return {string}
+   */
+  public get type(): string {
+    return this._type;
+  }
 
-	/**
-	 * Getter content
-	 * @return {string}
-	 */
-	public get content(): string {
-		return this._content;
-	}
+  /**
+   * Getter content
+   * @return {string}
+   */
+  public get content(): string {
+    return this._content;
+  }
 
-	/**
-	 * Setter type
-	 * @param {string} value
-	 */
-	public set type(value: string) {
-		this._type = value;
-	}
+  /**
+   * Setter type
+   * @param {string} value
+   */
+  public set type(value: string) {
+    this._type = value;
+  }
 
-	/**
-	 * Setter content
-	 * @param {string} value
-	 */
-	public set content(value: string) {
-		this._content = value;
-	}
+  /**
+   * Setter content
+   * @param {string} value
+   */
+  public set content(value: string) {
+    this._content = value;
+  }
 }

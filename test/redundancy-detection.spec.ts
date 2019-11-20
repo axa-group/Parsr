@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,22 +24,22 @@ import { getPdf, runModules } from './helpers';
 const pdfName = 'redundancy-detection.pdf';
 
 describe('Paragraph merge function', () => {
-	let doc: Document;
+  let doc: Document;
 
-	before(done => {
-		getPdf((d) => runModules(d, [new RedundancyDetectionModule()]), pdfName).then(([, docAfter]) => {
-			doc = docAfter;
-			done();
-		});
-	});
+  before(done => {
+    getPdf(d => runModules(d, [new RedundancyDetectionModule()]), pdfName).then(([, docAfter]) => {
+      doc = docAfter;
+      done();
+    });
+  });
 
-	it('should remove duplicates', () => {
-		const words: Word[] = doc.pages[0].getElementsOfType<Word>(Word);
-		expect(words)
-			.to.be.an('array')
-			.and.to.be.of.length(2);
+  it('should remove duplicates', () => {
+    const words: Word[] = doc.pages[0].getElementsOfType<Word>(Word);
+    expect(words)
+      .to.be.an('array')
+      .and.to.be.of.length(2);
 
-		expect(words[0].toString().trim()).to.be.equal('Redundant');
-		expect(words[1].toString().trim()).to.be.equal('Text');
-	});
+    expect(words[0].toString().trim()).to.be.equal('Redundant');
+    expect(words[1].toString().trim()).to.be.equal('Text');
+  });
 });

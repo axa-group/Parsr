@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,62 +16,85 @@
 
 import * as clone from 'clone';
 import { readFileSync } from 'fs';
-import { PdfJsonExtractor } from '../server/src/input/pdf2json/PdfJsonExtractor';
 import { PdfminerExtractor } from '../server/src/input/pdfminer/PdfminerExtractor';
+import { TesseractExtractor } from '../server/src/input/tesseract/TesseractExtractor';
 import { Module } from '../server/src/processing/Module';
+import {
+  Options,
+  TableExtractor,
+  TableExtractorResult,
+} from '../server/src/processing/TableDetectionModule/TableDetectionModule';
 import { Config } from '../server/src/types/Config';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
 
-export function getPdfUsingPdfMiner(
-	func: (doc: Document) => Promise<Document>,
-	filename: string,
-): Promise<[Document, Document]> {
-	const config: Config = JSON.parse(readFileSync(`${__dirname}/../server/defaultConfig.json`, 'utf8'));
+export class TableExtractorStub implements TableExtractor {
+  private status: number;
+  private stderr: string;
+  private stdout: string;
 
-	let docBefore: Document;
+  constructor(status: number = 0, stderr: string = '', stdout: string = '[]') {
+    this.status = status;
+    this.stderr = stderr;
+    this.stdout = stdout;
+  }
 
-	return new PdfminerExtractor(config)
-	.run(`${__dirname}/assets/${filename}`)
-	.then((doc: Document) => {
-		docBefore = clone(doc);
-		const docAfterPromise: Promise<Document> = func(doc);
-		return docAfterPromise;
-	})
-	.then(docAfter => {
-		return [docBefore, docAfter] as [Document, Document]; // required because TS doesn't handle tuples correctly
-	});
+  readTables(_: string, _options: Options): TableExtractorResult {
+    return {
+      stdout: this.stdout,
+      stderr: this.stderr,
+      status: this.status,
+    };
+  }
 }
 
 export function getPdf(
-	func: (doc: Document) => Promise<Document>,
-	filename: string,
+  func: (doc: Document) => Promise<Document>,
+  filename: string,
 ): Promise<[Document, Document]> {
-	const config: Config = JSON.parse(readFileSync(`${__dirname}/../server/defaultConfig.json`, 'utf8'));
+  const config: Config = JSON.parse(
+    readFileSync(`${__dirname}/../server/defaultConfig.json`, 'utf8'),
+  );
 
-	let docBefore: Document;
+  let docBefore: Document;
 
-	return new PdfJsonExtractor(config)
-	.run(`${__dirname}/assets/${filename}`)
-	.then((doc: Document) => {
-		docBefore = clone(doc);
-		const docAfterPromise: Promise<Document> = func(doc);
-		return docAfterPromise;
-	})
-	.then(docAfter => {
-		return [docBefore, docAfter] as [Document, Document]; // required because TS doesn't handle tuples correctly
-	});
+  return new PdfminerExtractor(config)
+    .run(`${__dirname}/assets/${filename}`)
+    .then((doc: Document) => {
+      docBefore = clone(doc);
+      const docAfterPromise: Promise<Document> = func(doc);
+      return docAfterPromise;
+    })
+    .then(docAfter => {
+      return [docBefore, docAfter] as [Document, Document]; // required because TS doesn't handle tuples correctly
+    });
+}
+
+export async function getImage(
+  func: (doc: Document) => Promise<Document>,
+  filename: string,
+): Promise<[Document, Document]> {
+  const config: Config = JSON.parse(
+    readFileSync(`${__dirname}/../server/defaultConfig.json`, 'utf8'),
+  );
+
+  const te = new TesseractExtractor(config);
+  const doc = await te.run(`${__dirname}/assets/${filename}`);
+  const docBefore = clone(doc);
+  const docAfter = await func(doc);
+
+  return [docBefore, docAfter];
 }
 
 export function runModules(originalDocument: Document, modules: Module[]): Promise<Document> {
-	return runNextModule(originalDocument, 0);
+  return runNextModule(originalDocument, 0);
 
-	function runNextModule(document: Document, i: number): Promise<Document> {
-		if (i < modules.length) {
-			return modules[i].run(document).then((newDoc: Document) => {
-				return runNextModule(newDoc, i + 1);
-			});
-		} else {
-			return Promise.resolve(document);
-		}
-	}
+  function runNextModule(document: Document, i: number): Promise<Document> {
+    if (i < modules.length) {
+      return modules[i].run(document).then((newDoc: Document) => {
+        return runNextModule(newDoc, i + 1);
+      });
+    } else {
+      return Promise.resolve(document);
+    }
+  }
 }

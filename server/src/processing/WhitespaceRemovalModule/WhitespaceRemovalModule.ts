@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,57 +19,51 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
-	minWidth?: {
-		value: number;
-		range: {
-			min: number;
-			max: number;
-		};
-	};
+  minWidth?: number;
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
 
 /**
- * Stabiltiy: Stable
+ * Stability: Stable
  * Remove any text block that contains nothing but whitespace.
  */
 export class WhitespaceRemovalModule extends Module<Options> {
-	public static moduleName = 'whitespace-removal';
+  public static moduleName = 'whitespace-removal';
 
-	constructor(options?: Options) {
-		super(options, defaultOptions);
-	}
+  constructor(options?: Options) {
+    super(options, defaultOptions);
+  }
 
-	public main(doc: Document): Document {
-		doc.pages.forEach(page => {
-			page.elements = page.elements.filter(e => {
-				return (
-					!(e instanceof Text) ||
-					(e.width < this.options.minWidth.value ||
-						(!/^\s*$/.test(e.toString()) && !isOverlapping(e, page)))
-				);
-			});
-		});
+  public main(doc: Document): Document {
+    doc.pages.forEach(page => {
+      page.elements = page.elements.filter(e => {
+        return (
+          !(e instanceof Text) ||
+          (e.width < this.options.minWidth ||
+            (!/^\s*$/.test(e.toString()) && !isOverlapping(e, page)))
+        );
+      });
+    });
 
-		// Remove any space that are overlapping with text
-		// This is a weird but common case
-		function isOverlapping(text1: Text, page: Page): boolean {
-			const pageTexts = page.getTexts();
-			for (const text2 of pageTexts) {
-				if (
-					text1 !== text2 &&
-					text1.top === text2.top &&
-					text1.left === text2.left &&
-					/^[ \t]*$/.test(text1.toString())
-				) {
-					return true;
-				}
-			}
+    // Remove any space that are overlapping with text
+    // This is a weird but common case
+    function isOverlapping(text1: Text, page: Page): boolean {
+      const pageTexts = page.getTexts();
+      for (const text2 of pageTexts) {
+        if (
+          text1 !== text2 &&
+          text1.top === text2.top &&
+          text1.left === text2.left &&
+          /^[ \t]*$/.test(text1.toString())
+        ) {
+          return true;
+        }
+      }
 
-			return false;
-		}
+      return false;
+    }
 
-		return doc;
-	}
+    return doc;
+  }
 }

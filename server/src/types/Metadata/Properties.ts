@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,27 @@
  */
 
 export interface Properties {
-	titleScores?: {
-		size: number;
-		wordHeight: number;
-		weight: number;
-		color: number;
-		name: number;
-		italic: number;
-		underline: number;
-		capitalCase: number;
-		titleCase: number;
-	};
+  titleScores?: {
+    size: number;
+    wordHeight: number;
+    weight: number;
+    color: number;
+    name: number;
+    italic: number;
+    underline: number;
+    capitalCase: number;
+    titleCase: number;
+  };
 
-	isRedundant?: boolean;
-	isHeader?: boolean;
-	isFooter?: boolean;
-	isPageNumber?: boolean;
-	bulletList?: boolean;
-	order?: number;
-	// column right
-	cr?: number;
-	// column left
-	cl?: number;
+  isRedundant?: boolean;
+  isHeader?: boolean;
+  isFooter?: boolean;
+  isPageNumber?: boolean;
+  bulletList?: boolean;
+  order?: number;
+  // column right
+  cr?: number;
+  // column left
+  cl?: number;
+  targetURL?: string;
 }

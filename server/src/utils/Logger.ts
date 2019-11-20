@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,75 +21,75 @@ import * as pino from 'pino';
  */
 /* tslint:disable-next-line:class-name */
 class logger {
-	public static init(isPrettyLogs: boolean = false): void {
-		const options: any = {
-			name: 'parsr',
-			level: 'info',
-		};
+  public static init(isPrettyLogs: boolean = false): void {
+    const options: any = {
+      name: 'parsr',
+      level: 'info',
+    };
 
-		if (isPrettyLogs) {
-			options.prettyPrint = {
-				colorize: true,
-				ignore: 'pid,hostname',
-				translateTime: "yyyy-mm-dd'T'HH:MM:ss",
-			};
-		}
+    if (isPrettyLogs) {
+      options.prettyPrint = {
+        colorize: true,
+        ignore: 'pid,hostname',
+        translateTime: "yyyy-mm-dd'T'HH:MM:ss",
+      };
+    }
 
-		this.pinoLogger = pino(options);
-	}
+    this.pinoLogger = pino(options);
+  }
 
-	public static getPinoLogger(): pino.Logger {
-		this.checkInit();
-		return this.pinoLogger;
-	}
+  public static getPinoLogger(): pino.Logger {
+    this.checkInit();
+    return this.pinoLogger;
+  }
 
-	public static trace(msg: string, ...args: any[]) {
-		this.checkInit();
-		this.pinoLogger.trace(msg, ...args);
-	}
+  public static trace(msg: string, ...args: any[]) {
+    this.checkInit();
+    this.pinoLogger.trace(msg, ...args);
+  }
 
-	public static debug(msg: string, ...args: any[]) {
-		this.checkInit();
-		this.pinoLogger.debug(msg, ...args);
-	}
+  public static debug(msg: string, ...args: any[]) {
+    this.checkInit();
+    this.pinoLogger.debug(msg, ...args);
+  }
 
-	public static info(msg: string, ...args: any[]) {
-		this.checkInit();
-		this.pinoLogger.info(msg, ...args);
-	}
+  public static info(msg: string, ...args: any[]) {
+    this.checkInit();
+    this.pinoLogger.info(msg, ...args);
+  }
 
-	public static warn(msg: string, ...args: any[]) {
-		this.checkInit();
-		this.pinoLogger.warn(msg, ...args);
-	}
+  public static warn(msg: string, ...args: any[]) {
+    this.checkInit();
+    this.pinoLogger.warn(msg, ...args);
+  }
 
-	public static error(msg: string, ...args: any[]) {
-		this.checkInit();
-		this.pinoLogger.error(msg, ...args);
-	}
+  public static error(msg: string, ...args: any[]) {
+    this.checkInit();
+    this.pinoLogger.error(msg, ...args);
+  }
 
-	public static fatal(msg: string, ...args: any[]) {
-		this.checkInit();
-		this.pinoLogger.fatal(msg, ...args);
-	}
+  public static fatal(msg: string, ...args: any[]) {
+    this.checkInit();
+    this.pinoLogger.fatal(msg, ...args);
+  }
 
-	public static set level(level) {
-		this.checkInit();
-		this.pinoLogger.level = level;
-	}
+  public static set level(level) {
+    this.checkInit();
+    this.pinoLogger.level = level;
+  }
 
-	public static get level() {
-		this.checkInit();
-		return this.pinoLogger.level;
-	}
+  public static get level() {
+    this.checkInit();
+    return this.pinoLogger.level;
+  }
 
-	private static pinoLogger: pino.Logger;
+  private static pinoLogger: pino.Logger;
 
-	private static checkInit() {
-		if (!this.pinoLogger) {
-			this.init(true);
-		}
-	}
+  private static checkInit() {
+    if (!this.pinoLogger) {
+      this.init(true);
+    }
+  }
 }
 
 export default logger;

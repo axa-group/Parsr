@@ -1,29 +1,28 @@
-# Heading Detection Module
+# Lines to Paragraph Module
 
 ## Purpose
 
-Detects the headings in a document, given that it already contains Paragraphs, Lines and Words, along with formatting (font size, weight, etc) information.
+Create headings from a collection of paragraphs.
 
 ## What it does
 
-Creates new `heading` element types, representing a derivative of Paragraph types, which represent the title of the document, chapter or a (sub)section.
+It creates new heading elements by detecting headings lines from all lines contained in paragraphs.
 
 ## Dependencies
 
-[Lines To Paragraph Module](lines-to-paragraph-module.md)
+- [Lines to paragraph Module](../LinesToParagraphModule/README.md)
 
 ## How it works
 
-- Firstly, the algorithm computes the most used font, font size and font style among all the detected fonts of a document.
-- Then, the algorithm allots a weighted score to all the paragraphs who do not exhibit the most used style.
-- Finally, each higher of the candidates from the second step are promoted to headings, which are super-set element types over paragraphs.
+It simply takes every line one by one of each paragraph and creates a heading if at least one of the following criteria is satisfyed:
+
+1.  Superior font size to the most common font size in the document.
+2.  **Entirely bold lines**
+3.  Title Case presence across the entire line - with the presence of at least one entirely non-numeric string token (a word).
+4.  UPPER CASE presence across the entire line - with the presence of at least one entirely non-numeric string token (a word).
+
+The level of headings is decided based on font size differences - the lines with the largest fonts become superior level headings.
 
 ## Accuracy
 
-The overall accuracy is variable.
-
-## Limitations
-
-- If the fonts of a document are well detected and coherent with the ground truth, the quality of the heading detection will be high.
-- Currently, only the size difference is used to threshold/detect the headings of a document.
-- Certain detection extractors (like pdf2json) produce variable quality results for font detection.
+Almost perfect

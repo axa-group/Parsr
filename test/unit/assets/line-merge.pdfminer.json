@@ -1,0 +1,111 @@
+{
+    "metadata": [],
+    "pages": [
+        {
+            "box": {
+                "l": 0,
+                "t": 0,
+                "w": 596,
+                "h": 843
+            },
+            "pageNumber": 1,
+            "elements": [
+                {
+                    "id": 280,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 72.06,
+                        "t": 69.91,
+                        "w": 14.67,
+                        "h": 14.99
+                    },
+                    "content": "I’m",
+                    "font": 1
+                },
+                {
+                    "id": 281,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 89.78,
+                        "t": 69.91,
+                        "w": 6.12,
+                        "h": 14.99
+                    },
+                    "content": "a",
+                    "font": 1
+                },
+                {
+                    "id": 282,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 98.96,
+                        "t": 69.91,
+                        "w": 44.65,
+                        "h": 14.99
+                    },
+                    "content": "sentence",
+                    "font": 1
+                },
+                {
+                    "id": 283,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 146.66,
+                        "t": 69.91,
+                        "w": 19.57,
+                        "h": 14.99
+                    },
+                    "content": "with",
+                    "font": 1
+                },
+                {
+                    "id": 284,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 169.28,
+                        "t": 69.91,
+                        "w": 37.91,
+                        "h": 14.99
+                    },
+                    "content": "multiple",
+                    "font": 1
+                },
+                {
+                    "id": 285,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 210.25,
+                        "t": 69.91,
+                        "w": 32.4,
+                        "h": 14.99
+                    },
+                    "content": "words.",
+                    "font": 1
+                }
+            ]
+        }
+    ],
+    "fonts": [
+        {
+            "id": 1,
+            "name": "ArialMT",
+            "size": 14.986,
+            "weight": "medium",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#NaNNaNNaN"
+        }
+    ]
+}

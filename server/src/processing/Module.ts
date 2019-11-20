@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,58 +18,71 @@ import { Document } from '../types/DocumentRepresentation';
 import logger from '../utils/Logger';
 
 export class Module<T = undefined> {
-	public static moduleName: string = '';
-	public static dependencies: Array<typeof Module> = [];
-	private _options: any = {};
-	private _extraOptions: any = {};
+  public static moduleName: string = '';
+  public static dependencies: Array<typeof Module> = [];
+  private _options: any = {};
+  private _extraOptions: any = {};
 
-	constructor(options?: T, defaultOptions?: T, extraOptions?: T) {
-		this._options = { ...defaultOptions, ...options };
-		this._extraOptions = extraOptions;
-	}
+  constructor(options?: T, defaultOptions?: T, extraOptions?: T) {
+    /*
+      this takes the 'options' in key-value format and the 'defaultOptions' in specs format
+      and returns a merged object in key-value format, prioritizing the values in options object
+    */
+    this._options = {};
+    if (defaultOptions && defaultOptions.hasOwnProperty('specs')) {
+      const mergedOptions = Object.assign({}, (defaultOptions as any).specs);
+      Object.keys(mergedOptions).forEach(key => {
+        mergedOptions[key] =
+          options && options.hasOwnProperty(key) ? options[key] : mergedOptions[key].value;
+      });
 
-	public run(document: Document): Promise<Document> {
-		return Promise.resolve(this.main(document));
-	}
+      this._options = mergedOptions;
+    }
+    this._extraOptions = extraOptions;
+  }
 
-	public bypass(document: Document): Promise<Document> {
-		return Promise.resolve(document);
-	}
+  public run(document: Document): Promise<Document> {
+    return Promise.resolve(this.main(document));
+  }
 
-	/**
-	 * Getter options
-	 * @return {any}
-	 */
-	public get options(): any {
-		return this._options;
-	}
+  public bypass(document: Document): Promise<Document> {
+    return Promise.resolve(document);
+  }
 
-	/**
-	 * Setter options
-	 * @param {any} value
-	 */
-	public set options(value: any) {
-		this._options = value;
-	}
+  /**
+   * Getter options
+   * @return {any}
+   */
+  public get options(): any {
+    return this._options;
+  }
 
-	/**
-	 * Getter extraOptions
-	 * @return {any }
-	 */
-	public get extraOptions(): any {
-		return this._extraOptions;
-	}
+  /**
+   * Setter options
+   * @param {any} value
+   */
+  public set options(value: any) {
+    this._options = value;
+  }
 
-	/**
-	 * Setter extraOptions
-	 * @param {any } value
-	 */
-	public set extraOptions(value: any) {
-		this._extraOptions = value;
-	}
+  /**
+   * Getter extraOptions
+   * @return {any }
+   */
+  public get extraOptions(): any {
+    return this._extraOptions;
+  }
 
-	protected main(document: Document): Document | Promise<Document> {
-		logger.warn('Module main should not be called.');
-		return this.bypass(document);
-	}
+  /**
+   * Setter extraOptions
+   * @param {any } value
+   */
+  public set extraOptions(value: any) {
+    this._extraOptions = value;
+  }
+
+  protected main(document: Document): Document | Promise<Document> {
+    logger.warn('Module main should not be called.');
+    return this.bypass(document);
+  }
 }

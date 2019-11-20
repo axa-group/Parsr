@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ import { Element } from '../DocumentRepresentation/Element';
 import { ComplexMetadata } from './ComplexMetadata';
 
 type KeyValueData = {
-	keyName: string;
-	keyElements: Element[];
-	valueElements: Element[];
+  keyName: string;
+  keyElements: Element[];
+  valueElements: Element[];
 };
 
 export class KeyValueMetadata extends ComplexMetadata<KeyValueData> {}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 
 export class TableReconstruction {
-	kpis: Object;
-	meta_info: string[];
-	table: string[][];
-	page_nb: number;
-	table_id: number;
+  kpis: Object;
+  meta_info: string[];
+  table: string[][];
+  page_nb: number;
+  table_id: number;
 }

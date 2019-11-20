@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,43 +18,43 @@ import { Element } from '../DocumentRepresentation';
 import { Metadata } from './Metadata';
 
 export class NumberMetadata implements Metadata {
-	/**
-	 * Getter elements
-	 * @return {Element[]}
-	 */
-	public get elements(): Element[] {
-		return this._elements;
-	}
+  /**
+   * Getter elements
+   * @return {Element[]}
+   */
+  public get elements(): Element[] {
+    return this._elements;
+  }
 
-	/**
-	 * Setter elements
-	 * @param {Element[]} value
-	 */
-	public set elements(value: Element[]) {
-		this._elements = value;
-	}
+  /**
+   * Setter elements
+   * @param {Element[]} value
+   */
+  public set elements(value: Element[]) {
+    this._elements = value;
+  }
 
-	/**
-	 * Getter value
-	 * @return {number}
-	 */
-	public get value(): number {
-		return this._value;
-	}
+  /**
+   * Getter value
+   * @return {number}
+   */
+  public get value(): number {
+    return this._value;
+  }
 
-	/**
-	 * Setter value
-	 * @param {number} value
-	 */
-	public set value(value: number) {
-		this._value = value;
-	}
+  /**
+   * Setter value
+   * @param {number} value
+   */
+  public set value(value: number) {
+    this._value = value;
+  }
 
-	private _value: number;
-	private _elements: Element[];
+  private _value: number;
+  private _elements: Element[];
 
-	constructor(elements: Element[], value: number) {
-		this.value = value;
-		this.elements = elements;
-	}
+  constructor(elements: Element[], value: number) {
+    this.value = value;
+    this.elements = elements;
+  }
 }

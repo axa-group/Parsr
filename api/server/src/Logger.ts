@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,9 +17,9 @@
 import pino from 'pino';
 
 const logger = pino({
-	name: 'parsr-api',
-	prettyPrint: { colorize: true, translateTime: "yyyy-mm-dd'T'HH:MM:ss" },
-	level: 'info',
+  name: 'parsr-api',
+  prettyPrint: { colorize: true, translateTime: "yyyy-mm-dd'T'HH:MM:ss" },
+  level: 'info',
 });
 
 export default logger;

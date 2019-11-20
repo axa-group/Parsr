@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
+import * as utils from '../../utils';
+import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
+import { Font } from './Font';
 import { Text } from './Text';
 import { Word } from './Word';
 
@@ -24,67 +27,112 @@ import { Word } from './Word';
  * multiple physical Line objects, or, multiple sentences can coexist in a single Line object.
  */
 export class Line extends Text {
-	private _content: Word[];
-	private _language: string;
-	private _scaling: number;
+  private _content: Word[];
+  private _language: string;
+  private _scaling: number;
 
-	constructor(boundingBox: BoundingBox, content: Word[] = []) {
-		super(boundingBox);
-		this.content = content;
-	}
+  constructor(boundingBox: BoundingBox, content: Word[] = []) {
+    super(boundingBox);
+    this.content = content;
+  }
 
-	public toString(): string {
-		return this.content
-			.map(w => w.toString().trim())
-			.reduce((w1, w2) => w1 + ' ' + w2, '')
-			.trim();
-	}
+  public toString(): string {
+    return this.content
+      .map(w => w.toString().trim())
+      .reduce((w1, w2) => w1 + ' ' + w2, '')
+      .trim();
+  }
 
-	/**
-	 * Getter content
-	 * @return {Word[]}
-	 */
-	public get content(): Word[] {
-		return this._content;
-	}
+  /**
+   * Returns the main font of the line using a basket + voting mechanism. The most used font will be returned
+   * as a valid Font object.
+   */
+  public getMainFont(): Font | undefined {
+    const result: Font = utils.findMostCommonFont(this.content.map((word: Word) => word.font));
+    if (result !== undefined) {
+      return result;
+    } else {
+      logger.debug(`No font found for word id ${this.id}`);
+      return undefined;
+    }
+  }
 
-	/**
-	 * Getter language
-	 * @return {string}
-	 */
-	public get language(): string {
-		return this._language;
-	}
+  /**
+   * Returns if the line has only one font.
+   */
+  public isUniqueFont(): boolean {
+    const allFonts = this.content.map(w => w.font);
+    const uniqueFonts: Font[] = [];
+    allFonts.forEach(font => {
+      if (uniqueFonts.filter(f => f.isEqual(font)).length === 0) {
+        uniqueFonts.push(font);
+      }
+    });
+    return uniqueFonts.length === 1;
+  }
 
-	/**
-	 * Getter scaling
-	 * @return {number}
-	 */
-	public get scaling(): number {
-		return this._scaling;
-	}
+  /**
+   * Getter content
+   * @return {Word[]}
+   */
+  public get content(): Word[] {
+    return this._content;
+  }
 
-	/**
-	 * Setter content
-	 * @param {Word[]} value
-	 */
-	public set content(value: Word[]) {
-		this._content = value;
-	}
+  /**
+   * Getter language
+   * @return {string}
+   */
+  public get language(): string {
+    return this._language;
+  }
 
-	/**
-	 * Setter language
-	 * @param {string} value
-	 */
-	public set language(value: string) {
-		this._language = value;
-	}
+  /**
+   * Getter scaling
+   * @return {number}
+   */
+  public get scaling(): number {
+    return this._scaling;
+  }
 
-	/**
-	 * Setter scaling
-	 * @param {number} value
-	 */
-	public set scaling(value: number) {
-		this._scaling = value;
-	}
+  /**
+   * Setter content
+   * @param {Word[]} value
+   */
+  public set content(value: Word[]) {
+    this._content = value;
+  }
+
+  /**
+   * Setter language
+   * @param {string} value
+   */
+  public set language(value: string) {
+    this._language = value;
+  }
+
+  /**
+   * Setter scaling
+   * @param {number} value
+   */
+  public set scaling(value: number) {
+    this._scaling = value;
+  }
+
+  public toMarkdown(): string {
+    // Escape '.' or ')' when line starts with number followed by '.' or ')'
+    // to avoid MD detect this line as a list item.
+    // List item MD compliant generation is managed by List element
+    return this.content
+      .map(w => w.toMarkDown())
+      .join(' ')
+      .replace(/\^([\d]+)([\.\)])/g, '$1\\$2');
+  }
+
+  /**
+   * Converts the entire element into a html code string (needed by MD table generation).
+   */
+  public toHTML(): string {
+    return this.toString();
+  }
 }

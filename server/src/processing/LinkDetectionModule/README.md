@@ -6,7 +6,7 @@ The Link detection module detects URLs, GoTo links, as well as actionLaunch, act
 
 ## What it does
 
-It appends a the link found on a word (extracted by pdf2json) to the word's content itself, by transforming the content to an html `<a>` link.
+It appends a the link found on a word (extracted by pdfminer) to the word's content itself, by transforming the content to an html `<a>` link.
 
 ## Dependencies
 
@@ -15,7 +15,7 @@ None
 ## How it works
 
 1. It compares each word to three Regex patterns, one looking for URI based link contents, one looking for GoTo links as well as any other Action links.
-2. For each case, a suitable representation, like `<a>` for URI's, is attached with the content of the word itself.
+2. For each case, a suitable representation, like `<a>` for URIs, is attached with the content of the word itself.
 
 ## Accuracy
 

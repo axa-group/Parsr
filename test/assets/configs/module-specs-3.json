@@ -1,0 +1,22 @@
+{
+	"name": "words-to-line",
+	"description": "Create lines from a bunch of words, according to the reading order.",
+	"specs": {
+		"parameter_1": {
+			"value": 100,
+			"range": { "min": 0.0, "max": 1.0, "step": 0.1 }
+		},
+		"parameter_2": {
+			"value": 0.4,
+			"range": { "min": 0.0, "max": 1.0, "step": 0.1 }
+		},
+		"parameter_3": {
+			"value": 100,
+			"range": { "min": 0, "max": 100 }
+		},
+		"parameter_4": {
+			"value": true,
+			"range": [true, false]
+		}
+	}
+}

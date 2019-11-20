@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,20 +17,20 @@
 import { ChildProcess } from 'child_process';
 
 export type FileMapper = {
-	[docId: string]: Binder;
+  [docId: string]: Binder;
 };
 
 export type ProcessMapper = {
-	[docId: string]: PipelineProcess;
+  [docId: string]: PipelineProcess;
 };
 
 export type PipelineProcess = {
-	childProcess: ChildProcess;
-	isDone: boolean;
-	exitCode?: number;
-	start: Date;
-	stdout: string[];
-	stderr: string[];
+  childProcess: ChildProcess;
+  isDone: boolean;
+  exitCode?: number;
+  start: Date;
+  stdout: string[];
+  stderr: string[];
 };
 
 export type Binder = BinderFiles & BinderKeys;
@@ -38,39 +38,39 @@ export type Binder = BinderFiles & BinderKeys;
 type BinderFiles = { [key in SingleFileType]?: string };
 
 type BinderKeys = {
-	csvs?: string[][];
-	outputPath: string;
-	name: string;
+  csvs?: string[][];
+  outputPath: string;
+  name: string;
 };
 
 export type SingleFileType =
-	| 'config'
-	| 'input'
-	| 'json'
-	| 'xml'
-	| 'text'
-	| 'pdf'
-	| 'markdown'
-	| 'confidances';
+  | 'config'
+  | 'input'
+  | 'json'
+  | 'xml'
+  | 'text'
+  | 'pdf'
+  | 'markdown'
+  | 'confidences';
 
 export type QueueStatus = {
-	'progress-percentage': number;
-	status: string;
-	'start-date': Date;
-	'estimated-remaining-time': number;
+  'progress-percentage': number;
+  status: string;
+  'start-date': Date;
+  'estimated-remaining-time': number;
 };
 
 export type OutputGranularityOptions = 'character' | 'word';
 export type OutputConfig = {
-	granularity: OutputGranularityOptions;
-	formats: {
-		json?: boolean;
-		'json-compact'?: boolean;
-		text?: boolean;
-		markdown?: boolean;
-		xml?: boolean;
-		confidances?: boolean;
-		csv?: boolean;
-		pdf?: boolean;
-	};
+  granularity: OutputGranularityOptions;
+  formats: {
+    json?: boolean;
+    'json-compact'?: boolean;
+    text?: boolean;
+    markdown?: boolean;
+    xml?: boolean;
+    confidences?: boolean;
+    csv?: boolean;
+    pdf?: boolean;
+  };
 };

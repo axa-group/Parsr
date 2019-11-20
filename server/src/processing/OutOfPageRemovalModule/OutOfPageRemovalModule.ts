@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,20 +19,20 @@ import * as utils from '../../utils';
 import { Module } from '../Module';
 
 /**
- * Stabiltiy: Stable
+ * Stability: Stable
  * Remove any elements that are strictly out of the page.
  * Items that overlap with the side of the page will be kept.
  */
 export class OutOfPageRemovalModule extends Module {
-	public static moduleName = 'out-of-page-removal';
+  public static moduleName = 'out-of-page-removal';
 
-	public main(doc: Document): Document {
-		doc.pages.forEach((page: Page) => {
-			page.elements = page.elements.filter((element: Element) => {
-				return !(element instanceof Text) || utils.isInBox(element.box, page.box);
-			});
-		});
+  public main(doc: Document): Document {
+    doc.pages.forEach((page: Page) => {
+      page.elements = page.elements.filter((element: Element) => {
+        return !(element instanceof Text) || utils.isInBox(element, page.box, true);
+      });
+    });
 
-		return doc;
-	}
+    return doc;
+  }
 }

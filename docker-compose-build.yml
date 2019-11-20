@@ -1,0 +1,41 @@
+version: '3.3'
+
+services:
+  # parsr-base is the base image with all the dependencies already installed on it
+  # just build it if you need new dependencies otherwise use the publish one
+  parsr-base:
+    image: axarev/parsr-base
+    build:
+      context: .
+      dockerfile: docker/parsr-base/Dockerfile
+
+  # parsr API 
+  parsr:
+    image: axarev/parsr
+    build:
+      context: .
+      dockerfile: docker/parsr/Dockerfile
+      args:
+        DEV_MODE: 'true'
+    ports:
+      - 3001:3001
+    environment:
+      ABBYY_SERVER_URL:
+    volumes:
+      - ./pipeline/:/opt/app-root/src/api/server/dist/output
+
+  # parsr-ui
+  # if the API is not running on localhost:3001, you need to rebuild the image with the correct VUE_APP_API variable
+  parsr-ui:
+    image: axarev/parsr-ui-localhost
+    build: 
+      context: .
+      dockerfile: docker/parsr-ui/Dockerfile
+      args:
+        VUE_APP_API: ${VUE_APP_API:-http://localhost:3001}
+    ports:
+      - 8080:80
+
+volumes:
+  pipeline:
+    driver: local

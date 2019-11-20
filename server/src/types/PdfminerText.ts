@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
  */
 
 export class PdfminerText {
-	public _attr: {
-		bbox: string;
-		font: string;
-		colourspace: string;
-		ncolour: string;
-		size: string;
-	};
-	public _: string;
+  public _attr: {
+    bbox: string;
+    font: string;
+    colourspace: string;
+    ncolour: string;
+    size: string;
+  };
+  public _: string;
 
-	constructor(text: PdfminerText) {
-		this._attr = text._attr;
-		this._ = text._;
-	}
+  constructor(text: PdfminerText) {
+    this._attr = text._attr;
+    this._ = text._;
+  }
 }

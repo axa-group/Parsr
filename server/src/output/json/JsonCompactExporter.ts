@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 import { Exporter } from '../Exporter';
 
 export class JsonCompactExporter extends Exporter {
-	public export(): Promise<any> {
-		throw new Error('Not implemented yet.'); // TODO
-	}
+  public export(): Promise<any> {
+    throw new Error('Not implemented yet.'); // TODO
+  }
 }

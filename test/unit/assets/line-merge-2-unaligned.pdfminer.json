@@ -1,0 +1,139 @@
+{
+    "metadata": [],
+    "pages": [
+        {
+            "box": {
+                "l": 0,
+                "t": 0,
+                "w": 595.28,
+                "h": 841.89
+            },
+            "pageNumber": 1,
+            "elements": [
+                {
+                    "id": 332,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 173.75,
+                        "t": 41.01,
+                        "w": 33.74,
+                        "h": 11.34
+                    },
+                    "content": "Lorem",
+                    "font": 1
+                },
+                {
+                    "id": 333,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 214.6,
+                        "t": 41.01,
+                        "w": 34.74,
+                        "h": 11.34
+                    },
+                    "content": "ipsum,",
+                    "font": 1
+                },
+                {
+                    "id": 334,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 256.55,
+                        "t": 41.01,
+                        "w": 37.63,
+                        "h": 11.34
+                    },
+                    "content": "sagittis",
+                    "font": 1
+                },
+                {
+                    "id": 335,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 300.8,
+                        "t": 42.01,
+                        "w": 8.05,
+                        "h": 11.34
+                    },
+                    "content": "a,",
+                    "font": 1
+                },
+                {
+                    "id": 336,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 316.07,
+                        "t": 41.01,
+                        "w": 30.35,
+                        "h": 11.34
+                    },
+                    "content": "dolor.",
+                    "font": 1
+                },
+                {
+                    "id": 337,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 353.33,
+                        "t": 39.01,
+                        "w": 37.64,
+                        "h": 11.34
+                    },
+                    "content": "Nullam",
+                    "font": 1
+                },
+                {
+                    "id": 338,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 398.08,
+                        "t": 41.01,
+                        "w": 30.16,
+                        "h": 11.34
+                    },
+                    "content": "turpis",
+                    "font": 1
+                },
+                {
+                    "id": 339,
+                    "type": "word",
+                    "properties": {},
+                    "metadata": [],
+                    "box": {
+                        "l": 434.85,
+                        "t": 38.01,
+                        "w": 30.49,
+                        "h": 11.34
+                    },
+                    "content": "lacus.",
+                    "font": 1
+                }
+            ]
+        }
+    ],
+    "fonts": [
+        {
+            "id": 1,
+            "name": "unknown",
+            "size": 11.34,
+            "weight": "medium",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#NaNNaNNaN"
+        }
+    ]
+}

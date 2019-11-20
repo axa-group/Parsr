@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,24 +15,24 @@
  */
 
 export class TableInfoPage {
-	trimbox_coordinates: Box;
-	tables_trimbox_coordinates: Box[];
-	tables_mediabox_coordinates: Box[];
-	mediabox_dims: Dim;
-	filename: string;
-	class_ids: number[];
-	page_number: number;
-	scores: number[];
+  trimbox_coordinates: Box;
+  tables_trimbox_coordinates: Box[];
+  tables_mediabox_coordinates: Box[];
+  mediabox_dims: Dim;
+  filename: string;
+  class_ids: number[];
+  page_number: number;
+  scores: number[];
 }
 
 export class Box {
-	x1: number;
-	x2: number;
-	y1: number;
-	y2: number;
+  x1: number;
+  x2: number;
+  y1: number;
+  y2: number;
 }
 
 export class Dim {
-	height: number;
-	width: number;
+  height: number;
+  width: number;
 }

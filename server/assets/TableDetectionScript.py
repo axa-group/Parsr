@@ -54,12 +54,11 @@ def getCellLocation(cell):
     return location
 
 def getCellFrame(cell):
-    if cell.text == '':        
-        return None
-    
     cellData = dict()
     cellData['location'] = getCellLocation(cell)
     cellData['size'] = getCellSize(cell)
+    cellData['colSpan'] = 1
+    cellData['rowSpan'] = 1
     return cellData
 
 def updateCellColSpan(cell, row, index, cellInfo):
@@ -86,32 +85,39 @@ def updateCellRowSpan(cell, allRows, index, cellInfo):
     cellInfo['size']['height'] = height
     return cellInfo
 
-def extractRowData(row, allRows):
+def extractRowData(row, allRows, flavor):
     cellsData = []
+    cellHSpan = 0    
     for index, cell in enumerate(row, 0):
-        cellInfo = getCellFrame(cell)
-        if cellInfo != None:
+        cellInfo = getCellFrame(cell)  
+        if(cell.text != ''):      
             if cell.hspan:
-                cellInfo = updateCellColSpan(cell, row, index, cellInfo)
+                cellInfo = updateCellColSpan(cell, row, index, cellInfo)                
+            
             if cell.vspan:
                 cellInfo = updateCellRowSpan(cell, allRows, index, cellInfo)
-            cellsData.append(cellInfo)
 
+        cellHSpan += cellInfo['colSpan']
+        if flavor == 'stream' or cell.text != '' or (index + 1 >= cellHSpan and cell.text == '' and len(cellsData) > 0):
+            cellsData.append(cellInfo)        
+        
     return cellsData
 
-def extractRowsData(table):
-    rowsData = [extractRowData(row, table.cells) for row in table.cells]    
+def extractRowsData(table, flavor):
+    rowsData = [extractRowData(row, table.cells, flavor) for row in table.cells]    
     noEmptyRowsData = list(filter(lambda x: len(x) > 0, rowsData))    
     if len(noEmptyRowsData) == 0:
         return None
 
     return noEmptyRowsData
 
-def extractTableData(table):    
+def extractTableData(table, flavor):    
     tableData = dict()
     tableData['size'] = getTableSize(table)
     tableData['location'] = getTableLocation(table)
-    cellsData = extractRowsData(table)
+    tableData['content'] = table.data
+    tableData['flavor'] = flavor
+    cellsData = extractRowsData(table, flavor)
     if cellsData != None:
         tableData['cells'] = cellsData
         return tableData
@@ -128,12 +134,20 @@ def main():
     import sys
     pdfFile = str(sys.argv[1])
     flavor = str(sys.argv[2])
+    lineScale = int(sys.argv[3])
 
     pages = 'all'
-    if len(sys.argv) > 3:
-        pages = str(sys.argv[3])
+    if len(sys.argv) > 4:
+        pages = str(sys.argv[4])
 
-    tables = camelot.read_pdf(pdfFile, pages, None, flavor)
+    tableAreas = None
+    if len(sys.argv) > 5:
+        tableAreas = sys.argv[5].split(';')
+    
+    if flavor == 'lattice':
+        tables = camelot.read_pdf(pdfFile,  pages=pages, flavor=flavor, line_scale=lineScale)
+    else: 
+        tables = camelot.read_pdf(pdfFile,  pages=pages, flavor=flavor, table_areas=tableAreas)
 
     if len(tables) == 0:
         #print('No tables detected ', tables)
@@ -147,7 +161,7 @@ def main():
         tablesInPage = list(filter(lambda x: x.page == page, tables))
         #print('Current page', page)
         #print('Tables found', tablesInPage)
-        tablesData = list(map(lambda x: extractTableData(x), tablesInPage))
+        tablesData = list(map(lambda x: extractTableData(x, flavor), tablesInPage))
         tablesData = list(filter(lambda x: x != None, tablesData))
         output.append(createPageData(page, tablesData))
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA
+ * Copyright 2019 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,89 +42,89 @@ const t3Dup = new Word(new BoundingBox(155, 160, 10, 5), 'third', dummyFont);
 t3Dup.properties.order = 3;
 
 describe('Utils sortTextsByOrder function', () => {
-	it('should sort texts', () => {
-		expect(utils.sortElementsByOrder(t1, t2)).to.be.lessThan(0);
-		expect(utils.sortElementsByOrder(t2, t1)).to.be.greaterThan(0);
-	});
+  it('should sort texts', () => {
+    expect(utils.sortElementsByOrder(t1, t2)).to.be.lessThan(0);
+    expect(utils.sortElementsByOrder(t2, t1)).to.be.greaterThan(0);
+  });
 });
 
 describe('Utils mergeText function', () => {
-	it('should merge texts', () => {
-		const parent = new Line(null);
-		const result: Text = utils.mergeElements(parent, t3, t1, t2);
-		const resultString = (result.content as Text[]).map(e => e.content).join(' ');
-		expect(resultString).to.be.equal('first second third');
-		expect(result.top).to.be.equal(5);
-		expect(result.left).to.be.equal(10);
-		expect(result.height).to.be.equal(160);
-		expect(result.width).to.be.equal(155);
-	});
+  it('should merge texts', () => {
+    const parent = new Line(null);
+    const result: Text = utils.mergeElements(parent, t3, t1, t2);
+    const resultString = (result.content as Text[]).map(e => e.content).join(' ');
+    expect(resultString).to.be.equal('first second third');
+    expect(result.top).to.be.equal(5);
+    expect(result.left).to.be.equal(10);
+    expect(result.height).to.be.equal(160);
+    expect(result.width).to.be.equal(155);
+  });
 
-	it('should not have side effects', () => {
-		function pseudoDeepCheck(elt1, elt2) {
-			expect(elt1.box).to.be.deep.equal(elt2.box);
-			expect(elt1.properties).to.be.deep.equal(elt2.properties);
-			expect(elt1.children).to.be.deep.equal(elt2.children);
-			expect(elt1.content).to.be.equal(elt2.content);
-		}
-		pseudoDeepCheck(t1, t1Dup);
-		pseudoDeepCheck(t2, t2Dup);
-		pseudoDeepCheck(t3, t3Dup);
-	});
+  it('should not have side effects', () => {
+    function pseudoDeepCheck(elt1, elt2) {
+      expect(elt1.box).to.be.deep.equal(elt2.box);
+      expect(elt1.properties).to.be.deep.equal(elt2.properties);
+      expect(elt1.children).to.be.deep.equal(elt2.children);
+      expect(elt1.content).to.be.equal(elt2.content);
+    }
+    pseudoDeepCheck(t1, t1Dup);
+    pseudoDeepCheck(t2, t2Dup);
+    pseudoDeepCheck(t3, t3Dup);
+  });
 
-	it('should always return a Text', () => {
-		assert.instanceOf(utils.mergeElements(t1), Text);
-		assert.instanceOf(utils.mergeElements(t2, t3, t1), Text);
-	});
+  it('should always return a Text', () => {
+    assert.instanceOf(utils.mergeElements(t1), Text);
+    assert.instanceOf(utils.mergeElements(t2, t3, t1), Text);
+  });
 });
 
 describe('Utils getPageRegex function', () => {
-	withData(
-		[
-			'3',
-			'03',
-			'(3)',
-			'[3]',
-			'[ 3 ]',
-			'-3-',
-			'- 3-',
-			'- 3 -',
-			'iii',
-			'(iii)',
-			'- CIX -',
-			'Page 3',
-			'Page | 3',
-			'3 | Page',
-			'Page 3 of 74',
-			'3 of 32',
-			'pages 3-4',
-			'3 / 20',
-			'Página 3 de 19',
-			'3 of\n21',
-			// '3 - General conditions PP 8601-01',
-			// '3 - General Terms and Conditions September 2016',
-			// 'Drive Motor Insurance Policy | 3',
-			// 'Tradesman’s Combined 3',
-			// 'PAGE NO.\n3\n77-53-46\nSIG\nSAN JUAN\nR',
-			// 'Marine Legal Protection 3',
-		],
-		text => {
-			it('should return a regex that matches page numbers', () => {
-				assert(utils.getPageRegex().test(text));
-			});
-			it('should have a capturing group for the page number', () => {
-				const match = text.match(utils.getPageRegex());
-				let pageNumber;
+  withData(
+    [
+      '3',
+      '03',
+      '(3)',
+      '[3]',
+      '[ 3 ]',
+      '-3-',
+      '- 3-',
+      '- 3 -',
+      'iii',
+      '(iii)',
+      '- CIX -',
+      'Page 3',
+      'Page | 3',
+      '3 | Page',
+      'Page 3 of 74',
+      '3 of 32',
+      'pages 3-4',
+      '3 / 20',
+      'Página 3 de 19',
+      '3 of\n21',
+      // '3 - General conditions PP 8601-01',
+      // '3 - General Terms and Conditions September 2016',
+      // 'Drive Motor Insurance Policy | 3',
+      // 'Tradesman’s Combined 3',
+      // 'PAGE NO.\n3\n77-53-46\nSIG\nSAN JUAN\nR',
+      // 'Marine Legal Protection 3',
+    ],
+    text => {
+      it('should return a regex that matches page numbers', () => {
+        assert(utils.getPageRegex().test(text));
+      });
+      it('should have a capturing group for the page number', () => {
+        const match = text.match(utils.getPageRegex());
+        let pageNumber;
 
-				for (let i = 1; i < match.length; i++) {
-					if (match[i]) {
-						pageNumber = match[i];
-					}
-				}
+        for (let i = 1; i < match.length; i++) {
+          if (match[i]) {
+            pageNumber = match[i];
+          }
+        }
 
-				expect(pageNumber).to.exist;
-				expect(pageNumber).to.not.be.empty;
-			});
-		},
-	);
+        expect(pageNumber).to.exist;
+        expect(pageNumber).to.not.be.empty;
+      });
+    },
+  );
 });

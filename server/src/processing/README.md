@@ -15,26 +15,25 @@ Each module contains a set of configurable parameters, which can be consulted in
 ## 1. Current Processing Modules
 
 1. [Header and Footer Detection](HeaderFooterDetectionModule/README.md)
-2. [Heading Detection](HeadingDetectionModule/README.md)
-3. [Hirarchy Detection](HierarchyDetectionModule/README.md)
-4. [Key-Value Pair Detection](KeyValueDetectionModule/README.md)
-5. [Lines to Paragraph](LinesToParagraphModule/README.md)
-6. [Link Detection](LinkDetectionModule/README.md)
-7. [List Detection](ListDetectionModule/README.md)
-8. [Number Correction](NumberCorrectionModule/README.md)
-9. [Out of Page Removal](OutOfPageRemovalModule/README.md)
-10. [Page Number Detection](PageNumberDetectionModule/README.md)
-11. [Reading Order Detection](ReadingOrderDetectionModule/README.md)
-12. [Redundancy Detection](RedundancyDetectionModule/README.md)
-13. [Regex Matcher](RegexMatcherModule/README.md)
-14. [Seperate Words](SeparateWordsModule/README.md)
-15. [Table Detection](TableDetectionModule/README.md)
-16. [Whitespace Removal](WhitespaceRemovalModule/README.md)
-17. [Words To Line](WordsToLineModule/README.md)
+2. [Hierarchy Detection](HierarchyDetectionModule/README.md)
+3. [Key-Value Pair Detection](KeyValueDetectionModule/README.md)
+4. [Lines to Paragraph](LinesToParagraphModule/README.md)
+5. [Link Detection](LinkDetectionModule/README.md)
+6. [List Detection](ListDetectionModule/README.md)
+7. [Number Correction](NumberCorrectionModule/README.md)
+8. [Out of Page Removal](OutOfPageRemovalModule/README.md)
+9. [Page Number Detection](PageNumberDetectionModule/README.md)
+10. [Reading Order Detection](ReadingOrderDetectionModule/README.md)
+11. [Redundancy Detection](RedundancyDetectionModule/README.md)
+12. [Regex Matcher](RegexMatcherModule/README.md)
+13. [Separate Words](SeparateWordsModule/README.md)
+14. [Table Detection](TableDetectionModule/README.md)
+15. [Whitespace Removal](WhitespaceRemovalModule/README.md)
+16. [Words To Line](WordsToLineModule/README.md)
 
 ## 2. Create your own Processing Module
 
-Creating a custom processing module can be very useful to add some treament on the document.
+Creating a custom module can be very useful to add some treatment on the document.
 
 You have two way to do it:
 
