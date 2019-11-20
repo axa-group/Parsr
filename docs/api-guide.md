@@ -46,7 +46,7 @@ The API has an endpoint prefix `/api` and then, optionally, the version number `
 
 First of all, you need to do a POST request to send the document to Parsr. Along that, you need to send the configuration to tell Parsr what kind of processing it must perform on the file.
 
-**Regarding the configuration file, please refer to the [configuration file documentation](configuration-file.md).** (**Tip**: You can also obtain the default configuration on the server via the endpoint: `/api/v1/default-config`. See [Section 4](#4-server-configuration-access).)
+**Regarding the configuration file, please refer to the [configuration file documentation](configuration.md).** (**Tip**: You can also obtain the default configuration on the server via the endpoint: `/api/v1/default-config`. See [Section 4](#4-server-configuration-access).)
 
 ### `curl` command
 

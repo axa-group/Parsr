@@ -258,8 +258,12 @@ export class Paragraph extends Text {
     */
     Object.keys(linkWordsIdx).forEach(lw => {
       linkWordsIdx[lw].forEach(idGroup => {
-        const linkDescription = idGroup.map(id => result[id].replace(/\[(.*?)\]\(.*?\)/, "$1")).join(' ');
-        result[idGroup[0]] = `[${linkDescription.trim()}](${lw.trim()})`;
+        let linkDescription = idGroup.map(id => result[id].replace(/\[(.*?)\]\(.*?\)/, "$1")).join(' ');
+        const emphazisChars = utils.getEmphazisChars(linkDescription);
+        if (emphazisChars !== '') {
+          linkDescription = linkDescription.split(emphazisChars)[1];
+        }
+        result[idGroup[0]] = `${emphazisChars}[${linkDescription.trim()}](${lw.trim()})${emphazisChars}`;
 
         // after the merging, i set as null the rest of the words with that link so it doesn't repeat.
         for (let i = 1; i < idGroup.length; i++) {

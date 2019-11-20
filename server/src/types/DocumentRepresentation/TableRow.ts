@@ -68,4 +68,20 @@ export class TableRow extends Element {
     });
     return output;
   }
+
+  public mergeCells(colIdxGroups: number[][]): TableRow {
+    colIdxGroups.forEach(colIdxGroup => {
+      const cellsToJoin = this.content.filter((_, i) => colIdxGroup.includes(i));
+      const joinedCell = cellsToJoin[0];
+      cellsToJoin.slice(1).forEach(cell => {
+        joinedCell.box.width += cell.box.width;
+        joinedCell.content.push(...cell.content);
+        joinedCell.colspan += 1;
+        cell.box.width = 0;
+      });
+    });
+
+    this.content = this.content.filter(c => c.box.width > 0);
+    return this;
+  }
 }

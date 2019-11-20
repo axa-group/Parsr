@@ -58,6 +58,20 @@ export class Line extends Text {
   }
 
   /**
+   * Returns if the line has only one font.
+   */
+  public isUniqueFont(): boolean {
+    const allFonts = this.content.map(w => w.font);
+    const uniqueFonts: Font[] = [];
+    allFonts.forEach(font => {
+      if (uniqueFonts.filter(f => f.isEqual(font)).length === 0) {
+        uniqueFonts.push(font);
+      }
+    });
+    return uniqueFonts.length === 1;
+  }
+
+  /**
    * Getter content
    * @return {Word[]}
    */
@@ -106,7 +120,13 @@ export class Line extends Text {
   }
 
   public toMarkdown(): string {
-    return this.content.map(w => w.toMarkDown()).join(' ');
+    // Escape '.' or ')' when line starts with number followed by '.' or ')'
+    // to avoid MD detect this line as a list item.
+    // List item MD compliant generation is managed by List element
+    return this.content
+      .map(w => w.toMarkDown())
+      .join(' ')
+      .replace(/\^([\d]+)([\.\)])/g, '$1\\$2');
   }
 
   /**
