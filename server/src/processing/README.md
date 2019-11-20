@@ -52,7 +52,7 @@ To add your newly created module to the register, simply open the [Cleaner file]
 
 ### 2.3. Add it to the Configuration
 
-If you want your module to run you need to enable it in your [configuration](../../docs/configuration-file.md#3-Cleaner-Config).
+If you want your module to run you need to enable it in your [configuration](../../docs/configuration.md#3-Cleaner-Config).
 
 Simply add a line in the `cleaner` array with the name of your module, and potential options.
 

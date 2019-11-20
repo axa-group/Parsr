@@ -1,6 +1,6 @@
-# Configuration File
+# Parsr Configuration
 
-- [Configuration File](#configuration-file)
+- [Parsr Configuration](#parsr-configuration)
   - [1. Structure](#1-structure)
   - [2. Extractor Config](#2-extractor-config)
     - [2.1. Extractor Tools](#21-extractor-tools)
