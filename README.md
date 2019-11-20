@@ -22,9 +22,7 @@ It provides users with clean structured and label-enriched information set for r
 
 The quickest way to install Parsr is using the [docker installation](docs/docker.md#1-run-parsr).
 
-Otherwise, Parsr can also be installed manually.
-
-First, install the dependencies:
+Otherwise, Parsr can also be installed manually by first installing dependencies:
 
 **Under Linux: (Ubuntu/Debian)**
 
