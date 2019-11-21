@@ -240,7 +240,7 @@ export default new Vuex.Store({
         })(element);
         return flattend;
       };
-      //console.log('Search words with font ' + fontId);
+
       const allWords = state.document.pages
         .map(page => page.elements)
         .reduce((prev, curr) => prev.concat(curr), [])
@@ -249,16 +249,33 @@ export default new Vuex.Store({
         .filter(element => element.type == 'word');
 
       const wordsWithFont = allWords.filter(w => w.font == fontId);
-      //console.log('Words with font ' + wordsWithFont.length);
-      //console.log('Total Words ' + allWords.length);
-      return (
-        Number(wordsWithFont.length / allWords.length).toFixed(3) +
-        ' (' +
-        wordsWithFont.length +
-        '/' +
-        allWords.length +
-        ')'
-      );
+
+      const allPageWords = state.document.pages
+        .filter(page => page.pageNumber === state.selectedPage)
+        .map(page => page.elements)
+        .reduce((prev, curr) => prev.concat(curr), [])
+        .map(flattenElement)
+        .reduce((prev, curr) => prev.concat(curr), [])
+        .filter(element => element.type == 'word');
+
+      const pageWordsWithFont = allPageWords.filter(w => w.font == fontId);
+
+      return {
+        documentRatio:
+          Number(wordsWithFont.length / allWords.length).toFixed(3) +
+          ' (' +
+          wordsWithFont.length +
+          '/' +
+          allWords.length +
+          ')',
+        pageRatio:
+          Number(pageWordsWithFont.length / allPageWords.length).toFixed(3) +
+          ' (' +
+          pageWordsWithFont.length +
+          '/' +
+          allPageWords.length +
+          ')',
+      };
     },
   },
 });

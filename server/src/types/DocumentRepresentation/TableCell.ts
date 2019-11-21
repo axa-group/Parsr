@@ -127,6 +127,10 @@ export class TableCell extends Element {
     return output;
   }
 
+  public toString(): string {
+    return this.content.map(c => c.toString()).join(' ');
+  }
+
   private isCenterAligned(): boolean {
     const firstChild = this.content[0];
     if (firstChild && Array.isArray(firstChild.content)) {

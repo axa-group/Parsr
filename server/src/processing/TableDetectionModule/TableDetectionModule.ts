@@ -18,6 +18,7 @@ import * as defaultConfig from './defaultConfig.json';
 export interface Options {
   pages?: number[];
   flavor?: string;
+  table_areas?: string[];
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -58,13 +59,19 @@ const defaultExtractor: TableExtractor = {
       };
     }
 
-    const tableExtractor = child_process.spawnSync(pythonLocation, [
+    const scriptArgs = [
       __dirname + '/../../../assets/TableDetectionScript.py',
       inputFile,
       flavor,
       lineScale,
       pages,
-    ]);
+    ];
+
+    if ((options.table_areas || []).length > 0) {
+      scriptArgs.push(options.table_areas.join(';'));
+    }
+
+    const tableExtractor = child_process.spawnSync(pythonLocation, scriptArgs);
 
     if (!tableExtractor.stdout || !tableExtractor.stderr) {
       return {
@@ -120,9 +127,10 @@ export class TableDetectionModule extends Module<Options> {
       return doc;
     }
 
-    this.options.pageConfig.forEach(config => {
+    this.options.runConfig.forEach((config, n) => {
       const tableExtractor = this.extractor.readTables(doc.inputFile, config);
       if (tableExtractor.status !== 0) {
+        logger.error(`there was a problem executing table config no. ${n + 1}: ${JSON.stringify(config)}`);
         logger.error(tableExtractor.stderr);
       } else {
         const tablesData = JSON.parse(tableExtractor.stdout);
@@ -145,9 +153,96 @@ export class TableDetectionModule extends Module<Options> {
     const pageHeight = page.box.height;
     const table: Table = this.createTable(tableData, pageHeight);
     table.content = this.createRows(tableData, page);
+
+    if (tableData.content && tableData.flavor === 'stream') {
+      table.content = this.joinCellsByContent(table.content, tableData.content);
+    }
+
     if (!this.isFalseTable(table)) {
       page.elements = page.elements.concat(table);
     }
+  }
+
+  private joinCellsByContent(tableContent: TableRow[], tableData: string[][]): TableRow[] {
+    const mergeCandidateCells = this.getMergeCandidateCellPositions(tableContent, tableData);
+    Object.keys(mergeCandidateCells).forEach(cellRow => {
+      const groupsToMerge = [];
+      mergeCandidateCells[cellRow].forEach(cellColGroup => {
+        let cellSubGroup = [cellColGroup[0]];
+        for (let i = 0; i < cellColGroup.length; i += 1) {
+          const expectedTextInSubGroup =
+            cellSubGroup.map(cellCol => tableData[cellRow][cellCol].trim()).join(' ').trim();
+
+          const tableContentSubGroup: TableCell[] =
+            tableContent[cellRow].content.filter((_, index) => cellSubGroup.includes(index));
+          const subgroupText = tableContentSubGroup.map(cell => cell.toString().trim()).join(' ').trim();
+
+          if (expectedTextInSubGroup === subgroupText) {
+            groupsToMerge.push(cellSubGroup);
+          }
+
+          if (subgroupText.length > expectedTextInSubGroup.length || expectedTextInSubGroup === subgroupText) {
+            cellSubGroup = [];
+          }
+
+          if (cellColGroup.length > i + 1) {
+            cellSubGroup.push(cellColGroup[i + 1]);
+          }
+        }
+      });
+      if (groupsToMerge.length > 0) {
+        tableContent[cellRow].mergeCells(groupsToMerge);
+      }
+    });
+
+    return tableContent;
+  }
+
+  private getMergeCandidateCellPositions(tableContent: TableRow[], tableData: string[][]): object {
+    const mergeCandidateCells = {};
+
+    /*
+      having the expected text content in each cell in tableData,
+      this looks for cells in tableContent whose text content is different from the expected
+      ex:
+        tableContent: | this is only one      | cell  |
+                      | foo                   | bar   |
+
+        tableData:    | this is only one cell |       |
+                      | foo                   | bar   |
+
+        will give mergeCandidateCells = { '0': [0,1] }
+        because content in [0,0] and [0,1] is different than the expected
+    */
+    tableData.forEach((dataRow, nRow) => {
+      dataRow.forEach((cellStr, nCol) => {
+        const tableCellContent = tableContent[nRow].content[nCol].toString();
+        const expectedCellContent = cellStr.toString();
+        if (tableCellContent !== expectedCellContent) {
+          if (!mergeCandidateCells[nRow]) {
+            mergeCandidateCells[nRow] = [];
+          }
+          mergeCandidateCells[nRow].push(nCol);
+        }
+      });
+    });
+
+    /*
+      now I group the candidate Cells by consecutive numbers.
+      Grouped results will tell which cells could be joined together into one Cell
+      and check if that new content matches the expected content
+
+      For now groups with only one value are not considered (possible vertical join or string encoding problem)
+    */
+    Object.keys(mergeCandidateCells).forEach(nRow => {
+      mergeCandidateCells[nRow] = utils.groupConsecutiveNumbersInArray(mergeCandidateCells[nRow])
+        .filter(group => group.length > 1);
+      if (mergeCandidateCells[nRow].length === 0) {
+        delete mergeCandidateCells[nRow];
+      }
+    });
+
+    return mergeCandidateCells;
   }
 
   private isFalseTable(table: Table): boolean {
@@ -197,7 +292,7 @@ export class TableDetectionModule extends Module<Options> {
     const pageWords = page.getElementsOfType<Word>(Word);
     return tableData.cells.map(row => {
       const tableCells: TableCell[] = this.createRowCells(row, page.box.height, pageWords);
-      const rowWidth = tableCells.map(cell => cell.box.width).reduce((a, b) => a + b);
+      const rowWidth = tableCells.map(cell => cell.box.width).reduce((a, b) => a + b, 0);
       return new TableRow(
         tableCells,
         new BoundingBox(
@@ -231,15 +326,7 @@ export class TableDetectionModule extends Module<Options> {
   }
 
   private wordsInCellBox(cellBounds: BoundingBox, pageWords: Word[]): Word[] {
-    const isInBox = (element, box) => {
-      return (
-        element.box.top + element.box.height * 0.2 >= box.top &&
-        element.box.top + element.box.height <= box.top + box.height &&
-        element.box.left >= box.left &&
-        element.box.left + element.box.width <= box.left + box.width
-      );
-    };
-    return pageWords.filter(word => isInBox(word, cellBounds));
+    return pageWords.filter(w => (BoundingBox.getOverlap(w.box, cellBounds).box1OverlapProportion > 0.80));
   }
 
   private removeWordsUsedInCells(document: Document) {

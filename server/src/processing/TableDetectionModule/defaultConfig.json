@@ -2,11 +2,12 @@
   "name": "table-detection",
   "description": "Table extraction from the PDF file",
   "specs": {
-    "pageConfig": {
+    "runConfig": {
       "value": [
         {
           "pages": [],
-          "flavor": "lattice"
+          "flavor": "lattice",
+          "table_areas": []
         }
       ]
     }

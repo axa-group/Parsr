@@ -394,7 +394,7 @@ export function removeNull(page: Page): Page {
   if (page.elements.length - newElements.length !== 0) {
     logger.debug(
       `Null elements removed for page #${page.pageNumber}: ${page.elements.length -
-        newElements.length}`,
+      newElements.length}`,
     );
     page.elements = newElements;
   }
@@ -428,11 +428,11 @@ export function getPageRegex(): RegExp {
 
   const pageRegex = new RegExp(
     `^(?:` +
-      `(?:${pagePrefix}${pageNumber})|` +
-      `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
-      `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
-      `(?:${before}${pageNumber}${after})` +
-      `)$`,
+    `(?:${pagePrefix}${pageNumber})|` +
+    `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
+    `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
+    `(?:${before}${pageNumber}${after})` +
+    `)$`,
     'i',
   );
 
@@ -761,4 +761,20 @@ export function parseXmlToObject(xml: string, options: OptionsV2 = null): Promis
     });
   });
   return promise;
+}
+
+export function getEmphazisChars(text: string): string {
+  const boldRegexp = new RegExp(/^\*\*.+\*\*$/);
+  const italicRegexp = new RegExp(/^\*.+\*$/);
+  const boldItalicRegexp = new RegExp(/^\*\*\*.+\*\*\*$/);
+  if (boldRegexp.test(text)) {
+    return '**';
+  }
+  if (italicRegexp.test(text)) {
+    return '*';
+  }
+  if (boldItalicRegexp.test(text)) {
+    return '***';
+  }
+  return '';
 }
