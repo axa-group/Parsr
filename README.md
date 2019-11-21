@@ -10,7 +10,8 @@ It provides users with clean structured and label-enriched information set for r
 
 - [Parsr: Turn your documents into data!](#parsr-turn-your-documents-into-data)
   - [Getting Started](#getting-started)
-  - [Usage](#usage)
+    - [Installation](#installation)
+    - [Usage](#usage)
   - [Documentation](#documentation)
   - [Contribute](#contribute)
   - [Third Party Licenses](#third-party-licenses)
@@ -18,82 +19,47 @@ It provides users with clean structured and label-enriched information set for r
 
 ## Getting Started
 
+### Installation
+
 *-- The advanced installation guide is available [here](docs/installation.md) --*
 
-The quickest way to install Parsr is using the [docker installation](docs/docker.md#1-run-parsr).
-
-Otherwise, Parsr can also be installed manually by first installing dependencies:
-
-**Under Linux: (Ubuntu/Debian)**
+The quickest way to install and run the Parsr API is through the [docker image](https://hub.docker.com/r/axarev/parsr):
 
 ```sh
-sudo add-apt-repository ppa:ubuntuhandbook1/apps
-sudo apt-get update
-sudo apt-get install nodejs npm qpdf imagemagick graphicsmagick python-pdfminer tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
-pip install camelot-py
+docker pull axarev/parsr
 ```
 
-**Under MacOS (requires [Homebrew](http://brew.sh))**
-
+If you also wish to install the GUI for sending documents and visualising results:
 ```sh
-brew install node qpdf imagemagick graphicsmagick tesseract tesseract-lang
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python get-pip.py
-pip install pdfminer.six
-pip install ghostscript camelot-py
+docker pull axarev/parsr-ui-localhost
 ```
 
-**Under Windows**
+Note: Parsr can also be installed bare-metal (not via Docker containers), the procedure for which is documented in the [installation guide](docs/installation.md).
 
-See [our guide](docs/installation.md#13-windows) for the step by step Windows installation procedure.
-
-
-## Usage
+### Usage
 
 *-- The advanced usage guide is available [here](docs/usage.md) --*
 
-1. First, clone the respository:
-    ```sh
-    git clone git@github.com:axa-group/Parsr.git
-    ```
+To run the [API](docs/api-guide.md), issue:
+```sh
+docker run -p 3001:3001 axarev/parsr
+```
+which will launch it on [http://localhost:3001](http://localhost:3001).  
+Consult the documentation on the [usage of the API](docs/api-guide.md).
 
-2. Then, install the npm packages:
-    ```sh
-    cd Parsr
-    npm install
-    ```
+To use the GUI tool (the API needs to already be running), issue:
+```sh
+docker run -p 3001:3001 axarev/parsr
+```
+Then, access it through [http://localhost:8080](http://localhost:8080).
 
-3. Launch Parsr's GUI tool:
+Refer to the [Configuration documentation](docs/configuration.md) to interpret the configurable options in the GUI viewer.
 
-    Under **MacOS** and **Linux**:
-
-    ```sh
-    npm run start:web:vue
-    ```
-    Under **Windows**:
-
-    In one terminal:
-
-    ```sh
-    npm run start:api
-    ```
-
-    In another terminal:
-
-    ```sh
-    cd demo/vue-viewer && npm install && npm run serve
-    ```
-
-    Then, access [http://localhost:8080](http://localhost:8080).
-
-Refer to the [Configuration documentation](docs/configuration.md) to interpret the configurable options in the viewer.
-
-[API based usage](docs/usage.md#123-command-line-usage) and [command line usage](docs/usage.md#13-api) are documented in the [advanced usage](docs/usage.md) guide.
+The [API based usage](docs/usage.md#13-api) and the [command line usage](docs/usage.md#123-command-line-usage) are documented in the [advanced usage](docs/usage.md) guide.
 
 ## Documentation
 
-All documentation can be found [here](docs/README.md).
-
+All documentation files can be found [here](docs/README.md).
 
 ## Contribute
 
