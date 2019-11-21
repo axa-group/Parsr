@@ -117,7 +117,7 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
             // Tesseract doesn't provide font information then we use a undefined font
             // that will be ignored in viewer and will calculate 'proper' font size
             // using word bounds height
-            Font.undefinedFont,
+            new Font('undefined', elem.height * 1.6),
           );
 
           word.confidence = elem.conf;
@@ -138,7 +138,7 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
         const doc: Document = new Document(pages, imageInputFile);
         logger.debug(
           `The new document contains ${
-            doc.getElementsOfType(Word, false).length
+          doc.getElementsOfType(Word, false).length
           } words at extraction.`,
         );
         resolve(doc);
