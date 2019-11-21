@@ -132,6 +132,10 @@ function constructFonts(inputFonts: JsonFont[], fonts: Font[]) {
       options.scaling = font.scaling;
     }
 
+    if (font.sizeUnit) {
+      options.sizeUnit = font.sizeUnit;
+    }
+
     const fontDS: Font = new Font(font.name, font.size, options);
     fonts[font.id] = fontDS;
   });

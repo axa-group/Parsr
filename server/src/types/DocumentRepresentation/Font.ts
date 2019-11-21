@@ -23,6 +23,7 @@ export interface FontOptions {
   color?: Color;
   url?: string;
   scaling?: number;
+  sizeUnit?: string;
 }
 
 /**
@@ -94,6 +95,10 @@ export class Font {
     return this._scaling;
   }
 
+  public get sizeUnit(): string {
+    return this._sizeUnit;
+  }
+
   /**
    * Setter name
    * @param {string} value
@@ -158,9 +163,14 @@ export class Font {
     this._scaling = value;
   }
 
+  public set sizeUnit(value: string) {
+    this._sizeUnit = value;
+  }
+
   public static undefinedFont: Font = new Font('undefined', 0);
   private _name: string;
   private _size: number;
+  private _sizeUnit: string;
   private _weight: string;
   private _isItalic: boolean;
   private _isUnderline: boolean;
@@ -203,6 +213,12 @@ export class Font {
     if (options.scaling) {
       this.scaling = options.scaling;
     }
+
+    if (options.sizeUnit) {
+      this.sizeUnit = options.sizeUnit;
+    } else {
+      this.sizeUnit = 'px';
+    }
   }
 
   /**
@@ -219,7 +235,8 @@ export class Font {
       font.isItalic === this.isItalic &&
       font.isUnderline === this.isUnderline &&
       font.color === this.color &&
-      font.scaling === this.scaling
+      font.scaling === this.scaling &&
+      font.sizeUnit === this.sizeUnit
     ) {
       return true;
     }

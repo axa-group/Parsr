@@ -69,6 +69,7 @@ export interface JsonFont {
   weight: string;
   isItalic: boolean;
   isUnderline: boolean;
+  sizeUnit: string;
   color: Color;
   url?: string;
   scaling?: number;
