@@ -4,7 +4,7 @@
       <h1>{{ title }}</h1>
       <span>{{ totalPages }}p.</span>
     </header>
-    <div id="ThumbsContainer">
+    <div id="ThumbsContainer" v-if="canShowThumbnails">
       <thumbnail
         class="Thumb"
         v-for="index in totalPages"
@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import { smoothScroll, isVisibleInScroll } from '@/mixins/smoothScroll.js';
 import Thumbnail from '@/components/Thumbnails/Thumbnail.vue';
 
@@ -59,6 +60,12 @@ export default {
   watch: {
     selectedPage(index) {
       this.thumbClicked(index, false);
+    },
+  },
+  computed: {
+    ...mapState(['inputFileName']),
+    canShowThumbnails() {
+      return this.inputFileName.split('.').pop() === 'pdf';
     },
   },
 };
