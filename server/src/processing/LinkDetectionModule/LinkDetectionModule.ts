@@ -70,9 +70,9 @@ export class LinkDetectionModule extends Module {
     const linkRegexp = /\b((http|https):\/\/?)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
     const mailRegexp = /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/;
     if (word.toString().match(linkRegexp)) {
-      word.properties.targetURL = word.toString();
+      word.properties.targetURL = word.toString().match(linkRegexp)[0];
     } else if (word.toString().match(mailRegexp)) {
-      word.properties.targetURL = `mailto:${word.toString()}`;
+      word.properties.targetURL = `mailto:${word.toString().match(mailRegexp)[0]}`;
     }
   }
 
