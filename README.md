@@ -53,7 +53,7 @@ Consult the documentation on the [usage of the API](docs/api-guide.md).
 
 To use the GUI tool (the API needs to already be running), issue:
 ```sh
-docker run -p 3001:3001 axarev/parsr
+docker run -p 8080:8080 axarev/parsr-ui-localhost
 ```
 Then, access it through [http://localhost:8080](http://localhost:8080).
 
