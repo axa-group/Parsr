@@ -14,12 +14,16 @@
 # limitations under the License.
 #
 
+import sys
+if sys.version_info[0] < 3: 
+    from StringIO import StringIO
+else:
+    from io import StringIO
+import pandas as pd
 import requests
-import base64
 import os
 from glob import glob
 from itertools import chain
-from IPython.core.display import display, HTML
 import magic
 mime = magic.Magic(mime=True)
 
@@ -60,22 +64,37 @@ class ParserApi:
 
     def getJson(self, request_id):
         r = requests.get('http://{}/api/v1/json/{}'.format(self.server, request_id))
-        return {'request_id': request_id, 'server_response': r.json()}
+        if r.text != "":
+            return r.text
+        else:
+            return {'request_id': request_id, 'server_response': r.json()}
 
     def getMarkdown(self, request_id):
         r = requests.get('http://{}/api/v1/markdown/{}'.format(self.server, request_id))
-        return {'request_id': request_id, 'server_response': r.text}
+        if r.text != "":
+            return r.text
+        else:
+            return {'request_id': request_id, 'server_response': r.text}
 
     def getText(self, request_id):
         r = requests.get('http://{}/api/v1/text/{}'.format(self.server, request_id))
-        return {'request_id': request_id, 'server_response': r.text}
+        if r.text != "":
+            return r.text
+        else:
+            return {'request_id': request_id, 'server_response': r.text}
 
-    def getCsv(self, request_id, page=None, table=None):
+    def getCsv(self, request_id, page=None, table=None, seperator=";"):
         if page is None and table is None:
             r = requests.get('http://{}/api/v1/csv/{}'.format(self.server, request_id))
         else:
             r = requests.get('http://{}/api/v1/csv/{}/{}/{}'.format(self.server, request_id, page, table))
-        return {'request_id': request_id, 'server_response': r.text}
-
-    def displayMarkdownAsHTML(self, markdown_content):
-        display(HTML(markdown_content))
+        if r.text != "":
+            try:
+                df = pd.read_csv(StringIO(r.text), sep=seperator)
+                df.loc[:, ~df.columns.str.match('Unnamed')]
+                df = df.where((pd.notnull(df)), " ")
+                return df
+            except Exception as e:
+                return {'request_id': request_id, 'server_response': r.text}
+        else:
+            return {'request_id': request_id, 'server_response': r.text}

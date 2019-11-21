@@ -1,43 +1,106 @@
 {
-	"version": 0.5,
-	"extractor": {
-		"pdf": "pdfminer",
-		"img": "tesseract",
-		"language": ["eng", "fra"]
-	},
-	"cleaner": [
-		"out-of-page-removal",
-		"whitespace-removal",
-		"redundancy-detection",
-		"reading-order-detection",
-		"link-detection",
-		["words-to-line", { "maximumSpaceBetweenWords": 100 }],
-		"lines-to-paragraph",
-		["header-footer-detection", { "maxMarginPercentage": 15 }],
-		"hierarchy-detection",
-		["regex-matcher", {
-			"queries": [
-				{
-					"label": "Car",
-					"regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
-				}, {
-					"label": "Age",
-					"regex": "(\\d+)[ -]*(ans|jarige)"
-				}, {
-					"label": "Percent",
-					"regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|prozent)"
-				}]
-		}]
-	],
-	"output": {
-		"granularity": "word",
-		"includeMarginals": false,
-		"formats": {
-			"json": true,
-			"text": true,
-			"csv": true,
-			"markdown": true,
-			"pdf": false
-		}
-	}
+  "version": 0.5,
+  "extractor": {
+    "pdf": "pdfminer",
+    "img": "tesseract",
+    "language": ["eng", "fra"]
+  },
+  "cleaner": [
+    "out-of-page-removal",
+    [
+      "whitespace-removal",
+      {
+        "minWidth": 0
+      }
+    ],
+    [
+      "redundancy-detection",
+      {
+        "minOverlap": 0.5
+      }
+    ],
+    [
+      "table-detection",
+      {
+        "runConfig": [
+          {
+            "pages": [],
+            "flavor": "lattice"
+          }
+        ]
+      }
+    ],
+    [
+      "header-footer-detection",
+      {
+        "ignorePages": [],
+        "maxMarginPercentage": 15
+      }
+    ],
+    [
+      "reading-order-detection",
+      {
+        "minVerticalGapWidth": 5,
+        "minColumnWidthInPagePercent": 15
+      }
+    ],
+    "link-detection",
+    [
+      "words-to-line",
+      {
+        "lineHeightUncertainty": 0.2,
+        "topUncertainty": 0.4,
+        "maximumSpaceBetweenWords": 100,
+        "mergeTableElements": false
+      }
+    ],
+    [
+      "lines-to-paragraph",
+      {
+        "tolerance": 0.25
+      }
+    ],
+    "heading-detection",
+    "list-detection",
+    [
+      "page-number-detection",
+      {
+        "ignorePages": [],
+        "maxMarginPercentage": 15
+      }
+    ],
+    "hierarchy-detection",
+    [
+      "regex-matcher",
+      {
+        "isCaseSensitive": true,
+        "isGlobal": true,
+        "queries": [
+          {
+            "label": "Car",
+            "regex": "([A-Z]{2}\\-[\\d]{3}\\-[A-Z]{2})"
+          },
+          {
+            "label": "Age",
+            "regex": "(\\d+)[ -]*(ans|jarige)"
+          },
+          {
+            "label": "Percent",
+            "regex": "([\\-]?(\\d)+[\\.\\,]*(\\d)*)[ ]*(%|per|percent|pourcent|procent)"
+          }
+        ]
+      }
+    ]
+  ],
+  "output": {
+    "granularity": "word",
+    "includeMarginals": false,
+    "formats": {
+      "json": true,
+      "text": true,
+      "csv": true,
+      "markdown": true,
+      "pdf": false
+    }
+  }
 }
