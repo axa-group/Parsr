@@ -33,7 +33,7 @@ export class MarkdownExporter extends Exporter {
 
   private getMarkdown(): string {
     let output: string = '';
-    this.doc.pages.forEach(page => {
+    this.doc.pages.forEach((page, pageN) => {
       page.elements.forEach(element => {
         if (
           (element.properties.isHeader || element.properties.isFooter) &&
@@ -53,7 +53,9 @@ export class MarkdownExporter extends Exporter {
         output += '\n'.repeat(2);
       });
       // end of page
-      // output += '\n'.repeat(10);
+      if (this.doc.pages.length > pageN + 1) {
+        output += '---\n\n';
+      }
     });
     return output;
   }
