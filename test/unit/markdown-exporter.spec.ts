@@ -21,7 +21,7 @@ import 'mocha';
 import { MarkdownExporter } from '../../server/src/output/markdown/MarkdownExporter';
 import { json2document } from '../../server/src/utils/json2document';
 
-describe('Link Detection Module', () => {
+describe('Markdown Exporter', () => {
     withData(
         {
             'MD export with special characters': [
