@@ -43,8 +43,7 @@ export class Word extends Text {
     if (this.properties.targetURL) {
       mdString = `[${this.toString()}](${this.properties.targetURL})`;
     } else {
-      mdString = this.toString();
-      // mdString = this.toString().replace(/([\d]+)([\.\)])/g, '$1\\$2');
+      mdString = this.toString().replace(/([\\\`\*\_\{\}\[\]\(\)\#\+\-\!\|])/g, '\\$1');
     }
 
     return mdString;
