@@ -55,6 +55,6 @@ export class CsvExporter extends Exporter {
   }
 
   private getCsvContent(table: Table): string {
-    return stringify(table.toArray(), { delimiter: ';' });
+    return stringify(table.toArray(false), { delimiter: ';' });
   }
 }

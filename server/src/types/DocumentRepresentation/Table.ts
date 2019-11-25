@@ -263,7 +263,7 @@ export class Table extends Element {
   /**
    * Transform the table to a bidimensional array
    */
-  public toArray(): string[][] {
+  public toArray(exportFormatting: boolean = true): string[][] {
     const dim: [number, number] = this.getDimensions();
     const arr: string[][] = new Array(dim[0])
       .fill(undefined)
@@ -292,8 +292,12 @@ export class Table extends Element {
             }
           }
 
-          // arr[i][j] = cell.content.toString().trim();
-          arr[i][j] = cell.toMarkdown() !== 'null' ? cell.toMarkdown().trim() : '';
+          if (exportFormatting) {
+            arr[i][j] = cell.toMarkdown() !== 'null' ? cell.toMarkdown().trim() : '';
+          } else {
+            // arr[i][j] = cell.content.toString().trim();
+            arr[i][j] = cell.toString() !== 'null' ? cell.toString().trim() : '';
+          }
           jumpLine = Math.min(jumpLine, cell.rowspan);
 
           j += cell.colspan - 1;

@@ -22,6 +22,11 @@
               <li v-if="currentElement.font">
                 <span>Font:</span> {{ currentElement.font }}
                 <span>{{ fontInfo(currentElement.font) }}</span>
+                <ul style="list-style-type: none; margin:0px; padding:0px">
+                  <li><span>Usage ratio:</span></li>
+                  <li style="padding-left:10px;"><span>- Document {{ fontUsageRatio(currentElement.font).documentRatio }}</span></li>
+                  <li style="padding-left:10px;"><span>- Page {{ fontUsageRatio(currentElement.font).pageRatio }}</span></li>
+                </ul>
               </li>
               <li>
                 <span>Content:</span>
@@ -36,6 +41,19 @@
                   >
                     <span>{{ option }}:</span>
                     <span class="wordContent">{{ currentElement.properties[option] }}</span>
+                  </li>
+                </ul>
+              </li>
+              <li v-if="currentElement.type === 'table-cell'">
+                <span>Cell spans:</span>
+                <ul>
+                  <li>
+                    <span>colspan:</span>
+                    <span class="wordContent">{{currentElement.colspan}}</span>
+                  </li>
+                  <li>
+                    <span>rowspan:</span>
+                    <span class="wordContent">{{currentElement.rowspan}}</span>
                   </li>
                 </ul>
               </li>
@@ -83,7 +101,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['elementInspectorSwitchState']),
+    ...mapGetters(['elementInspectorSwitchState', 'fontUsageRatio']),
     elementInspectorSwitch: {
       get() {
         return this.elementInspectorSwitchState;

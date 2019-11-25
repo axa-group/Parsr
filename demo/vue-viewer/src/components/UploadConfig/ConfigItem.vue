@@ -161,6 +161,7 @@ export default {
 }
 .selectOption div.v-input__control div.v-input__slot input {
   width: 0;
+  border-color: transparent;
 }
 .switch div.v-expansion-panels div.v-expansion-panel {
   background-color: transparent;

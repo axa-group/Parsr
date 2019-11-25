@@ -1,1 +1,5618 @@
-{"metadata":[],"pages":[{"box":{"l":0,"t":0,"w":481.89,"h":680.32},"pageNumber":1,"elements":[{"id":1442,"type":"line","properties":{"order":0},"metadata":[],"box":{"l":210.99,"t":42.12,"w":64.93,"h":13.42},"content":[{"id":14,"type":"word","properties":{"order":0,"cr":411.02,"cl":42.52},"metadata":[],"box":{"l":210.99,"t":42.12,"w":64.93,"h":13.42},"content":"tomorrowtoday","font":1}]},{"id":1443,"type":"line","properties":{"order":1},"metadata":[],"box":{"l":94.16,"t":73.7,"w":293.58,"h":24.86},"content":[{"id":31,"type":"word","properties":{"order":1,"cr":411.02,"cl":42.52},"metadata":[],"box":{"l":94.16,"t":73.7,"w":47.88,"h":24.86},"content":"AXA","font":2},{"id":32,"type":"word","properties":{"order":2,"cr":411.02,"cl":42.52},"metadata":[],"box":{"l":155.9,"t":73.7,"w":48.72,"h":24.86},"content":"AND","font":2},{"id":33,"type":"word","properties":{"order":3,"cr":411.02,"cl":42.52},"metadata":[],"box":{"l":218.48,"t":73.7,"w":44.94,"h":24.86},"content":"THE","font":2},{"id":34,"type":"word","properties":{"order":4,"cr":411.02,"cl":42.52},"metadata":[],"box":{"l":277.28,"t":73.7,"w":110.46,"h":24.86},"content":"SHARING","font":2}]},{"id":1444,"type":"line","properties":{"order":2},"metadata":[],"box":{"l":180.26,"t":97.7,"w":121.38,"h":24.86},"content":[{"id":42,"type":"word","properties":{"order":5,"cr":411.02,"cl":42.52},"metadata":[],"box":{"l":180.26,"t":97.7,"w":12.18,"h":24.86},"content":"E","font":2},{"id":43,"type":"word","properties":{"order":6,"cr":411.02,"cl":42.52},"metadata":[],"box":{"l":196.22,"t":97.7,"w":13.86,"h":24.86},"content":"C","font":2},{"id":44,"type":"word","properties":{"order":7,"cr":411.02,"cl":42.52},"metadata":[],"box":{"l":213.86,"t":97.7,"w":13.86,"h":24.86},"content":"O","font":2},{"id":45,"type":"word","properties":{"order":8,"cr":411.02,"cl":42.52},"metadata":[],"box":{"l":231.5,"t":97.7,"w":13.86,"h":24.86},"content":"N","font":2},{"id":46,"type":"word","properties":{"order":9,"cr":411.02,"cl":42.52},"metadata":[],"box":{"l":249.14,"t":97.7,"w":13.86,"h":24.86},"content":"O","font":2},{"id":47,"type":"word","properties":{"order":10,"cr":411.02,"cl":42.52},"metadata":[],"box":{"l":266.78,"t":97.7,"w":18.48,"h":24.86},"content":"M","font":2},{"id":48,"type":"word","properties":{"order":11,"cr":411.02,"cl":42.52},"metadata":[],"box":{"l":289.04,"t":97.7,"w":12.6,"h":24.86},"content":"Y","font":2}]},{"id":1445,"type":"line","properties":{"order":3},"metadata":[],"box":{"l":70.87,"t":246.47,"w":47.61,"h":20.46},"content":[{"id":56,"type":"word","properties":{"order":12,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":246.47,"w":47.61,"h":20.46},"content":"Insight","font":3}]},{"id":1446,"type":"line","properties":{"order":4},"metadata":[],"box":{"l":70.87,"t":262.94,"w":97.08,"h":10.06},"content":[{"id":79,"type":"word","properties":{"order":13,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":262.94,"w":13.26,"h":10.06},"content":"The","font":4},{"id":80,"type":"word","properties":{"order":14,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":86.03,"t":262.94,"w":26.49,"h":10.06},"content":"sharing","font":4},{"id":81,"type":"word","properties":{"order":15,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":114.42,"t":262.94,"w":32.34,"h":10.06},"content":"economy","font":4},{"id":82,"type":"word","properties":{"order":16,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":148.66,"t":262.94,"w":19.29,"h":10.06},"content":"helps","font":4}]},{"id":1447,"type":"line","properties":{"order":5},"metadata":[],"box":{"l":70.87,"t":272.94,"w":83.18,"h":10.06},"content":[{"id":101,"type":"word","properties":{"order":17,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":272.94,"w":23.98,"h":10.06},"content":"people","font":4},{"id":102,"type":"word","properties":{"order":18,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":96.75,"t":272.94,"w":16.57,"h":10.06},"content":"save","font":4},{"id":103,"type":"word","properties":{"order":19,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":115.22,"t":272.94,"w":23.66,"h":10.06},"content":"money","font":4},{"id":104,"type":"word","properties":{"order":20,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":140.79,"t":272.94,"w":13.26,"h":10.06},"content":"and","font":4}]},{"id":1448,"type":"line","properties":{"order":6},"metadata":[],"box":{"l":70.87,"t":282.94,"w":92.25,"h":10.06},"content":[{"id":127,"type":"word","properties":{"order":21,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":282.94,"w":16.06,"h":10.06},"content":"earn","font":4},{"id":128,"type":"word","properties":{"order":22,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":88.83,"t":282.94,"w":18.95,"h":10.06},"content":"extra","font":4},{"id":129,"type":"word","properties":{"order":23,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":109.68,"t":282.94,"w":28.68,"h":10.06},"content":"income,","font":4},{"id":130,"type":"word","properties":{"order":24,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":139.84,"t":283.11,"w":8.73,"h":9.89},"content":"so","font":5},{"id":131,"type":"word","properties":{"order":25,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":150.48,"t":283.11,"w":4.53,"h":9.89},"content":"it","font":5},{"id":132,"type":"word","properties":{"order":26,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":156.91,"t":283.11,"w":6.21,"h":9.89},"content":"is","font":5}]},{"id":1449,"type":"line","properties":{"order":7},"metadata":[],"box":{"l":70.87,"t":293.11,"w":83.28,"h":9.89},"content":[{"id":157,"type":"word","properties":{"order":27,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":293.11,"w":48.38,"h":9.89},"content":"unsurprisingly","font":5},{"id":158,"type":"word","properties":{"order":28,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":121.15,"t":293.11,"w":33,"h":9.89},"content":"attracting","font":5}]},{"id":1450,"type":"line","properties":{"order":8},"metadata":[],"box":{"l":70.87,"t":303.11,"w":96.76,"h":9.89},"content":[{"id":180,"type":"word","properties":{"order":29,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":303.11,"w":18.13,"h":9.89},"content":"more","font":5},{"id":181,"type":"word","properties":{"order":30,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":90.89,"t":303.11,"w":13.26,"h":9.89},"content":"and","font":5},{"id":182,"type":"word","properties":{"order":31,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":106.06,"t":303.11,"w":18.13,"h":9.89},"content":"more","font":5},{"id":183,"type":"word","properties":{"order":32,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":126.09,"t":303.11,"w":41.55,"h":9.89},"content":"consumers.","font":5}]},{"id":1451,"type":"line","properties":{"order":9},"metadata":[],"box":{"l":70.87,"t":313.11,"w":104.36,"h":9.89},"content":[{"id":211,"type":"word","properties":{"order":33,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":313.11,"w":6.46,"h":9.89},"content":"In","font":5},{"id":212,"type":"word","properties":{"order":34,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":79.03,"t":313.11,"w":23.92,"h":9.89},"content":"today’s","font":5},{"id":213,"type":"word","properties":{"order":35,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":104.67,"t":313.11,"w":24.19,"h":9.89},"content":"gloomy","font":5},{"id":214,"type":"word","properties":{"order":36,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":130.56,"t":313.11,"w":44.67,"h":9.89},"content":"environment,","font":5}]},{"id":1452,"type":"line","properties":{"order":10},"metadata":[],"box":{"l":70.87,"t":323.11,"w":91,"h":9.89},"content":[{"id":236,"type":"word","properties":{"order":37,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":323.11,"w":13.08,"h":9.89},"content":"this","font":5},{"id":237,"type":"word","properties":{"order":38,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":85.85,"t":323.11,"w":14.19,"h":9.89},"content":"new","font":5},{"id":238,"type":"word","properties":{"order":39,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":101.93,"t":323.11,"w":33.88,"h":9.89},"content":"economic","font":5},{"id":239,"type":"word","properties":{"order":40,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":137.72,"t":323.11,"w":24.15,"h":9.89},"content":"model,","font":5}]},{"id":1453,"type":"line","properties":{"order":11},"metadata":[],"box":{"l":70.87,"t":333.11,"w":76.94,"h":9.89},"content":[{"id":259,"type":"word","properties":{"order":41,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":333.11,"w":19.96,"h":9.89},"content":"which","font":5},{"id":260,"type":"word","properties":{"order":42,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":92.73,"t":333.11,"w":6.21,"h":9.89},"content":"is","font":5},{"id":261,"type":"word","properties":{"order":43,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":100.84,"t":333.11,"w":33.65,"h":9.89},"content":"redrawing","font":5},{"id":262,"type":"word","properties":{"order":44,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":136.39,"t":333.11,"w":11.41,"h":9.89},"content":"the","font":5}]},{"id":1454,"type":"line","properties":{"order":12},"metadata":[],"box":{"l":70.87,"t":343.11,"w":70.82,"h":9.89},"content":[{"id":280,"type":"word","properties":{"order":45,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":343.11,"w":39.23,"h":9.89},"content":"boundaries","font":5},{"id":281,"type":"word","properties":{"order":46,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":112,"t":343.11,"w":29.69,"h":9.89},"content":"between","font":5}]},{"id":1455,"type":"line","properties":{"order":13},"metadata":[],"box":{"l":70.87,"t":353.11,"w":93.87,"h":9.89},"content":[{"id":304,"type":"word","properties":{"order":47,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":353.11,"w":36.01,"h":9.89},"content":"ownership","font":5},{"id":305,"type":"word","properties":{"order":48,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":108.78,"t":353.11,"w":13.26,"h":9.89},"content":"and","font":5},{"id":306,"type":"word","properties":{"order":49,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":123.94,"t":353.11,"w":15.43,"h":9.89},"content":"use,","font":5},{"id":307,"type":"word","properties":{"order":50,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":140.85,"t":353.11,"w":6.21,"h":9.89},"content":"is","font":5},{"id":308,"type":"word","properties":{"order":51,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":148.97,"t":353.11,"w":15.77,"h":9.89},"content":"here","font":5}]},{"id":1456,"type":"line","properties":{"order":14},"metadata":[],"box":{"l":70.87,"t":363.11,"w":78.98,"h":9.89},"content":[{"id":329,"type":"word","properties":{"order":52,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":363.11,"w":7.05,"h":9.89},"content":"to","font":5},{"id":330,"type":"word","properties":{"order":53,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":79.82,"t":363.11,"w":16.01,"h":9.89},"content":"stay.","font":5},{"id":331,"type":"word","properties":{"order":54,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":97.73,"t":363.11,"w":22.3,"h":9.89},"content":"Global","font":5},{"id":332,"type":"word","properties":{"order":55,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":121.93,"t":363.11,"w":27.92,"h":9.89},"content":"revenue","font":5}]},{"id":1457,"type":"line","properties":{"order":15},"metadata":[],"box":{"l":70.87,"t":373.11,"w":86.04,"h":9.89},"content":[{"id":354,"type":"word","properties":{"order":56,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":373.11,"w":35.38,"h":9.89},"content":"generated","font":5},{"id":355,"type":"word","properties":{"order":57,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":108.15,"t":373.11,"w":7.73,"h":9.89},"content":"by","font":5},{"id":356,"type":"word","properties":{"order":58,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":117.77,"t":373.11,"w":11.41,"h":9.89},"content":"the","font":5},{"id":357,"type":"word","properties":{"order":59,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":131.08,"t":373.11,"w":25.82,"h":9.89},"content":"sharing","font":5}]},{"id":1458,"type":"line","properties":{"order":16},"metadata":[],"box":{"l":70.87,"t":383.11,"w":82.16,"h":9.89},"content":[{"id":377,"type":"word","properties":{"order":60,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":383.11,"w":31.33,"h":9.89},"content":"economy","font":5},{"id":378,"type":"word","properties":{"order":61,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":104.1,"t":383.11,"w":6.21,"h":9.89},"content":"is","font":5},{"id":379,"type":"word","properties":{"order":62,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":112.21,"t":383.11,"w":31.86,"h":9.89},"content":"expected","font":5},{"id":380,"type":"word","properties":{"order":63,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":145.97,"t":383.11,"w":7.05,"h":9.89},"content":"to","font":5}]},{"id":1459,"type":"line","properties":{"order":17},"metadata":[],"box":{"l":70.87,"t":393.11,"w":95.48,"h":9.89},"content":[{"id":405,"type":"word","properties":{"order":64,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":393.11,"w":30.01,"h":9.89},"content":"increase","font":5},{"id":406,"type":"word","properties":{"order":65,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":102.78,"t":393.11,"w":16.11,"h":9.89},"content":"from","font":5},{"id":407,"type":"word","properties":{"order":66,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":120.78,"t":393.11,"w":14.78,"h":9.89},"content":"€15","font":5},{"id":408,"type":"word","properties":{"order":67,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":137.46,"t":393.11,"w":20.6,"h":9.89},"content":"billion","font":5},{"id":409,"type":"word","properties":{"order":68,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":159.96,"t":393.11,"w":6.38,"h":9.89},"content":"in","font":5}]},{"id":1460,"type":"line","properties":{"order":18},"metadata":[],"box":{"l":70.87,"t":403.11,"w":98.69,"h":9.89},"content":[{"id":433,"type":"word","properties":{"order":69,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":403.11,"w":19.64,"h":9.89},"content":"2013","font":5},{"id":434,"type":"word","properties":{"order":70,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":92.41,"t":403.11,"w":7.05,"h":9.89},"content":"to","font":5},{"id":435,"type":"word","properties":{"order":71,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":101.36,"t":403.11,"w":24.15,"h":9.89},"content":"almost","font":5},{"id":436,"type":"word","properties":{"order":72,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":127.42,"t":403.11,"w":19.64,"h":9.89},"content":"€335","font":5},{"id":437,"type":"word","properties":{"order":73,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":148.96,"t":403.11,"w":20.6,"h":9.89},"content":"billion","font":5}]},{"id":1461,"type":"line","properties":{"order":19},"metadata":[],"box":{"l":70.87,"t":413.11,"w":35.12,"h":9.89},"content":[{"id":446,"type":"word","properties":{"order":74,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":413.11,"w":6.38,"h":9.89},"content":"in","font":5},{"id":447,"type":"word","properties":{"order":75,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":79.15,"t":413.11,"w":26.84,"h":9.89},"content":"2025.*","font":5}]},{"id":1462,"type":"line","properties":{"order":20},"metadata":[],"box":{"l":70.87,"t":430.9,"w":78.96,"h":6.98},"content":[{"id":476,"type":"word","properties":{"order":76,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":430.9,"w":29.37,"h":6.98},"content":"*Consumer","font":6},{"id":477,"type":"word","properties":{"order":77,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":101.7,"t":430.9,"w":28.8,"h":6.98},"content":"Intelligence","font":6},{"id":478,"type":"word","properties":{"order":78,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":131.95,"t":430.9,"w":17.87,"h":6.98},"content":"Series:","font":6}]},{"id":1463,"type":"line","properties":{"order":21},"metadata":[],"box":{"l":70.87,"t":438.4,"w":80.92,"h":6.98},"content":[{"id":506,"type":"word","properties":{"order":79,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":438.4,"w":9.24,"h":6.98},"content":"The","font":6},{"id":507,"type":"word","properties":{"order":80,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":81.57,"t":438.4,"w":19.17,"h":6.98},"content":"Sharing","font":6},{"id":508,"type":"word","properties":{"order":81,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":102.21,"t":438.4,"w":23.8,"h":6.98},"content":"Economy,","font":6},{"id":509,"type":"word","properties":{"order":82,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":127.17,"t":438.4,"w":24.62,"h":6.98},"content":"published","font":6}]},{"id":1464,"type":"line","properties":{"order":22},"metadata":[],"box":{"l":70.87,"t":445.9,"w":53.46,"h":6.98},"content":[{"id":527,"type":"word","properties":{"order":83,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":445.9,"w":5.51,"h":6.98},"content":"by","font":6},{"id":528,"type":"word","properties":{"order":84,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":77.84,"t":445.9,"w":10.79,"h":6.98},"content":"PwC","font":6},{"id":529,"type":"word","properties":{"order":85,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":90.09,"t":445.9,"w":4.56,"h":6.98},"content":"in","font":6},{"id":530,"type":"word","properties":{"order":86,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":96.11,"t":445.9,"w":11,"h":6.98},"content":"April","font":6},{"id":531,"type":"word","properties":{"order":87,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":108.57,"t":445.9,"w":15.75,"h":6.98},"content":"2015.","font":6}]},{"id":1465,"type":"line","properties":{"order":23},"metadata":[],"box":{"l":70.87,"t":563.75,"w":48.75,"h":8.88},"content":[{"id":1266,"type":"word","properties":{"order":88,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":563.75,"w":18.45,"h":8.88},"content":"€335","font":7},{"id":1267,"type":"word","properties":{"order":89,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":91.87,"t":563.75,"w":27.75,"h":8.88},"content":"BILLION","font":7}]},{"id":1466,"type":"line","properties":{"order":24},"metadata":[],"box":{"l":70.87,"t":575.9,"w":60.3,"h":8.73},"content":[{"id":1281,"type":"word","properties":{"order":90,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":575.9,"w":6.75,"h":8.73},"content":"IS","font":8},{"id":1282,"type":"word","properties":{"order":91,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":80.17,"t":575.9,"w":13.2,"h":8.73},"content":"THE","font":8},{"id":1283,"type":"word","properties":{"order":92,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":95.92,"t":575.9,"w":35.25,"h":8.73},"content":"EXPECTED","font":8}]},{"id":1467,"type":"line","properties":{"order":25},"metadata":[],"box":{"l":70.87,"t":587.9,"w":82.09,"h":8.73},"content":[{"id":1301,"type":"word","properties":{"order":93,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":587.9,"w":21.34,"h":8.73},"content":"VALUE","font":8},{"id":1302,"type":"word","properties":{"order":94,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":94.75,"t":587.9,"w":8.7,"h":8.73},"content":"OF","font":8},{"id":1303,"type":"word","properties":{"order":95,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":106,"t":587.9,"w":13.2,"h":8.73},"content":"THE","font":8},{"id":1304,"type":"word","properties":{"order":96,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":121.75,"t":587.9,"w":31.2,"h":8.73},"content":"SHARING","font":8}]},{"id":1468,"type":"line","properties":{"order":26},"metadata":[],"box":{"l":70.87,"t":599.9,"w":67.95,"h":8.73},"content":[{"id":1319,"type":"word","properties":{"order":97,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":70.87,"t":599.9,"w":34.95,"h":8.73},"content":"ECONOMY","font":8},{"id":1320,"type":"word","properties":{"order":98,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":108.37,"t":599.9,"w":7.05,"h":8.73},"content":"IN","font":8},{"id":1321,"type":"word","properties":{"order":99,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":117.97,"t":599.9,"w":20.85,"h":8.73},"content":"2025.","font":8}]},{"id":1469,"type":"line","properties":{"order":27},"metadata":[],"box":{"l":42.52,"t":637.57,"w":8.79,"h":9.13},"content":[{"id":1441,"type":"word","properties":{"order":100,"cr":175.22,"cl":42.52},"metadata":[],"box":{"l":42.52,"t":637.57,"w":8.79,"h":9.13},"content":"24","font":9}]},{"id":1470,"type":"line","properties":{"order":28},"metadata":[],"box":{"l":188.98,"t":246.47,"w":66.2,"h":20.46},"content":[{"id":541,"type":"word","properties":{"order":101,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":246.47,"w":66.2,"h":20.46},"content":"Challenge","font":3}]},{"id":1471,"type":"line","properties":{"order":29},"metadata":[],"box":{"l":188.98,"t":262.94,"w":91.07,"h":10.06},"content":[{"id":564,"type":"word","properties":{"order":102,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":262.94,"w":36.72,"h":10.06},"content":"Insurance","font":4},{"id":565,"type":"word","properties":{"order":103,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":227.94,"t":262.94,"w":6.38,"h":10.06},"content":"is","font":4},{"id":566,"type":"word","properties":{"order":104,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":236.56,"t":262.94,"w":4.54,"h":10.06},"content":"a","font":4},{"id":567,"type":"word","properties":{"order":105,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":243.34,"t":262.94,"w":36.71,"h":10.06},"content":"structural","font":4}]},{"id":1472,"type":"line","properties":{"order":30},"metadata":[],"box":{"l":188.98,"t":272.94,"w":103.94,"h":10.06},"content":[{"id":593,"type":"word","properties":{"order":106,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":272.94,"w":40.43,"h":10.06},"content":"component","font":4},{"id":594,"type":"word","properties":{"order":107,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":231.29,"t":272.94,"w":6.88,"h":10.06},"content":"of","font":4},{"id":595,"type":"word","properties":{"order":108,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":240.06,"t":272.94,"w":11.92,"h":10.06},"content":"the","font":4},{"id":596,"type":"word","properties":{"order":109,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":253.87,"t":272.94,"w":39.04,"h":10.06},"content":"large-scale","font":4}]},{"id":1473,"type":"line","properties":{"order":31},"metadata":[],"box":{"l":188.98,"t":282.94,"w":91.19,"h":10.06},"content":[{"id":617,"type":"word","properties":{"order":110,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":282.94,"w":27,"h":10.06},"content":"sharing","font":4},{"id":618,"type":"word","properties":{"order":111,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":218.04,"t":282.94,"w":34.55,"h":10.06},"content":"economy.","font":4},{"id":619,"type":"word","properties":{"order":112,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":254.75,"t":283.11,"w":18.63,"h":9.89},"content":"Once","font":5},{"id":620,"type":"word","properties":{"order":113,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":275.62,"t":283.11,"w":4.55,"h":9.89},"content":"a","font":5}]},{"id":1474,"type":"line","properties":{"order":32},"metadata":[],"box":{"l":188.98,"t":293.11,"w":91.37,"h":9.89},"content":[{"id":641,"type":"word","properties":{"order":114,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":293.11,"w":39.59,"h":9.89},"content":"community","font":5},{"id":642,"type":"word","properties":{"order":115,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":230.8,"t":293.11,"w":21.31,"h":9.89},"content":"grows","font":5},{"id":643,"type":"word","properties":{"order":116,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":254.34,"t":293.11,"w":26,"h":9.89},"content":"beyond","font":5}]},{"id":1475,"type":"line","properties":{"order":33},"metadata":[],"box":{"l":188.98,"t":303.11,"w":102.34,"h":9.89},"content":[{"id":668,"type":"word","properties":{"order":117,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":303.11,"w":4.54,"h":9.89},"content":"a","font":5},{"id":669,"type":"word","properties":{"order":118,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":195.76,"t":303.11,"w":25.4,"h":9.89},"content":"certain","font":5},{"id":670,"type":"word","properties":{"order":119,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":223.39,"t":303.11,"w":20.78,"h":9.89},"content":"point,","font":5},{"id":671,"type":"word","properties":{"order":120,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":246,"t":303.11,"w":4.69,"h":9.89},"content":"it","font":5},{"id":672,"type":"word","properties":{"order":121,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":252.93,"t":303.11,"w":13.43,"h":9.89},"content":"has","font":5},{"id":673,"type":"word","properties":{"order":122,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":268.6,"t":303.11,"w":7.22,"h":9.89},"content":"to","font":5},{"id":674,"type":"word","properties":{"order":123,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":278.06,"t":303.11,"w":13.26,"h":9.89},"content":"find","font":5}]},{"id":1476,"type":"line","properties":{"order":34},"metadata":[],"box":{"l":188.98,"t":313.11,"w":102.17,"h":9.89},"content":[{"id":699,"type":"word","properties":{"order":124,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":313.11,"w":9.07,"h":9.89},"content":"an","font":5},{"id":700,"type":"word","properties":{"order":125,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":200.29,"t":313.11,"w":29.29,"h":9.89},"content":"external","font":5},{"id":701,"type":"word","properties":{"order":126,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":231.82,"t":313.11,"w":26.34,"h":9.89},"content":"system","font":5},{"id":702,"type":"word","properties":{"order":127,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":260.4,"t":313.11,"w":7.22,"h":9.89},"content":"to","font":5},{"id":703,"type":"word","properties":{"order":128,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":269.85,"t":313.11,"w":21.29,"h":9.89},"content":"foster","font":5}]},{"id":1477,"type":"line","properties":{"order":35},"metadata":[],"box":{"l":188.98,"t":323.11,"w":85.72,"h":9.89},"content":[{"id":724,"type":"word","properties":{"order":129,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":323.11,"w":19.61,"h":9.89},"content":"trust.","font":5},{"id":725,"type":"word","properties":{"order":130,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":210.82,"t":323.11,"w":41.1,"h":9.89},"content":"Companies","font":5},{"id":726,"type":"word","properties":{"order":131,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":254.16,"t":323.11,"w":6.55,"h":9.89},"content":"in","font":5},{"id":727,"type":"word","properties":{"order":132,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":262.94,"t":323.11,"w":11.75,"h":9.89},"content":"the","font":5}]},{"id":1478,"type":"line","properties":{"order":36},"metadata":[],"box":{"l":188.98,"t":333.11,"w":100.44,"h":9.89},"content":[{"id":753,"type":"word","properties":{"order":133,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":333.11,"w":22.81,"h":9.89},"content":"sector","font":5},{"id":754,"type":"word","properties":{"order":134,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":214.02,"t":333.11,"w":11.75,"h":9.89},"content":"are","font":5},{"id":755,"type":"word","properties":{"order":135,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":228.01,"t":333.11,"w":33.19,"h":9.89},"content":"therefore","font":5},{"id":756,"type":"word","properties":{"order":136,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":263.43,"t":333.11,"w":25.99,"h":9.89},"content":"looking","font":5}]},{"id":1479,"type":"line","properties":{"order":37},"metadata":[],"box":{"l":188.98,"t":343.11,"w":74.78,"h":9.89},"content":[{"id":778,"type":"word","properties":{"order":137,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":343.11,"w":9.73,"h":9.89},"content":"for","font":5},{"id":779,"type":"word","properties":{"order":138,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":200.94,"t":343.11,"w":33.51,"h":9.89},"content":"effective,","font":5},{"id":780,"type":"word","properties":{"order":139,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":236.27,"t":343.11,"w":27.48,"h":9.89},"content":"tailored","font":5}]},{"id":1480,"type":"line","properties":{"order":38},"metadata":[],"box":{"l":188.98,"t":353.11,"w":73.99,"h":9.89},"content":[{"id":800,"type":"word","properties":{"order":140,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":353.11,"w":35.71,"h":9.89},"content":"insurance","font":5},{"id":801,"type":"word","properties":{"order":141,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":226.93,"t":353.11,"w":36.03,"h":9.89},"content":"solutions.","font":5}]},{"id":1481,"type":"line","properties":{"order":39},"metadata":[],"box":{"l":188.98,"t":563.75,"w":36.45,"h":8.88},"content":[{"id":1330,"type":"word","properties":{"order":142,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":563.75,"w":4.5,"h":8.88},"content":"4","font":7},{"id":1331,"type":"word","properties":{"order":143,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":196.03,"t":563.75,"w":29.4,"h":8.88},"content":"MILLION","font":7}]},{"id":1482,"type":"line","properties":{"order":40},"metadata":[],"box":{"l":188.98,"t":575.9,"w":51.9,"h":8.73},"content":[{"id":1343,"type":"word","properties":{"order":144,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":575.9,"w":28.35,"h":8.73},"content":"SHARED","font":8},{"id":1344,"type":"word","properties":{"order":145,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":219.88,"t":575.9,"w":21,"h":8.73},"content":"RIDES","font":8}]},{"id":1483,"type":"line","properties":{"order":41},"metadata":[],"box":{"l":188.98,"t":587.9,"w":57.9,"h":8.73},"content":[{"id":1357,"type":"word","properties":{"order":146,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":587.9,"w":31.05,"h":8.73},"content":"INSURED","font":8},{"id":1358,"type":"word","properties":{"order":147,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":222.58,"t":587.9,"w":9,"h":8.73},"content":"BY","font":8},{"id":1359,"type":"word","properties":{"order":148,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":234.13,"t":587.9,"w":12.75,"h":8.73},"content":"AXA","font":8}]},{"id":1484,"type":"line","properties":{"order":42},"metadata":[],"box":{"l":188.98,"t":599.9,"w":30.45,"h":8.73},"content":[{"id":1367,"type":"word","properties":{"order":149,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":188.98,"t":599.9,"w":7.05,"h":8.73},"content":"IN","font":8},{"id":1368,"type":"word","properties":{"order":150,"cr":292.91,"cl":188.97},"metadata":[],"box":{"l":198.58,"t":599.9,"w":20.85,"h":8.73},"content":"2015.","font":8}]},{"id":1485,"type":"line","properties":{"order":43},"metadata":[],"box":{"l":307.09,"t":246.47,"w":54.1,"h":20.46},"content":[{"id":810,"type":"word","properties":{"order":151,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":246.47,"w":54.1,"h":20.46},"content":"Strategy","font":3}]},{"id":1486,"type":"line","properties":{"order":44},"metadata":[],"box":{"l":307.09,"t":262.94,"w":75.74,"h":10.06},"content":[{"id":826,"type":"word","properties":{"order":152,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":262.94,"w":15.87,"h":10.06},"content":"AXA","font":4},{"id":827,"type":"word","properties":{"order":153,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":324.94,"t":262.94,"w":17.41,"h":10.06},"content":"aims","font":4},{"id":828,"type":"word","properties":{"order":154,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":344.34,"t":262.94,"w":7.6,"h":10.06},"content":"to","font":4},{"id":829,"type":"word","properties":{"order":155,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":353.92,"t":262.94,"w":28.91,"h":10.06},"content":"become","font":4}]},{"id":1487,"type":"line","properties":{"order":45},"metadata":[],"box":{"l":307.09,"t":272.94,"w":76.18,"h":10.06},"content":[{"id":849,"type":"word","properties":{"order":156,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":272.94,"w":12,"h":10.06},"content":"the","font":4},{"id":850,"type":"word","properties":{"order":157,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":321.07,"t":272.94,"w":26.41,"h":10.06},"content":"leading","font":4},{"id":851,"type":"word","properties":{"order":158,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":349.47,"t":272.94,"w":24.89,"h":10.06},"content":"insurer","font":4},{"id":852,"type":"word","properties":{"order":159,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":376.34,"t":272.94,"w":6.93,"h":10.06},"content":"of","font":4}]},{"id":1488,"type":"line","properties":{"order":46},"metadata":[],"box":{"l":307.09,"t":282.94,"w":76.97,"h":10.06},"content":[{"id":871,"type":"word","properties":{"order":160,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":282.94,"w":12,"h":10.06},"content":"the","font":4},{"id":872,"type":"word","properties":{"order":161,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":321.07,"t":282.94,"w":26.74,"h":10.06},"content":"sharing","font":4},{"id":873,"type":"word","properties":{"order":162,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":349.8,"t":282.94,"w":34.26,"h":10.06},"content":"economy.","font":4}]},{"id":1489,"type":"line","properties":{"order":47},"metadata":[],"box":{"l":307.09,"t":293.11,"w":98.82,"h":9.89},"content":[{"id":899,"type":"word","properties":{"order":163,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":293.11,"w":14.72,"h":9.89},"content":"This","font":5},{"id":900,"type":"word","properties":{"order":164,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":323.79,"t":293.11,"w":14.89,"h":9.89},"content":"goal","font":5},{"id":901,"type":"word","properties":{"order":165,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":340.66,"t":293.11,"w":28.28,"h":9.89},"content":"involves","font":5},{"id":902,"type":"word","properties":{"order":166,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":370.93,"t":293.11,"w":4.54,"h":9.89},"content":"a","font":5},{"id":903,"type":"word","properties":{"order":167,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":377.46,"t":293.11,"w":28.45,"h":9.89},"content":"strategy","font":5}]},{"id":1490,"type":"line","properties":{"order":48},"metadata":[],"box":{"l":307.09,"t":303.11,"w":86.16,"h":9.89},"content":[{"id":926,"type":"word","properties":{"order":168,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":303.11,"w":6.93,"h":9.89},"content":"of","font":5},{"id":927,"type":"word","properties":{"order":169,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":316,"t":303.11,"w":37.84,"h":9.89},"content":"developing","font":5},{"id":928,"type":"word","properties":{"order":170,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":355.83,"t":303.11,"w":37.42,"h":9.89},"content":"ambitious,","font":5}]},{"id":1491,"type":"line","properties":{"order":49},"metadata":[],"box":{"l":307.09,"t":313.11,"w":97.66,"h":9.89},"content":[{"id":955,"type":"word","properties":{"order":171,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":313.11,"w":39.13,"h":9.89},"content":"stimulating","font":5},{"id":956,"type":"word","properties":{"order":172,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":348.2,"t":313.11,"w":45.09,"h":9.89},"content":"partnerships","font":5},{"id":957,"type":"word","properties":{"order":173,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":395.28,"t":313.11,"w":9.47,"h":9.89},"content":"for","font":5}]},{"id":1492,"type":"line","properties":{"order":50},"metadata":[],"box":{"l":307.09,"t":323.11,"w":93.28,"h":9.89},"content":[{"id":981,"type":"word","properties":{"order":174,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":323.11,"w":11.49,"h":9.89},"content":"the","font":5},{"id":982,"type":"word","properties":{"order":175,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":320.57,"t":323.11,"w":23.69,"h":9.89},"content":"Group.","font":5},{"id":983,"type":"word","properties":{"order":176,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":346.24,"t":323.11,"w":15.73,"h":9.89},"content":"With","font":5},{"id":984,"type":"word","properties":{"order":177,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":363.96,"t":323.11,"w":36.41,"h":9.89},"content":"BlaBlaCar,","font":5}]},{"id":1493,"type":"line","properties":{"order":51},"metadata":[],"box":{"l":307.09,"t":333.11,"w":94.86,"h":9.89},"content":[{"id":1008,"type":"word","properties":{"order":178,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":333.11,"w":13.68,"h":9.89},"content":"AXA","font":5},{"id":1009,"type":"word","properties":{"order":179,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":322.76,"t":333.11,"w":20.62,"h":9.89},"content":"offers","font":5},{"id":1010,"type":"word","properties":{"order":180,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":345.36,"t":333.11,"w":11.5,"h":9.89},"content":"the","font":5},{"id":1011,"type":"word","properties":{"order":181,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":358.84,"t":333.11,"w":18.95,"h":9.89},"content":"world","font":5},{"id":1012,"type":"word","properties":{"order":182,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":379.78,"t":333.11,"w":22.17,"h":9.89},"content":"leader","font":5}]},{"id":1494,"type":"line","properties":{"order":52},"metadata":[],"box":{"l":307.09,"t":343.11,"w":95.32,"h":9.89},"content":[{"id":1037,"type":"word","properties":{"order":183,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":343.11,"w":6.42,"h":9.89},"content":"in","font":5},{"id":1038,"type":"word","properties":{"order":184,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":315.49,"t":343.11,"w":39.3,"h":9.89},"content":"ridesharing","font":5},{"id":1039,"type":"word","properties":{"order":185,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":356.78,"t":343.11,"w":8.94,"h":9.89},"content":"an","font":5},{"id":1040,"type":"word","properties":{"order":186,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":367.71,"t":343.11,"w":34.7,"h":9.89},"content":"insurance","font":5}]},{"id":1495,"type":"line","properties":{"order":53},"metadata":[],"box":{"l":307.09,"t":353.11,"w":85.03,"h":9.89},"content":[{"id":1063,"type":"word","properties":{"order":187,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":353.11,"w":30.66,"h":9.89},"content":"solution.","font":5},{"id":1064,"type":"word","properties":{"order":188,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":339.74,"t":353.11,"w":16.59,"h":9.89},"content":"After","font":5},{"id":1065,"type":"word","properties":{"order":189,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":358.32,"t":353.11,"w":13.03,"h":9.89},"content":"just","font":5},{"id":1066,"type":"word","properties":{"order":190,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":373.34,"t":353.11,"w":4.54,"h":9.89},"content":"a","font":5},{"id":1067,"type":"word","properties":{"order":191,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":379.87,"t":353.11,"w":12.25,"h":9.89},"content":"few","font":5}]},{"id":1496,"type":"line","properties":{"order":54},"metadata":[],"box":{"l":307.09,"t":363.11,"w":71.19,"h":9.89},"content":[{"id":1086,"type":"word","properties":{"order":192,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":363.11,"w":29.27,"h":9.89},"content":"months,","font":5},{"id":1087,"type":"word","properties":{"order":193,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":337.92,"t":363.11,"w":4.57,"h":9.89},"content":"it","font":5},{"id":1088,"type":"word","properties":{"order":194,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":344.47,"t":363.11,"w":6.25,"h":9.89},"content":"is","font":5},{"id":1089,"type":"word","properties":{"order":195,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":352.71,"t":363.11,"w":25.56,"h":9.89},"content":"already","font":5}]},{"id":1497,"type":"line","properties":{"order":55},"metadata":[],"box":{"l":307.09,"t":373.11,"w":88.53,"h":9.89},"content":[{"id":1113,"type":"word","properties":{"order":196,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":373.11,"w":31.13,"h":9.89},"content":"available","font":5},{"id":1114,"type":"word","properties":{"order":197,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":340.2,"t":373.11,"w":6.42,"h":9.89},"content":"in","font":5},{"id":1115,"type":"word","properties":{"order":198,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":348.61,"t":373.11,"w":12.17,"h":9.89},"content":"five","font":5},{"id":1116,"type":"word","properties":{"order":199,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":362.76,"t":373.11,"w":32.85,"h":9.89},"content":"countries","font":5}]},{"id":1498,"type":"line","properties":{"order":56},"metadata":[],"box":{"l":307.09,"t":383.11,"w":100.32,"h":9.89},"content":[{"id":1141,"type":"word","properties":{"order":200,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":383.11,"w":13.35,"h":9.89},"content":"and","font":5},{"id":1142,"type":"word","properties":{"order":201,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":322.42,"t":383.11,"w":26.41,"h":9.89},"content":"insured","font":5},{"id":1143,"type":"word","properties":{"order":202,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":350.81,"t":383.11,"w":24.36,"h":9.89},"content":"almost","font":5},{"id":1144,"type":"word","properties":{"order":203,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":377.16,"t":383.11,"w":5.05,"h":9.89},"content":"4","font":5},{"id":1145,"type":"word","properties":{"order":204,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":384.19,"t":383.11,"w":23.21,"h":9.89},"content":"million","font":5}]},{"id":1499,"type":"line","properties":{"order":57},"metadata":[],"box":{"l":307.09,"t":393.11,"w":103.94,"h":9.89},"content":[{"id":1171,"type":"word","properties":{"order":205,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":393.11,"w":24.53,"h":9.89},"content":"shared","font":5},{"id":1172,"type":"word","properties":{"order":206,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":333.56,"t":393.11,"w":17.6,"h":9.89},"content":"rides","font":5},{"id":1173,"type":"word","properties":{"order":207,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":353.11,"t":393.11,"w":6.42,"h":9.89},"content":"in","font":5},{"id":1174,"type":"word","properties":{"order":208,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":361.47,"t":393.11,"w":22.15,"h":9.89},"content":"2015.","font":5},{"id":1175,"type":"word","properties":{"order":209,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":385.57,"t":393.11,"w":6.59,"h":9.89},"content":"In","font":5},{"id":1176,"type":"word","properties":{"order":210,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":394.1,"t":393.11,"w":16.93,"h":9.89},"content":"early","font":5}]},{"id":1500,"type":"line","properties":{"order":58},"metadata":[],"box":{"l":307.09,"t":403.11,"w":98.3,"h":9.89},"content":[{"id":1198,"type":"word","properties":{"order":211,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":403.11,"w":22.15,"h":9.89},"content":"2016,","font":5},{"id":1199,"type":"word","properties":{"order":212,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":330.8,"t":403.11,"w":13.68,"h":9.89},"content":"AXA","font":5},{"id":1200,"type":"word","properties":{"order":213,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":346.47,"t":403.11,"w":15.05,"h":9.89},"content":"also","font":5},{"id":1201,"type":"word","properties":{"order":214,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":363.51,"t":403.11,"w":28.4,"h":9.89},"content":"became","font":5},{"id":1202,"type":"word","properties":{"order":215,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":393.9,"t":403.11,"w":11.5,"h":9.89},"content":"the","font":5}]},{"id":1501,"type":"line","properties":{"order":59},"metadata":[],"box":{"l":307.09,"t":413.11,"w":93.14,"h":9.89},"content":[{"id":1226,"type":"word","properties":{"order":216,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":413.11,"w":24.56,"h":9.89},"content":"insurer","font":5},{"id":1227,"type":"word","properties":{"order":217,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":333.63,"t":413.11,"w":6.93,"h":9.89},"content":"of","font":5},{"id":1228,"type":"word","properties":{"order":218,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":342.54,"t":413.11,"w":23.86,"h":9.89},"content":"OuiCar","font":5},{"id":1229,"type":"word","properties":{"order":219,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":368.38,"t":413.11,"w":6.42,"h":9.89},"content":"in","font":5},{"id":1230,"type":"word","properties":{"order":220,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":376.79,"t":413.11,"w":23.44,"h":9.89},"content":"France","font":5}]},{"id":1502,"type":"line","properties":{"order":60},"metadata":[],"box":{"l":307.09,"t":423.11,"w":82.1,"h":9.89},"content":[{"id":1251,"type":"word","properties":{"order":221,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":423.11,"w":13.35,"h":9.89},"content":"and","font":5},{"id":1252,"type":"word","properties":{"order":222,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":322.42,"t":423.11,"w":33.69,"h":9.89},"content":"SocialCar","font":5},{"id":1253,"type":"word","properties":{"order":223,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":358.1,"t":423.11,"w":6.42,"h":9.89},"content":"in","font":5},{"id":1254,"type":"word","properties":{"order":224,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":366.51,"t":423.11,"w":22.68,"h":9.89},"content":"Spain.","font":5}]},{"id":1503,"type":"line","properties":{"order":61},"metadata":[],"box":{"l":307.09,"t":563.6,"w":48.15,"h":8.88},"content":[{"id":1379,"type":"word","properties":{"order":225,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":563.6,"w":4.5,"h":8.88},"content":"5","font":7},{"id":1380,"type":"word","properties":{"order":226,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":314.14,"t":563.6,"w":41.1,"h":8.88},"content":"COUNTRIES","font":7}]},{"id":1504,"type":"line","properties":{"order":62},"metadata":[],"box":{"l":307.09,"t":575.75,"w":59.77,"h":8.73},"content":[{"id":1393,"type":"word","properties":{"order":227,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":575.75,"w":13.35,"h":8.73},"content":"ARE","font":8},{"id":1394,"type":"word","properties":{"order":228,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":322.99,"t":575.75,"w":32.32,"h":8.73},"content":"COVERED","font":8},{"id":1395,"type":"word","properties":{"order":229,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":357.86,"t":575.75,"w":9,"h":8.73},"content":"BY","font":8}]},{"id":1505,"type":"line","properties":{"order":63},"metadata":[],"box":{"l":307.09,"t":587.75,"w":98.78,"h":8.73},"content":[{"id":1417,"type":"word","properties":{"order":230,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":587.75,"w":13.2,"h":8.73},"content":"THE","font":8},{"id":1418,"type":"word","properties":{"order":231,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":322.84,"t":587.75,"w":47.48,"h":8.73},"content":"PARTNERSHIP","font":8},{"id":1419,"type":"word","properties":{"order":232,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":372.86,"t":587.75,"w":33,"h":8.73},"content":"BETWEEN","font":8}]},{"id":1506,"type":"line","properties":{"order":64},"metadata":[],"box":{"l":307.09,"t":599.75,"w":74.44,"h":8.73},"content":[{"id":1436,"type":"word","properties":{"order":233,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":307.09,"t":599.75,"w":12.75,"h":8.73},"content":"AXA","font":8},{"id":1437,"type":"word","properties":{"order":234,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":322.39,"t":599.75,"w":14.4,"h":8.73},"content":"AND","font":8},{"id":1438,"type":"word","properties":{"order":235,"cr":411.02,"cl":307.08},"metadata":[],"box":{"l":339.34,"t":599.75,"w":42.19,"h":8.73},"content":"BLABLACAR.","font":8}]}]}],"fonts":[{"id":1,"name":"STFVDG+FilosofiaBold","size":13.42,"weight":"bold","isItalic":false,"isUnderline":false,"color":"#000000"},{"id":2,"name":"STFVDG+ITCFranklinGothicStd-Demi","size":24.864,"weight":"medium","isItalic":false,"isUnderline":false,"color":"#000000"},{"id":3,"name":"STFVDG+Mermaid-Bold","size":20.464,"weight":"bold","isItalic":false,"isUnderline":false,"color":"#8e5aa5"},{"id":4,"name":"STFVDG+ITCFranklinGothicStd-Demi","size":10.064,"weight":"medium","isItalic":false,"isUnderline":false,"color":"#000000"},{"id":5,"name":"XVDZVW+ITCFranklinGothicStd-Book","size":9.894,"weight":"medium","isItalic":false,"isUnderline":false,"color":"#000000"},{"id":6,"name":"XVDZVW+ITCFranklinGothicStd-Book","size":6.984,"weight":"medium","isItalic":false,"isUnderline":false,"color":"#000000"},{"id":7,"name":"STFVDG+ITCFranklinGothicStd-Demi","size":8.88,"weight":"medium","isItalic":false,"isUnderline":false,"color":"#8e5aa5"},{"id":8,"name":"XVDZVW+ITCFranklinGothicStd-Book","size":8.73,"weight":"medium","isItalic":false,"isUnderline":false,"color":"#8e5aa5"},{"id":9,"name":"STFVDG+ITCFranklinGothicStd-Med","size":9.128,"weight":"medium","isItalic":false,"isUnderline":false,"color":"#000000"}]}
+{
+  "metadata": [],
+  "pages": [
+    {
+      "box": {
+        "l": 0,
+        "t": 0,
+        "w": 481.89,
+        "h": 680.32
+      },
+      "pageNumber": 1,
+      "elements": [
+        {
+          "id": 1501,
+          "type": "line",
+          "properties": {
+            "order": 0
+          },
+          "metadata": [],
+          "box": {
+            "l": 41.29,
+            "t": 79.37,
+            "w": 6.85,
+            "h": 47.8
+          },
+          "content": [
+            {
+              "id": 1500,
+              "type": "word",
+              "properties": {
+                "order": 0,
+                "cr": 411.02,
+                "cl": 41.29
+              },
+              "metadata": [],
+              "box": {
+                "l": 41.29,
+                "t": 79.37,
+                "w": 6.85,
+                "h": 47.8
+              },
+              "content": "TOMORROW",
+              "font": 1
+            }
+          ]
+        },
+        {
+          "id": 1502,
+          "type": "line",
+          "properties": {
+            "order": 1
+          },
+          "metadata": [],
+          "box": {
+            "l": 94.16,
+            "t": 73.7,
+            "w": 47.88,
+            "h": 24.86
+          },
+          "content": [
+            {
+              "id": 31,
+              "type": "word",
+              "properties": {
+                "order": 1,
+                "cr": 411.02,
+                "cl": 41.29
+              },
+              "metadata": [],
+              "box": {
+                "l": 94.16,
+                "t": 73.7,
+                "w": 47.88,
+                "h": 24.86
+              },
+              "content": "AXA",
+              "font": 2
+            }
+          ]
+        },
+        {
+          "id": 1503,
+          "type": "line",
+          "properties": {
+            "order": 2
+          },
+          "metadata": [],
+          "box": {
+            "l": 210.99,
+            "t": 42.12,
+            "w": 64.93,
+            "h": 13.42
+          },
+          "content": [
+            {
+              "id": 14,
+              "type": "word",
+              "properties": {
+                "order": 2,
+                "cr": 387.73,
+                "cl": 155.89
+              },
+              "metadata": [],
+              "box": {
+                "l": 210.99,
+                "t": 42.12,
+                "w": 64.93,
+                "h": 13.42
+              },
+              "content": "tomorrowtoday",
+              "font": 3
+            }
+          ]
+        },
+        {
+          "id": 1504,
+          "type": "line",
+          "properties": {
+            "order": 3
+          },
+          "metadata": [],
+          "box": {
+            "l": 155.9,
+            "t": 73.7,
+            "w": 231.84,
+            "h": 24.86
+          },
+          "content": [
+            {
+              "id": 32,
+              "type": "word",
+              "properties": {
+                "order": 3,
+                "cr": 387.73,
+                "cl": 155.89
+              },
+              "metadata": [],
+              "box": {
+                "l": 155.9,
+                "t": 73.7,
+                "w": 48.72,
+                "h": 24.86
+              },
+              "content": "AND",
+              "font": 2
+            },
+            {
+              "id": 33,
+              "type": "word",
+              "properties": {
+                "order": 4,
+                "cr": 387.73,
+                "cl": 155.89
+              },
+              "metadata": [],
+              "box": {
+                "l": 218.48,
+                "t": 73.7,
+                "w": 44.94,
+                "h": 24.86
+              },
+              "content": "THE",
+              "font": 2
+            },
+            {
+              "id": 34,
+              "type": "word",
+              "properties": {
+                "order": 5,
+                "cr": 387.73,
+                "cl": 155.89
+              },
+              "metadata": [],
+              "box": {
+                "l": 277.28,
+                "t": 73.7,
+                "w": 110.46,
+                "h": 24.86
+              },
+              "content": "SHARING",
+              "font": 2
+            }
+          ]
+        },
+        {
+          "id": 1505,
+          "type": "line",
+          "properties": {
+            "order": 4
+          },
+          "metadata": [],
+          "box": {
+            "l": 180.26,
+            "t": 97.7,
+            "w": 121.38,
+            "h": 24.86
+          },
+          "content": [
+            {
+              "id": 42,
+              "type": "word",
+              "properties": {
+                "order": 6,
+                "cr": 387.73,
+                "cl": 155.89
+              },
+              "metadata": [],
+              "box": {
+                "l": 180.26,
+                "t": 97.7,
+                "w": 12.18,
+                "h": 24.86
+              },
+              "content": "E",
+              "font": 2
+            },
+            {
+              "id": 43,
+              "type": "word",
+              "properties": {
+                "order": 7,
+                "cr": 387.73,
+                "cl": 155.89
+              },
+              "metadata": [],
+              "box": {
+                "l": 196.22,
+                "t": 97.7,
+                "w": 13.86,
+                "h": 24.86
+              },
+              "content": "C",
+              "font": 2
+            },
+            {
+              "id": 44,
+              "type": "word",
+              "properties": {
+                "order": 8,
+                "cr": 387.73,
+                "cl": 155.89
+              },
+              "metadata": [],
+              "box": {
+                "l": 213.86,
+                "t": 97.7,
+                "w": 13.86,
+                "h": 24.86
+              },
+              "content": "O",
+              "font": 2
+            },
+            {
+              "id": 45,
+              "type": "word",
+              "properties": {
+                "order": 9,
+                "cr": 387.73,
+                "cl": 155.89
+              },
+              "metadata": [],
+              "box": {
+                "l": 231.5,
+                "t": 97.7,
+                "w": 13.86,
+                "h": 24.86
+              },
+              "content": "N",
+              "font": 2
+            },
+            {
+              "id": 46,
+              "type": "word",
+              "properties": {
+                "order": 10,
+                "cr": 387.73,
+                "cl": 155.89
+              },
+              "metadata": [],
+              "box": {
+                "l": 249.14,
+                "t": 97.7,
+                "w": 13.86,
+                "h": 24.86
+              },
+              "content": "O",
+              "font": 2
+            },
+            {
+              "id": 47,
+              "type": "word",
+              "properties": {
+                "order": 11,
+                "cr": 387.73,
+                "cl": 155.89
+              },
+              "metadata": [],
+              "box": {
+                "l": 266.78,
+                "t": 97.7,
+                "w": 18.48,
+                "h": 24.86
+              },
+              "content": "M",
+              "font": 2
+            },
+            {
+              "id": 48,
+              "type": "word",
+              "properties": {
+                "order": 12,
+                "cr": 387.73,
+                "cl": 155.89
+              },
+              "metadata": [],
+              "box": {
+                "l": 289.04,
+                "t": 97.7,
+                "w": 12.6,
+                "h": 24.86
+              },
+              "content": "Y",
+              "font": 2
+            }
+          ]
+        },
+        {
+          "id": 1506,
+          "type": "line",
+          "properties": {
+            "order": 5
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 246.47,
+            "w": 47.61,
+            "h": 20.46
+          },
+          "content": [
+            {
+              "id": 56,
+              "type": "word",
+              "properties": {
+                "order": 13,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 246.47,
+                "w": 47.61,
+                "h": 20.46
+              },
+              "content": "Insight",
+              "font": 4
+            }
+          ]
+        },
+        {
+          "id": 1507,
+          "type": "line",
+          "properties": {
+            "order": 6
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 262.94,
+            "w": 97.08,
+            "h": 10.06
+          },
+          "content": [
+            {
+              "id": 79,
+              "type": "word",
+              "properties": {
+                "order": 14,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 262.94,
+                "w": 13.26,
+                "h": 10.06
+              },
+              "content": "The",
+              "font": 5
+            },
+            {
+              "id": 80,
+              "type": "word",
+              "properties": {
+                "order": 15,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 86.03,
+                "t": 262.94,
+                "w": 26.49,
+                "h": 10.06
+              },
+              "content": "sharing",
+              "font": 5
+            },
+            {
+              "id": 81,
+              "type": "word",
+              "properties": {
+                "order": 16,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 114.42,
+                "t": 262.94,
+                "w": 32.34,
+                "h": 10.06
+              },
+              "content": "economy",
+              "font": 5
+            },
+            {
+              "id": 82,
+              "type": "word",
+              "properties": {
+                "order": 17,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 148.66,
+                "t": 262.94,
+                "w": 19.29,
+                "h": 10.06
+              },
+              "content": "helps",
+              "font": 5
+            }
+          ]
+        },
+        {
+          "id": 1508,
+          "type": "line",
+          "properties": {
+            "order": 7
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 272.94,
+            "w": 83.18,
+            "h": 10.06
+          },
+          "content": [
+            {
+              "id": 101,
+              "type": "word",
+              "properties": {
+                "order": 18,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 272.94,
+                "w": 23.98,
+                "h": 10.06
+              },
+              "content": "people",
+              "font": 5
+            },
+            {
+              "id": 102,
+              "type": "word",
+              "properties": {
+                "order": 19,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 96.75,
+                "t": 272.94,
+                "w": 16.57,
+                "h": 10.06
+              },
+              "content": "save",
+              "font": 5
+            },
+            {
+              "id": 103,
+              "type": "word",
+              "properties": {
+                "order": 20,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 115.22,
+                "t": 272.94,
+                "w": 23.66,
+                "h": 10.06
+              },
+              "content": "money",
+              "font": 5
+            },
+            {
+              "id": 104,
+              "type": "word",
+              "properties": {
+                "order": 21,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 140.79,
+                "t": 272.94,
+                "w": 13.26,
+                "h": 10.06
+              },
+              "content": "and",
+              "font": 5
+            }
+          ]
+        },
+        {
+          "id": 1509,
+          "type": "line",
+          "properties": {
+            "order": 8
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 282.94,
+            "w": 67.5,
+            "h": 10.06
+          },
+          "content": [
+            {
+              "id": 127,
+              "type": "word",
+              "properties": {
+                "order": 22,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 282.94,
+                "w": 16.06,
+                "h": 10.06
+              },
+              "content": "earn",
+              "font": 5
+            },
+            {
+              "id": 128,
+              "type": "word",
+              "properties": {
+                "order": 23,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 88.83,
+                "t": 282.94,
+                "w": 18.95,
+                "h": 10.06
+              },
+              "content": "extra",
+              "font": 5
+            },
+            {
+              "id": 129,
+              "type": "word",
+              "properties": {
+                "order": 24,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 109.68,
+                "t": 282.94,
+                "w": 28.68,
+                "h": 10.06
+              },
+              "content": "income,",
+              "font": 5
+            }
+          ]
+        },
+        {
+          "id": 1510,
+          "type": "line",
+          "properties": {
+            "order": 9
+          },
+          "metadata": [],
+          "box": {
+            "l": 139.84,
+            "t": 283.11,
+            "w": 23.28,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 130,
+              "type": "word",
+              "properties": {
+                "order": 25,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 139.84,
+                "t": 283.11,
+                "w": 8.73,
+                "h": 9.89
+              },
+              "content": "so",
+              "font": 6
+            },
+            {
+              "id": 131,
+              "type": "word",
+              "properties": {
+                "order": 26,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 150.48,
+                "t": 283.11,
+                "w": 4.53,
+                "h": 9.89
+              },
+              "content": "it",
+              "font": 6
+            },
+            {
+              "id": 132,
+              "type": "word",
+              "properties": {
+                "order": 27,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 156.91,
+                "t": 283.11,
+                "w": 6.21,
+                "h": 9.89
+              },
+              "content": "is",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1511,
+          "type": "line",
+          "properties": {
+            "order": 10
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 293.11,
+            "w": 83.28,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 157,
+              "type": "word",
+              "properties": {
+                "order": 28,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 293.11,
+                "w": 48.38,
+                "h": 9.89
+              },
+              "content": "unsurprisingly",
+              "font": 6
+            },
+            {
+              "id": 158,
+              "type": "word",
+              "properties": {
+                "order": 29,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 121.15,
+                "t": 293.11,
+                "w": 33,
+                "h": 9.89
+              },
+              "content": "attracting",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1512,
+          "type": "line",
+          "properties": {
+            "order": 11
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 303.11,
+            "w": 96.76,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 180,
+              "type": "word",
+              "properties": {
+                "order": 30,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 303.11,
+                "w": 18.13,
+                "h": 9.89
+              },
+              "content": "more",
+              "font": 6
+            },
+            {
+              "id": 181,
+              "type": "word",
+              "properties": {
+                "order": 31,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 90.89,
+                "t": 303.11,
+                "w": 13.26,
+                "h": 9.89
+              },
+              "content": "and",
+              "font": 6
+            },
+            {
+              "id": 182,
+              "type": "word",
+              "properties": {
+                "order": 32,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 106.06,
+                "t": 303.11,
+                "w": 18.13,
+                "h": 9.89
+              },
+              "content": "more",
+              "font": 6
+            },
+            {
+              "id": 183,
+              "type": "word",
+              "properties": {
+                "order": 33,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 126.09,
+                "t": 303.11,
+                "w": 41.55,
+                "h": 9.89
+              },
+              "content": "consumers.",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1513,
+          "type": "line",
+          "properties": {
+            "order": 12
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 313.11,
+            "w": 104.36,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 211,
+              "type": "word",
+              "properties": {
+                "order": 34,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 313.11,
+                "w": 6.46,
+                "h": 9.89
+              },
+              "content": "In",
+              "font": 6
+            },
+            {
+              "id": 212,
+              "type": "word",
+              "properties": {
+                "order": 35,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 79.03,
+                "t": 313.11,
+                "w": 23.92,
+                "h": 9.89
+              },
+              "content": "today’s",
+              "font": 6
+            },
+            {
+              "id": 213,
+              "type": "word",
+              "properties": {
+                "order": 36,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 104.67,
+                "t": 313.11,
+                "w": 24.19,
+                "h": 9.89
+              },
+              "content": "gloomy",
+              "font": 6
+            },
+            {
+              "id": 214,
+              "type": "word",
+              "properties": {
+                "order": 37,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 130.56,
+                "t": 313.11,
+                "w": 44.67,
+                "h": 9.89
+              },
+              "content": "environment,",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1514,
+          "type": "line",
+          "properties": {
+            "order": 13
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 323.11,
+            "w": 91,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 236,
+              "type": "word",
+              "properties": {
+                "order": 38,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 323.11,
+                "w": 13.08,
+                "h": 9.89
+              },
+              "content": "this",
+              "font": 6
+            },
+            {
+              "id": 237,
+              "type": "word",
+              "properties": {
+                "order": 39,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 85.85,
+                "t": 323.11,
+                "w": 14.19,
+                "h": 9.89
+              },
+              "content": "new",
+              "font": 6
+            },
+            {
+              "id": 238,
+              "type": "word",
+              "properties": {
+                "order": 40,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 101.93,
+                "t": 323.11,
+                "w": 33.88,
+                "h": 9.89
+              },
+              "content": "economic",
+              "font": 6
+            },
+            {
+              "id": 239,
+              "type": "word",
+              "properties": {
+                "order": 41,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 137.72,
+                "t": 323.11,
+                "w": 24.15,
+                "h": 9.89
+              },
+              "content": "model,",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1515,
+          "type": "line",
+          "properties": {
+            "order": 14
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 333.11,
+            "w": 76.94,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 259,
+              "type": "word",
+              "properties": {
+                "order": 42,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 333.11,
+                "w": 19.96,
+                "h": 9.89
+              },
+              "content": "which",
+              "font": 6
+            },
+            {
+              "id": 260,
+              "type": "word",
+              "properties": {
+                "order": 43,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 92.73,
+                "t": 333.11,
+                "w": 6.21,
+                "h": 9.89
+              },
+              "content": "is",
+              "font": 6
+            },
+            {
+              "id": 261,
+              "type": "word",
+              "properties": {
+                "order": 44,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 100.84,
+                "t": 333.11,
+                "w": 33.65,
+                "h": 9.89
+              },
+              "content": "redrawing",
+              "font": 6
+            },
+            {
+              "id": 262,
+              "type": "word",
+              "properties": {
+                "order": 45,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 136.39,
+                "t": 333.11,
+                "w": 11.41,
+                "h": 9.89
+              },
+              "content": "the",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1516,
+          "type": "line",
+          "properties": {
+            "order": 15
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 343.11,
+            "w": 70.82,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 280,
+              "type": "word",
+              "properties": {
+                "order": 46,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 343.11,
+                "w": 39.23,
+                "h": 9.89
+              },
+              "content": "boundaries",
+              "font": 6
+            },
+            {
+              "id": 281,
+              "type": "word",
+              "properties": {
+                "order": 47,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 112,
+                "t": 343.11,
+                "w": 29.69,
+                "h": 9.89
+              },
+              "content": "between",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1517,
+          "type": "line",
+          "properties": {
+            "order": 16
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 353.11,
+            "w": 93.87,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 304,
+              "type": "word",
+              "properties": {
+                "order": 48,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 353.11,
+                "w": 36.01,
+                "h": 9.89
+              },
+              "content": "ownership",
+              "font": 6
+            },
+            {
+              "id": 305,
+              "type": "word",
+              "properties": {
+                "order": 49,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 108.78,
+                "t": 353.11,
+                "w": 13.26,
+                "h": 9.89
+              },
+              "content": "and",
+              "font": 6
+            },
+            {
+              "id": 306,
+              "type": "word",
+              "properties": {
+                "order": 50,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 123.94,
+                "t": 353.11,
+                "w": 15.43,
+                "h": 9.89
+              },
+              "content": "use,",
+              "font": 6
+            },
+            {
+              "id": 307,
+              "type": "word",
+              "properties": {
+                "order": 51,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 140.85,
+                "t": 353.11,
+                "w": 6.21,
+                "h": 9.89
+              },
+              "content": "is",
+              "font": 6
+            },
+            {
+              "id": 308,
+              "type": "word",
+              "properties": {
+                "order": 52,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 148.97,
+                "t": 353.11,
+                "w": 15.77,
+                "h": 9.89
+              },
+              "content": "here",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1518,
+          "type": "line",
+          "properties": {
+            "order": 17
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 363.11,
+            "w": 78.98,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 329,
+              "type": "word",
+              "properties": {
+                "order": 53,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 363.11,
+                "w": 7.05,
+                "h": 9.89
+              },
+              "content": "to",
+              "font": 6
+            },
+            {
+              "id": 330,
+              "type": "word",
+              "properties": {
+                "order": 54,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 79.82,
+                "t": 363.11,
+                "w": 16.01,
+                "h": 9.89
+              },
+              "content": "stay.",
+              "font": 6
+            },
+            {
+              "id": 331,
+              "type": "word",
+              "properties": {
+                "order": 55,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 97.73,
+                "t": 363.11,
+                "w": 22.3,
+                "h": 9.89
+              },
+              "content": "Global",
+              "font": 6
+            },
+            {
+              "id": 332,
+              "type": "word",
+              "properties": {
+                "order": 56,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 121.93,
+                "t": 363.11,
+                "w": 27.92,
+                "h": 9.89
+              },
+              "content": "revenue",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1519,
+          "type": "line",
+          "properties": {
+            "order": 18
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 373.11,
+            "w": 86.04,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 354,
+              "type": "word",
+              "properties": {
+                "order": 57,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 373.11,
+                "w": 35.38,
+                "h": 9.89
+              },
+              "content": "generated",
+              "font": 6
+            },
+            {
+              "id": 355,
+              "type": "word",
+              "properties": {
+                "order": 58,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 108.15,
+                "t": 373.11,
+                "w": 7.73,
+                "h": 9.89
+              },
+              "content": "by",
+              "font": 6
+            },
+            {
+              "id": 356,
+              "type": "word",
+              "properties": {
+                "order": 59,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 117.77,
+                "t": 373.11,
+                "w": 11.41,
+                "h": 9.89
+              },
+              "content": "the",
+              "font": 6
+            },
+            {
+              "id": 357,
+              "type": "word",
+              "properties": {
+                "order": 60,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 131.08,
+                "t": 373.11,
+                "w": 25.82,
+                "h": 9.89
+              },
+              "content": "sharing",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1520,
+          "type": "line",
+          "properties": {
+            "order": 19
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 383.11,
+            "w": 82.16,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 377,
+              "type": "word",
+              "properties": {
+                "order": 61,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 383.11,
+                "w": 31.33,
+                "h": 9.89
+              },
+              "content": "economy",
+              "font": 6
+            },
+            {
+              "id": 378,
+              "type": "word",
+              "properties": {
+                "order": 62,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 104.1,
+                "t": 383.11,
+                "w": 6.21,
+                "h": 9.89
+              },
+              "content": "is",
+              "font": 6
+            },
+            {
+              "id": 379,
+              "type": "word",
+              "properties": {
+                "order": 63,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 112.21,
+                "t": 383.11,
+                "w": 31.86,
+                "h": 9.89
+              },
+              "content": "expected",
+              "font": 6
+            },
+            {
+              "id": 380,
+              "type": "word",
+              "properties": {
+                "order": 64,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 145.97,
+                "t": 383.11,
+                "w": 7.05,
+                "h": 9.89
+              },
+              "content": "to",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1521,
+          "type": "line",
+          "properties": {
+            "order": 20
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 393.11,
+            "w": 95.48,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 405,
+              "type": "word",
+              "properties": {
+                "order": 65,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 393.11,
+                "w": 30.01,
+                "h": 9.89
+              },
+              "content": "increase",
+              "font": 6
+            },
+            {
+              "id": 406,
+              "type": "word",
+              "properties": {
+                "order": 66,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 102.78,
+                "t": 393.11,
+                "w": 16.11,
+                "h": 9.89
+              },
+              "content": "from",
+              "font": 6
+            },
+            {
+              "id": 407,
+              "type": "word",
+              "properties": {
+                "order": 67,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 120.78,
+                "t": 393.11,
+                "w": 14.78,
+                "h": 9.89
+              },
+              "content": "€15",
+              "font": 6
+            },
+            {
+              "id": 408,
+              "type": "word",
+              "properties": {
+                "order": 68,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 137.46,
+                "t": 393.11,
+                "w": 20.6,
+                "h": 9.89
+              },
+              "content": "billion",
+              "font": 6
+            },
+            {
+              "id": 409,
+              "type": "word",
+              "properties": {
+                "order": 69,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 159.96,
+                "t": 393.11,
+                "w": 6.38,
+                "h": 9.89
+              },
+              "content": "in",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1522,
+          "type": "line",
+          "properties": {
+            "order": 21
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 403.11,
+            "w": 98.69,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 433,
+              "type": "word",
+              "properties": {
+                "order": 70,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 403.11,
+                "w": 19.64,
+                "h": 9.89
+              },
+              "content": "2013",
+              "font": 6
+            },
+            {
+              "id": 434,
+              "type": "word",
+              "properties": {
+                "order": 71,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 92.41,
+                "t": 403.11,
+                "w": 7.05,
+                "h": 9.89
+              },
+              "content": "to",
+              "font": 6
+            },
+            {
+              "id": 435,
+              "type": "word",
+              "properties": {
+                "order": 72,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 101.36,
+                "t": 403.11,
+                "w": 24.15,
+                "h": 9.89
+              },
+              "content": "almost",
+              "font": 6
+            },
+            {
+              "id": 436,
+              "type": "word",
+              "properties": {
+                "order": 73,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 127.42,
+                "t": 403.11,
+                "w": 19.64,
+                "h": 9.89
+              },
+              "content": "€335",
+              "font": 6
+            },
+            {
+              "id": 437,
+              "type": "word",
+              "properties": {
+                "order": 74,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 148.96,
+                "t": 403.11,
+                "w": 20.6,
+                "h": 9.89
+              },
+              "content": "billion",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1523,
+          "type": "line",
+          "properties": {
+            "order": 22
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 413.11,
+            "w": 35.12,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 446,
+              "type": "word",
+              "properties": {
+                "order": 75,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 413.11,
+                "w": 6.38,
+                "h": 9.89
+              },
+              "content": "in",
+              "font": 6
+            },
+            {
+              "id": 447,
+              "type": "word",
+              "properties": {
+                "order": 76,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 79.15,
+                "t": 413.11,
+                "w": 26.84,
+                "h": 9.89
+              },
+              "content": "2025.*",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1524,
+          "type": "line",
+          "properties": {
+            "order": 23
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 430.9,
+            "w": 78.96,
+            "h": 6.98
+          },
+          "content": [
+            {
+              "id": 476,
+              "type": "word",
+              "properties": {
+                "order": 77,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 430.9,
+                "w": 29.37,
+                "h": 6.98
+              },
+              "content": "*Consumer",
+              "font": 7
+            },
+            {
+              "id": 477,
+              "type": "word",
+              "properties": {
+                "order": 78,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 101.7,
+                "t": 430.9,
+                "w": 28.8,
+                "h": 6.98
+              },
+              "content": "Intelligence",
+              "font": 7
+            },
+            {
+              "id": 478,
+              "type": "word",
+              "properties": {
+                "order": 79,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 131.95,
+                "t": 430.9,
+                "w": 17.87,
+                "h": 6.98
+              },
+              "content": "Series:",
+              "font": 7
+            }
+          ]
+        },
+        {
+          "id": 1525,
+          "type": "line",
+          "properties": {
+            "order": 24
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 438.4,
+            "w": 80.92,
+            "h": 6.98
+          },
+          "content": [
+            {
+              "id": 506,
+              "type": "word",
+              "properties": {
+                "order": 80,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 438.4,
+                "w": 9.24,
+                "h": 6.98
+              },
+              "content": "The",
+              "font": 7
+            },
+            {
+              "id": 507,
+              "type": "word",
+              "properties": {
+                "order": 81,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 81.57,
+                "t": 438.4,
+                "w": 19.17,
+                "h": 6.98
+              },
+              "content": "Sharing",
+              "font": 7
+            },
+            {
+              "id": 508,
+              "type": "word",
+              "properties": {
+                "order": 82,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 102.21,
+                "t": 438.4,
+                "w": 23.8,
+                "h": 6.98
+              },
+              "content": "Economy,",
+              "font": 7
+            },
+            {
+              "id": 509,
+              "type": "word",
+              "properties": {
+                "order": 83,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 127.17,
+                "t": 438.4,
+                "w": 24.62,
+                "h": 6.98
+              },
+              "content": "published",
+              "font": 7
+            }
+          ]
+        },
+        {
+          "id": 1526,
+          "type": "line",
+          "properties": {
+            "order": 25
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 445.9,
+            "w": 53.46,
+            "h": 6.98
+          },
+          "content": [
+            {
+              "id": 527,
+              "type": "word",
+              "properties": {
+                "order": 84,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 445.9,
+                "w": 5.51,
+                "h": 6.98
+              },
+              "content": "by",
+              "font": 7
+            },
+            {
+              "id": 528,
+              "type": "word",
+              "properties": {
+                "order": 85,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 77.84,
+                "t": 445.9,
+                "w": 10.79,
+                "h": 6.98
+              },
+              "content": "PwC",
+              "font": 7
+            },
+            {
+              "id": 529,
+              "type": "word",
+              "properties": {
+                "order": 86,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 90.09,
+                "t": 445.9,
+                "w": 4.56,
+                "h": 6.98
+              },
+              "content": "in",
+              "font": 7
+            },
+            {
+              "id": 530,
+              "type": "word",
+              "properties": {
+                "order": 87,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 96.11,
+                "t": 445.9,
+                "w": 11,
+                "h": 6.98
+              },
+              "content": "April",
+              "font": 7
+            },
+            {
+              "id": 531,
+              "type": "word",
+              "properties": {
+                "order": 88,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 108.57,
+                "t": 445.9,
+                "w": 15.75,
+                "h": 6.98
+              },
+              "content": "2015.",
+              "font": 7
+            }
+          ]
+        },
+        {
+          "id": 1527,
+          "type": "line",
+          "properties": {
+            "order": 26
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 563.75,
+            "w": 48.75,
+            "h": 8.88
+          },
+          "content": [
+            {
+              "id": 1266,
+              "type": "word",
+              "properties": {
+                "order": 89,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 563.75,
+                "w": 18.45,
+                "h": 8.88
+              },
+              "content": "€335",
+              "font": 8
+            },
+            {
+              "id": 1267,
+              "type": "word",
+              "properties": {
+                "order": 90,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 91.87,
+                "t": 563.75,
+                "w": 27.75,
+                "h": 8.88
+              },
+              "content": "BILLION",
+              "font": 8
+            }
+          ]
+        },
+        {
+          "id": 1528,
+          "type": "line",
+          "properties": {
+            "order": 27
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 575.9,
+            "w": 60.3,
+            "h": 8.73
+          },
+          "content": [
+            {
+              "id": 1281,
+              "type": "word",
+              "properties": {
+                "order": 91,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 575.9,
+                "w": 6.75,
+                "h": 8.73
+              },
+              "content": "IS",
+              "font": 9
+            },
+            {
+              "id": 1282,
+              "type": "word",
+              "properties": {
+                "order": 92,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 80.17,
+                "t": 575.9,
+                "w": 13.2,
+                "h": 8.73
+              },
+              "content": "THE",
+              "font": 9
+            },
+            {
+              "id": 1283,
+              "type": "word",
+              "properties": {
+                "order": 93,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 95.92,
+                "t": 575.9,
+                "w": 35.25,
+                "h": 8.73
+              },
+              "content": "EXPECTED",
+              "font": 9
+            }
+          ]
+        },
+        {
+          "id": 1529,
+          "type": "line",
+          "properties": {
+            "order": 28
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 587.9,
+            "w": 82.09,
+            "h": 8.73
+          },
+          "content": [
+            {
+              "id": 1301,
+              "type": "word",
+              "properties": {
+                "order": 94,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 587.9,
+                "w": 21.34,
+                "h": 8.73
+              },
+              "content": "VALUE",
+              "font": 9
+            },
+            {
+              "id": 1302,
+              "type": "word",
+              "properties": {
+                "order": 95,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 94.75,
+                "t": 587.9,
+                "w": 8.7,
+                "h": 8.73
+              },
+              "content": "OF",
+              "font": 9
+            },
+            {
+              "id": 1303,
+              "type": "word",
+              "properties": {
+                "order": 96,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 106,
+                "t": 587.9,
+                "w": 13.2,
+                "h": 8.73
+              },
+              "content": "THE",
+              "font": 9
+            },
+            {
+              "id": 1304,
+              "type": "word",
+              "properties": {
+                "order": 97,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 121.75,
+                "t": 587.9,
+                "w": 31.2,
+                "h": 8.73
+              },
+              "content": "SHARING",
+              "font": 9
+            }
+          ]
+        },
+        {
+          "id": 1530,
+          "type": "line",
+          "properties": {
+            "order": 29
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 599.9,
+            "w": 67.95,
+            "h": 8.73
+          },
+          "content": [
+            {
+              "id": 1319,
+              "type": "word",
+              "properties": {
+                "order": 98,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 599.9,
+                "w": 34.95,
+                "h": 8.73
+              },
+              "content": "ECONOMY",
+              "font": 9
+            },
+            {
+              "id": 1320,
+              "type": "word",
+              "properties": {
+                "order": 99,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 108.37,
+                "t": 599.9,
+                "w": 7.05,
+                "h": 8.73
+              },
+              "content": "IN",
+              "font": 9
+            },
+            {
+              "id": 1321,
+              "type": "word",
+              "properties": {
+                "order": 100,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 117.97,
+                "t": 599.9,
+                "w": 20.85,
+                "h": 8.73
+              },
+              "content": "2025.",
+              "font": 9
+            }
+          ]
+        },
+        {
+          "id": 1531,
+          "type": "line",
+          "properties": {
+            "order": 30
+          },
+          "metadata": [],
+          "box": {
+            "l": 42.52,
+            "t": 637.57,
+            "w": 8.79,
+            "h": 9.13
+          },
+          "content": [
+            {
+              "id": 1441,
+              "type": "word",
+              "properties": {
+                "order": 101,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 42.52,
+                "t": 637.57,
+                "w": 8.79,
+                "h": 9.13
+              },
+              "content": "24",
+              "font": 10
+            }
+          ]
+        },
+        {
+          "id": 1532,
+          "type": "line",
+          "properties": {
+            "order": 31
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 638.13,
+            "w": 91.92,
+            "h": 6.98
+          },
+          "content": [
+            {
+              "id": 1494,
+              "type": "word",
+              "properties": {
+                "order": 102,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 638.13,
+                "w": 15.12,
+                "h": 6.98
+              },
+              "content": "2015",
+              "font": 7
+            },
+            {
+              "id": 1495,
+              "type": "word",
+              "properties": {
+                "order": 103,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 88.27,
+                "t": 638.13,
+                "w": 24.51,
+                "h": 6.98
+              },
+              "content": "ACTIVITY",
+              "font": 7
+            },
+            {
+              "id": 1496,
+              "type": "word",
+              "properties": {
+                "order": 104,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 115.06,
+                "t": 638.13,
+                "w": 11.76,
+                "h": 6.98
+              },
+              "content": "AND",
+              "font": 7
+            },
+            {
+              "id": 1497,
+              "type": "word",
+              "properties": {
+                "order": 105,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 129.1,
+                "t": 638.13,
+                "w": 33.69,
+                "h": 6.98
+              },
+              "content": "CORPORATE",
+              "font": 7
+            }
+          ]
+        },
+        {
+          "id": 1533,
+          "type": "line",
+          "properties": {
+            "order": 32
+          },
+          "metadata": [],
+          "box": {
+            "l": 70.87,
+            "t": 646.13,
+            "w": 71.28,
+            "h": 6.98
+          },
+          "content": [
+            {
+              "id": 1498,
+              "type": "word",
+              "properties": {
+                "order": 106,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 70.87,
+                "t": 646.13,
+                "w": 46.68,
+                "h": 6.98
+              },
+              "content": "RESPONSIBILITY",
+              "font": 7
+            },
+            {
+              "id": 1499,
+              "type": "word",
+              "properties": {
+                "order": 107,
+                "cr": 175.22,
+                "cl": 42.52
+              },
+              "metadata": [],
+              "box": {
+                "l": 119.83,
+                "t": 646.13,
+                "w": 22.32,
+                "h": 6.98
+              },
+              "content": "REPORT",
+              "font": 7
+            }
+          ]
+        },
+        {
+          "id": 1534,
+          "type": "line",
+          "properties": {
+            "order": 33
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 246.47,
+            "w": 66.2,
+            "h": 20.46
+          },
+          "content": [
+            {
+              "id": 541,
+              "type": "word",
+              "properties": {
+                "order": 108,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 246.47,
+                "w": 66.2,
+                "h": 20.46
+              },
+              "content": "Challenge",
+              "font": 4
+            }
+          ]
+        },
+        {
+          "id": 1535,
+          "type": "line",
+          "properties": {
+            "order": 34
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 262.94,
+            "w": 91.07,
+            "h": 10.06
+          },
+          "content": [
+            {
+              "id": 564,
+              "type": "word",
+              "properties": {
+                "order": 109,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 262.94,
+                "w": 36.72,
+                "h": 10.06
+              },
+              "content": "Insurance",
+              "font": 5
+            },
+            {
+              "id": 565,
+              "type": "word",
+              "properties": {
+                "order": 110,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 227.94,
+                "t": 262.94,
+                "w": 6.38,
+                "h": 10.06
+              },
+              "content": "is",
+              "font": 5
+            },
+            {
+              "id": 566,
+              "type": "word",
+              "properties": {
+                "order": 111,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 236.56,
+                "t": 262.94,
+                "w": 4.54,
+                "h": 10.06
+              },
+              "content": "a",
+              "font": 5
+            },
+            {
+              "id": 567,
+              "type": "word",
+              "properties": {
+                "order": 112,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 243.34,
+                "t": 262.94,
+                "w": 36.71,
+                "h": 10.06
+              },
+              "content": "structural",
+              "font": 5
+            }
+          ]
+        },
+        {
+          "id": 1536,
+          "type": "line",
+          "properties": {
+            "order": 35
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 272.94,
+            "w": 103.94,
+            "h": 10.06
+          },
+          "content": [
+            {
+              "id": 593,
+              "type": "word",
+              "properties": {
+                "order": 113,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 272.94,
+                "w": 40.43,
+                "h": 10.06
+              },
+              "content": "component",
+              "font": 5
+            },
+            {
+              "id": 594,
+              "type": "word",
+              "properties": {
+                "order": 114,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 231.29,
+                "t": 272.94,
+                "w": 6.88,
+                "h": 10.06
+              },
+              "content": "of",
+              "font": 5
+            },
+            {
+              "id": 595,
+              "type": "word",
+              "properties": {
+                "order": 115,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 240.06,
+                "t": 272.94,
+                "w": 11.92,
+                "h": 10.06
+              },
+              "content": "the",
+              "font": 5
+            },
+            {
+              "id": 596,
+              "type": "word",
+              "properties": {
+                "order": 116,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 253.87,
+                "t": 272.94,
+                "w": 39.04,
+                "h": 10.06
+              },
+              "content": "large-scale",
+              "font": 5
+            }
+          ]
+        },
+        {
+          "id": 1537,
+          "type": "line",
+          "properties": {
+            "order": 36
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 282.94,
+            "w": 63.62,
+            "h": 10.06
+          },
+          "content": [
+            {
+              "id": 617,
+              "type": "word",
+              "properties": {
+                "order": 117,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 282.94,
+                "w": 27,
+                "h": 10.06
+              },
+              "content": "sharing",
+              "font": 5
+            },
+            {
+              "id": 618,
+              "type": "word",
+              "properties": {
+                "order": 118,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 218.04,
+                "t": 282.94,
+                "w": 34.55,
+                "h": 10.06
+              },
+              "content": "economy.",
+              "font": 5
+            }
+          ]
+        },
+        {
+          "id": 1538,
+          "type": "line",
+          "properties": {
+            "order": 37
+          },
+          "metadata": [],
+          "box": {
+            "l": 254.75,
+            "t": 283.11,
+            "w": 25.41,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 619,
+              "type": "word",
+              "properties": {
+                "order": 119,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 254.75,
+                "t": 283.11,
+                "w": 18.63,
+                "h": 9.89
+              },
+              "content": "Once",
+              "font": 6
+            },
+            {
+              "id": 620,
+              "type": "word",
+              "properties": {
+                "order": 120,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 275.62,
+                "t": 283.11,
+                "w": 4.55,
+                "h": 9.89
+              },
+              "content": "a",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1539,
+          "type": "line",
+          "properties": {
+            "order": 38
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 293.11,
+            "w": 91.37,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 641,
+              "type": "word",
+              "properties": {
+                "order": 121,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 293.11,
+                "w": 39.59,
+                "h": 9.89
+              },
+              "content": "community",
+              "font": 6
+            },
+            {
+              "id": 642,
+              "type": "word",
+              "properties": {
+                "order": 122,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 230.8,
+                "t": 293.11,
+                "w": 21.31,
+                "h": 9.89
+              },
+              "content": "grows",
+              "font": 6
+            },
+            {
+              "id": 643,
+              "type": "word",
+              "properties": {
+                "order": 123,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 254.34,
+                "t": 293.11,
+                "w": 26,
+                "h": 9.89
+              },
+              "content": "beyond",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1540,
+          "type": "line",
+          "properties": {
+            "order": 39
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 303.11,
+            "w": 102.34,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 668,
+              "type": "word",
+              "properties": {
+                "order": 124,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 303.11,
+                "w": 4.54,
+                "h": 9.89
+              },
+              "content": "a",
+              "font": 6
+            },
+            {
+              "id": 669,
+              "type": "word",
+              "properties": {
+                "order": 125,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 195.76,
+                "t": 303.11,
+                "w": 25.4,
+                "h": 9.89
+              },
+              "content": "certain",
+              "font": 6
+            },
+            {
+              "id": 670,
+              "type": "word",
+              "properties": {
+                "order": 126,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 223.39,
+                "t": 303.11,
+                "w": 20.78,
+                "h": 9.89
+              },
+              "content": "point,",
+              "font": 6
+            },
+            {
+              "id": 671,
+              "type": "word",
+              "properties": {
+                "order": 127,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 246,
+                "t": 303.11,
+                "w": 4.69,
+                "h": 9.89
+              },
+              "content": "it",
+              "font": 6
+            },
+            {
+              "id": 672,
+              "type": "word",
+              "properties": {
+                "order": 128,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 252.93,
+                "t": 303.11,
+                "w": 13.43,
+                "h": 9.89
+              },
+              "content": "has",
+              "font": 6
+            },
+            {
+              "id": 673,
+              "type": "word",
+              "properties": {
+                "order": 129,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 268.6,
+                "t": 303.11,
+                "w": 7.22,
+                "h": 9.89
+              },
+              "content": "to",
+              "font": 6
+            },
+            {
+              "id": 674,
+              "type": "word",
+              "properties": {
+                "order": 130,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 278.06,
+                "t": 303.11,
+                "w": 13.26,
+                "h": 9.89
+              },
+              "content": "find",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1541,
+          "type": "line",
+          "properties": {
+            "order": 40
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 313.11,
+            "w": 102.17,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 699,
+              "type": "word",
+              "properties": {
+                "order": 131,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 313.11,
+                "w": 9.07,
+                "h": 9.89
+              },
+              "content": "an",
+              "font": 6
+            },
+            {
+              "id": 700,
+              "type": "word",
+              "properties": {
+                "order": 132,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 200.29,
+                "t": 313.11,
+                "w": 29.29,
+                "h": 9.89
+              },
+              "content": "external",
+              "font": 6
+            },
+            {
+              "id": 701,
+              "type": "word",
+              "properties": {
+                "order": 133,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 231.82,
+                "t": 313.11,
+                "w": 26.34,
+                "h": 9.89
+              },
+              "content": "system",
+              "font": 6
+            },
+            {
+              "id": 702,
+              "type": "word",
+              "properties": {
+                "order": 134,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 260.4,
+                "t": 313.11,
+                "w": 7.22,
+                "h": 9.89
+              },
+              "content": "to",
+              "font": 6
+            },
+            {
+              "id": 703,
+              "type": "word",
+              "properties": {
+                "order": 135,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 269.85,
+                "t": 313.11,
+                "w": 21.29,
+                "h": 9.89
+              },
+              "content": "foster",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1542,
+          "type": "line",
+          "properties": {
+            "order": 41
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 323.11,
+            "w": 85.72,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 724,
+              "type": "word",
+              "properties": {
+                "order": 136,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 323.11,
+                "w": 19.61,
+                "h": 9.89
+              },
+              "content": "trust.",
+              "font": 6
+            },
+            {
+              "id": 725,
+              "type": "word",
+              "properties": {
+                "order": 137,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 210.82,
+                "t": 323.11,
+                "w": 41.1,
+                "h": 9.89
+              },
+              "content": "Companies",
+              "font": 6
+            },
+            {
+              "id": 726,
+              "type": "word",
+              "properties": {
+                "order": 138,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 254.16,
+                "t": 323.11,
+                "w": 6.55,
+                "h": 9.89
+              },
+              "content": "in",
+              "font": 6
+            },
+            {
+              "id": 727,
+              "type": "word",
+              "properties": {
+                "order": 139,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 262.94,
+                "t": 323.11,
+                "w": 11.75,
+                "h": 9.89
+              },
+              "content": "the",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1543,
+          "type": "line",
+          "properties": {
+            "order": 42
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 333.11,
+            "w": 100.44,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 753,
+              "type": "word",
+              "properties": {
+                "order": 140,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 333.11,
+                "w": 22.81,
+                "h": 9.89
+              },
+              "content": "sector",
+              "font": 6
+            },
+            {
+              "id": 754,
+              "type": "word",
+              "properties": {
+                "order": 141,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 214.02,
+                "t": 333.11,
+                "w": 11.75,
+                "h": 9.89
+              },
+              "content": "are",
+              "font": 6
+            },
+            {
+              "id": 755,
+              "type": "word",
+              "properties": {
+                "order": 142,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 228.01,
+                "t": 333.11,
+                "w": 33.19,
+                "h": 9.89
+              },
+              "content": "therefore",
+              "font": 6
+            },
+            {
+              "id": 756,
+              "type": "word",
+              "properties": {
+                "order": 143,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 263.43,
+                "t": 333.11,
+                "w": 25.99,
+                "h": 9.89
+              },
+              "content": "looking",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1544,
+          "type": "line",
+          "properties": {
+            "order": 43
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 343.11,
+            "w": 74.78,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 778,
+              "type": "word",
+              "properties": {
+                "order": 144,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 343.11,
+                "w": 9.73,
+                "h": 9.89
+              },
+              "content": "for",
+              "font": 6
+            },
+            {
+              "id": 779,
+              "type": "word",
+              "properties": {
+                "order": 145,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 200.94,
+                "t": 343.11,
+                "w": 33.51,
+                "h": 9.89
+              },
+              "content": "effective,",
+              "font": 6
+            },
+            {
+              "id": 780,
+              "type": "word",
+              "properties": {
+                "order": 146,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 236.27,
+                "t": 343.11,
+                "w": 27.48,
+                "h": 9.89
+              },
+              "content": "tailored",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1545,
+          "type": "line",
+          "properties": {
+            "order": 44
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 353.11,
+            "w": 73.99,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 800,
+              "type": "word",
+              "properties": {
+                "order": 147,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 353.11,
+                "w": 35.71,
+                "h": 9.89
+              },
+              "content": "insurance",
+              "font": 6
+            },
+            {
+              "id": 801,
+              "type": "word",
+              "properties": {
+                "order": 148,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 226.93,
+                "t": 353.11,
+                "w": 36.03,
+                "h": 9.89
+              },
+              "content": "solutions.",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1546,
+          "type": "line",
+          "properties": {
+            "order": 45
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 563.75,
+            "w": 36.45,
+            "h": 8.88
+          },
+          "content": [
+            {
+              "id": 1330,
+              "type": "word",
+              "properties": {
+                "order": 149,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 563.75,
+                "w": 4.5,
+                "h": 8.88
+              },
+              "content": "4",
+              "font": 8
+            },
+            {
+              "id": 1331,
+              "type": "word",
+              "properties": {
+                "order": 150,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 196.03,
+                "t": 563.75,
+                "w": 29.4,
+                "h": 8.88
+              },
+              "content": "MILLION",
+              "font": 8
+            }
+          ]
+        },
+        {
+          "id": 1547,
+          "type": "line",
+          "properties": {
+            "order": 46
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 575.9,
+            "w": 51.9,
+            "h": 8.73
+          },
+          "content": [
+            {
+              "id": 1343,
+              "type": "word",
+              "properties": {
+                "order": 151,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 575.9,
+                "w": 28.35,
+                "h": 8.73
+              },
+              "content": "SHARED",
+              "font": 9
+            },
+            {
+              "id": 1344,
+              "type": "word",
+              "properties": {
+                "order": 152,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 219.88,
+                "t": 575.9,
+                "w": 21,
+                "h": 8.73
+              },
+              "content": "RIDES",
+              "font": 9
+            }
+          ]
+        },
+        {
+          "id": 1548,
+          "type": "line",
+          "properties": {
+            "order": 47
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 587.9,
+            "w": 57.9,
+            "h": 8.73
+          },
+          "content": [
+            {
+              "id": 1357,
+              "type": "word",
+              "properties": {
+                "order": 153,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 587.9,
+                "w": 31.05,
+                "h": 8.73
+              },
+              "content": "INSURED",
+              "font": 9
+            },
+            {
+              "id": 1358,
+              "type": "word",
+              "properties": {
+                "order": 154,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 222.58,
+                "t": 587.9,
+                "w": 9,
+                "h": 8.73
+              },
+              "content": "BY",
+              "font": 9
+            },
+            {
+              "id": 1359,
+              "type": "word",
+              "properties": {
+                "order": 155,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 234.13,
+                "t": 587.9,
+                "w": 12.75,
+                "h": 8.73
+              },
+              "content": "AXA",
+              "font": 9
+            }
+          ]
+        },
+        {
+          "id": 1549,
+          "type": "line",
+          "properties": {
+            "order": 48
+          },
+          "metadata": [],
+          "box": {
+            "l": 188.98,
+            "t": 599.9,
+            "w": 30.45,
+            "h": 8.73
+          },
+          "content": [
+            {
+              "id": 1367,
+              "type": "word",
+              "properties": {
+                "order": 156,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 188.98,
+                "t": 599.9,
+                "w": 7.05,
+                "h": 8.73
+              },
+              "content": "IN",
+              "font": 9
+            },
+            {
+              "id": 1368,
+              "type": "word",
+              "properties": {
+                "order": 157,
+                "cr": 292.91,
+                "cl": 188.97
+              },
+              "metadata": [],
+              "box": {
+                "l": 198.58,
+                "t": 599.9,
+                "w": 20.85,
+                "h": 8.73
+              },
+              "content": "2015.",
+              "font": 9
+            }
+          ]
+        },
+        {
+          "id": 1550,
+          "type": "line",
+          "properties": {
+            "order": 49
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 246.47,
+            "w": 54.1,
+            "h": 20.46
+          },
+          "content": [
+            {
+              "id": 810,
+              "type": "word",
+              "properties": {
+                "order": 158,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 246.47,
+                "w": 54.1,
+                "h": 20.46
+              },
+              "content": "Strategy",
+              "font": 4
+            }
+          ]
+        },
+        {
+          "id": 1551,
+          "type": "line",
+          "properties": {
+            "order": 50
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 262.94,
+            "w": 75.74,
+            "h": 10.06
+          },
+          "content": [
+            {
+              "id": 826,
+              "type": "word",
+              "properties": {
+                "order": 159,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 262.94,
+                "w": 15.87,
+                "h": 10.06
+              },
+              "content": "AXA",
+              "font": 5
+            },
+            {
+              "id": 827,
+              "type": "word",
+              "properties": {
+                "order": 160,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 324.94,
+                "t": 262.94,
+                "w": 17.41,
+                "h": 10.06
+              },
+              "content": "aims",
+              "font": 5
+            },
+            {
+              "id": 828,
+              "type": "word",
+              "properties": {
+                "order": 161,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 344.34,
+                "t": 262.94,
+                "w": 7.6,
+                "h": 10.06
+              },
+              "content": "to",
+              "font": 5
+            },
+            {
+              "id": 829,
+              "type": "word",
+              "properties": {
+                "order": 162,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 353.92,
+                "t": 262.94,
+                "w": 28.91,
+                "h": 10.06
+              },
+              "content": "become",
+              "font": 5
+            }
+          ]
+        },
+        {
+          "id": 1552,
+          "type": "line",
+          "properties": {
+            "order": 51
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 272.94,
+            "w": 76.18,
+            "h": 10.06
+          },
+          "content": [
+            {
+              "id": 849,
+              "type": "word",
+              "properties": {
+                "order": 163,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 272.94,
+                "w": 12,
+                "h": 10.06
+              },
+              "content": "the",
+              "font": 5
+            },
+            {
+              "id": 850,
+              "type": "word",
+              "properties": {
+                "order": 164,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 321.07,
+                "t": 272.94,
+                "w": 26.41,
+                "h": 10.06
+              },
+              "content": "leading",
+              "font": 5
+            },
+            {
+              "id": 851,
+              "type": "word",
+              "properties": {
+                "order": 165,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 349.47,
+                "t": 272.94,
+                "w": 24.89,
+                "h": 10.06
+              },
+              "content": "insurer",
+              "font": 5
+            },
+            {
+              "id": 852,
+              "type": "word",
+              "properties": {
+                "order": 166,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 376.34,
+                "t": 272.94,
+                "w": 6.93,
+                "h": 10.06
+              },
+              "content": "of",
+              "font": 5
+            }
+          ]
+        },
+        {
+          "id": 1553,
+          "type": "line",
+          "properties": {
+            "order": 52
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 282.94,
+            "w": 76.97,
+            "h": 10.06
+          },
+          "content": [
+            {
+              "id": 871,
+              "type": "word",
+              "properties": {
+                "order": 167,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 282.94,
+                "w": 12,
+                "h": 10.06
+              },
+              "content": "the",
+              "font": 5
+            },
+            {
+              "id": 872,
+              "type": "word",
+              "properties": {
+                "order": 168,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 321.07,
+                "t": 282.94,
+                "w": 26.74,
+                "h": 10.06
+              },
+              "content": "sharing",
+              "font": 5
+            },
+            {
+              "id": 873,
+              "type": "word",
+              "properties": {
+                "order": 169,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 349.8,
+                "t": 282.94,
+                "w": 34.26,
+                "h": 10.06
+              },
+              "content": "economy.",
+              "font": 5
+            }
+          ]
+        },
+        {
+          "id": 1554,
+          "type": "line",
+          "properties": {
+            "order": 53
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 293.11,
+            "w": 98.82,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 899,
+              "type": "word",
+              "properties": {
+                "order": 170,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 293.11,
+                "w": 14.72,
+                "h": 9.89
+              },
+              "content": "This",
+              "font": 6
+            },
+            {
+              "id": 900,
+              "type": "word",
+              "properties": {
+                "order": 171,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 323.79,
+                "t": 293.11,
+                "w": 14.89,
+                "h": 9.89
+              },
+              "content": "goal",
+              "font": 6
+            },
+            {
+              "id": 901,
+              "type": "word",
+              "properties": {
+                "order": 172,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 340.66,
+                "t": 293.11,
+                "w": 28.28,
+                "h": 9.89
+              },
+              "content": "involves",
+              "font": 6
+            },
+            {
+              "id": 902,
+              "type": "word",
+              "properties": {
+                "order": 173,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 370.93,
+                "t": 293.11,
+                "w": 4.54,
+                "h": 9.89
+              },
+              "content": "a",
+              "font": 6
+            },
+            {
+              "id": 903,
+              "type": "word",
+              "properties": {
+                "order": 174,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 377.46,
+                "t": 293.11,
+                "w": 28.45,
+                "h": 9.89
+              },
+              "content": "strategy",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1555,
+          "type": "line",
+          "properties": {
+            "order": 54
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 303.11,
+            "w": 86.16,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 926,
+              "type": "word",
+              "properties": {
+                "order": 175,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 303.11,
+                "w": 6.93,
+                "h": 9.89
+              },
+              "content": "of",
+              "font": 6
+            },
+            {
+              "id": 927,
+              "type": "word",
+              "properties": {
+                "order": 176,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 316,
+                "t": 303.11,
+                "w": 37.84,
+                "h": 9.89
+              },
+              "content": "developing",
+              "font": 6
+            },
+            {
+              "id": 928,
+              "type": "word",
+              "properties": {
+                "order": 177,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 355.83,
+                "t": 303.11,
+                "w": 37.42,
+                "h": 9.89
+              },
+              "content": "ambitious,",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1556,
+          "type": "line",
+          "properties": {
+            "order": 55
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 313.11,
+            "w": 97.66,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 955,
+              "type": "word",
+              "properties": {
+                "order": 178,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 313.11,
+                "w": 39.13,
+                "h": 9.89
+              },
+              "content": "stimulating",
+              "font": 6
+            },
+            {
+              "id": 956,
+              "type": "word",
+              "properties": {
+                "order": 179,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 348.2,
+                "t": 313.11,
+                "w": 45.09,
+                "h": 9.89
+              },
+              "content": "partnerships",
+              "font": 6
+            },
+            {
+              "id": 957,
+              "type": "word",
+              "properties": {
+                "order": 180,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 395.28,
+                "t": 313.11,
+                "w": 9.47,
+                "h": 9.89
+              },
+              "content": "for",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1557,
+          "type": "line",
+          "properties": {
+            "order": 56
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 323.11,
+            "w": 93.28,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 981,
+              "type": "word",
+              "properties": {
+                "order": 181,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 323.11,
+                "w": 11.49,
+                "h": 9.89
+              },
+              "content": "the",
+              "font": 6
+            },
+            {
+              "id": 982,
+              "type": "word",
+              "properties": {
+                "order": 182,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 320.57,
+                "t": 323.11,
+                "w": 23.69,
+                "h": 9.89
+              },
+              "content": "Group.",
+              "font": 6
+            },
+            {
+              "id": 983,
+              "type": "word",
+              "properties": {
+                "order": 183,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 346.24,
+                "t": 323.11,
+                "w": 15.73,
+                "h": 9.89
+              },
+              "content": "With",
+              "font": 6
+            },
+            {
+              "id": 984,
+              "type": "word",
+              "properties": {
+                "order": 184,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 363.96,
+                "t": 323.11,
+                "w": 36.41,
+                "h": 9.89
+              },
+              "content": "BlaBlaCar,",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1558,
+          "type": "line",
+          "properties": {
+            "order": 57
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 333.11,
+            "w": 94.86,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 1008,
+              "type": "word",
+              "properties": {
+                "order": 185,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 333.11,
+                "w": 13.68,
+                "h": 9.89
+              },
+              "content": "AXA",
+              "font": 6
+            },
+            {
+              "id": 1009,
+              "type": "word",
+              "properties": {
+                "order": 186,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 322.76,
+                "t": 333.11,
+                "w": 20.62,
+                "h": 9.89
+              },
+              "content": "offers",
+              "font": 6
+            },
+            {
+              "id": 1010,
+              "type": "word",
+              "properties": {
+                "order": 187,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 345.36,
+                "t": 333.11,
+                "w": 11.5,
+                "h": 9.89
+              },
+              "content": "the",
+              "font": 6
+            },
+            {
+              "id": 1011,
+              "type": "word",
+              "properties": {
+                "order": 188,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 358.84,
+                "t": 333.11,
+                "w": 18.95,
+                "h": 9.89
+              },
+              "content": "world",
+              "font": 6
+            },
+            {
+              "id": 1012,
+              "type": "word",
+              "properties": {
+                "order": 189,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 379.78,
+                "t": 333.11,
+                "w": 22.17,
+                "h": 9.89
+              },
+              "content": "leader",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1559,
+          "type": "line",
+          "properties": {
+            "order": 58
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 343.11,
+            "w": 95.32,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 1037,
+              "type": "word",
+              "properties": {
+                "order": 190,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 343.11,
+                "w": 6.42,
+                "h": 9.89
+              },
+              "content": "in",
+              "font": 6
+            },
+            {
+              "id": 1038,
+              "type": "word",
+              "properties": {
+                "order": 191,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 315.49,
+                "t": 343.11,
+                "w": 39.3,
+                "h": 9.89
+              },
+              "content": "ridesharing",
+              "font": 6
+            },
+            {
+              "id": 1039,
+              "type": "word",
+              "properties": {
+                "order": 192,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 356.78,
+                "t": 343.11,
+                "w": 8.94,
+                "h": 9.89
+              },
+              "content": "an",
+              "font": 6
+            },
+            {
+              "id": 1040,
+              "type": "word",
+              "properties": {
+                "order": 193,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 367.71,
+                "t": 343.11,
+                "w": 34.7,
+                "h": 9.89
+              },
+              "content": "insurance",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1560,
+          "type": "line",
+          "properties": {
+            "order": 59
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 353.11,
+            "w": 85.03,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 1063,
+              "type": "word",
+              "properties": {
+                "order": 194,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 353.11,
+                "w": 30.66,
+                "h": 9.89
+              },
+              "content": "solution.",
+              "font": 6
+            },
+            {
+              "id": 1064,
+              "type": "word",
+              "properties": {
+                "order": 195,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 339.74,
+                "t": 353.11,
+                "w": 16.59,
+                "h": 9.89
+              },
+              "content": "After",
+              "font": 6
+            },
+            {
+              "id": 1065,
+              "type": "word",
+              "properties": {
+                "order": 196,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 358.32,
+                "t": 353.11,
+                "w": 13.03,
+                "h": 9.89
+              },
+              "content": "just",
+              "font": 6
+            },
+            {
+              "id": 1066,
+              "type": "word",
+              "properties": {
+                "order": 197,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 373.34,
+                "t": 353.11,
+                "w": 4.54,
+                "h": 9.89
+              },
+              "content": "a",
+              "font": 6
+            },
+            {
+              "id": 1067,
+              "type": "word",
+              "properties": {
+                "order": 198,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 379.87,
+                "t": 353.11,
+                "w": 12.25,
+                "h": 9.89
+              },
+              "content": "few",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1561,
+          "type": "line",
+          "properties": {
+            "order": 60
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 363.11,
+            "w": 71.19,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 1086,
+              "type": "word",
+              "properties": {
+                "order": 199,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 363.11,
+                "w": 29.27,
+                "h": 9.89
+              },
+              "content": "months,",
+              "font": 6
+            },
+            {
+              "id": 1087,
+              "type": "word",
+              "properties": {
+                "order": 200,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 337.92,
+                "t": 363.11,
+                "w": 4.57,
+                "h": 9.89
+              },
+              "content": "it",
+              "font": 6
+            },
+            {
+              "id": 1088,
+              "type": "word",
+              "properties": {
+                "order": 201,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 344.47,
+                "t": 363.11,
+                "w": 6.25,
+                "h": 9.89
+              },
+              "content": "is",
+              "font": 6
+            },
+            {
+              "id": 1089,
+              "type": "word",
+              "properties": {
+                "order": 202,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 352.71,
+                "t": 363.11,
+                "w": 25.56,
+                "h": 9.89
+              },
+              "content": "already",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1562,
+          "type": "line",
+          "properties": {
+            "order": 61
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 373.11,
+            "w": 88.53,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 1113,
+              "type": "word",
+              "properties": {
+                "order": 203,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 373.11,
+                "w": 31.13,
+                "h": 9.89
+              },
+              "content": "available",
+              "font": 6
+            },
+            {
+              "id": 1114,
+              "type": "word",
+              "properties": {
+                "order": 204,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 340.2,
+                "t": 373.11,
+                "w": 6.42,
+                "h": 9.89
+              },
+              "content": "in",
+              "font": 6
+            },
+            {
+              "id": 1115,
+              "type": "word",
+              "properties": {
+                "order": 205,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 348.61,
+                "t": 373.11,
+                "w": 12.17,
+                "h": 9.89
+              },
+              "content": "five",
+              "font": 6
+            },
+            {
+              "id": 1116,
+              "type": "word",
+              "properties": {
+                "order": 206,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 362.76,
+                "t": 373.11,
+                "w": 32.85,
+                "h": 9.89
+              },
+              "content": "countries",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1563,
+          "type": "line",
+          "properties": {
+            "order": 62
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 383.11,
+            "w": 100.32,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 1141,
+              "type": "word",
+              "properties": {
+                "order": 207,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 383.11,
+                "w": 13.35,
+                "h": 9.89
+              },
+              "content": "and",
+              "font": 6
+            },
+            {
+              "id": 1142,
+              "type": "word",
+              "properties": {
+                "order": 208,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 322.42,
+                "t": 383.11,
+                "w": 26.41,
+                "h": 9.89
+              },
+              "content": "insured",
+              "font": 6
+            },
+            {
+              "id": 1143,
+              "type": "word",
+              "properties": {
+                "order": 209,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 350.81,
+                "t": 383.11,
+                "w": 24.36,
+                "h": 9.89
+              },
+              "content": "almost",
+              "font": 6
+            },
+            {
+              "id": 1144,
+              "type": "word",
+              "properties": {
+                "order": 210,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 377.16,
+                "t": 383.11,
+                "w": 5.05,
+                "h": 9.89
+              },
+              "content": "4",
+              "font": 6
+            },
+            {
+              "id": 1145,
+              "type": "word",
+              "properties": {
+                "order": 211,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 384.19,
+                "t": 383.11,
+                "w": 23.21,
+                "h": 9.89
+              },
+              "content": "million",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1564,
+          "type": "line",
+          "properties": {
+            "order": 63
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 393.11,
+            "w": 103.94,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 1171,
+              "type": "word",
+              "properties": {
+                "order": 212,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 393.11,
+                "w": 24.53,
+                "h": 9.89
+              },
+              "content": "shared",
+              "font": 6
+            },
+            {
+              "id": 1172,
+              "type": "word",
+              "properties": {
+                "order": 213,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 333.56,
+                "t": 393.11,
+                "w": 17.6,
+                "h": 9.89
+              },
+              "content": "rides",
+              "font": 6
+            },
+            {
+              "id": 1173,
+              "type": "word",
+              "properties": {
+                "order": 214,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 353.11,
+                "t": 393.11,
+                "w": 6.42,
+                "h": 9.89
+              },
+              "content": "in",
+              "font": 6
+            },
+            {
+              "id": 1174,
+              "type": "word",
+              "properties": {
+                "order": 215,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 361.47,
+                "t": 393.11,
+                "w": 22.15,
+                "h": 9.89
+              },
+              "content": "2015.",
+              "font": 6
+            },
+            {
+              "id": 1175,
+              "type": "word",
+              "properties": {
+                "order": 216,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 385.57,
+                "t": 393.11,
+                "w": 6.59,
+                "h": 9.89
+              },
+              "content": "In",
+              "font": 6
+            },
+            {
+              "id": 1176,
+              "type": "word",
+              "properties": {
+                "order": 217,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 394.1,
+                "t": 393.11,
+                "w": 16.93,
+                "h": 9.89
+              },
+              "content": "early",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1565,
+          "type": "line",
+          "properties": {
+            "order": 64
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 403.11,
+            "w": 98.3,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 1198,
+              "type": "word",
+              "properties": {
+                "order": 218,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 403.11,
+                "w": 22.15,
+                "h": 9.89
+              },
+              "content": "2016,",
+              "font": 6
+            },
+            {
+              "id": 1199,
+              "type": "word",
+              "properties": {
+                "order": 219,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 330.8,
+                "t": 403.11,
+                "w": 13.68,
+                "h": 9.89
+              },
+              "content": "AXA",
+              "font": 6
+            },
+            {
+              "id": 1200,
+              "type": "word",
+              "properties": {
+                "order": 220,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 346.47,
+                "t": 403.11,
+                "w": 15.05,
+                "h": 9.89
+              },
+              "content": "also",
+              "font": 6
+            },
+            {
+              "id": 1201,
+              "type": "word",
+              "properties": {
+                "order": 221,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 363.51,
+                "t": 403.11,
+                "w": 28.4,
+                "h": 9.89
+              },
+              "content": "became",
+              "font": 6
+            },
+            {
+              "id": 1202,
+              "type": "word",
+              "properties": {
+                "order": 222,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 393.9,
+                "t": 403.11,
+                "w": 11.5,
+                "h": 9.89
+              },
+              "content": "the",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1566,
+          "type": "line",
+          "properties": {
+            "order": 65
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 413.11,
+            "w": 93.14,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 1226,
+              "type": "word",
+              "properties": {
+                "order": 223,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 413.11,
+                "w": 24.56,
+                "h": 9.89
+              },
+              "content": "insurer",
+              "font": 6
+            },
+            {
+              "id": 1227,
+              "type": "word",
+              "properties": {
+                "order": 224,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 333.63,
+                "t": 413.11,
+                "w": 6.93,
+                "h": 9.89
+              },
+              "content": "of",
+              "font": 6
+            },
+            {
+              "id": 1228,
+              "type": "word",
+              "properties": {
+                "order": 225,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 342.54,
+                "t": 413.11,
+                "w": 23.86,
+                "h": 9.89
+              },
+              "content": "OuiCar",
+              "font": 6
+            },
+            {
+              "id": 1229,
+              "type": "word",
+              "properties": {
+                "order": 226,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 368.38,
+                "t": 413.11,
+                "w": 6.42,
+                "h": 9.89
+              },
+              "content": "in",
+              "font": 6
+            },
+            {
+              "id": 1230,
+              "type": "word",
+              "properties": {
+                "order": 227,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 376.79,
+                "t": 413.11,
+                "w": 23.44,
+                "h": 9.89
+              },
+              "content": "France",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1567,
+          "type": "line",
+          "properties": {
+            "order": 66
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 423.11,
+            "w": 82.1,
+            "h": 9.89
+          },
+          "content": [
+            {
+              "id": 1251,
+              "type": "word",
+              "properties": {
+                "order": 228,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 423.11,
+                "w": 13.35,
+                "h": 9.89
+              },
+              "content": "and",
+              "font": 6
+            },
+            {
+              "id": 1252,
+              "type": "word",
+              "properties": {
+                "order": 229,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 322.42,
+                "t": 423.11,
+                "w": 33.69,
+                "h": 9.89
+              },
+              "content": "SocialCar",
+              "font": 6
+            },
+            {
+              "id": 1253,
+              "type": "word",
+              "properties": {
+                "order": 230,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 358.1,
+                "t": 423.11,
+                "w": 6.42,
+                "h": 9.89
+              },
+              "content": "in",
+              "font": 6
+            },
+            {
+              "id": 1254,
+              "type": "word",
+              "properties": {
+                "order": 231,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 366.51,
+                "t": 423.11,
+                "w": 22.68,
+                "h": 9.89
+              },
+              "content": "Spain.",
+              "font": 6
+            }
+          ]
+        },
+        {
+          "id": 1568,
+          "type": "line",
+          "properties": {
+            "order": 67
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 563.6,
+            "w": 48.15,
+            "h": 8.88
+          },
+          "content": [
+            {
+              "id": 1379,
+              "type": "word",
+              "properties": {
+                "order": 232,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 563.6,
+                "w": 4.5,
+                "h": 8.88
+              },
+              "content": "5",
+              "font": 8
+            },
+            {
+              "id": 1380,
+              "type": "word",
+              "properties": {
+                "order": 233,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 314.14,
+                "t": 563.6,
+                "w": 41.1,
+                "h": 8.88
+              },
+              "content": "COUNTRIES",
+              "font": 8
+            }
+          ]
+        },
+        {
+          "id": 1569,
+          "type": "line",
+          "properties": {
+            "order": 68
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 575.75,
+            "w": 59.77,
+            "h": 8.73
+          },
+          "content": [
+            {
+              "id": 1393,
+              "type": "word",
+              "properties": {
+                "order": 234,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 575.75,
+                "w": 13.35,
+                "h": 8.73
+              },
+              "content": "ARE",
+              "font": 9
+            },
+            {
+              "id": 1394,
+              "type": "word",
+              "properties": {
+                "order": 235,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 322.99,
+                "t": 575.75,
+                "w": 32.32,
+                "h": 8.73
+              },
+              "content": "COVERED",
+              "font": 9
+            },
+            {
+              "id": 1395,
+              "type": "word",
+              "properties": {
+                "order": 236,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 357.86,
+                "t": 575.75,
+                "w": 9,
+                "h": 8.73
+              },
+              "content": "BY",
+              "font": 9
+            }
+          ]
+        },
+        {
+          "id": 1570,
+          "type": "line",
+          "properties": {
+            "order": 69
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 587.75,
+            "w": 98.78,
+            "h": 8.73
+          },
+          "content": [
+            {
+              "id": 1417,
+              "type": "word",
+              "properties": {
+                "order": 237,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 587.75,
+                "w": 13.2,
+                "h": 8.73
+              },
+              "content": "THE",
+              "font": 9
+            },
+            {
+              "id": 1418,
+              "type": "word",
+              "properties": {
+                "order": 238,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 322.84,
+                "t": 587.75,
+                "w": 47.48,
+                "h": 8.73
+              },
+              "content": "PARTNERSHIP",
+              "font": 9
+            },
+            {
+              "id": 1419,
+              "type": "word",
+              "properties": {
+                "order": 239,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 372.86,
+                "t": 587.75,
+                "w": 33,
+                "h": 8.73
+              },
+              "content": "BETWEEN",
+              "font": 9
+            }
+          ]
+        },
+        {
+          "id": 1571,
+          "type": "line",
+          "properties": {
+            "order": 70
+          },
+          "metadata": [],
+          "box": {
+            "l": 307.09,
+            "t": 599.75,
+            "w": 74.44,
+            "h": 8.73
+          },
+          "content": [
+            {
+              "id": 1436,
+              "type": "word",
+              "properties": {
+                "order": 240,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 307.09,
+                "t": 599.75,
+                "w": 12.75,
+                "h": 8.73
+              },
+              "content": "AXA",
+              "font": 9
+            },
+            {
+              "id": 1437,
+              "type": "word",
+              "properties": {
+                "order": 241,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 322.39,
+                "t": 599.75,
+                "w": 14.4,
+                "h": 8.73
+              },
+              "content": "AND",
+              "font": 9
+            },
+            {
+              "id": 1438,
+              "type": "word",
+              "properties": {
+                "order": 242,
+                "cr": 411.02,
+                "cl": 307.08
+              },
+              "metadata": [],
+              "box": {
+                "l": 339.34,
+                "t": 599.75,
+                "w": 42.19,
+                "h": 8.73
+              },
+              "content": "BLABLACAR.",
+              "font": 9
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "fonts": [
+    {
+      "id": 1,
+      "name": "STFVDG+ITCFranklinGothicStd-Med",
+      "size": 3.858,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000"
+    },
+    {
+      "id": 2,
+      "name": "STFVDG+ITCFranklinGothicStd-Demi",
+      "size": 24.864,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000"
+    },
+    {
+      "id": 3,
+      "name": "STFVDG+FilosofiaBold",
+      "size": 13.42,
+      "weight": "bold",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000"
+    },
+    {
+      "id": 4,
+      "name": "STFVDG+Mermaid-Bold",
+      "size": 20.464,
+      "weight": "bold",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#8e5aa5"
+    },
+    {
+      "id": 5,
+      "name": "STFVDG+ITCFranklinGothicStd-Demi",
+      "size": 10.064,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000"
+    },
+    {
+      "id": 6,
+      "name": "XVDZVW+ITCFranklinGothicStd-Book",
+      "size": 9.894,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000"
+    },
+    {
+      "id": 7,
+      "name": "XVDZVW+ITCFranklinGothicStd-Book",
+      "size": 6.984,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000"
+    },
+    {
+      "id": 8,
+      "name": "STFVDG+ITCFranklinGothicStd-Demi",
+      "size": 8.88,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#8e5aa5"
+    },
+    {
+      "id": 9,
+      "name": "XVDZVW+ITCFranklinGothicStd-Book",
+      "size": 8.73,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#8e5aa5"
+    },
+    {
+      "id": 10,
+      "name": "STFVDG+ITCFranklinGothicStd-Med",
+      "size": 9.128,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000"
+    }
+  ]
+}

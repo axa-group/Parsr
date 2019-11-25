@@ -76,6 +76,16 @@ export class ServerManager {
     // merges custom parameter values with the value in the module specs
     Object.keys(customConfig).forEach(key => {
       specs[key].value = customConfig[key];
+
+      if (Array.isArray(specs[key].value)
+        && typeof specs[key].value[0] === 'object'
+        && specs[key].value[0].hasOwnProperty('pages')
+        && specs[key].value[0].hasOwnProperty('flavor')) {
+        specs[key].value = specs[key].value.map((v: any) => ({
+          ...v,
+          table_areas: v.table_areas || [],
+        }));
+      }
     });
 
     const mergedResult = [moduleName, specs].filter(m => !!m);

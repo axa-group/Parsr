@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import { spawn } from 'child_process';
+import * as filetype from 'file-type';
 import * as fs from 'fs';
 import { BoundingBox, Document, Page, Word } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
@@ -32,11 +33,17 @@ export class LinkDetectionModule extends Module {
   public static moduleName = 'link-detection';
 
   public async main(doc: Document): Promise<Document> {
-    let mdLinks = await this.extractLinksFromMetadata(doc.inputFile);
-    mdLinks = mdLinks.map((link, id) => ({
-      ...link,
-      id,
-    }));
+    let mdLinks: JSON[] = [];
+    const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
+    if (fileType === null || fileType.ext !== 'pdf') {
+      logger.warn(`Warning: The input file ${doc.inputFile} is not a PDF (${utils.prettifyObject(fileType)}); not using meta information for link detection..`);
+    } else {
+      mdLinks = await this.extractLinksFromMetadata(doc.inputFile);
+      mdLinks = mdLinks.map((link, id) => ({
+        ...link,
+        id,
+      }));
+    }
 
     doc.pages.forEach((page: Page) => {
       const links = mdLinks.filter(link => parseInt((link as any).page, 10) === page.pageNumber);
@@ -63,9 +70,9 @@ export class LinkDetectionModule extends Module {
     const linkRegexp = /\b((http|https):\/\/?)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
     const mailRegexp = /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/;
     if (word.toString().match(linkRegexp)) {
-      word.properties.targetURL = word.toString();
+      word.properties.targetURL = word.toString().match(linkRegexp)[0];
     } else if (word.toString().match(mailRegexp)) {
-      word.properties.targetURL = `mailto:${word.toString()}`;
+      word.properties.targetURL = `mailto:${word.toString().match(mailRegexp)[0]}`;
     }
   }
 

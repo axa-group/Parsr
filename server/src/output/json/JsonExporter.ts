@@ -90,6 +90,7 @@ export class JsonExporter extends Exporter {
       let weight = font.weight;
       let isItalic = font.isItalic;
       let isUnderline = font.isUnderline;
+      let sizeUnit = 'px';
       let color = font.color;
 
       if (font.color !== 'black' && font.color !== '#000000' && font.color !== '000000') {
@@ -108,6 +109,10 @@ export class JsonExporter extends Exporter {
         isUnderline = font.isUnderline;
       }
 
+      if (font.sizeUnit) {
+        sizeUnit = font.sizeUnit;
+      }
+
       const jsonFont: JsonFont = {
         id: fontId,
         name,
@@ -118,6 +123,7 @@ export class JsonExporter extends Exporter {
         color,
         url,
         scaling,
+        sizeUnit,
       };
 
       this.json.fonts.push(jsonFont);

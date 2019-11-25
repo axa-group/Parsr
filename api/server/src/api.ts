@@ -348,6 +348,10 @@ export class ApiServer {
     const docId: string = req.params.id;
     const page: number = parseInt(req.params.page, 10) + 1;
     const binder: Binder = this.fileManager.getBinder(docId);
+
+    const filetype = require('file-type');
+    const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(binder.input));
+
     const thumbFolder = path.join(os.tmpdir(), 'Doc-' + docId + '/');
 
     if (!fs.existsSync(thumbFolder)) {
@@ -369,26 +373,35 @@ export class ApiServer {
       });
       return;
     }
-    const pdf2Pic = require('pdf2pic');
-    const pdf2picConfig = new pdf2Pic({
-      density: 72, // output pixels per inch
-      savename: docId, // output file name
-      savedir: thumbFolder, // output file location
-      format: 'png', // output file format
-      size: '200x200', // output size in pixels
-    });
+    let convert;
 
-    try {
-      pdf2picConfig.convertBulk(binder.input, [page]).then(() => {
-        logger.info('Generated Thumbnail at path ' + filePath);
-        res.sendFile(filePath, {
-          headers: {
-            responseType: 'blob',
-          },
-        });
+    if (fileType.mime.startsWith('image')) {
+      convert = require('sharp')(binder.input).resize(200, 200, { fit: 'outside' }).toFile(filePath);
+    } else if (fileType.ext === 'pdf') {
+      const pdf2Pic = require('pdf2pic');
+      const pdf2picConfig = new pdf2Pic({
+        density: 72, // output pixels per inch
+        savename: docId, // output file name
+        savedir: thumbFolder, // output file location
+        format: 'png', // output file format
+        size: '200x200', // output size in pixels
       });
-    } catch (error) {
-      res.status(500).send(error);
+      convert = pdf2picConfig.convertBulk(binder.input, [page]);
+    }
+
+    if (convert) {
+      try {
+        convert.then(() => {
+          logger.info('Generated Thumbnail at path ' + filePath);
+          res.sendFile(filePath, {
+            headers: {
+              responseType: 'blob',
+            },
+          });
+        });
+      } catch (error) {
+        res.status(500).send(error);
+      }
     }
   }
 

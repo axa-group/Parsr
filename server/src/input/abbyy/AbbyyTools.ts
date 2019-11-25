@@ -178,6 +178,8 @@ export class AbbyyTools extends Extractor {
       fontOptions.scaling = 1000;
     }
 
+    fontOptions.sizeUnit = 'em';
+
     if ('ff' in formattingObj) {
       ff = formattingObj.ff;
     }
