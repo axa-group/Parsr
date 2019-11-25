@@ -1,0 +1,17 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+requests = "==2.22.0"
+pandas = "==0.25.3"
+ipython = "==7.9.0"
+python-magic = "==0.4.15"
+Pygments = "==2.4.2"
+jupyter = "*"
+
+[requires]
+python_version = "3.7"
