@@ -33,6 +33,7 @@ sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
 sudo apt-get install nodejs npm qpdf imagemagick graphicsmagick python-pdfminer tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
 pip install camelot-py
+pip install numpy pillow scikit-image
 ```
 
 Under **Arch** Linux :
@@ -40,6 +41,7 @@ Under **Arch** Linux :
 ```sh
 pacman -S nodejs npm qpdf imagemagick graphicsmagick pdfminer tesseract python-pip
 pip install camelot-py
+pip install numpy pillow scikit-image
 ```
 
 ### 2.2. Installing Dependencies under MacOS
@@ -69,6 +71,7 @@ and then the dependencies:
 ```sh
 pip install pdfminer.six
 pip install ghostscript camelot-py
+pip install numpy pillow scikit-image
 ```
 
 ### 2.3. Installing Dependencies under Windows
