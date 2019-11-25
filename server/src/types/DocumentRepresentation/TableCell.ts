@@ -121,6 +121,9 @@ export class TableCell extends Element {
 
   public exportAsMD(): string {
     let output: string = '';
+    for (let i = 1; i < this.colspan; i += 1) {
+      output += '>|';
+    }
     this.content.forEach(element => {
       output += element.toMarkdown();
     });
