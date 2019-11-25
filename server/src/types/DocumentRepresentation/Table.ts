@@ -337,7 +337,11 @@ export class Table extends Element {
     tableArray.forEach((row, index) => {
       row.forEach(cellMDCode => {
         if (cellMDCode !== null) {
-          output += '|' + (cellMDCode || '');
+          if (cellMDCode.startsWith('>')) {
+            output += `|${cellMDCode} `;
+          } else {
+            output += cellMDCode === '' ? '|' : `| ${cellMDCode} `;
+          }
         }
       });
       output += '|  \n';

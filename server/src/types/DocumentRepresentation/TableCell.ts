@@ -124,7 +124,10 @@ export class TableCell extends Element {
     for (let i = 1; i < this.colspan; i += 1) {
       output += '>|';
     }
-    this.content.forEach(element => {
+    this.content.forEach((element, index) => {
+      if (index === 0 && this.colspan > 1) {
+        output += ' ';
+      }
       output += element.toMarkdown();
     });
     return output;
