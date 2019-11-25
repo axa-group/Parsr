@@ -12,7 +12,31 @@
 
 It provides users with clean structured and label-enriched information set for ready-to-use applications ranging from data entry and document analysis automation, archival, and many others.
 
-- [Parsr: Turn your documents into data!](#parsr-turn-your-documents-into-data)
+Currently, Parsr can perform:
+
+1. Document Hierarchy Regeneration - Words, Lines and Paragraphs
+2. Headings Detection
+3. Table Detection and Reconstruction
+4. Lists Detection
+5. Text Order Detection
+6. Named Entity Recognition (Dates, Percentages, etc)
+7. Key-Value Pair Detection (for the extraction of specific form-based entries)
+8. Page Number Detection
+9. Header-Footer Detection
+10. Link Detection
+11. Heading Detection
+12. Whitespace Removal
+
+Parsr can generate the following output formats:
+
+1. JSON
+2. Markdown
+3. Text
+4. CSV (for tables), or Pandas Dataframes (see [here](demo/jupyter-notebook/parsr_api.py))
+5. PDF
+
+## Table of Contents
+- [Introduction](#turn-your-documents-into-data)
   - [Getting Started](#getting-started)
     - [Installation](#installation)
     - [Usage](#usage)
