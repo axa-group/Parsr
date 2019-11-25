@@ -101,51 +101,35 @@ export function getConvertPath(): string {
 }
 
 /**
+ * Returns the location of the pipenv's Parsr environment's location
+ */
+export function getPipenvParsrLocation(): string {
+  const pipenvSpawn = spawnSync(getCommandLocationOnSystem('pipenv'), ['--venv']);
+  return pipenvSpawn.status === 0 ? pipenvSpawn.stdout.toString().split(os.EOL)[0] : "";
+}
+
+/**
  * Returns the location of the python command on the system
  */
 export function getPythonLocation(): string {
-  const pythonLocation: string = getCommandLocationOnSystem('python3', 'python');
-  if (!pythonLocation) {
-    logger.warn(
-      `Unable to find python. Are you sure it is installed?`,
-    );
-    return "";
-  } else {
-    logger.debug(`python was found at ${pythonLocation}`);
-    return pythonLocation;
-  }
+  const pipEnvParsrLocation: string = getPipenvParsrLocation();
+  return pipEnvParsrLocation !== "" ? path.join(getPipenvParsrLocation(), 'bin', 'python3') : "";
 }
 
 /**
  * Returns the location of the pdf2txt command on the system
  */
 export function getPdf2txtLocation(): string {
-  const pdf2txtLocation: string = getCommandLocationOnSystem('pdf2txt.py', 'pdf2txt');
-  if (!pdf2txtLocation) {
-    logger.warn(
-      `Unable to find pdf2txt, the pdfminer tool on the system. Are you sure it is installed?`,
-    );
-    return "";
-  } else {
-    logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
-    return pdf2txtLocation;
-  }
+  const pipEnvParsrLocation: string = getPipenvParsrLocation();
+  return pipEnvParsrLocation !== "" ? path.join(getPipenvParsrLocation(), 'bin', 'pdf2txt.py') : "";
 }
 
 /**
  * Returns the location of the dumppdf command on the system
  */
 export function getDumppdfLocation(): string {
-  const dumppdfLocation: string = getCommandLocationOnSystem('dumppdf.py', 'dumppdf');
-  if (!dumppdfLocation) {
-    logger.warn(
-      `Unable to find dump, the pdfminer tool on the system. Are you sure it is installed?`,
-    );
-    return "";
-  } else {
-    logger.debug(`dumppdf was found at ${dumppdfLocation}`);
-    return dumppdfLocation;
-  }
+  const pipEnvParsrLocation: string = getPipenvParsrLocation();
+  return pipEnvParsrLocation !== "" ? path.join(getPipenvParsrLocation(), 'bin', 'dumppdf.py') : "";
 }
 
 export function getMutoolImagesPrefix(): string {

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d6e39ed669d0b686edbdd8665658864fa3224369fe5968b4b1c3d01d9f1b2b74"
+            "sha256": "a983e3783d206536400b2dee8798b4d42260c4f6bf20ae8b0cb1e459cbd8bdf1"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -223,6 +223,13 @@
             ],
             "index": "pypi",
             "version": "==0.1.2"
+        },
+        "pdfminer-six": {
+            "hashes": [
+                "sha256:ca2ca58f3ac66a486bce53a6ddba95dc2b27781612915fa41c444790ba9cd2a8"
+            ],
+            "index": "pypi",
+            "version": "==20191110"
         },
         "pdfminer.six": {
             "hashes": [
