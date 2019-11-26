@@ -75,11 +75,13 @@ docker run -p 3001:3001 axarev/parsr
 which will launch it on [http://localhost:3001](http://localhost:3001).  
 Consult the documentation on the [usage of the API](docs/api-guide.md).
 
-To use the GUI tool (the API needs to already be running), issue:
-```sh
-docker run -t -p 8080:80 axarev/parsr-ui-localhost:latest
-```
-Then, access it through [http://localhost:8080](http://localhost:8080).
+1. To use the **Jupyter Notebook** and the **python** interface to the Parsr API, [follow here](demo/jupyter-notebook).
+2. To use the GUI tool (the API needs to already be running), issue:
+    ```sh
+    docker run -t -p 8080:80 axarev/parsr-ui-localhost:latest
+    ```
+    Then, access it through [http://localhost:8080](http://localhost:8080).
+
 
 Refer to the [Configuration documentation](docs/configuration.md) to interpret the configurable options in the GUI viewer.
 
