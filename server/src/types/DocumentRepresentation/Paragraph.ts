@@ -275,8 +275,9 @@ export class Paragraph extends Text {
     return result
       .filter(w => !!w)
       .map(w => w.trim())
-      .reduce((w1, w2) => w1 + ' ' + w2, '')
-      .trim();
+      .join(' ')
+      .replace(/^([\d]+)([.)] )/gm, '$1\\$2') // escape dots and closing parentheses only for ordered list bullets
+      .replace(/^([+-] )/gm, '\\$1'); // escape dashes and plus signs only for unordered list bullets
   }
 
   public lineToHTML(line: Line) {
