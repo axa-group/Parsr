@@ -119,11 +119,10 @@ export class HeadingDetectionModule extends Module {
     paragraphs: Paragraph[],
     commonFont: Font,
     detectedHeadings: Line[],
-    // commonLineHeight: number,
   ): { headingLines: Line[][]; paragraphLines: Line[][] } {
     const paragraphLines: Line[][] = [];
     const headingLines: Line[][] = [];
-    paragraphs.sort((a, b) => a.properties.order - b.properties.order).forEach((paragraph) => {
+    paragraphs.forEach((paragraph) => {
       const linesInParagraph = paragraph.content;
       if (commonFont instanceof Font) {
         const headingIdx: number[] = linesInParagraph
