@@ -20,7 +20,7 @@ You can install Parsr either using Docker containers, or directly on your machin
 
 Containers are already available on [Docker Hub](https://hub.docker.com/u/axarev).
 
-The documentation to build and run Docker containers is [here](docs/docker.md).
+The documentation to build and run Docker containers is [here](docker.md).
 
 ## 2. Bare-Metal Installation
 
