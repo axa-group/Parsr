@@ -44,8 +44,8 @@ export class Word extends Text {
       mdString = `[${this.toString()}](${this.properties.targetURL})`;
     } else {
       mdString = this.toString()
-        .replace(/([\\\`\*\_\{\}\[\]\(\#\+\-\!\|])/g, '\\$1')
-        .replace(/([\d]+)([.)])/g, '$1\\$2'); // escape dots and closing parentheses only for list bullets
+        .replace(/([\\`*_{}\[\]()#!|])/g, '\\$1');
+
     }
 
     return mdString;
