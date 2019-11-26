@@ -19,46 +19,46 @@ import pandas as pd
 from io import StringIO
 import json
 
-class ParsrOutputInterpreter:
+class ParsrOutputInterpreter(object):
     def __init__(self, object=None):
         logging.basicConfig(level=logging.DEBUG, format='%(name)s - %(levelname)s - %(message)s')
         self.object = None
         if object is not None:
-            self.loadObject(object)
+            self.load_object(object)
     
-    def __getTextTypes(self):
+    def __get_text_types(self):
         return ['word', 'line', 'character', 'paragraph', 'heading']
 
-    def __getTextObjects(self, page_number=None):
+    def __get_text_objects(self, page_number=None):
         texts = []
         if page_number is not None:
-            page = self.getPage(page_number)
+            page = self.get_page(page_number)
             if page is None:
                 logging.error("Cannot get text elements for the requested page; Page {} not found".format(page_number))
                 return None
             else:
                 for element in page['elements']:
-                    if element['type'] in self.__getTextTypes():
+                    if element['type'] in self.__get_text_types():
                         texts.append(element)
         else:
             for page in self.object['pages']:
                 for element in page['elements']:
-                    if element['type'] in self.__getTextTypes():
+                    if element['type'] in self.__get_text_types():
                         texts.append(element)
         return texts
     
-    def __textFromTextObject(self, text_object:dict) -> str:
+    def __text_from_text_object(self, text_object:dict) -> str:
         result = ""
         if text_object['type'] in ['paragraph', 'heading']:
             for i in text_object['content']:
-                result += self.__textFromTextObject(i)
+                result += self.__text_from_text_object(i)
         elif text_object['type'] in ['line']:
             for i in text_object['content']:
-                result += self.__textFromTextObject(i)
+                result += self.__text_from_text_object(i)
         elif text_object['type'] in ['word']:
             if type(text_object['content']) is list:
                 for i in text_object['content']:
-                    result += self.__textFromTextObject(i)
+                    result += self.__text_from_text_object(i)
             else:
                 result += text_object['content']
                 result += ' '
@@ -66,22 +66,19 @@ class ParsrOutputInterpreter:
             result += text_object['content']
         return result
     
-    def loadObject(self, object):
+    def load_object(self, object):
         self.object = json.loads(object)
 
-    def getPage(self, page_number):
+    def get_page(self, page_number):
         for p in self.object['pages']:
             if p['pageNumber'] == page_number:
                 return p
         logging.error("Page {} not found".format(page_number))
         return None
 
-    def getTexts(self, page_number:int=None) -> str:
+    def get_text(self, page_number:int=None) -> str:
         final_text = ""
-        for textObj in self.__getTextObjects(page_number):
-            final_text += self.__textFromTextObject(textObj)
+        for textObj in self.__get_text_objects(page_number):
+            final_text += self.__text_from_text_object(textObj)
             final_text += "\n\n"
         return final_text
-
-    def getDataframeFromCSVString(self, csv_string:str, seperator:str=';') -> pd.DataFrame:
-        return pd.read_csv(StringIO(csv_string), sep=seperator)

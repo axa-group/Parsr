@@ -162,6 +162,53 @@ export function getTemporaryFile(extension: string): string {
 }
 
 /**
+ * Corrects an image for rotation and returns the new destination filename promise
+ * It performs clockwise rotation using jimp
+ * @param srcImg source image
+ */
+export async function correctImageForRotation(srcImg: string): Promise<string> {
+  let rotationAngle: number;
+  let newFilename: string = srcImg;
+  const pythonLocation = getPythonLocation();
+  if (pythonLocation !== "") {
+    const args: string[] = [
+      path.join(
+        __dirname,
+        "../assets/ImageRotationCorrection.py",
+      ),
+      srcImg,
+    ];
+    const ret = spawnSync(pythonLocation, args);
+    if (ret.status !== 0) {
+      logger.warn(`Error running image rotation calculation: ${ret.stderr}.. using the original image.`);
+      newFilename = srcImg;
+    } else {
+      rotationAngle = parseFloat(ret.stdout);
+      if (rotationAngle > 90) {
+        rotationAngle -= 180;
+      }
+      rotationAngle *= -1;
+      if (rotationAngle === 0) {
+        logger.debug(`Rotation angle for image ${srcImg} was 0`);
+        newFilename = srcImg;
+      } else {
+        newFilename = getTemporaryFile('.' + srcImg.split('.').pop());
+        logger.debug(`Rotating image ${srcImg} with angle ${rotationAngle} and saving it to ${newFilename}`);
+
+        const jimp = require('jimp');
+        await jimp.read(srcImg)
+        .then(img => {
+          img
+          .rotate(rotationAngle)
+          .write(newFilename);
+        });
+      }
+    }
+  }
+  return newFilename;
+}
+
+/**
  * Sort function to sort elements by order
  */
 export function sortElementsByOrder(elem1: Element, elem2: Element): number {

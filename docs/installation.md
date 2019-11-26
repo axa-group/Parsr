@@ -20,7 +20,7 @@ You can install Parsr either using Docker containers, or directly on your machin
 
 Containers are already available on [Docker Hub](https://hub.docker.com/u/axarev).
 
-The documentation to build and run Docker containers is [here](docs/docker.md).
+The documentation to build and run Docker containers is [here](docker.md).
 
 ## 2. Bare-Metal Installation
 
@@ -58,6 +58,15 @@ brew install node qpdf imagemagick graphicsmagick tesseract tesseract-lang pipen
 ```
 
 ### 2.3. Installing Dependencies under Windows
+
+The installation procedure for Parsr requires the command `where.exe` to be in the path.  
+Try typing `where` in the command prompt. If the command cannot be found, execute the following to add its location to PATH:
+
+```sh
+setx PATH "\$env:PATH;C:\Windows\System32" -m
+```
+
+Then,
 
 1. We recommend using [Chocolatey](https://chocolatey.org) as the package manager for installing dependencies under Windows. To install Chocolatey, [follow these instructions](https://chocolatey.org/install#installing-chocolatey).
 2. [Download and install **`node.js`**](https://nodejs.org/en/download)
