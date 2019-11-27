@@ -26,6 +26,7 @@ import {
   Page,
   Word,
 } from '../../types/DocumentRepresentation';
+import { Color } from '../../types/DocumentRepresentation/Color';
 import { PdfminerFigure } from '../../types/PdfminerFigure';
 import { PdfminerImage } from '../../types/PdfminerImage';
 import { PdfminerPage } from '../../types/PdfminerPage';
@@ -352,22 +353,33 @@ function isFakeChar(word: PdfminerText, fakeSpacesInLine: boolean): boolean {
   return false;
 }
 
-function ncolourToHex(color: string) {
-  const rgbToHex = (r, g, b) =>
-    '#' +
-    [r, g, b]
-      .map(x => {
-        const hex = Math.ceil(x * 255).toString(16);
-        return hex.length === 1 ? '0' + hex : hex;
-      })
-      .join('');
+function ncolourToHex(color: string): Color {
+  const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
+    const hex = Math.ceil(x * 255).toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  })
+    .join('');
 
-  const rgbColor = color
-    .replace('[', '')
-    .replace(']', '')
+  const cmykToRGB = (c: number, m: number, y: number, k: number) => {
+    return {
+      r: 255 * (1 - c / 100) * (1 - k / 100),
+      g: 255 * (1 - m / 100) * (1 - k / 100),
+      b: 255 * (1 - y / 100) * (1 - k / 100),
+    };
+  };
+
+  const colors = color
+    .replace(/[\(\)\[\]\s]/g, '')
     .split(',');
 
-  return rgbToHex(rgbColor[0], rgbColor[1] || rgbColor[0], rgbColor[2] || rgbColor[0]);
+  if (colors.length === 3) {
+    return rgbToHex(colors[0], colors[1], colors[2]);
+  } else if (colors.length === 4) {
+    const { r, g, b } = cmykToRGB(+colors[0], +colors[1], +colors[2], +colors[3]);
+    return rgbToHex(r, g, b);
+  } else {
+    return "#000000";
+  }
 }
 
 /**
