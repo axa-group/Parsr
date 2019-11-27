@@ -128,10 +128,8 @@ export function getConvertLocation(): string {
 export function getPythonLocation(): string {
   const pythonLocation: string = getCommandLocationOnSystem('python3', 'python');
   if (!pythonLocation) {
-    logger.warn(
-      `Unable to find python. Are you sure it is installed?`,
-    );
-    return "";
+    logger.warn(`Unable to find python. Are you sure it is installed?`);
+    return '';
   } else {
     logger.debug(`python was found at ${pythonLocation}`);
     return pythonLocation;
@@ -147,7 +145,7 @@ export function getPdf2txtLocation(): string {
     logger.warn(
       `Unable to find pdf2txt, the pdfminer tool on the system. Are you sure it is installed?`,
     );
-    return "";
+    return '';
   } else {
     logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
     return pdf2txtLocation;
@@ -163,7 +161,7 @@ export function getDumppdfLocation(): string {
     logger.warn(
       `Unable to find dump, the pdfminer tool on the system. Are you sure it is installed?`,
     );
-    return "";
+    return '';
   } else {
     logger.debug(`dumppdf was found at ${dumppdfLocation}`);
     return dumppdfLocation;
@@ -791,13 +789,13 @@ export function getExecLocationCommandOnSystem(): string {
  */
 export function getCommandLocationOnSystem(
   firstChoice: string,
-  secondChoice: string = "",
-  thirdChoice: string = "",
+  secondChoice: string = '',
+  thirdChoice: string = '',
 ): string {
   const cmdComponents: string[] = firstChoice.split(" ");
   const info = spawnSync(getExecLocationCommandOnSystem(), [cmdComponents[0]]);
   const result = info.status === 0 ? info.stdout.toString().split(os.EOL)[0] : null;
-  if (result === null && secondChoice !== "") {
+  if (result === null && secondChoice !== '') {
     return getCommandLocationOnSystem(secondChoice, thirdChoice);
   }
   if (result === null) {

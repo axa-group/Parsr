@@ -15,7 +15,6 @@
  */
 
 import * as fs from 'fs';
-
 import {
   BoundingBox,
   Character,
@@ -54,7 +53,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
       const pdf2txtLocation: string = utils.getPdf2txtLocation();
 
       // If either of the tools could not be found, return an empty document and display warning
-      if (pythonLocation === "" || pdf2txtLocation === "") {
+      if (pythonLocation === '' || pdf2txtLocation === '') {
         rejectDocument(`Could not find the necessary libraries..`);
       }
 
@@ -71,9 +70,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
         repairedPdf,
       ];
 
-      logger.debug(
-        `${pythonLocation} ${pdf2txtArguments.join(' ')}`,
-      );
+      logger.debug(`${pythonLocation} ${pdf2txtArguments.join(' ')}`);
 
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
@@ -208,7 +205,7 @@ function interpretImages(
     (_img: PdfminerImage) =>
       new Image(
         getBoundingBox(fig._attr.bbox, ',', pageHeight, scalingFactor),
-        "",  // TODO: to be filled with the location of the image once resolved
+        '', // TODO: to be filled with the location of the image once resolved
       ),
   );
 }
@@ -394,10 +391,15 @@ function repairPdf(filePath: string) {
     const process = utils.spawnSync('qpdf', ['--decrypt', filePath, qpdfOutputFile]);
 
     if (process.status === 0) {
-      logger.info(`qpdf repair successfully performed on file ${filePath}. New file at: ${qpdfOutputFile}`);
+      logger.info(
+        `qpdf repair successfully performed on file ${filePath}. New file at: ${qpdfOutputFile}`,
+      );
     } else {
       logger.warn(
-        'qpdf error for file ${filePath}:', process.status, process.stdout.toString(), process.stderr.toString(),
+        'qpdf error for file ${filePath}:',
+        process.status,
+        process.stdout.toString(),
+        process.stderr.toString(),
       );
       qpdfOutputFile = filePath;
     }

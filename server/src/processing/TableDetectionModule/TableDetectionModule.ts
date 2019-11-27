@@ -50,7 +50,7 @@ const defaultExtractor: TableExtractor = {
 
     // find python executable name
     const pythonLocation: string = utils.getPythonLocation();
-    if (pythonLocation === "") {
+    if (pythonLocation === '') {
       return {
         stdout: '',
         stderr: 'Unable to find python on the system. Are you sure it is installed?',
@@ -114,9 +114,7 @@ export class TableDetectionModule extends Module<Options> {
 
     try {
       if (fs.existsSync(doc.inputFile)) {
-        logger.info(
-          `Attempting table detection on ${doc.inputFile}..`,
-        );
+        logger.info(`Attempting table detection on ${doc.inputFile}..`);
       } else {
         logger.warn(
           `Warning: The configured input filename ${doc.inputFile} cannot be found. Not performing table detection.`,
