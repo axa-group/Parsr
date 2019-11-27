@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { spawnSync } from 'child_process';
 import * as os from 'os';
 import { Document } from '../../types/DocumentRepresentation';
+import * as utils from '../../utils';
 import { getTemporaryFile } from '../../utils';
 import logger from '../../utils/Logger';
 import { Exporter } from '../Exporter';
@@ -34,12 +34,12 @@ export class PdfExporter extends Exporter {
     const markdownFilename: string = getTemporaryFile('.md');
     const markdownExporter = new MarkdownExporter(this.doc, this.includeHeaderFooter);
     markdownExporter.export(markdownFilename).then(() => {
-      const pandocPath = spawnSync('which', ['pandoc']).output.join('');
+      const pandocPath = utils.spawnSync('which', ['pandoc']).output.join('');
       if (pandocPath === '' || (/^win/i.test(os.platform()) && /no pandoc in/.test(pandocPath))) {
         logger.warn('Pandoc not installed !! Skip PDF export.');
         return Promise.reject();
       } else {
-        const pandocSync = spawnSync(
+        const pandocSync = utils.spawnSync(
           'pandoc',
           [
             '-f',

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as child_process from 'child_process';
 import * as commander from 'commander';
 import * as filetype from 'file-type';
 import * as fs from 'fs';
@@ -264,8 +263,7 @@ function main(): void {
    */
   function pdfToImage(pdfPath: string): string {
     const tifFilePath = pdfPath + '.tiff';
-    const ret = child_process.spawnSync(utils.getConvertPath(), [
-      'convert',
+    const ret = utils.spawnSync( utils.getConvertLocation(), [
       '-density',
       '200x200',
       '-compress',
@@ -292,7 +290,7 @@ function main(): void {
  */
 function printVersion() {
   try {
-    const message = child_process
+    const message = utils
       .spawnSync(
         'git',
         ['--no-pager', 'show', '-s', '--no-color', '--format=[%h] %d - %s - (%cd, %cn <%ce>)'],

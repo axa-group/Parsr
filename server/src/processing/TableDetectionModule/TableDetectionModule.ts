@@ -1,4 +1,3 @@
-import * as child_process from 'child_process';
 import * as filetype from 'file-type';
 import * as fs from 'fs';
 import {
@@ -71,7 +70,7 @@ const defaultExtractor: TableExtractor = {
       scriptArgs.push(options.table_areas.join(';'));
     }
 
-    const tableExtractor = child_process.spawnSync(pythonLocation, scriptArgs);
+    const tableExtractor = utils.spawnSync(pythonLocation, scriptArgs);
 
     if (!tableExtractor.stdout || !tableExtractor.stderr) {
       return {

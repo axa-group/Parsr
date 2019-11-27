@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { spawnSync } from 'child_process';
 import { Document } from '../types/DocumentRepresentation';
+import * as utils from '../utils';
 import logger from '../utils/Logger';
 
 interface Dimensions {
@@ -43,7 +43,7 @@ export function setPageDimensions(doc: Document, inputFileName: string): Promise
 
   function getPageDimensions(filename: string): Promise<Dimensions[]> {
     return new Promise<Dimensions[]>((resolve, reject) => {
-      const ret = spawnSync('identify', ['-format', '%[fx:w]x%[fx:h],', filename]);
+      const ret = utils.spawnSync('identify', ['-format', '%[fx:w]x%[fx:h],', filename]);
 
       if (ret.status !== 0) {
         logger.error(ret.stderr);
