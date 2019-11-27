@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { spawn, spawnSync } from 'child_process';
 import * as fs from 'fs';
 import { Config } from '../../types/Config';
 import { BoundingBox, Document, Font, Page, Word } from '../../types/DocumentRepresentation';
@@ -42,7 +41,7 @@ export function execute(imageInputFile: string, fixRotation: boolean, config: Co
       configLanguages = [];
     }
 
-    const langChecker = spawnSync('tesseract', ['--list-langs'], {
+    const langChecker = utils.spawnSync('tesseract', ['--list-langs'], {
       cwd: process.cwd(),
       encoding: 'utf-8',
       env: process.env,
@@ -83,7 +82,7 @@ export function execute(imageInputFile: string, fixRotation: boolean, config: Co
      * Multiple languages may be specified, separated by plus characters.
      * Tesseract uses 3-character ISO 639-2 language codes.
      */
-    const tesseract = spawn('tesseract', [
+    const tesseract = utils.spawn('tesseract', [
       '-l',
       tesseractLanguages,
       imageInputFile,

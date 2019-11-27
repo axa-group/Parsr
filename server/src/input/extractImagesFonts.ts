@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { spawnSync } from 'child_process';
 import * as fs from 'fs';
 import * as utils from '../utils';
 import logger from '../utils/Logger';
@@ -33,7 +32,7 @@ export function extractImagesAndFonts(pdfInputFile: string): Promise<void> {
     } else {
       const folder = utils.getMutoolExtractionFolder();
       logger.info(`Extracting images and fonts to ${folder} using command 'mutool extract ${pdfInputFile}'...`);
-      const ret = spawnSync('mutool', ['extract', pdfInputFile], { cwd: folder });
+      const ret = utils.spawnSync('mutool', ['extract', pdfInputFile], { cwd: folder });
 
       if (ret.status !== 0) {
         logger.error(ret.stderr.toString());

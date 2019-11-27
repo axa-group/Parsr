@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { spawn, spawnSync } from 'child_process';
 import * as fs from 'fs';
 
 import {
@@ -79,7 +78,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const pdf2txt = spawn(pythonLocation, pdf2txtArguments);
+      const pdf2txt = utils.spawn(pythonLocation, pdf2txtArguments);
 
       pdf2txt.stderr.on('data', data => {
         logger.error('pdfminer error:', data.toString('utf8'));
@@ -380,7 +379,7 @@ function repairPdf(filePath: string) {
   const qpdfPath = utils.getCommandLocationOnSystem('qpdf');
   let qpdfOutputFile = utils.getTemporaryFile('.pdf');
   if (qpdfPath) {
-    const process = spawnSync('qpdf', ['--decrypt', filePath, qpdfOutputFile]);
+    const process = utils.spawnSync('qpdf', ['--decrypt', filePath, qpdfOutputFile]);
 
     if (process.status === 0) {
       logger.info(`qpdf repair successfully performed on file ${filePath}. New file at: ${qpdfOutputFile}`);
@@ -402,7 +401,7 @@ function repairPdf(filePath: string) {
       resolve(qpdfOutputFile);
     } else {
       const mupdfOutputFile = utils.getTemporaryFile('.pdf');
-      const pdfFixer = spawn('mutool', ['clean', qpdfOutputFile, mupdfOutputFile]);
+      const pdfFixer = utils.spawn('mutool', ['clean', qpdfOutputFile, mupdfOutputFile]);
       pdfFixer.on('close', () => {
         // Check that the file is correctly written on the file system
         fs.fsyncSync(fs.openSync(qpdfOutputFile, 'r+'));
