@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  spawn as spawnChildProcess,
-  spawnSync as spawnSyncChildProcess,
-} from 'child_process';
+import { spawn as spawnChildProcess, spawnSync as spawnSyncChildProcess } from 'child_process';
 import * as concaveman from 'concaveman';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
@@ -88,22 +85,36 @@ export function replaceObject<T extends Element, U extends T>(
  * Prepares a command, syncSpawns a child process and returns the object
  */
 export function spawnSync(cmd: string, args: string[], options: any = {}): any {
-  const cmdComponents: string[] = cmd.split(" ");
+  const cmdComponents: string[] = cmd.split(' ');
   if (cmdComponents.length > 1) {
     args.unshift(...cmdComponents.splice(1, cmdComponents.length));
   }
-  return spawnSyncChildProcess(cmdComponents.join(" "), args, options);
+  return spawnSyncChildProcess(cmdComponents.join(' '), args, options);
 }
 
 /**
  * Prepares a command, spawns a child process and returns the object
  */
 export function spawn(cmd: string, args: string[], options: any = {}): any {
-  const cmdComponents: string[] = cmd.split(" ");
+  const cmdComponents: string[] = cmd.split(' ');
   if (cmdComponents.length > 1) {
     args.unshift(...cmdComponents.splice(1, cmdComponents.length));
   }
-  return spawnChildProcess(cmdComponents.join(" "), args, options);
+  return spawnChildProcess(cmdComponents.join(' '), args, options);
+}
+
+/**
+ * Returns the location of the imagemagick identify command on the system
+ */
+export function getIdentifyLocation(): string {
+  const convertLocation: string = getCommandLocationOnSystem('magick identify', 'identify');
+  if (!convertLocation) {
+    logger.warn(`Cannot find ImageMagick identify tool. Are you sure it is installed?`);
+    return '';
+  } else {
+    logger.debug(`ImageMagick was found at ${convertLocation}`);
+    return convertLocation;
+  }
 }
 
 /**
@@ -112,10 +123,8 @@ export function spawn(cmd: string, args: string[], options: any = {}): any {
 export function getConvertLocation(): string {
   const convertLocation: string = getCommandLocationOnSystem('magick convert', 'convert');
   if (!convertLocation) {
-    logger.warn(
-      `Cannot find ImageMagick convert tool. Are you sure it is installed?`,
-    );
-    return "";
+    logger.warn(`Cannot find ImageMagick convert tool. Are you sure it is installed?`);
+    return '';
   } else {
     logger.debug(`ImageMagick was found at ${convertLocation}`);
     return convertLocation;
@@ -206,17 +215,13 @@ export async function correctImageForRotation(srcImg: string): Promise<string> {
   let rotationAngle: number;
   let newFilename: string = srcImg;
   const pythonLocation = getPythonLocation();
-  if (pythonLocation !== "") {
-    const args: string[] = [
-      path.join(
-        __dirname,
-        "../assets/ImageRotationCorrection.py",
-      ),
-      srcImg,
-    ];
+  if (pythonLocation !== '') {
+    const args: string[] = [path.join(__dirname, '../assets/ImageRotationCorrection.py'), srcImg];
     const ret = spawnSync(pythonLocation, args);
     if (ret.status !== 0) {
-      logger.warn(`Error running image rotation calculation: ${ret.stderr}.. using the original image.`);
+      logger.warn(
+        `Error running image rotation calculation: ${ret.stderr}.. using the original image.`,
+      );
       newFilename = srcImg;
     } else {
       rotationAngle = parseFloat(ret.stdout);
@@ -229,14 +234,13 @@ export async function correctImageForRotation(srcImg: string): Promise<string> {
         newFilename = srcImg;
       } else {
         newFilename = getTemporaryFile('.' + srcImg.split('.').pop());
-        logger.debug(`Rotating image ${srcImg} with angle ${rotationAngle} and saving it to ${newFilename}`);
+        logger.debug(
+          `Rotating image ${srcImg} with angle ${rotationAngle} and saving it to ${newFilename}`,
+        );
 
         const jimp = require('jimp');
-        await jimp.read(srcImg)
-        .then(img => {
-          img
-          .rotate(rotationAngle)
-          .write(newFilename);
+        await jimp.read(srcImg).then(img => {
+          img.rotate(rotationAngle).write(newFilename);
         });
       }
     }
@@ -463,7 +467,7 @@ export function removeNull(page: Page): Page {
   if (page.elements.length - newElements.length !== 0) {
     logger.debug(
       `Null elements removed for page #${page.pageNumber}: ${page.elements.length -
-      newElements.length}`,
+        newElements.length}`,
     );
     page.elements = newElements;
   }
@@ -497,11 +501,11 @@ export function getPageRegex(): RegExp {
 
   const pageRegex = new RegExp(
     `^(?:` +
-    `(?:${pagePrefix}${pageNumber})|` +
-    `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
-    `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
-    `(?:${before}${pageNumber}${after})` +
-    `)$`,
+      `(?:${pagePrefix}${pageNumber})|` +
+      `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
+      `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
+      `(?:${before}${pageNumber}${after})` +
+      `)$`,
     'i',
   );
 
@@ -792,7 +796,7 @@ export function getCommandLocationOnSystem(
   secondChoice: string = '',
   thirdChoice: string = '',
 ): string {
-  const cmdComponents: string[] = firstChoice.split(" ");
+  const cmdComponents: string[] = firstChoice.split(' ');
   const info = spawnSync(getExecLocationCommandOnSystem(), [cmdComponents[0]]);
   const result = info.status === 0 ? info.stdout.toString().split(os.EOL)[0] : null;
   if (result === null && secondChoice !== '') {
@@ -803,7 +807,7 @@ export function getCommandLocationOnSystem(
   } else {
     cmdComponents[0] = result;
   }
-  return cmdComponents.join(" ");
+  return cmdComponents.join(' ');
 }
 
 /**
