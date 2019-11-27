@@ -28,9 +28,9 @@ export class TesseractExtractor extends Extractor {
    * @param inputFile The name of the image to be used at input for the extraction.
    * @returns The promise of a valid Document (as per the Document Representation namespace).
    */
-  public run(inputFile: string, rotationCorrection: boolean = true): Promise<Document> {
+  public run(inputFile: string, rotationCorrection: boolean = false): Promise<Document> {
     return tesseract2json
       .execute(inputFile, rotationCorrection, this.config)
       .then((doc: Document) => setPageDimensions(doc, inputFile));
-    }
+  }
 }
