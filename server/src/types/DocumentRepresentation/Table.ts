@@ -336,7 +336,13 @@ export class Table extends Element {
     let output: string = '';
     tableArray.forEach((row, index) => {
       row.forEach(cellMDCode => {
-        output += '|' + (cellMDCode != null ? cellMDCode : '');
+        if (cellMDCode !== null) {
+          if (cellMDCode.startsWith('>')) {
+            output += `|${cellMDCode} `;
+          } else {
+            output += cellMDCode === '' ? '|' : `| ${cellMDCode} `;
+          }
+        }
       });
       output += '|  \n';
       if (index === 0) {
