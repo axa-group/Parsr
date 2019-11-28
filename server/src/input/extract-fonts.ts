@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import { spawnSync } from 'child_process';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as utils from '../utils';
 import logger from '../utils/Logger';
 
@@ -23,16 +25,20 @@ import logger from '../utils/Logger';
  * Stability: Experimental
  * Use Mutool to extract fonts files in a specific folder.
  */
-export function extractImagesAndFonts(pdfInputFile: string): Promise<void> {
+export function extractFonts(pdfInputFile: string): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    const mutoolPath = utils.getCommandLocationOnSystem('mutool');
-    if (!mutoolPath) {
-      logger.warn('MuPDF not installed. Will not treats images inside documents...');
+    const mutoolPath = spawnSync(utils.getExecLocationCommandOnSystem(), ['mutool']).output.join(
+      '',
+    );
+    if (mutoolPath === '' || (/^win/i.test(os.platform()) && /no mutool in/.test(mutoolPath))) {
+      logger.warn('MuPDF not installed !! Skip fonts extraction.');
       resolve();
     } else {
       const folder = utils.getMutoolExtractionFolder();
-      logger.info(`Extracting images and fonts to ${folder} using command 'mutool extract ${pdfInputFile}'...`);
-      const ret = utils.spawnSync('mutool', ['extract', pdfInputFile], { cwd: folder });
+      logger.info(`Extracting fonts to ${folder}...`);
+      const command = `mutool extract '${pdfInputFile}'`;
+      logger.debug(command);
+      const ret = spawnSync('mutool', ['extract', pdfInputFile], { cwd: folder });
 
       if (ret.status !== 0) {
         logger.error(ret.stderr.toString());

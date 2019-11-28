@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { spawn } from 'child_process';
 import * as filetype from 'file-type';
 import * as fs from 'fs';
 import { BoundingBox, Document, Page, Word } from '../../types/DocumentRepresentation';
@@ -98,7 +97,7 @@ export class LinkDetectionModule extends Module {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const dumppdf = spawn(pythonLocation, dumppdfArguments);
+      const dumppdf = utils.spawn(pythonLocation, dumppdfArguments);
 
       dumppdf.stderr.on('data', data => {
         logger.error('dumppdf error:', data.toString('utf8'));
