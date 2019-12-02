@@ -23,8 +23,20 @@ export interface JsonExport {
   metadata: JsonMetadata[];
 }
 
+export interface JsonPageRotationCoords {
+  x: number;
+  y: number;
+}
+
+export interface JsonPageRotation {
+  degrees: number;
+  origin: JsonPageRotationCoords;
+  translation: JsonPageRotationCoords;
+}
+
 export interface JsonPage {
   box: JsonBox;
+  rotation?: JsonPageRotation;
   pageNumber: number;
   elements: JsonElement[];
 }
