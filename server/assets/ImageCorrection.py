@@ -11,6 +11,8 @@ import json
 import math
 from scipy import ndimage
 
+import pytesseract
+import re
 # built-in modules
 import os
 import sys
@@ -64,6 +66,26 @@ def detectRotation(image):
     median_angle = np.median(angles)
     return median_angle
 
+def rotate_image(mat, angle):
+  # angle in degrees
+
+  height, width = mat.shape[:2]
+  image_center = (width/2, height/2)
+
+  rotation_mat = cv.getRotationMatrix2D(image_center, angle, 1.)
+
+  abs_cos = abs(rotation_mat[0,0])
+  abs_sin = abs(rotation_mat[0,1])
+
+  bound_w = int(height * abs_sin + width * abs_cos)
+  bound_h = int(height * abs_cos + width * abs_sin)
+
+  rotation_mat[0, 2] += bound_w/2 - image_center[0]
+  rotation_mat[1, 2] += bound_h/2 - image_center[1]
+
+  rotated_mat = cv.warpAffine(mat, rotation_mat, (bound_w, bound_h), borderValue=(255,255,255))
+  return rotated_mat
+
 def getRotationData(originalImage, rotatedImage, angle, outputFile):
     (oh, ow) = originalImage.shape[:2]
     (rh, rw) = rotatedImage.shape[:2]
@@ -88,17 +110,25 @@ def main():
 
         # Remove transparency from pngs
         noTransparentImage = transparentToWhite(originalImage);
+
         # Image Rotation
         rotatedImage = noTransparentImage.copy()
-
         angle = detectRotation(noTransparentImage)
         if angle != 0.0:
-          rotatedImage = ndimage.rotate(noTransparentImage, angle, cval=255)
+            rotatedImage = rotate_image(noTransparentImage, angle)
+
+        # Extract rotation detected by teseract (!= 0 means image is flipped)
+        newData = pytesseract.image_to_osd(rotatedImage)
+        tesseractRotation = re.search('(?<=Rotate: )\d+', newData).group(0)
+        if tesseractRotation != '0':
+            angle += 180
+            rotatedImage = rotate_image(rotatedImage, 180)
 
         # Remove shadows
         shadowsOut = removeShadow(rotatedImage)
         shadowsOut = cv.copyMakeBorder(shadowsOut, 2, 2, 2, 2, cv.BORDER_CONSTANT, value=[1, 0, 0])
-        #save cropped image
+
+        #save image
         outputFile = src.split('.')[0]+'-corrected.'+'.'.join(src.split('.')[1:])
         cv.imwrite(outputFile, shadowsOut, [cv.IMWRITE_TIFF_XDPI, 300, cv.IMWRITE_TIFF_YDPI, 300])
 
