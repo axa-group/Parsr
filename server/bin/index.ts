@@ -72,7 +72,7 @@ function main(): void {
       fs.mkdirSync(outputFolder);
     } catch (err) {
       logger.error(`Error creating the requested output folder ${outputFolder}: ${err}`);
-      throw(err);
+      throw err;
     }
   }
   const documentName: string = commander.documentName;
@@ -125,7 +125,9 @@ function main(): void {
       .run(filePath)
       .then((doc: Document) => {
         if (fileTypeInfo.ext === 'pdf' && isDocumentImageBased(doc)) {
-          logger.info(`Since the input file is a PDF with only images, trying to run an OCR on all pages...`);
+          logger.info(
+            `Since the input file is a PDF with only images, trying to run an OCR on all pages...`,
+          );
           if (config.extractor.img === 'tesseract') {
             filePath = pdfToImage(filePath);
             orchestrator = new Orchestrator(new TesseractExtractor(config), cleaner);
@@ -212,7 +214,9 @@ function main(): void {
    * This is true for example, in the case of scanned documents as PDFs
    */
   function isDocumentImageBased(doc: Document): boolean {
-    return !doc.pages.map(p => (p.elements.length === 1) && (p.elements[0] instanceof Image)).includes(false);
+    return !doc.pages
+      .map(p => p.elements.length === 1 && p.elements[0] instanceof Image)
+      .includes(false);
   }
 
   /**
@@ -263,11 +267,9 @@ function main(): void {
    */
   function pdfToImage(pdfPath: string): string {
     const tifFilePath = pdfPath + '.tiff';
-    const ret = utils.spawnSync( utils.getConvertLocation(), [
+    const ret = utils.spawnSync(utils.getConvertLocation(), [
       '-density',
-      '200x200',
-      '-compress',
-      'Fax',
+      '300x300',
       pdfPath,
       tifFilePath,
     ]);
