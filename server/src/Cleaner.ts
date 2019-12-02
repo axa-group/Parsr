@@ -15,7 +15,7 @@
  */
 
 import { HeaderFooterDetectionModule } from './processing/HeaderFooterDetectionModule/HeaderFooterDetectionModule';
-import { HeadingDetectionDTModule } from './processing/HeadingDetectionDTModule/HeadingDetectionModule';
+import { HeadingDetectionDTModule } from './processing/HeadingDetectionDTModule/HeadingDetectionDTModule';
 import { HeadingDetectionModule } from './processing/HeadingDetectionModule/HeadingDetectionModule';
 import { HierarchyDetectionModule } from './processing/HierarchyDetectionModule/HierarchyDetectionModule';
 import { KeyValueDetectionModule } from './processing/KeyValueDetectionModule/KeyValueDetectionModule';
