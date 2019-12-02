@@ -275,12 +275,20 @@ export class JsonExporter extends Exporter {
   }
 
   private rotationToJsonRotation(rotation: utils.RotationCorrection): JsonPageRotation {
-    const jsonRotation: JsonPageRotation = {
-      degrees: rotation.degrees,
-      origin: rotation.origin,
-      translation: rotation.translation,
+    if (rotation != null) {
+      const jsonRotation: JsonPageRotation = {
+        degrees: rotation.degrees,
+        origin: rotation.origin,
+        translation: rotation.translation,
+      };
+      return jsonRotation;
+    }
+    const noRotation: JsonPageRotation = {
+      degrees: 0,
+      origin: { x: 0, y: 0 },
+      translation: { x: 0, y: 0 },
     };
-    return jsonRotation;
+    return noRotation;
   }
 
   private convertElementValue(value: any): any {
