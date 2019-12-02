@@ -18,6 +18,9 @@ import sys
 
 def transparentToWhite(image):
     # If alpha transparency
+    if len(image.shape) <= 2:
+        return image
+
     if(image.shape[2] == 4):
         #convert transparent to white
         alpha_channel = image[:, :, 3]
@@ -31,7 +34,7 @@ def removeShadow(image):
     rgb_planes = cv.split(image)
     result_planes = []
     for plane in rgb_planes:
-        dilated_img = cv.dilate(plane, np.ones((9,9), np.uint8))
+        dilated_img = cv.dilate(plane, np.ones((5,5), np.uint8))
         bg_img = cv.medianBlur(dilated_img, 11)
         diff_img = 255 - cv.absdiff(plane, bg_img)
         result_planes.append(diff_img)
@@ -44,7 +47,10 @@ def removeShadow(image):
     return cv.merge(result_planes)
 
 def detectRotation(image):
-    img_gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    img_gray = image.copy()
+    if len(image.shape) >= 3:
+        img_gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+
     img_edges = cv.Canny(img_gray, 100, 100, apertureSize=3)
     lines = cv.HoughLinesP(img_edges, 1, math.pi / 180.0, 100, minLineLength=100, maxLineGap=5)
 
@@ -83,16 +89,19 @@ def main():
         # Remove transparency from pngs
         noTransparentImage = transparentToWhite(originalImage);
         # Image Rotation
+        rotatedImage = noTransparentImage.copy()
+
         angle = detectRotation(noTransparentImage)
-        rotatedImage = ndimage.rotate(noTransparentImage, angle, cval=255)
+        if angle != 0.0:
+          rotatedImage = ndimage.rotate(noTransparentImage, angle, cval=255)
+
         # Remove shadows
         shadowsOut = removeShadow(rotatedImage)
         shadowsOut = cv.copyMakeBorder(shadowsOut, 2, 2, 2, 2, cv.BORDER_CONSTANT, value=[1, 0, 0])
         #save cropped image
         outputFile = src.split('.')[0]+'-corrected.'+'.'.join(src.split('.')[1:])
-        cv.imwrite(outputFile, shadowsOut)
-        
-        
+        cv.imwrite(outputFile, shadowsOut, [cv.IMWRITE_TIFF_XDPI, 300, cv.IMWRITE_TIFF_YDPI, 300])
+
         print(getRotationData(originalImage, rotatedImage, angle, outputFile))
         sys.stdout.flush()
         sys.exit(0)
