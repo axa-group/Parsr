@@ -60,6 +60,7 @@
         "tolerance": 0.25
       }
     ],
+    "heading-detection",
     "heading-detection-dt",
     "list-detection",
     [
