@@ -30,8 +30,8 @@ import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagra
 import { Module } from '../Module';
 import { DecisionTreeClassifier } from './model';
 
-export class HeadingDetectionModule extends Module {
-  public static moduleName = 'heading-detection';
+export class HeadingDetectionDTModule extends Module {
+  public static moduleName = 'heading-detection-dt';
   public static dependencies = [LinesToParagraphModule];
 
   public main(doc: Document): Document {
