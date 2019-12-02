@@ -52,7 +52,7 @@ for path in paths:
             x_train.append([font_size / prev_font_size,
                             font_size / next_font_size,
                             df['is_bold'][i],
-                            int(df['line'][0].isupper()),
+                            int(df['line'][i].isupper()),
                             df['word_count'][i] / df['word_count'][i - 1],
                             df['word_count'][i] / df['word_count'][i + 1],
                             int(df['title_case'][i]),
