@@ -102,9 +102,9 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
         if (
           pageElements[pageElements.length - 1]
           && pageElements[pageElements.length - 1].left
-          + pageElements[pageElements.length - 1].width + 0.5 > wordBB.left
+          + pageElements[pageElements.length - 1].width + 1 > wordBB.left
           && pageElements[pageElements.length - 1].left
-          + pageElements[pageElements.length - 1].width - 0.5 < wordBB.left
+          + pageElements[pageElements.length - 1].width - 1 < wordBB.left
         ) {
           pageElements[pageElements.length - 1].width += wordBB.width;
           pageElements[pageElements.length - 1].content = pageElements[pageElements.length - 1].content.concat(word);
@@ -129,29 +129,9 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
 
   return new Page(
     pageNum,
-    joinSplittedWords(pageElements),
+    pageElements,
     new BoundingBox(0, 0, viewport.width, viewport.height),
   );
-}
-
-function joinSplittedWords(words: Word[]) {
-  let deletedWord = false;
-  for (let i = 0; i < words.length; i += deletedWord ? 0 : 1) {
-    deletedWord = false;
-    if (words[i + 1]) {
-      const [wordA, wordB] = [words[i], words[i + 1]];
-      if (wordA.top === wordB.top
-        && wordA.left + wordA.width - 0.1 < wordB.left
-        && wordA.left + wordA.width + 0.1 > wordB.left
-      ) {
-        words[i].content = wordA.content.toString() + wordB.content.toString();
-        words[i].width += wordB.width;
-        words = words.filter((_, index) => index !== i + 1);
-        deletedWord = true;
-      }
-    }
-  }
-  return words.filter(w => w.content !== '' && w.width > 0);
 }
 
 /**
