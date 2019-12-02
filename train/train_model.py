@@ -24,6 +24,10 @@ x_train = []
 y_train = []
 for path in paths:
     df = pd.read_csv(os.path.join(dataset_dir, path), header=0)
+
+    if len(df) < 3:
+        break
+    
     df['is_bold'] = df['is_bold'].apply(lambda x: 1 if x else 0)
     df['label'] = df['label'].apply(lambda x: 0 if x == 'paragraph' else 1)
     df['title_case'] = df['title_case'].apply(lambda x: 1 if x else 0)
