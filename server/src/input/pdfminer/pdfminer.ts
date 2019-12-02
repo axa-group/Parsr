@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import { spawn, spawnSync } from 'child_process';
 import * as fs from 'fs';
-
 import {
   BoundingBox,
   Character,
@@ -27,6 +25,7 @@ import {
   Page,
   Word,
 } from '../../types/DocumentRepresentation';
+import { Color } from '../../types/DocumentRepresentation/Color';
 import { PdfminerFigure } from '../../types/PdfminerFigure';
 import { PdfminerImage } from '../../types/PdfminerImage';
 import { PdfminerPage } from '../../types/PdfminerPage';
@@ -54,7 +53,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
       const pdf2txtLocation: string = utils.getPdf2txtLocation();
 
       // If either of the tools could not be found, return an empty document and display warning
-      if (pythonLocation === "" || pdf2txtLocation === "") {
+      if (pythonLocation === '' || pdf2txtLocation === '') {
         rejectDocument(`Could not find the necessary libraries..`);
       }
 
@@ -71,15 +70,13 @@ export function execute(pdfInputFile: string): Promise<Document> {
         repairedPdf,
       ];
 
-      logger.debug(
-        `${pythonLocation} ${pdf2txtArguments.join(' ')}`,
-      );
+      logger.debug(`${pythonLocation} ${pdf2txtArguments.join(' ')}`);
 
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const pdf2txt = spawn(pythonLocation, pdf2txtArguments);
+      const pdf2txt = utils.spawn(pythonLocation, pdf2txtArguments);
 
       pdf2txt.stderr.on('data', data => {
         logger.error('pdfminer error:', data.toString('utf8'));
@@ -208,7 +205,7 @@ function interpretImages(
     (_img: PdfminerImage) =>
       new Image(
         getBoundingBox(fig._attr.bbox, ',', pageHeight, scalingFactor),
-        "",  // TODO: to be filled with the location of the image once resolved
+        '', // TODO: to be filled with the location of the image once resolved
       ),
   );
 }
@@ -353,22 +350,33 @@ function isFakeChar(word: PdfminerText, fakeSpacesInLine: boolean): boolean {
   return false;
 }
 
-function ncolourToHex(color: string) {
-  const rgbToHex = (r, g, b) =>
-    '#' +
-    [r, g, b]
-      .map(x => {
-        const hex = Math.ceil(x * 255).toString(16);
-        return hex.length === 1 ? '0' + hex : hex;
-      })
-      .join('');
+function ncolourToHex(color: string): Color {
+  const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
+    const hex = Math.ceil(x * 255).toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  })
+    .join('');
 
-  const rgbColor = color
-    .replace('[', '')
-    .replace(']', '')
+  const cmykToRGB = (c: number, m: number, y: number, k: number) => {
+    return {
+      r: 255 * (1 - c / 100) * (1 - k / 100),
+      g: 255 * (1 - m / 100) * (1 - k / 100),
+      b: 255 * (1 - y / 100) * (1 - k / 100),
+    };
+  };
+
+  const colors = color
+    .replace(/[\(\)\[\]\s]/g, '')
     .split(',');
 
-  return rgbToHex(rgbColor[0], rgbColor[1] || rgbColor[0], rgbColor[2] || rgbColor[0]);
+  if (colors.length === 3) {
+    return rgbToHex(colors[0], colors[1], colors[2]);
+  } else if (colors.length === 4) {
+    const { r, g, b } = cmykToRGB(+colors[0], +colors[1], +colors[2], +colors[3]);
+    return rgbToHex(r, g, b);
+  } else {
+    return "#000000";
+  }
 }
 
 /**
@@ -380,13 +388,18 @@ function repairPdf(filePath: string) {
   const qpdfPath = utils.getCommandLocationOnSystem('qpdf');
   let qpdfOutputFile = utils.getTemporaryFile('.pdf');
   if (qpdfPath) {
-    const process = spawnSync('qpdf', ['--decrypt', filePath, qpdfOutputFile]);
+    const process = utils.spawnSync('qpdf', ['--decrypt', filePath, qpdfOutputFile]);
 
     if (process.status === 0) {
-      logger.info(`qpdf repair successfully performed on file ${filePath}. New file at: ${qpdfOutputFile}`);
+      logger.info(
+        `qpdf repair successfully performed on file ${filePath}. New file at: ${qpdfOutputFile}`,
+      );
     } else {
       logger.warn(
-        'qpdf error for file ${filePath}:', process.status, process.stdout.toString(), process.stderr.toString(),
+        'qpdf error for file ${filePath}:',
+        process.status,
+        process.stdout.toString(),
+        process.stderr.toString(),
       );
       qpdfOutputFile = filePath;
     }
@@ -402,7 +415,7 @@ function repairPdf(filePath: string) {
       resolve(qpdfOutputFile);
     } else {
       const mupdfOutputFile = utils.getTemporaryFile('.pdf');
-      const pdfFixer = spawn('mutool', ['clean', qpdfOutputFile, mupdfOutputFile]);
+      const pdfFixer = utils.spawn('mutool', ['clean', qpdfOutputFile, mupdfOutputFile]);
       pdfFixer.on('close', () => {
         // Check that the file is correctly written on the file system
         fs.fsyncSync(fs.openSync(qpdfOutputFile, 'r+'));

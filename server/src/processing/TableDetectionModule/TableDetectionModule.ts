@@ -1,4 +1,3 @@
-import * as child_process from 'child_process';
 import * as filetype from 'file-type';
 import * as fs from 'fs';
 import {
@@ -51,7 +50,7 @@ const defaultExtractor: TableExtractor = {
 
     // find python executable name
     const pythonLocation: string = utils.getPythonLocation();
-    if (pythonLocation === "") {
+    if (pythonLocation === '') {
       return {
         stdout: '',
         stderr: 'Unable to find python on the system. Are you sure it is installed?',
@@ -71,7 +70,7 @@ const defaultExtractor: TableExtractor = {
       scriptArgs.push(options.table_areas.join(';'));
     }
 
-    const tableExtractor = child_process.spawnSync(pythonLocation, scriptArgs);
+    const tableExtractor = utils.spawnSync(pythonLocation, scriptArgs);
 
     if (!tableExtractor.stdout || !tableExtractor.stderr) {
       return {
@@ -115,9 +114,7 @@ export class TableDetectionModule extends Module<Options> {
 
     try {
       if (fs.existsSync(doc.inputFile)) {
-        logger.info(
-          `Attempting table detection on ${doc.inputFile}..`,
-        );
+        logger.info(`Attempting table detection on ${doc.inputFile}..`);
       } else {
         logger.warn(
           `Warning: The configured input filename ${doc.inputFile} cannot be found. Not performing table detection.`,
