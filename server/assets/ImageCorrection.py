@@ -10,13 +10,12 @@ import cv2 as cv
 import json
 import math
 from scipy import ndimage
+from pathlib import Path
 
-import pytesseract
 import re
-# built-in modules
 import os
 import sys
-
+import subprocess
 
 def transparentToWhite(image):
     # If alpha transparency
@@ -40,11 +39,6 @@ def removeShadow(image):
         bg_img = cv.medianBlur(dilated_img, 11)
         diff_img = 255 - cv.absdiff(plane, bg_img)
         result_planes.append(diff_img)
-
-        # dilated_img = cv.dilate(plane, np.ones((4,4), np.uint8))
-        # bg_img = cv.medianBlur(dilated_img, 7)
-        # diff_img = 255 - cv.absdiff(plane, bg_img)
-        # result_planes.append(diff_img)
 
     return cv.merge(result_planes)
 
@@ -103,6 +97,14 @@ def getRotationData(originalImage, rotatedImage, angle, outputFile):
 
     return json.dumps(outputData)
 
+def isFaceDown(imagePath):
+    tesseractOutput = subprocess.Popen(['tesseract', imagePath, "-", "--psm", "0", "-c", "min_characters_to_try=10"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=1, universal_newlines=True).stdout.read()
+    tesseractRotation = re.search('(?<=Rotate: )\d+', tesseractOutput).group(0)
+    if tesseractRotation != '0':
+        return True
+
+    return False
+
 def main():
     try:
         src = sys.argv[1]
@@ -117,13 +119,6 @@ def main():
         if angle != 0.0:
             rotatedImage = rotate_image(noTransparentImage, angle)
 
-        # Extract rotation detected by teseract (!= 0 means image is flipped)
-        newData = pytesseract.image_to_osd(rotatedImage)
-        tesseractRotation = re.search('(?<=Rotate: )\d+', newData).group(0)
-        if tesseractRotation != '0':
-            angle += 180
-            rotatedImage = rotate_image(rotatedImage, 180)
-
         # Remove shadows
         shadowsOut = removeShadow(rotatedImage)
         shadowsOut = cv.copyMakeBorder(shadowsOut, 2, 2, 2, 2, cv.BORDER_CONSTANT, value=[1, 0, 0])
@@ -131,6 +126,11 @@ def main():
         #save image
         outputFile = src.split('.')[0]+'-corrected.'+'.'.join(src.split('.')[1:])
         cv.imwrite(outputFile, shadowsOut, [cv.IMWRITE_TIFF_XDPI, 300, cv.IMWRITE_TIFF_YDPI, 300])
+
+        if isFaceDown(outputFile):            
+            angle += 180
+            shadowsOut = rotate_image(shadowsOut, 180)
+            cv.imwrite(outputFile, shadowsOut, [cv.IMWRITE_TIFF_XDPI, 300, cv.IMWRITE_TIFF_YDPI, 300])
 
         print(getRotationData(originalImage, rotatedImage, angle, outputFile))
         sys.stdout.flush()
