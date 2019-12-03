@@ -28,7 +28,8 @@
     "lint:fix": "tslint --fix --project . && tslint --fix --project ./api/server",
     "start:api": "npm run build:ts && npm run install:api && npm run --prefix api/server start",
     "start:api:background": "npm run start:api&",
-    "format": "prettier --write --list-different \"{,!(dist)/**/}*.{js,md,ts,css,scss}\""
+    "format": "prettier --write --list-different \"{,!(dist)/**/}*.{js,md,ts,css,scss}\"",
+    "postinstall": "cp ./server/assets/pdf.worker.js ./node_modules/pdfjs-dist/build/"
   },
   "husky": {
     "hooks": {
