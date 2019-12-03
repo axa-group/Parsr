@@ -16,6 +16,7 @@
 
 import * as fs from 'fs';
 import * as limit from 'limit-async';
+import * as path from 'path';
 import * as pdfjs from 'pdfjs-dist';
 import {
   BoundingBox,
@@ -39,8 +40,15 @@ import logger from '../../utils/Logger';
 // this is for limiting page fetching to 10 at the same time and avoid memory overflows
 const limiter = limit(10);
 
+const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
+  const hex = x.toString(16);
+  return hex.length === 1 ? '0' + hex : hex;
+})
+  .join('');
+
 export function execute(pdfInputFile: string): Promise<Document> {
   return new Promise<Document>((resolveDocument, rejectDocument) => {
+    pdfjs.GlobalWorkerOptions.workerSrc = path.join(__dirname, '../../../assets/pdf.worker.js');
     return repairPdf(pdfInputFile).then((repairedPdf: string) => {
       const pages: Array<Promise<Page>> = [];
       try {
@@ -65,7 +73,6 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
   const viewport = page.getViewport({ scale: 1.0 });
   const textContent = await page.getTextContent({
     normalizeWhitespace: true,
-    disableCombineTextItems: true,
   });
 
   const pageElements: Word[] = [];
@@ -79,18 +86,28 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
       - search for splitted words to join them together
   */
   textContent.items.forEach(item => {
-    const font = new Font(fontStyles[item.fontName].fontFamily || 'undefined', item.transform[0]);
     const text = item.str;
     if (text.length > 0) {
+      const transform = (pdfjs.Util as any).transform(viewport.transform, item.transform);
+      const f = fontStyles[item.fontName];
+      const font = new Font(
+        [f.fontName, f.fontFamily].join(','),
+        transform[0],
+        {
+          isItalic: f.italic,
+          weight: f.bold ? 'bold' : 'normal',
+          color: rgbToHex(item.color[0] / 255, item.color[1] / 255, item.color[2] / 255),
+        },
+      );
       const words = text.split(' ');
-
-      let wordLeft = item.transform[4];
+      let wordLeft = transform[4];
       const avgCharWidth = item.width / text.length;
       words.forEach((word) => {
         const wordWidth = (word.length / text.length) * item.width;
+        // TODO use transform array to calculate BBox rotation for vertical words (ex. in testReadingOrder.pdf)
         const wordBB = new BoundingBox(
           wordLeft,
-          viewport.height - (item.transform[5] + item.height),
+          transform[5] - item.height,
           wordWidth,
           item.height,
         );
@@ -101,6 +118,7 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
         */
         if (
           pageElements[pageElements.length - 1]
+          && pageElements[pageElements.length - 1].content.toString().trim().length > 0
           && pageElements[pageElements.length - 1].left
           + pageElements[pageElements.length - 1].width + 1 > wordBB.left
           && pageElements[pageElements.length - 1].left
@@ -119,8 +137,8 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
         }
 
         /*
-          the X coordinate of the next word is calculated using the width of the actual word
-          and an average space width for the 'item.str'
+          the X coordinate of the next word in item is calculated using the width of the actual word
+          and an average char width for the 'item.str' as a blank space
         */
         wordLeft += wordWidth + avgCharWidth;
       });
