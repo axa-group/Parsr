@@ -96,7 +96,7 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
         {
           isItalic: f.italic,
           weight: f.bold ? 'bold' : 'normal',
-          color: rgbToHex(item.color[0] / 255, item.color[1] / 255, item.color[2] / 255),
+          color: rgbToHex(item.color[0], item.color[1], item.color[2]),
         },
       );
       const words = text.split(' ');
