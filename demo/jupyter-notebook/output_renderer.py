@@ -55,7 +55,7 @@ class RenderMarkdown(object):
         display(Markdown(self.markdown_data))
 
 class RenderHTML(object):
-    def __init__(self, markdown_data):
+    def __init__(self, html_data):
         self.html_data = html_data
         self.uuid = str(uuid.uuid4())
 
