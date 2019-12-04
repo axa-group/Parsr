@@ -34935,7 +34935,7 @@
                             }
                           }
                           /* PARSR PATCH */
-                          return 'DeviceRgbCS';
+                          return 'DeviceGrayCS';
                         // throw new _util.FormatError("unrecognized colorspace ".concat(cs.name));
                         /*****************/
                       }
