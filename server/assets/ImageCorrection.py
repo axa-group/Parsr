@@ -44,16 +44,20 @@ def removeShadow(image):
 
 def detectRotation(image):
     img_gray = image.copy()
-    if len(image.shape) >= 3:
-        img_gray = cv.cvtColor(image, cv.COLOR_BGR2GRAY)
+    #if len(image.shape) >= 3:
+    img_gray = cv.cvtColor(image, cv.COLOR_BGR2YUV)
+    image_y = np.zeros(img_gray.shape[0:2], np.uint8)
+    image_y[:, :] = img_gray[:, :, 0]
 
-    img_edges = cv.Canny(img_gray, 100, 100, apertureSize=3)
-    lines = cv.HoughLinesP(img_edges, 1, math.pi / 180.0, 100, minLineLength=100, maxLineGap=5)
+    image_blurred = cv.GaussianBlur(image_y, (3, 3), 0)
+    img_edges = cv.Canny(image_blurred, 250, 250, apertureSize=3)
+    lines = cv.HoughLinesP(img_edges, 1, math.pi / 180.0, 100, minLineLength=100, maxLineGap=20)
 
+    testImage = image.copy()
     angles = []
     for line in lines:
         for x1, y1, x2, y2 in line:
-            #cv2.line(image, (x1, y1), (x2, y2), (255, 255, 0), 1)
+            cv.line(testImage, (x1, y1), (x2, y2), (255, 255, 0), 5)
             angle = math.degrees(math.atan2(y2 - y1, x2 - x1))
             angles.append(angle)
 
@@ -108,7 +112,7 @@ def isFaceDown(imagePath):
 def main():
     try:
         src = sys.argv[1]
-        originalImage = cv.imread(src, cv.IMREAD_UNCHANGED)
+        originalImage = cv.imread(src)#, cv.IMREAD_UNCHANGED)
 
         # Remove transparency from pngs
         noTransparentImage = transparentToWhite(originalImage);
@@ -118,7 +122,6 @@ def main():
         angle = detectRotation(noTransparentImage)
         if angle != 0.0:
             rotatedImage = rotate_image(noTransparentImage, angle)
-
         # Remove shadows
         shadowsOut = removeShadow(rotatedImage)
         shadowsOut = cv.copyMakeBorder(shadowsOut, 2, 2, 2, 2, cv.BORDER_CONSTANT, value=[1, 0, 0])
@@ -127,7 +130,7 @@ def main():
         outputFile = src.split('.')[0]+'-corrected.'+'.'.join(src.split('.')[1:])
         cv.imwrite(outputFile, shadowsOut, [cv.IMWRITE_TIFF_XDPI, 300, cv.IMWRITE_TIFF_YDPI, 300])
 
-        if isFaceDown(outputFile):            
+        if isFaceDown(outputFile):
             angle += 180
             shadowsOut = rotate_image(shadowsOut, 180)
             cv.imwrite(outputFile, shadowsOut, [cv.IMWRITE_TIFF_XDPI, 300, cv.IMWRITE_TIFF_YDPI, 300])
