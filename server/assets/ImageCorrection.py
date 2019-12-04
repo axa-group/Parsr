@@ -108,6 +108,12 @@ def isFaceDown(imagePath):
 
     return False
 
+def saveImage(image, name):
+    if cv.__version__.split(".")[0] == '3':
+        cv.imwrite(name, image)
+    else:
+        cv.imwrite(name, image, [cv.IMWRITE_TIFF_XDPI, 300, cv.IMWRITE_TIFF_YDPI, 300])
+
 def main():
     try:
         src = sys.argv[1]
@@ -126,15 +132,15 @@ def main():
         shadowsOut = cv.copyMakeBorder(shadowsOut, 2, 2, 2, 2, cv.BORDER_CONSTANT, value=[1, 0, 0])
 
         #save image
-        outputFile = src.split('.')[0]+'-corrected.'+'.'.join(src.split('.')[1:])
-        cv.imwrite(outputFile, shadowsOut, [cv.IMWRITE_TIFF_XDPI, 300, cv.IMWRITE_TIFF_YDPI, 300])
+        outputFileName = src.split('.')[0]+'-corrected.'+'.'.join(src.split('.')[1:])
+        saveImage(shadowsOut, outputFileName)
 
-        if isFaceDown(outputFile):
+        if isFaceDown(outputFileName):
             angle += 180
             shadowsOut = rotate_image(shadowsOut, 180)
-            cv.imwrite(outputFile, shadowsOut, [cv.IMWRITE_TIFF_XDPI, 300, cv.IMWRITE_TIFF_YDPI, 300])
+            saveImage(shadowsOut, outputFileName)
 
-        print(getRotationData(originalImage, rotatedImage, angle, outputFile))
+        print(getRotationData(originalImage, rotatedImage, angle, outputFileName))
         sys.stdout.flush()
         sys.exit(0)
 
