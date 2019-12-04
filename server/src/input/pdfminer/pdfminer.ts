@@ -351,6 +351,10 @@ function isFakeChar(word: PdfminerText, fakeSpacesInLine: boolean): boolean {
 }
 
 function ncolourToHex(color: string): Color {
+  let finalColor: string = "#000000";
+  if (color === undefined) {
+    return finalColor;
+  }
   const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
     const hex = Math.ceil(x * 255).toString(16);
     return hex.length === 1 ? '0' + hex : hex;
@@ -370,13 +374,14 @@ function ncolourToHex(color: string): Color {
     .split(',');
 
   if (colors.length === 3) {
-    return rgbToHex(colors[0], colors[1], colors[2]);
+    finalColor = rgbToHex(colors[0], colors[1], colors[2]);
   } else if (colors.length === 4) {
     const { r, g, b } = cmykToRGB(+colors[0], +colors[1], +colors[2], +colors[3]);
-    return rgbToHex(r, g, b);
+    finalColor = rgbToHex(r, g, b);
   } else {
-    return "#000000";
+    finalColor = "#000000";
   }
+  return finalColor;
 }
 
 /**
