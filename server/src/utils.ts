@@ -207,45 +207,46 @@ export function getTemporaryFile(extension: string): string {
 }
 
 /**
- * Corrects an image for rotation and returns the new destination filename promise
- * It performs clockwise rotation using jimp
+ * Applies rotation correction given an input image and returns RotationCorrection
  * @param srcImg source image
  */
-export async function correctImageForRotation(srcImg: string): Promise<string> {
-  let rotationAngle: number;
-  let newFilename: string = srcImg;
+
+export type RotationCorrectionCoords = {
+  x: number;
+  y: number;
+};
+export type RotationCorrection = {
+  fileName: string;
+  degrees: number;
+  origin: RotationCorrectionCoords;
+  translation: RotationCorrectionCoords;
+};
+
+export async function correctImageForRotation(srcImg: string): Promise<RotationCorrection> {
+  const correctionInfo: RotationCorrection = {
+    fileName: srcImg,
+    degrees: 0,
+    origin: { x: 0, y: 0 },
+    translation: { x: 0, y: 0 },
+  };
+
   const pythonLocation = getPythonLocation();
   if (pythonLocation !== '') {
-    const args: string[] = [path.join(__dirname, '../assets/ImageRotationCorrection.py'), srcImg];
+    const args: string[] = [path.join(__dirname, '../assets/ImageCorrection.py'), srcImg];
     const ret = spawnSync(pythonLocation, args);
     if (ret.status !== 0) {
       logger.warn(
         `Error running image rotation calculation: ${ret.stderr}.. using the original image.`,
       );
-      newFilename = srcImg;
     } else {
-      rotationAngle = parseFloat(ret.stdout);
-      if (rotationAngle > 90) {
-        rotationAngle -= 180;
-      }
-      rotationAngle *= -1;
-      if (rotationAngle === 0) {
-        logger.debug(`Rotation angle for image ${srcImg} was 0`);
-        newFilename = srcImg;
-      } else {
-        newFilename = getTemporaryFile('.' + srcImg.split('.').pop());
-        logger.debug(
-          `Rotating image ${srcImg} with angle ${rotationAngle} and saving it to ${newFilename}`,
-        );
-
-        const jimp = require('jimp');
-        await jimp.read(srcImg).then(img => {
-          img.rotate(rotationAngle).write(newFilename);
-        });
-      }
+      const rotationData = JSON.parse(ret.stdout.toString());
+      correctionInfo.fileName = rotationData.filename;
+      correctionInfo.degrees = rotationData.degrees;
+      correctionInfo.origin = rotationData.origin;
+      correctionInfo.translation = rotationData.translation;
     }
   }
-  return newFilename;
+  return correctionInfo;
 }
 
 /**

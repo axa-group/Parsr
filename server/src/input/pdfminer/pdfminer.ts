@@ -363,9 +363,9 @@ function ncolourToHex(color: string): Color {
 
   const cmykToRGB = (c: number, m: number, y: number, k: number) => {
     return {
-      r: 255 * (1 - c / 100) * (1 - k / 100),
-      g: 255 * (1 - m / 100) * (1 - k / 100),
-      b: 255 * (1 - y / 100) * (1 - k / 100),
+      r: (1 - c) * (1 - k),
+      g: (1 - m) * (1 - k),
+      b: (1 - y) * (1 - k),
     };
   };
 

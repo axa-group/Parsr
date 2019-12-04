@@ -65,7 +65,12 @@ export default {
   computed: {
     ...mapState(['inputFileName']),
     canShowThumbnails() {
-      return ['pdf', 'jpg', 'jpeg', 'png'].includes(this.inputFileName.split('.').pop());
+      return ['pdf', 'jpg', 'jpeg', 'png', 'tiff'].includes(
+        this.inputFileName
+          .toLowerCase()
+          .split('.')
+          .pop(),
+      );
     },
   },
 };

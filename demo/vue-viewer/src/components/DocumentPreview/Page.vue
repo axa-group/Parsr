@@ -7,52 +7,48 @@
       :width="page.box.w"
       :height="page.box.h"
     >
-      <!--text x="10" y="20" fill="red">
-				Debug Info: Page {{ page.pageNumber }} - Viewer Zoom {{ zoom }} - Page Zoom to fit
-				{{ zoomToFitPage }}
-			</text-->
-      <!--pageElements
-				v-for="element in page.elements"
-				:key="element.id"
-				:element="element"
-				:fonts="fonts"
-			/-->
-      <heading
-        v-for="element in elementsOfType('heading')"
-        :key="element.id"
-        :element="element"
-        :fonts="fonts"
-        @custom-event="elementSelected"
-      />
-      <paragraph
-        v-for="element in elementsOfType('paragraph')"
-        :key="element.id"
-        :element="element"
-        :fonts="fonts"
-        @custom-event="elementSelected"
-      />
-      <tableData
-        v-for="element in elementsOfType('table')"
-        :key="element.id"
-        :element="element"
-        :fonts="fonts"
-        @custom-event="elementSelected"
-      />
-      <list
-        v-for="element in elementsOfType('list')"
-        :key="element.id"
-        :element="element"
-        :fonts="fonts"
-        @custom-event="elementSelected"
-      />
-      <!--component
-				v-for="element in page.elements"
-				:functional="true"
-				:is="componentFor(element)"
-				:key="element.id"
-				:element="element"
-				:fonts="fonts"
-			></component-->
+      <g
+        :style="{
+          transform:
+            'translateX(' +
+            page.rotation.translation.x +
+            'px) translateY(' +
+            page.rotation.translation.y +
+            'px) rotate(' +
+            page.rotation.degrees +
+            'deg)',
+          transformOrigin: page.rotation.origin.x + 'px ' + page.rotation.origin.y + 'px',
+        }"
+      >
+        <heading
+          v-for="element in elementsOfType('heading')"
+          :key="element.id"
+          :element="element"
+          :fonts="fonts"
+          @custom-event="elementSelected"
+        />
+        <paragraph
+          v-for="element in elementsOfType('paragraph')"
+          :key="element.id"
+          :element="element"
+          :fonts="fonts"
+          @custom-event="elementSelected"
+        />
+        <tableData
+          v-for="element in elementsOfType('table')"
+          :key="element.id"
+          :element="element"
+          :fonts="fonts"
+          @custom-event="elementSelected"
+        />
+        <list
+          v-for="element in elementsOfType('list')"
+          :key="element.id"
+          :element="element"
+          :fonts="fonts"
+          @custom-event="elementSelected"
+        />
+      </g>
     </svg>
   </div>
 </template>

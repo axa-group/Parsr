@@ -30,6 +30,7 @@ import {
   JsonFont,
   JsonMetadata,
   JsonPage,
+  JsonPageRotation,
   List,
   Page,
   Table,
@@ -72,6 +73,7 @@ export class JsonExporter extends Exporter {
     this.json.pages = this.doc.pages.map((page: Page) => {
       const jsonPage: JsonPage = {
         box: this.boxToJsonBox(page.box),
+        rotation: this.rotationToJsonRotation(page.pageRotation),
         pageNumber: page.pageNumber,
         elements: page.elements
           .sort(utils.sortElementsByOrder)
@@ -253,7 +255,7 @@ export class JsonExporter extends Exporter {
       jsonElement.codeType = element.type;
       jsonElement.codeValue = element.content;
     } else if (element instanceof Image) {
-      jsonElement.src = element.src;  // TODO replace this with a location based on an API access point
+      jsonElement.src = element.src; // TODO replace this with a location based on an API access point
     } else if (element instanceof Heading) {
       jsonElement.level = element.level;
     }
@@ -270,6 +272,23 @@ export class JsonExporter extends Exporter {
     };
 
     return jsonBox;
+  }
+
+  private rotationToJsonRotation(rotation: utils.RotationCorrection): JsonPageRotation {
+    if (rotation != null) {
+      const jsonRotation: JsonPageRotation = {
+        degrees: rotation.degrees,
+        origin: rotation.origin,
+        translation: rotation.translation,
+      };
+      return jsonRotation;
+    }
+    const noRotation: JsonPageRotation = {
+      degrees: 0,
+      origin: { x: 0, y: 0 },
+      translation: { x: 0, y: 0 },
+    };
+    return noRotation;
   }
 
   private convertElementValue(value: any): any {
