@@ -9,7 +9,6 @@ import numpy as np
 import cv2 as cv
 import json
 import math
-from scipy import ndimage
 from pathlib import Path
 
 import re
