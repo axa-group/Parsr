@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { findMostCommonFont, isInBox } from '../../utils';
+import { findMostCommonFont, isInBox, RotationCorrection } from '../../utils';
 import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
@@ -58,6 +58,7 @@ export class Page {
   private _box: BoundingBox;
   private _horizontalOccupancy: boolean[];
   private _verticalOccupancy: boolean[];
+  private _pageRotation: RotationCorrection;
 
   constructor(pageNumber: number, elements: Element[], boundingBox: BoundingBox) {
     this.pageNumber = pageNumber;
@@ -65,7 +66,7 @@ export class Page {
     this.box = boundingBox;
     this.horizontalOccupancy = [];
     this.verticalOccupancy = [];
-
+    this.pageRotation = null;
     this.computePageOccupancy();
   }
 
@@ -279,6 +280,22 @@ export class Page {
    */
   public set box(value: BoundingBox) {
     this._box = value;
+  }
+
+  /**
+   * Setter PageRotation
+   * @param {ImageCorrection} value
+   */
+  public set pageRotation(value: RotationCorrection) {
+    this._pageRotation = value;
+  }
+
+  /**
+   * Getter PageRotation
+   * @return {ImageCorrection}
+   */
+  public get pageRotation(): RotationCorrection {
+    return this._pageRotation;
   }
 
   /**
