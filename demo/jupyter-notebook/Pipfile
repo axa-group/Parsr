@@ -9,9 +9,9 @@ verify_ssl = true
 requests = "==2.22.0"
 pandas = "==0.25.3"
 ipython = "==7.9.0"
-python-magic = "==0.4.15"
 Pygments = "==2.4.2"
 jupyter = "*"
+diff-match-patch = "*"
 
 [requires]
 python_version = "3.7"

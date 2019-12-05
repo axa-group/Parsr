@@ -25,8 +25,6 @@ import os
 from glob import glob
 from itertools import chain
 import diff_match_patch
-import magic
-mime = magic.Magic(mime=True)
 
 
 class ParserClient(object):
