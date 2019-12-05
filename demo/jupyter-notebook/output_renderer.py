@@ -16,7 +16,7 @@
 
 import uuid
 import json
-from IPython.display import display, Markdown, display_html, display_javascript
+from IPython.display import display, Markdown, display_html, display_javascript, HTML
 from pygments import highlight
 from pygments.lexers import JsonLexer
 from pygments.formatters import TerminalFormatter
@@ -53,3 +53,11 @@ class RenderMarkdown(object):
 
     def _ipython_display_(self):
         display(Markdown(self.markdown_data))
+
+class RenderHTML(object):
+    def __init__(self, html_data):
+        self.html_data = html_data
+        self.uuid = str(uuid.uuid4())
+
+    def _ipython_display_(self):
+        display(HTML(self.html_data))

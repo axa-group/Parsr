@@ -24,8 +24,7 @@ import requests
 import os
 from glob import glob
 from itertools import chain
-import magic
-mime = magic.Magic(mime=True)
+import diff_match_patch
 
 
 class ParserClient(object):
@@ -168,3 +167,17 @@ class ParserClient(object):
                 return {'request_id': request_id, 'server_response': r.text}
         else:
             return {'request_id': request_id, 'server_response': r.text}
+
+    def compare_pdfs(self, request_id1:str, request_id2:str, returnPrettyHtml:bool = False):
+        md1 = self.get_markdown(request_id1)
+        md2 = self.get_markdown(request_id2)
+
+        dmp = diff_match_patch.diff_match_patch()
+        diffs = dmp.diff_main(md1, md2)
+        dmp.diff_cleanupSemantic(diffs)
+        htmlSnippet = dmp.diff_prettyHtml(diffs)
+
+        if returnPrettyHtml:
+            return htmlSnippet
+        else:
+            return diffs
