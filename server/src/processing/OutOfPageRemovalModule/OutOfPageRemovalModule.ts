@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Document, Element, Page, Text } from '../../types/DocumentRepresentation';
+import { BoundingBox, Document, Element, Page, Text } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import { Module } from '../Module';
 
@@ -27,9 +27,23 @@ export class OutOfPageRemovalModule extends Module {
   public static moduleName = 'out-of-page-removal';
 
   public main(doc: Document): Document {
+    const isInBox = (element: Text, page: Page) => {
+      if (page.pageRotation != null && page.pageRotation.degrees !== 0) {
+        // When a page is rotated we hace to use rotated page box instead of page box
+        const rotatedBox = new BoundingBox(
+          0,
+          0,
+          page.pageRotation.origin.x * 2,
+          page.pageRotation.origin.y * 2,
+        );
+        return utils.isInBox(element, rotatedBox, true);
+      } else {
+        return utils.isInBox(element, page.box, true);
+      }
+    };
     doc.pages.forEach((page: Page) => {
       page.elements = page.elements.filter((element: Element) => {
-        return !(element instanceof Text) || utils.isInBox(element, page.box, true);
+        return !(element instanceof Text) || isInBox(element, page);
       });
     });
 
