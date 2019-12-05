@@ -1,13 +1,13 @@
 {
 	"defaultSeverity": "error",
-	"extends": ["tslint:recommended"],
-  "linterOptions": {
-      "exclude": [
-          "/dist",
-          "/server/bin/",
-          "/api/dist"       
-      ]
-  },
+	"extends": "tslint:recommended",
+  	"linterOptions": {
+      	"exclude": [
+			"dist",
+			"api/dist",
+			"server/src/processing/HeadingDetectionModuleDT/model.js"
+		]
+  	},
 	"jsRules": {},
 	"rules": {        
 		"quotemark": false,
