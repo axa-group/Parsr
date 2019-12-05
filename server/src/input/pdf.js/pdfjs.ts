@@ -16,7 +16,6 @@
 
 import * as fs from 'fs';
 import * as limit from 'limit-async';
-import * as path from 'path';
 import * as pdfjs from 'pdfjs-dist';
 import {
   BoundingBox,
@@ -47,8 +46,10 @@ const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
   .join('');
 
 export function execute(pdfInputFile: string): Promise<Document> {
+  logger.info('Running extractor PDF.js');
+  const startTime: number = Date.now();
+
   return new Promise<Document>((resolveDocument, rejectDocument) => {
-    pdfjs.GlobalWorkerOptions.workerSrc = path.join(__dirname, '../../../assets/pdf.worker.js');
     return repairPdf(pdfInputFile).then((repairedPdf: string) => {
       const pages: Array<Promise<Page>> = [];
       try {
@@ -58,6 +59,8 @@ export function execute(pdfInputFile: string): Promise<Document> {
             pages.push(limiter(loadPage)(doc, i + 1));
           }
           return Promise.all(pages).then((p: Page[]) => {
+            const endTime: number = (Date.now() - startTime) / 1000;
+            logger.info(`  Elapsed time: ${endTime}s`);
             resolveDocument(new Document(p, repairedPdf));
           });
         });
