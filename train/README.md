@@ -16,7 +16,7 @@ For each document, the script generates a corresponding csv in the output folder
 4. is_bold: a boolean indicating if the line is entirely bold.
 5. color: the color (in hex format) of the color of the most common font of the line.
 6. title_case: a boolean indicating whether the line is written in title case. This is mostly valid only for English.
-7. label: 1 if the line is a heading, 0 otherwise
+7. label: "paragraph" or "heading"
 
 ```
 usage: build_dataset.py [-h] md_dir json_dir out_dir
