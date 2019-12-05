@@ -284,7 +284,7 @@ export class Page {
 
   /**
    * Setter PageRotation
-   * @param {ImageCorrection} value
+   * @param {RotationCorrection} value
    */
   public set pageRotation(value: RotationCorrection) {
     this._pageRotation = value;
@@ -292,7 +292,7 @@ export class Page {
 
   /**
    * Getter PageRotation
-   * @return {ImageCorrection}
+   * @return {RotationCorrection}
    */
   public get pageRotation(): RotationCorrection {
     return this._pageRotation;
