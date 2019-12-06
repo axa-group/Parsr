@@ -197,7 +197,8 @@ export class Page {
       this.elements.splice(index, 1);
     } else {
       logger.debug(
-        `--> Could not remove element id "${e.id}" in first level elements on page ${this.pageNumber}; it might be located deeper`,
+        `--> Could not remove element id "${e.id}" in first level elements on page \
+        ${this.pageNumber}; it might be located deeper`,
       );
     }
   }
