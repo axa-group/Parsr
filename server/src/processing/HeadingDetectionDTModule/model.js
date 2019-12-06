@@ -1,3 +1,5 @@
+import logger from "../../utils/Logger";
+
 export var DecisionTreeClassifier = function() {
 
     var findMax = function(nums) {
@@ -704,16 +706,16 @@ export var DecisionTreeClassifier = function() {
 
 };
 
-if (typeof process !== 'undefined' && typeof process.argv !== 'undefined') {
+if (typeof process !== "undefined" && typeof process.argv !== "undefined") {
     if (process.argv.length - 2 === 9) {
 
         // Features:
-        var features = process.argv.slice(2);
+        var theFeatures = process.argv.slice(2);
 
         // Prediction:
         var clf = new DecisionTreeClassifier();
-        var prediction = clf.predict(features);
-        console.log(prediction);
+        var prediction = clf.predict(theFeatures);
+        logger.info(prediction);
 
     }
 }
