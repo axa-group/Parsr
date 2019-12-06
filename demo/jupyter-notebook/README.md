@@ -21,5 +21,5 @@ pipenv install
 To start the jupyter notebook, issue:
 
 ```sh
-pipenv run jupyter notebook parsr-jupyter-notebook.ipynb
+pipenv run jupyter lab parsr-jupyter-notebook.ipynb
 ```

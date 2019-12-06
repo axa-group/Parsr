@@ -17,7 +17,6 @@
 import logging
 import pandas as pd
 from io import StringIO
-import json
 
 class ParsrOutputInterpreter(object):
     def __init__(self, object=None):
@@ -67,7 +66,7 @@ class ParsrOutputInterpreter(object):
         return result
     
     def load_object(self, object):
-        self.object = json.loads(object)
+        self.object = object
 
     def get_page(self, page_number):
         for p in self.object['pages']:
