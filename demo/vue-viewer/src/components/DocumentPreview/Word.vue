@@ -19,6 +19,7 @@
           : 'spacingAndGlyphs'
       "
       :style="{
+        fontFamily: props.fonts.filter(font => font.id === props.element.font).shift().name,
         fontSize: `${props.fonts.filter(font => font.id === props.element.font).shift().size *
           0.6}${props.fonts.filter(font => font.id === props.element.font).shift().sizeUnit}`,
         fill:
