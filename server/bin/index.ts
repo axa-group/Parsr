@@ -266,12 +266,16 @@ function main(): void {
    * @returns The Orchestrator instance
    */
   function pdfToImage(pdfPath: string): string {
-    const tifFilePath = pdfPath + '.tiff';
+    const outPutFilePath = pdfPath + '.tiff';
     const ret = utils.spawnSync(utils.getConvertLocation(), [
       '-density',
       '300x300',
+      '-compress',
+      'None',
+      '-alpha',
+      'off',
       pdfPath,
-      tifFilePath,
+      outPutFilePath,
     ]);
 
     if (ret.status !== 0) {
@@ -281,7 +285,7 @@ function main(): void {
       );
     }
 
-    return tifFilePath;
+    return outPutFilePath;
   }
 }
 
