@@ -14,23 +14,28 @@
 # limitations under the License.
 #
 
+from glob import glob
+from itertools import chain
+import os
 import sys
+import json
+import time
+
+import diff_match_patch
+import pandas as pd
+import requests
 if sys.version_info[0] < 3: 
     from StringIO import StringIO
 else:
     from io import StringIO
-import pandas as pd
-import requests
-import os
-from glob import glob
-from itertools import chain
-import diff_match_patch
 
 
-class ParserClient(object):
+
+class ParserClient():
     def __init__(self, server):
+        self.version_history = {}
         self.set_server(server)
-        self.set_request_id("")
+        self.set_current_request_id("")
 
     def __supported_input_files(self) -> list:
         return ['*.pdf', '*.jpg', '*.jpeg', '*.png', '*.tiff', '*.tif',]
@@ -38,10 +43,10 @@ class ParserClient(object):
     def set_server(self, server:str):
         self.server = server
 
-    def set_request_id(self, request_id:str):
+    def set_current_request_id(self, request_id:str):
         self.request_id = request_id
 
-    def send_document(self, file:str, config:str, server:str="", save_request_id:bool=False) -> dict:
+    def send_document(self, file:str, config:str, server:str="", document_name:str=None, wait_till_finished:bool=False, save_request_id:bool=False) -> dict:
         if server == "":
             if self.server == "":
                 raise Exception('No server address provided')
@@ -52,9 +57,32 @@ class ParserClient(object):
             'config': (config, open(config, 'rb'), 'application/json'),
         }
         r = requests.post('http://'+server+'/api/v1/document', files=packet)
+        jobId = r.text
+        if not document_name:
+            document_name = os.path.splitext(os.path.basename(file))[0]
+        if document_name not in self.version_history:
+            self.version_history[document_name] = [jobId]
+        else:
+            self.version_history[document_name].append(jobId)
         if save_request_id:
-            self.set_request_id(r.text)
-        return {'file': file, 'config': config, 'status_code': r.status_code, 'server_response': r.text}
+            self.set_current_request_id(jobId)
+        if not wait_till_finished:
+            return {'file': file, 'config': config, 'status_code': r.status_code, 'server_response': r.text}
+        else:
+            print('> Polling server for the job {}...'.format(jobId))
+            server_status_response = self.get_status(jobId)['server_response']
+            while ('progress-percentage' in server_status_response):
+                print('>> Progress percentage: {}'.format(server_status_response['progress-percentage']))
+                time.sleep(2)
+                server_status_response = self.get_status(jobId)['server_response']
+            print('>> Job done!')
+            return {'file': file, 'config': config, 'status_code': r.status_code, 'server_response': r.text}
+
+    def get_versions(self, document_name:str) -> list:
+        if document_name in self.version_history:
+            return self.version_history[document_name]
+        else:
+            return []
 
     def send_documents_folder(self, folder:str, config:str, server:str="") -> list:
         if server == "":
@@ -89,7 +117,7 @@ class ParserClient(object):
         if self.server == "":
             raise Exception('No server address provided')
         r = requests.get('http://{}/api/v1/queue/{}'.format(server, request_id))
-        return {'request_id': request_id, 'server_response': r.text}
+        return {'request_id': request_id, 'server_response': json.loads(r.text)}
 
     def get_json(self, request_id:str="", server:str=""):
         if server == "":
@@ -104,7 +132,7 @@ class ParserClient(object):
                 request_id = self.request_id
         r = requests.get('http://{}/api/v1/json/{}'.format(server, request_id))
         if r.text != "":
-            return r.text
+            return r.json()
         else:
             return {'request_id': request_id, 'server_response': r.json()}
 
@@ -168,16 +196,21 @@ class ParserClient(object):
         else:
             return {'request_id': request_id, 'server_response': r.text}
 
-    def compare_pdfs(self, request_id1:str, request_id2:str, returnPrettyHtml:bool = False):
-        md1 = self.get_markdown(request_id1)
-        md2 = self.get_markdown(request_id2)
+    def compare_versions(self, request_ids:list, pretty_html:bool = False):
+        diffs = []
+        for i in range(0, len(request_ids) - 1):
+            request_id1 = request_ids[i]
+            request_id2 = request_ids[i + 1]
+            md1 = self.get_markdown(request_id1)
+            md2 = self.get_markdown(request_id2)
 
-        dmp = diff_match_patch.diff_match_patch()
-        diffs = dmp.diff_main(md1, md2)
-        dmp.diff_cleanupSemantic(diffs)
-        htmlSnippet = dmp.diff_prettyHtml(diffs)
+            dmp = diff_match_patch.diff_match_patch()
+            diff = dmp.diff_main(md1, md2)
+            dmp.diff_cleanupSemantic(diff)
 
-        if returnPrettyHtml:
-            return htmlSnippet
-        else:
-            return diffs
+            if pretty_html:
+                html_diff = dmp.diff_prettyHtml(diff)
+                diffs.append(html_diff)
+            else:
+                diffs.append(diff)
+        return diffs

@@ -10,7 +10,7 @@ requests = "==2.22.0"
 pandas = "==0.25.3"
 ipython = "==7.9.0"
 Pygments = "==2.4.2"
-jupyter = "*"
+jupyterlab = "*"
 diff-match-patch = "*"
 
 [requires]
