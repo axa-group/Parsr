@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4909807b819d64c96377459952e76fd3f0e0d26077b4fab0e4ae6a0b780b4aa5"
+            "sha256": "57afb8164a9d94b02150e81cc442566fc8e39e9688bced895a2b422d715868c6"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -21,7 +21,7 @@
                 "sha256:5b26757dc6f79a3b7dc9fab95359328d5747fcb2409d331ea66d0272b90ab2a0",
                 "sha256:8b995ffe925347a2138d7ac0fe77155e4311a0ea6d6da4f5128fe4b3cbe5ed71"
             ],
-            "markers": "platform_system == 'Darwin'",
+            "markers": "sys_platform == 'darwin'",
             "version": "==0.1.0"
         },
         "attrs": {
@@ -223,10 +223,10 @@
         },
         "more-itertools": {
             "hashes": [
-                "sha256:57cc732766f26ddc424a4ed76d837677777a03f557c7ebeecb7e2be2888ce702",
-                "sha256:a293dbdad9d4d22e1e70832b8dcab72aac20805f0fa0575aec27cab8841e09ff"
+                "sha256:b84b238cce0d9adad5ed87e745778d20a3f8487d0f0cb8b8a586816c7496458d",
+                "sha256:c833ef592a0324bcc6a60e48440da07645063c453880c9477ceb22490aec1564"
             ],
-            "version": "==8.0.1"
+            "version": "==8.0.2"
         },
         "nbconvert": {
             "hashes": [
@@ -432,6 +432,14 @@
                 "sha256:30f610279e8b2578cab6db20741130331735c781b56053c59c4076da27f06b66"
             ],
             "version": "==1.13.0"
+        },
+        "sxsdiff": {
+            "hashes": [
+                "sha256:416c0e710b7e1efc37c4c5da1f076354b099dc972c07a54c8d6b7bc84fe335a8",
+                "sha256:5f1649d9b1d528f1b845adeb1d9c7f7f68c516e983b144af47d4f1460787d65b"
+            ],
+            "index": "pypi",
+            "version": "==0.3.0"
         },
         "terminado": {
             "hashes": [
