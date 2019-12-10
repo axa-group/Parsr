@@ -264,9 +264,6 @@ export async function correctImageForRotation(srcImg: string): Promise<RotationC
     const args: string[] = [path.join(__dirname, '../assets/ImageCorrection.py'), srcImg];
     const ret = spawnSync(pythonLocation, args);
     if (ret.status !== 0) {
-      logger.warn('ret.stdout ' + JSON.stringify(ret.stdout));
-      logger.warn('ret.stderr ' + JSON.stringify(ret.stderr));
-      logger.warn('Command python3 ' + args.join(' '));
       logger.warn(
         `Error running image rotation calculation: ${ret.stderr}.. using the original image.`,
       );

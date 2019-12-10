@@ -65,7 +65,7 @@ function main(): void {
 
   printVersion();
 
-  let filePath: string = path.resolve(commander.inputFile);
+  const filePath: string = path.resolve(commander.inputFile);
   const outputFolder: string = path.resolve(commander.outputFolder);
   if (!fs.existsSync(outputFolder)) {
     logger.info(`Requested output folder ${outputFolder} did not exist. Creating... `);
@@ -130,7 +130,6 @@ function main(): void {
             `Since the input file is a PDF with only images, trying to run an OCR on all pages...`,
           );
           if (config.extractor.img === 'tesseract') {
-            filePath = pdfToImage(filePath);
             orchestrator = new Orchestrator(new TesseractExtractor(config), cleaner);
           } else {
             orchestrator = new Orchestrator(new AbbyyTools(config), cleaner);
@@ -229,7 +228,6 @@ function main(): void {
     if (config.extractor.pdf === 'abbyy') {
       return new Orchestrator(new AbbyyTools(config), cleaner);
     } else if (config.extractor.pdf === 'tesseract') {
-      filePath = pdfToImage(filePath);
       return new Orchestrator(new TesseractExtractor(config), cleaner);
     } else if (config.extractor.pdf === 'pdfjs') {
       return new Orchestrator(new PDFJsExtractor(config), cleaner);
@@ -260,35 +258,6 @@ function main(): void {
     } else {
       return new Orchestrator(new AbbyyTools(config), cleaner);
     }
-  }
-
-  /**
-   * Returns the pdf file extraction orchestrator using tesseract as the extractor.
-   * First, the pdf is sampled for it to be converted into an image, then, an image extraction orchestrator is returned.
-   *
-   * @returns The Orchestrator instance
-   */
-  function pdfToImage(pdfPath: string): string {
-    const outPutFilePath = pdfPath + '.tiff';
-    const ret = utils.spawnSync(utils.getConvertLocation(), [
-      '-density',
-      '300x300',
-      '-compress',
-      'None',
-      '-alpha',
-      'off',
-      pdfPath,
-      outPutFilePath,
-    ]);
-
-    if (ret.status !== 0) {
-      logger.error(ret.stderr);
-      throw new Error(
-        'ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)',
-      );
-    }
-
-    return outPutFilePath;
   }
 }
 
