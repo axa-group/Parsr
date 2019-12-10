@@ -171,34 +171,6 @@ export function spawn(cmd: string, args: string[], options: any = {}): any {
 }
 
 /**
- * Returns the location of the imagemagick identify command on the system
- */
-export function getIdentifyLocation(): string {
-  const convertLocation: string = getCommandLocationOnSystem('magick identify', 'identify');
-  if (!convertLocation) {
-    logger.warn(`Cannot find ImageMagick identify tool. Are you sure it is installed?`);
-    return '';
-  } else {
-    logger.debug(`ImageMagick was found at ${convertLocation}`);
-    return convertLocation;
-  }
-}
-
-/**
- * Returns the location of the imagemagick convert command on the system
- */
-export function getConvertLocation(): string {
-  const convertLocation: string = getCommandLocationOnSystem('magick convert', 'convert');
-  if (!convertLocation) {
-    logger.warn(`Cannot find ImageMagick convert tool. Are you sure it is installed?`);
-    return '';
-  } else {
-    logger.debug(`ImageMagick was found at ${convertLocation}`);
-    return convertLocation;
-  }
-}
-
-/**
  * Returns the location of the python command on the system
  */
 export function getPythonLocation(): string {

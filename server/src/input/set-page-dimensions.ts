@@ -43,24 +43,26 @@ export function setPageDimensions(doc: Document, inputFileName: string): Promise
 
   function getPageDimensions(filename: string): Promise<Dimensions[]> {
     return new Promise<Dimensions[]>((resolve, reject) => {
-      const ret = utils.spawnSync(utils.getIdentifyLocation(), [
-        '-format',
-        '%[fx:w]x%[fx:h],',
-        filename,
-      ]);
-
-      if (ret.status !== 0) {
-        logger.error(ret.stderr);
-        reject(`Can't get dimensions of file ${filename}`);
-      }
-
-      const dimensions = ret.stdout.toString().split(',');
-      const retDimension: Dimensions[] = dimensions.map(dimension => {
-        const [width, height] = dimension.split('x').map(s => parseInt(s, 10));
-        return { width, height };
-      });
-
-      resolve(retDimension);
+      utils.CommandExecuter.run(
+        ['magick identify', 'identify'],
+        [
+          '-format',
+          '%[fx:w]x%[fx:h],',
+          filename,
+        ],
+      )
+        .then((data) => {
+          const dimensions = data.split(',');
+          const retDimension: Dimensions[] = dimensions.map(dimension => {
+            const [width, height] = dimension.split('x').map(s => parseInt(s, 10));
+            return { width, height };
+          });
+          resolve(retDimension);
+        })
+        .catch(({ error }) => {
+          logger.error(error);
+          reject(`Can't get dimensions of file ${filename}`);
+        });
     });
   }
 }
