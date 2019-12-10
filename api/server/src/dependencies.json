@@ -1,0 +1,10 @@
+[
+    ["magick convert", "convert"],
+    ["magick identify", "identify"],
+    ["dumppdf.py", "dumppdf"],
+    ["pdf2txt.py", "pdf2txt"],
+    ["python3", "python"],
+    ["mutool"],
+    ["qpdf"],
+    ["pandoc"]
+]
