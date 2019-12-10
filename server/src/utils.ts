@@ -53,7 +53,7 @@ export class CommandExecuter {
       if (!command) {
         return reject({
           found: false,
-          error: `${command} was not found on the system. Are you sure it is installed?`,
+          error: `${cmd.toString()} was not found on the system. Are you sure it is installed and added to PATH?`,
         });
       }
       logger.info(`executing command: ${command}, ${args.join(' ')}`);
@@ -64,6 +64,44 @@ export class CommandExecuter {
       return reject({ found: true, error: (stderr || '').toString() });
     });
   }
+}
+
+/**
+ * Repair a pdf using the external qpdf and mutool utilities.
+ * Use qpdf to decrcrypt the pdf to avoid errors due to DRMs.
+ * @param filePath The absolute filename and path of the pdf file to be repaired.
+ */
+export async function repairPdf(filePath: string) {
+  let qpdfOutputFile = getTemporaryFile('.pdf');
+  try {
+    await CommandExecuter.run('qpdf', ['--decrypt', filePath, qpdfOutputFile]);
+    logger.info(`qpdf repair successfully performed on file ${filePath}. New file at: ${qpdfOutputFile}`);
+  } catch ({ found, error }) {
+    logger.warn(error);
+    if (!found) {
+      logger.warn(`qpdf not found on the system. Not repairing the PDF...`);
+    }
+    qpdfOutputFile = filePath;
+  }
+
+  return new Promise<string>(resolve => {
+    const mupdfOutputFile = getTemporaryFile('.pdf');
+    CommandExecuter.run('mutool', ['clean', qpdfOutputFile, mupdfOutputFile])
+      .then(() => {
+        // Check that the file is correctly written on the file system
+        fs.fsyncSync(fs.openSync(mupdfOutputFile, 'r+'));
+        logger.info(
+          `mupdf cleaning successfully performed on file ${qpdfOutputFile}. Resulting file: ${mupdfOutputFile}`,
+        );
+        resolve(mupdfOutputFile);
+      }).catch(({ found, error }) => {
+        logger.warn(error);
+        if (!found) {
+          logger.warn('MuPDF not installed !! Skip clean PDF.');
+        }
+        resolve(qpdfOutputFile);
+      });
+  });
 }
 
 export function replaceObject<T extends Element, U extends T>(
@@ -811,7 +849,7 @@ export function findMostCommonFont(fonts: Font[]): Font | undefined {
  * returns the location of the executable locator command on the current system.
  * on linux/unix machines, this is 'which', on windows machines, it is 'where'.
  */
-export function getExecLocationCommandOnSystem(): string {
+function getExecLocationCommandOnSystem(): string {
   return os.platform() === 'win32' ? 'where' : 'which';
 }
 
