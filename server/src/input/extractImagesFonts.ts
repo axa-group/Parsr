@@ -25,30 +25,27 @@ import logger from '../utils/Logger';
  */
 export function extractImagesAndFonts(pdfInputFile: string): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    const mutoolPath = utils.getCommandLocationOnSystem('mutool');
-    if (!mutoolPath) {
-      logger.warn('MuPDF not installed. Will not treats images inside documents...');
-      resolve();
-    } else {
-      const folder = utils.getMutoolExtractionFolder();
-      logger.info(`Extracting images and fonts to ${folder} using command 'mutool extract ${pdfInputFile}'...`);
-      const ret = utils.spawnSync('mutool', ['extract', pdfInputFile], { cwd: folder });
-
-      if (ret.status !== 0) {
-        logger.error(ret.stderr.toString());
-        reject(ret.stderr.toString());
-      }
-
-      const ttfRegExp = /^[A-Z]{6}\+(.*)\-[0-9]+\.ttf$/;
-      fs.readdirSync(folder).forEach(file => {
-        const match = file.match(ttfRegExp);
-
-        if (match) {
-          fs.renameSync(`${folder}/${file}`, `${folder}/${match[1]}` + '.ttf');
+    const folder = utils.getMutoolExtractionFolder();
+    logger.info(`Extracting images and fonts to ${folder}`);
+    utils.CommandExecuter.run('mutool', ['extract', pdfInputFile], { cwd: folder })
+      .then(() => {
+        const ttfRegExp = /^[A-Z]{6}\+(.*)\-[0-9]+\.ttf$/;
+        fs.readdirSync(folder).forEach(file => {
+          const match = file.match(ttfRegExp);
+          if (match) {
+            fs.renameSync(`${folder}/${file}`, `${folder}/${match[1]}` + '.ttf');
+          }
+        });
+        resolve();
+      })
+      .catch(({ found, error }) => {
+        logger.warn(error);
+        if (!found) {
+          logger.warn('MuPDF not installed. Will not treats images inside documents...');
+          resolve();
+        } else {
+          reject(error);
         }
       });
-
-      resolve();
-    }
   });
 }

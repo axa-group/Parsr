@@ -37,6 +37,35 @@ import logger from './utils/Logger';
 let mutoolImagesFolder: string = '';
 let mutoolExtractionFolder: string = '';
 
+export class CommandExecuter {
+  public static async run(
+    cmd: string | string[],
+    args: string[],
+    options?: any,
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let command = '';
+      if (Array.isArray(cmd)) {
+        command = getCommandLocationOnSystem(cmd[0], cmd[1] || '', cmd[2] || '');
+      } else {
+        command = getCommandLocationOnSystem(cmd);
+      }
+      if (!command) {
+        return reject({
+          found: false,
+          error: `${command} was not found on the system. Are you sure it is installed?`,
+        });
+      }
+      logger.info(`executing command: ${command}, ${args.join(' ')}`);
+      const { stderr, stdout, status } = spawnSync(command, args, options);
+      if (status === 0) {
+        return resolve((stdout || '').toString());
+      }
+      return reject({ found: true, error: (stderr || '').toString() });
+    });
+  }
+}
+
 export function replaceObject<T extends Element, U extends T>(
   doc: Document,
   oldObj: T,
