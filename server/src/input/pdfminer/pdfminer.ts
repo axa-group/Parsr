@@ -46,21 +46,17 @@ export function execute(pdfInputFile: string): Promise<Document> {
     return repairPdf(pdfInputFile).then((repairedPdf: string) => {
       const xmlOutputFile: string = utils.getTemporaryFile('.xml');
 
-      // find python
-      const pythonLocation: string = utils.getPythonLocation();
-
       // find pdfminer's pdf2txt.py script
       const pdf2txtLocation: string = utils.getPdf2txtLocation();
 
       // If either of the tools could not be found, return an empty document and display warning
-      if (pythonLocation === '' || pdf2txtLocation === '') {
+      if (pdf2txtLocation === '') {
         rejectDocument(`Could not find the necessary libraries..`);
       }
 
       logger.info(`Extracting file contents with pdfminer's pdf2txt.py tool...`);
 
       const pdf2txtArguments: string[] = [
-        pdf2txtLocation,
         '-c',
         'utf-8',
         '-t',
@@ -70,13 +66,13 @@ export function execute(pdfInputFile: string): Promise<Document> {
         repairedPdf,
       ];
 
-      logger.debug(`${pythonLocation} ${pdf2txtArguments.join(' ')}`);
+      logger.debug(`${pdf2txtLocation} ${pdf2txtArguments.join(' ')}`);
 
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const pdf2txt = utils.spawn(pythonLocation, pdf2txtArguments);
+      const pdf2txt = utils.spawn(pdf2txtLocation, pdf2txtArguments);
 
       pdf2txt.stderr.on('data', data => {
         logger.error('pdfminer error:', data.toString('utf8'));

@@ -85,23 +85,22 @@ export class LinkDetectionModule extends Module {
   private getFileMetadata(pdfFilePath: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-      const pythonLocation: string = utils.getPythonLocation();
       const dumppdfLocation: string = utils.getDumppdfLocation();
-      if (dumppdfLocation === "" || pythonLocation === "") {
+      if (dumppdfLocation === "") {
         reject(`Could not find the necessary libraries..`);
       }
 
       logger.info(`Extracting metadata with pdfminer's dumppdf.py tool...`);
 
-      const dumppdfArguments = [dumppdfLocation, '-a', '-o', xmlOutputFile, pdfFilePath];
+      const dumppdfArguments = ['-a', '-o', xmlOutputFile, pdfFilePath];
 
-      logger.debug(`${pythonLocation} ${dumppdfArguments.join(' ')}`);
+      logger.debug(`${dumppdfLocation} ${dumppdfArguments.join(' ')}`);
 
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const dumppdf = utils.spawn(pythonLocation, dumppdfArguments);
+      const dumppdf = utils.spawn(dumppdfLocation, dumppdfArguments);
 
       dumppdf.stderr.on('data', data => {
         logger.error('dumppdf error:', data.toString('utf8'));
