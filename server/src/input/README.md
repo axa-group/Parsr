@@ -6,7 +6,7 @@ Each module may or may not contain a set of configurable parameters, which (alon
 
 ## The Modules
 
-1. [Pdf2Json](pdf2json/README.md)
+1. [PDF.js](pdf.js/README.md)
 2. [Pdfminer](pdfminer/README.md)
 3. [Tesseract](tesseract/README.md)
 4. [Google Vision](google-vision/README.md)
