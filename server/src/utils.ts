@@ -471,7 +471,7 @@ export function removeNull(page: Page): Page {
   if (page.elements.length - newElements.length !== 0) {
     logger.debug(
       `Null elements removed for page #${page.pageNumber}: ${page.elements.length -
-        newElements.length}`,
+      newElements.length}`,
     );
     page.elements = newElements;
   }
@@ -505,11 +505,11 @@ export function getPageRegex(): RegExp {
 
   const pageRegex = new RegExp(
     `^(?:` +
-      `(?:${pagePrefix}${pageNumber})|` +
-      `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
-      `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
-      `(?:${before}${pageNumber}${after})` +
-      `)$`,
+    `(?:${pagePrefix}${pageNumber})|` +
+    `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
+    `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
+    `(?:${before}${pageNumber}${after})` +
+    `)$`,
     'i',
   );
 
@@ -808,10 +808,9 @@ export function getCommandLocationOnSystem(
   }
   if (result === null) {
     return null;
-  } else {
-    cmdComponents[0] = result;
   }
-  return cmdComponents.join(' ');
+
+  return firstChoice;
 }
 
 /**
