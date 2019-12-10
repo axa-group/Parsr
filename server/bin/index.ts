@@ -269,14 +269,16 @@ function main(): void {
    * @returns The Orchestrator instance
    */
   function pdfToImage(pdfPath: string): string {
-    const outPutFilePath = pdfPath + '.tiff';
+    const outPutFilePath = pdfPath + '_%03.tiff';
     const ret = utils.spawnSync(utils.getConvertLocation(), [
       '-density',
       '300x300',
       '-compress',
-      'None',
+      'lzw',
       '-alpha',
-      'off',
+      'remove',
+      '-background',
+      'white',
       pdfPath,
       outPutFilePath,
     ]);
