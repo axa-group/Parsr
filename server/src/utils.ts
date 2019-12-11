@@ -34,7 +34,6 @@ import {
 } from './types/DocumentRepresentation';
 import logger from './utils/Logger';
 
-let mutoolImagesFolder: string = '';
 let mutoolExtractionFolder: string = '';
 
 export class CommandExecuter {
@@ -56,7 +55,7 @@ export class CommandExecuter {
           error: `${cmd.toString()} was not found on the system. Are you sure it is installed and added to PATH?`,
         });
       }
-      logger.info(`executing command: ${command}, ${args.join(' ')}`);
+      logger.info(`executing command: ${command} ${args.join(' ')}`);
       const { stderr, stdout, status } = spawnSync(command, args, options);
       if (status === 0) {
         return resolve((stdout || '').toString());
@@ -184,49 +183,6 @@ export function getPythonLocation(): string {
   }
 }
 
-/**
- * Returns the location of the pdf2txt command on the system
- */
-export function getPdf2txtLocation(): string {
-  const pdf2txtLocation: string = getCommandLocationOnSystem('pdf2txt.py', 'pdf2txt');
-  if (!pdf2txtLocation) {
-    logger.warn(
-      `Unable to find pdf2txt, the pdfminer tool on the system. Are you sure it is installed?`,
-    );
-    return '';
-  } else {
-    logger.debug(`pdf2txt was found at ${pdf2txtLocation}`);
-    return pdf2txtLocation;
-  }
-}
-
-/**
- * Returns the location of the dumppdf command on the system
- */
-export function getDumppdfLocation(): string {
-  const dumppdfLocation: string = getCommandLocationOnSystem('dumppdf.py', 'dumppdf');
-  if (!dumppdfLocation) {
-    logger.warn(
-      `Unable to find dump, the pdfminer tool on the system. Are you sure it is installed?`,
-    );
-    return '';
-  } else {
-    logger.debug(`dumppdf was found at ${dumppdfLocation}`);
-    return dumppdfLocation;
-  }
-}
-
-export function getMutoolImagesPrefix(): string {
-  return 'page';
-}
-
-export function getMutoolImagesFolder(): string {
-  if (!mutoolImagesFolder) {
-    mutoolImagesFolder = getTemporaryDirectory();
-  }
-  return mutoolImagesFolder;
-}
-
 export function getMutoolExtractionFolder(): string {
   if (!mutoolExtractionFolder) {
     mutoolExtractionFolder = getTemporaryDirectory();
@@ -269,21 +225,19 @@ export async function correctImageForRotation(srcImg: string): Promise<RotationC
     translation: { x: 0, y: 0 },
   };
 
-  const pythonLocation = getPythonLocation();
-  if (pythonLocation !== '') {
-    const args: string[] = [path.join(__dirname, '../assets/ImageCorrection.py'), srcImg];
-    const ret = spawnSync(pythonLocation, args);
-    if (ret.status !== 0) {
-      logger.warn(
-        `Error running image rotation calculation: ${ret.stderr}.. using the original image.`,
-      );
-    } else {
-      const rotationData = JSON.parse(ret.stdout.toString());
-      correctionInfo.fileName = rotationData.filename;
-      correctionInfo.degrees = rotationData.degrees;
-      correctionInfo.origin = rotationData.origin;
-      correctionInfo.translation = rotationData.translation;
-    }
+  const args: string[] = [path.join(__dirname, '../assets/ImageCorrection.py'), srcImg];
+  try {
+    const data = await CommandExecuter.run(['python3', 'python'], args);
+    const rotationData = JSON.parse(data);
+    correctionInfo.fileName = rotationData.filename;
+    correctionInfo.degrees = rotationData.degrees;
+    correctionInfo.origin = rotationData.origin;
+    correctionInfo.translation = rotationData.translation;
+  } catch ({ error }) {
+    logger.error(error);
+    logger.warn(
+      `Error running image rotation calculation.. using the original image.`,
+    );
   }
   return correctionInfo;
 }

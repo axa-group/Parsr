@@ -45,15 +45,6 @@ export function execute(pdfInputFile: string): Promise<Document> {
   return new Promise<Document>((resolveDocument, rejectDocument) => {
     return utils.repairPdf(pdfInputFile).then((repairedPdf: string) => {
       const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-
-      // find pdfminer's pdf2txt.py script
-      const pdf2txtLocation: string = utils.getPdf2txtLocation();
-
-      // If either of the tools could not be found, return an empty document and display warning
-      if (pdf2txtLocation === '') {
-        rejectDocument(`Could not find the necessary libraries..`);
-      }
-
       logger.info(`Extracting file contents with pdfminer's pdf2txt.py tool...`);
 
       const pdf2txtArguments: string[] = [
@@ -66,20 +57,12 @@ export function execute(pdfInputFile: string): Promise<Document> {
         repairedPdf,
       ];
 
-      logger.debug(`${pdf2txtLocation} ${pdf2txtArguments.join(' ')}`);
-
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const pdf2txt = utils.spawn(pdf2txtLocation, pdf2txtArguments);
-
-      pdf2txt.stderr.on('data', data => {
-        logger.error('pdfminer error:', data.toString('utf8'));
-      });
-
-      pdf2txt.on('close', pdf2txtReturnCode => {
-        if (pdf2txtReturnCode === 0) {
+      utils.CommandExecuter.run(['pdf2txt.py', 'pdf2txt'], pdf2txtArguments)
+        .then(() => {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
             logger.debug(`Converting pdfminer's XML output to JS object..`);
@@ -91,11 +74,15 @@ export function execute(pdfInputFile: string): Promise<Document> {
           } catch (err) {
             rejectDocument(`parseXml failed: ${err}`);
           }
-        } else {
-          rejectDocument(`pdf2txt return code is ${pdf2txtReturnCode}`);
-        }
-      });
-      // return doc;
+        })
+        .catch(({ error, found }) => {
+          logger.error(error);
+          if (!found) {
+            rejectDocument(`Could not find the necessary libraries..`);
+          } else {
+            rejectDocument(`pdf2txt error: ${error}`);
+          }
+        });
     });
   });
 }

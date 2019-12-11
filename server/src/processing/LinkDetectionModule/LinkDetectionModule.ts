@@ -84,31 +84,15 @@ export class LinkDetectionModule extends Module {
   */
   private getFileMetadata(pdfFilePath: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-      const dumppdfLocation: string = utils.getDumppdfLocation();
-      if (dumppdfLocation === "") {
-        reject(`Could not find the necessary libraries..`);
-      }
-
       logger.info(`Extracting metadata with pdfminer's dumppdf.py tool...`);
-
+      const xmlOutputFile: string = utils.getTemporaryFile('.xml');
       const dumppdfArguments = ['-a', '-o', xmlOutputFile, pdfFilePath];
-
-      logger.debug(`${dumppdfLocation} ${dumppdfArguments.join(' ')}`);
 
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
-
-      const dumppdf = utils.spawn(dumppdfLocation, dumppdfArguments);
-
-      dumppdf.stderr.on('data', data => {
-        logger.error('dumppdf error:', data.toString('utf8'));
-        reject(data.toString('utf8'));
-      });
-
-      dumppdf.on('close', async code => {
-        if (code === 0) {
+      utils.CommandExecuter.run(['dumppdf.py', 'dumppdf'], dumppdfArguments)
+        .then(() => {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
             logger.debug(`Converting dumppdf's XML output to JS object..`);
@@ -118,10 +102,15 @@ export class LinkDetectionModule extends Module {
           } catch (err) {
             reject(`parseXml failed: ${err}`);
           }
-        } else {
-          reject(`dumppdf return code is ${code}`);
-        }
-      });
+        })
+        .catch(({ found, error }) => {
+          logger.error(error);
+          if (!found) {
+            reject(`Could not find the necessary libraries..`);
+          } else {
+            reject(error);
+          }
+        });
     });
   }
 
