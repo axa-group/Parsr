@@ -75,7 +75,7 @@ export class TesseractExtractor extends Extractor {
       }
       const outPutFilePath = folder + '/Sample_%03d.tiff';
       utils.CommandExecuter.run(
-        ['magick convert', 'convert'],
+        utils.CommandExecuter.COMMANDS.CONVERT,
         [
           '-density',
           '300x300',

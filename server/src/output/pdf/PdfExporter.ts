@@ -34,7 +34,7 @@ export class PdfExporter extends Exporter {
     const markdownExporter = new MarkdownExporter(this.doc, this.includeHeaderFooter);
     return markdownExporter.export(markdownFilename).then(() => {
       return utils.CommandExecuter.run(
-        'pandoc',
+        utils.CommandExecuter.COMMANDS.PANDOC,
         [
           '-f',
           'markdown_github+all_symbols_escapable',

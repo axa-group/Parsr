@@ -44,7 +44,7 @@ export function setPageDimensions(doc: Document, inputFileName: string): Promise
   function getPageDimensions(filename: string): Promise<Dimensions[]> {
     return new Promise<Dimensions[]>((resolve, reject) => {
       utils.CommandExecuter.run(
-        ['magick identify', 'identify'],
+        utils.CommandExecuter.COMMANDS.IDENTIFY,
         [
           '-format',
           '%[fx:w]x%[fx:h],',

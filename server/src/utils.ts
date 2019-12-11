@@ -37,6 +37,17 @@ import logger from './utils/Logger';
 let mutoolExtractionFolder: string = '';
 
 export class CommandExecuter {
+  public static COMMANDS = {
+    MUTOOL: 'mutool',
+    PDF2TXT: ['pdf2txt.py', 'pdf2txt'],
+    IDENTIFY: ['magick identify', 'identify'],
+    CONVERT: ['magick convert', 'convert'],
+    PANDOC: 'pandoc',
+    DUMPPDF: ['dumppdf.py', 'dumppdf'],
+    PYTHON: ['python3', 'python'],
+    QPDF: 'qpdf',
+  };
+
   public static async run(
     cmd: string | string[],
     args: string[],
@@ -73,7 +84,7 @@ export class CommandExecuter {
 export async function repairPdf(filePath: string) {
   let qpdfOutputFile = getTemporaryFile('.pdf');
   try {
-    await CommandExecuter.run('qpdf', ['--decrypt', filePath, qpdfOutputFile]);
+    await CommandExecuter.run(CommandExecuter.COMMANDS.QPDF, ['--decrypt', filePath, qpdfOutputFile]);
     logger.info(`qpdf repair successfully performed on file ${filePath}. New file at: ${qpdfOutputFile}`);
   } catch ({ found, error }) {
     logger.warn(error);
@@ -85,7 +96,7 @@ export async function repairPdf(filePath: string) {
 
   return new Promise<string>(resolve => {
     const mupdfOutputFile = getTemporaryFile('.pdf');
-    CommandExecuter.run('mutool', ['clean', qpdfOutputFile, mupdfOutputFile])
+    CommandExecuter.run(CommandExecuter.COMMANDS.MUTOOL, ['clean', qpdfOutputFile, mupdfOutputFile])
       .then(() => {
         // Check that the file is correctly written on the file system
         fs.fsyncSync(fs.openSync(mupdfOutputFile, 'r+'));
@@ -213,7 +224,7 @@ export async function correctImageForRotation(srcImg: string): Promise<RotationC
 
   const args: string[] = [path.join(__dirname, '../assets/ImageCorrection.py'), srcImg];
   try {
-    const data = await CommandExecuter.run(['python3', 'python'], args);
+    const data = await CommandExecuter.run(CommandExecuter.COMMANDS.PYTHON, args);
     const rotationData = JSON.parse(data);
     correctionInfo.fileName = rotationData.filename;
     correctionInfo.degrees = rotationData.degrees;
