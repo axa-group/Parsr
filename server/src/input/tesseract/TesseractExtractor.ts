@@ -67,9 +67,11 @@ export class TesseractExtractor extends Extractor {
     return new Promise((resolve, reject) => {
       const folder = path.dirname(pdfPath).concat('/samples');
       try {
-        fs.mkdirSync(folder);
+        if (!fs.existsSync(folder)) {
+          fs.mkdirSync(folder);
+        }
       } catch (e) {
-        reject(e);
+        throw e;
       }
       const outPutFilePath = folder + '/Sample_%03d.tiff';
       utils.CommandExecuter.run(
