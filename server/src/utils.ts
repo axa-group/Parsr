@@ -55,7 +55,7 @@ export class CommandExecuter {
           error: `${cmd.toString()} was not found on the system. Are you sure it is installed and added to PATH?`,
         });
       }
-      logger.info(`executing command: ${command} ${args.join(' ')}`);
+      logger.debug(`executing command: ${command} ${args.join(' ')}`);
       const { stderr, stdout, status } = spawnSync(command, args, options);
       if (status === 0) {
         return resolve((stdout || '').toString());
@@ -167,20 +167,6 @@ export function spawn(cmd: string, args: string[], options: any = {}): any {
     args.unshift(...cmdComponents.splice(1, cmdComponents.length));
   }
   return spawnChildProcess(cmdComponents.join(' '), args, options);
-}
-
-/**
- * Returns the location of the python command on the system
- */
-export function getPythonLocation(): string {
-  const pythonLocation: string = getCommandLocationOnSystem('python3', 'python');
-  if (!pythonLocation) {
-    logger.warn(`Unable to find python. Are you sure it is installed?`);
-    return '';
-  } else {
-    logger.debug(`python was found at ${pythonLocation}`);
-    return pythonLocation;
-  }
 }
 
 export function getMutoolExtractionFolder(): string {

@@ -29,11 +29,11 @@ export interface TableExtractorResult {
 }
 
 export interface TableExtractor {
-  readTables(inputFile: string, options: Options): TableExtractorResult;
+  readTables(inputFile: string, options: Options): Promise<TableExtractorResult>;
 }
 
 const defaultExtractor: TableExtractor = {
-  readTables(inputFile: string, options: Options): TableExtractorResult {
+  async readTables(inputFile: string, options: Options): Promise<TableExtractorResult> {
     let pages: string = 'all';
     let flavor: string = 'lattice';
     const lineScale: string = '70';
@@ -48,16 +48,6 @@ const defaultExtractor: TableExtractor = {
       flavor = options.flavor;
     }
 
-    // find python executable name
-    const pythonLocation: string = utils.getPythonLocation();
-    if (pythonLocation === '') {
-      return {
-        stdout: '',
-        stderr: 'Unable to find python on the system. Are you sure it is installed?',
-        status: 10,
-      };
-    }
-
     const scriptArgs = [
       __dirname + '/../../../assets/TableDetectionScript.py',
       inputFile,
@@ -70,21 +60,28 @@ const defaultExtractor: TableExtractor = {
       scriptArgs.push(options.table_areas.join(';'));
     }
 
-    const tableExtractor = utils.spawnSync(pythonLocation, scriptArgs);
-
-    if (!tableExtractor.stdout || !tableExtractor.stderr) {
-      return {
-        stdout: '',
-        stderr: 'Unable to run python script. Are you sure camelot-py[cv] is installed?',
-        status: 10,
-      };
-    }
-
-    return {
-      stdout: tableExtractor.stdout.toString(),
-      stderr: tableExtractor.stderr.toString(),
-      status: tableExtractor.status,
-    };
+    return utils.CommandExecuter.run(['python3', 'python'], scriptArgs)
+      .then((stdout) => ({
+        stdout,
+        stderr: '',
+        status: 0,
+      }))
+      .catch(({ error, found }) => {
+        logger.error(error);
+        if (!found) {
+          return {
+            stdout: '',
+            stderr: 'Unable to find python on the system. Are you sure it is installed?',
+            status: 10,
+          };
+        } else {
+          return {
+            stdout: '',
+            stderr: error,
+            status: 10,
+          };
+        }
+      });
   },
 };
 
@@ -92,12 +89,17 @@ export class TableDetectionModule extends Module<Options> {
   public static moduleName = 'table-detection';
   private extractor: TableExtractor;
 
-  constructor(options?: Options, tableExtractor: TableExtractor = defaultExtractor) {
+  constructor(options?: Options) {
     super(options, defaultOptions);
-    this.extractor = tableExtractor;
+    this.setExtractor(defaultExtractor);
   }
 
-  public main(doc: Document): Document {
+  public setExtractor(extractor: TableExtractor) {
+    this.extractor = extractor;
+
+  }
+
+  public async main(doc: Document): Promise<Document> {
     const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
     if (fileType === null || fileType.ext !== 'pdf') {
       logger.warn(
@@ -126,17 +128,18 @@ export class TableDetectionModule extends Module<Options> {
       return doc;
     }
 
-    this.options.runConfig.forEach((config, n) => {
-      const tableExtractor = this.extractor.readTables(doc.inputFile, config);
+    for (let i = 0; i < this.options.runConfig.length; i += 1) {
+      const config = this.options.runConfig[i];
+      const tableExtractor = await this.extractor.readTables(doc.inputFile, config);
       if (tableExtractor.status !== 0) {
-        logger.error(`there was a problem executing table config no. ${n + 1}: ${JSON.stringify(config)}`);
+        logger.error(`there was a problem executing table config no. ${i + 1}: ${JSON.stringify(config)}`);
         logger.error(tableExtractor.stderr);
       } else {
         const tablesData = JSON.parse(tableExtractor.stdout);
         this.addTables(tablesData, doc);
         this.removeWordsUsedInCells(doc);
       }
-    });
+    }
     return doc;
   }
 
