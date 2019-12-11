@@ -64,7 +64,9 @@ export class TesseractExtractor extends Extractor {
   private pdfToImages(pdfPath: string): string[] {
     const folder = path.dirname(pdfPath).concat('/samples');
     try {
-      fs.mkdirSync(folder);
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder);
+      }
     } catch (e) {
       throw e;
     }

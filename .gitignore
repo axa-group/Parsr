@@ -112,3 +112,6 @@ __pycache__
 
 # temporary output folder in the root - by default used for temporary output storage in launch.json
 tmp
+
+# test directories containing temp data
+test/assets/samples
