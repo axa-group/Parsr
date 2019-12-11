@@ -121,33 +121,38 @@ export class ApiServer {
     <table>
       <tr>
         <th>Dependency name</th>
-        <th>Found</th>
+        <th>Found?</th>
+        <th>Required?</th>
         <th>Path</th>
       </tr>
     `;
     const whereIs = os.platform() === 'win32' ? 'where' : 'which';
-    const result = dependencies.map((group: any) =>
-      (group as string[]).map(name => {
-        const { status, stdout } = spawnSync(whereIs, [`${name}`]);
-        return {
-          name,
-          found: status === 0,
-          path: status === 0 ? stdout.toString() : '',
-        };
-      }).find(g => g.found) || {
-        name: group[0],
-        found: false,
-        path: '',
-      },
-    );
+    const result = dependencies.required.concat(dependencies.optional)
+      .map((group: any) =>
+        (group as string[]).map(name => {
+          const { status, stdout } = spawnSync(whereIs, [`${name}`]);
+          return {
+            name,
+            found: status === 0,
+            path: status === 0 ? stdout.toString() : '',
+            required: dependencies.required.includes(group),
+          };
+        }).find(g => g.found) || {
+          name: group[0],
+          found: false,
+          path: '',
+          required: dependencies.required.includes(group),
+        },
+      );
 
     res.type('html').send(
       response.concat(
         result.map(r =>
           `<tr>
             <td>${r.name}</td>
-            <td class="${r.found ? 'found' : 'not found'}"/>
-            <td>${r.path}</td>
+            <td class="${r.found ? 'found' : 'not found'}">${r.found ? 'YES' : 'NO'}</td>
+            <td>${r.required ? 'YES' : 'NO'}</td>
+            <td>${r.path || '-'}</td>
           </tr>`,
         ).join(''),
         '</table>',
