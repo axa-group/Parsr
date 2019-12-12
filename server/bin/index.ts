@@ -21,6 +21,7 @@ import * as path from 'path';
 import { Cleaner } from '../src/Cleaner';
 import { AbbyyTools } from '../src/input/abbyy/AbbyyTools';
 import { AbbyyToolsXml } from '../src/input/abbyy/AbbyyToolsXml';
+import { EmailExtractor } from '../src/input/email/EmailExtractor';
 import { GoogleVisionExtractor } from '../src/input/google-vision/GoogleVisionExtractor';
 import { JsonExtractor } from '../src/input/json/JsonExtractor';
 import { PDFJsExtractor } from '../src/input/pdf.js/PDFJsExtractor';
@@ -105,9 +106,10 @@ function main(): void {
     orchestrator = getImgExtractor();
   } else if (fileType.ext === 'json') {
     orchestrator = getJsonExtractor();
+  } else if (fileType.ext === 'eml') {
+    orchestrator = getEmlExtractor();
   } else {
-    process.exit(1);
-    throw new Error('Input file is neither a PDF nor an image');
+    throw new Error('Input file format is unsupported');
   }
 
   /**
@@ -140,8 +142,7 @@ function main(): void {
       })
       .then((doc: Document) => {
         const promises: Array<Promise<any>> = [];
-
-        if (config.output.formats.json) {
+        if (config.output.formats.json && fileTypeInfo.ext !== 'eml') {
           promises.push(
             new JsonExporter(doc, config.output.granularity).export(
               `${outputFolder}/${documentName}.json`,
@@ -217,6 +218,15 @@ function main(): void {
     return !doc.pages
       .map(p => p.elements.length === 1 && p.elements[0] instanceof Image)
       .includes(false);
+  }
+
+  /**
+   * Returns the email extraction orchestrator.
+   * This extractor has no need of a configuration file or a cleaner
+   * @returns The Orchestrator instance
+   */
+  function getEmlExtractor(): Orchestrator {
+    return new Orchestrator(new EmailExtractor(null), null);
   }
 
   /**

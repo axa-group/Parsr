@@ -52,8 +52,13 @@ export class Orchestrator {
     logger.info(`Using extractor: ${this.extractor.constructor.name}`);
 
     return this.extractor.run(filename).then((doc: Document) => {
-      logger.info('Running cleaner...');
-      return this.cleaner.run(doc);
+      if (this.cleaner) {
+        logger.info('Running cleaner...');
+        return this.cleaner.run(doc);
+      } else {
+        logger.info(`Skipping cleaning process for ${this.extractor.constructor.name}.`);
+        return doc;
+      }
     });
   }
 }
