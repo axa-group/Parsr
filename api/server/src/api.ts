@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { spawnSync } from 'child_process';
+import { exec, spawnSync } from 'child_process';
 import * as crypto from 'crypto';
 import express from 'express';
 import { Request, Response } from 'express-serve-static-core';
@@ -438,7 +438,27 @@ export class ApiServer {
     let convert;
 
     if (fileType.mime.startsWith('image')) {
-      convert = require('sharp')(binder.input).resize(200, 200, { fit: 'outside' }).toFile(filePath);
+      const command = this.getCommandLocationOnSystem('magick convert', 'convert');
+      if (command) {
+        convert = new Promise((resolve, reject) => {
+          exec([
+            command,
+            '-resize',
+            '200x200\\>',
+            binder.input,
+            filePath,
+          ].join(' '), (err) => {
+            if (err) {
+              return reject(err);
+            }
+            return resolve();
+          });
+        });
+      } else {
+        convert = Promise.reject(
+          'Cannot find ImageMagick convert tool. Are you sure it is installed?',
+        );
+      }
     } else if (fileType.ext === 'pdf') {
       const pdf2Pic = require('pdf2pic');
       const pdf2picConfig = new pdf2Pic({
@@ -460,6 +480,8 @@ export class ApiServer {
               responseType: 'blob',
             },
           });
+        }).catch((error: string) => {
+          res.status(500).send(error);
         });
       } catch (error) {
         res.status(500).send(error);
@@ -496,5 +518,36 @@ export class ApiServer {
 
   private getUUID(): string {
     return crypto.randomBytes(15).toString('hex');
+  }
+
+  /**
+   * returns the location of the executable locator command on the current system.
+   * on linux/unix machines, this is 'which', on windows machines, it is 'where'.
+   */
+  private getExecLocationCommandOnSystem(): string {
+    return os.platform() === 'win32' ? 'where' : 'which';
+  }
+
+  /**
+   * returns the location of a command on a system.
+   * @param firstChoice the first choice name of the executable to be located
+   * @param secondChoice the second choice name of the executable to be located
+   * @param thirdChoice the third choice name of the executable to be located
+   */
+  private getCommandLocationOnSystem(
+    firstChoice: string,
+    secondChoice: string = '',
+    thirdChoice: string = '',
+  ): string {
+    const cmdComponents: string[] = firstChoice.split(' ');
+    const info = spawnSync(this.getExecLocationCommandOnSystem(), [cmdComponents[0]]);
+    const result = info.status === 0 ? info.stdout.toString().split(os.EOL)[0] : null;
+    if (result === null && secondChoice !== '') {
+      return this.getCommandLocationOnSystem(secondChoice, thirdChoice);
+    }
+    if (result === null) {
+      return null;
+    }
+    return firstChoice;
   }
 }
