@@ -22,18 +22,18 @@
     "@fortawesome/fontawesome-free": "^5.10.2",
     "@mdi/font": "^4.3.95",
     "@mdi/js": "^4.3.95",
-    "@vue/cli-plugin-babel": "^3.9.0",
-    "@vue/cli-plugin-eslint": "^3.9.0",
-    "@vue/cli-service": "^3.9.0",
+    "@vue/cli-plugin-babel": "^4.1.1",
+    "@vue/cli-plugin-eslint": "^4.1.1",
+    "@vue/cli-service": "^4.1.1",
     "@vue/eslint-config-prettier": "^4.0.1",
-    "babel-eslint": "^10.0.1",
     "babel-core": "^6.0.0",
+    "babel-eslint": "^10.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "material-design-icons-iconfont": "^5.0.1",
+    "serialize-javascript": ">=2.1.1",
     "vue-cli-plugin-vuetify": "^0.6.3",
     "vue-template-compiler": "^2.6.10",
-    "vuetify-loader": "^1.2.2",
-    "serialize-javascript": ">=2.1.1"
+    "vuetify-loader": "^1.2.2"
   }
 }
