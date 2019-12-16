@@ -1,14 +1,13 @@
 {
-    "required": [
-        ["magick convert", "convert"],
-        ["magick identify", "identify"],
-        ["dumppdf.py", "dumppdf"],
-        ["pdf2txt.py", "pdf2txt"],
-        ["python3", "python"],
-        ["qpdf"]
-    ],
-    "optional": [
-        ["mutool"],
-        ["pandoc"]
-    ]
+  "required": [
+    ["magick convert", "convert"],
+    ["magick identify", "identify"],
+    ["dumppdf.py", "dumppdf"],
+    ["pdf2txt.py", "pdf2txt"],
+    ["python3", "python"],
+    ["qpdf"],
+    ["camelot"],
+    ["tesseract"]
+  ],
+  "optional": [["mutool"], ["pandoc"]]
 }
