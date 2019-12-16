@@ -1,25 +1,21 @@
 {
-	"defaultSeverity": "error",
-	"extends": ["tslint:recommended"],
+  "defaultSeverity": "error",
+  "extends": "tslint:recommended",
   "linterOptions": {
-      "exclude": [
-          "/dist",
-          "/server/bin/",
-          "/api/dist"       
-      ]
+    "exclude": ["dist", "api/dist", "server/src/processing/HeadingDetectionDTModule/model.js"]
   },
-	"jsRules": {},
-	"rules": {        
-		"quotemark": false,
-		"interface-over-type-literal": [false],
-		"interface-name": [true, "never-prefix"],
-		"indent": [true, "spaces", 2],
-		"forin": false,
-		"arrow-parens": false,
-		"object-literal-key-quotes": false,
-		"adjacent-overload-signatures": false,
-		"variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
-		"object-literal-sort-keys": [false]
-	},
-	"rulesDirectory": []
+  "jsRules": {},
+  "rules": {
+    "quotemark": false,
+    "interface-over-type-literal": [false],
+    "interface-name": [true, "never-prefix"],
+    "indent": [true, "spaces", 2],
+    "forin": false,
+    "arrow-parens": false,
+    "object-literal-key-quotes": false,
+    "adjacent-overload-signatures": false,
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+    "object-literal-sort-keys": [false]
+  },
+  "rulesDirectory": []
 }

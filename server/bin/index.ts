@@ -23,6 +23,7 @@ import { AbbyyTools } from '../src/input/abbyy/AbbyyTools';
 import { AbbyyToolsXml } from '../src/input/abbyy/AbbyyToolsXml';
 import { GoogleVisionExtractor } from '../src/input/google-vision/GoogleVisionExtractor';
 import { JsonExtractor } from '../src/input/json/JsonExtractor';
+import { PDFJsExtractor } from '../src/input/pdf.js/PDFJsExtractor';
 import { PdfminerExtractor } from '../src/input/pdfminer/PdfminerExtractor';
 import { TesseractExtractor } from '../src/input/tesseract/TesseractExtractor';
 import { Orchestrator } from '../src/Orchestrator';
@@ -64,7 +65,7 @@ function main(): void {
 
   printVersion();
 
-  let filePath: string = path.resolve(commander.inputFile);
+  const filePath: string = path.resolve(commander.inputFile);
   const outputFolder: string = path.resolve(commander.outputFolder);
   if (!fs.existsSync(outputFolder)) {
     logger.info(`Requested output folder ${outputFolder} did not exist. Creating... `);
@@ -72,7 +73,7 @@ function main(): void {
       fs.mkdirSync(outputFolder);
     } catch (err) {
       logger.error(`Error creating the requested output folder ${outputFolder}: ${err}`);
-      throw(err);
+      throw err;
     }
   }
   const documentName: string = commander.documentName;
@@ -125,9 +126,10 @@ function main(): void {
       .run(filePath)
       .then((doc: Document) => {
         if (fileTypeInfo.ext === 'pdf' && isDocumentImageBased(doc)) {
-          logger.info(`Since the input file is a PDF with only images, trying to run an OCR on all pages...`);
+          logger.info(
+            `Since the input file is a PDF with only images, trying to run an OCR on all pages...`,
+          );
           if (config.extractor.img === 'tesseract') {
-            filePath = pdfToImage(filePath);
             orchestrator = new Orchestrator(new TesseractExtractor(config), cleaner);
           } else {
             orchestrator = new Orchestrator(new AbbyyTools(config), cleaner);
@@ -212,7 +214,9 @@ function main(): void {
    * This is true for example, in the case of scanned documents as PDFs
    */
   function isDocumentImageBased(doc: Document): boolean {
-    return !doc.pages.map(p => (p.elements.length === 1) && (p.elements[0] instanceof Image)).includes(false);
+    return !doc.pages
+      .map(p => p.elements.length === 1 && p.elements[0] instanceof Image)
+      .includes(false);
   }
 
   /**
@@ -224,8 +228,9 @@ function main(): void {
     if (config.extractor.pdf === 'abbyy') {
       return new Orchestrator(new AbbyyTools(config), cleaner);
     } else if (config.extractor.pdf === 'tesseract') {
-      filePath = pdfToImage(filePath);
       return new Orchestrator(new TesseractExtractor(config), cleaner);
+    } else if (config.extractor.pdf === 'pdfjs') {
+      return new Orchestrator(new PDFJsExtractor(config), cleaner);
     } else {
       return new Orchestrator(new PdfminerExtractor(config), cleaner);
     }
@@ -253,33 +258,6 @@ function main(): void {
     } else {
       return new Orchestrator(new AbbyyTools(config), cleaner);
     }
-  }
-
-  /**
-   * Returns the pdf file extraction orchestrator using tesseract as the extractor.
-   * First, the pdf is sampled for it to be converted into an image, then, an image extraction orchestrator is returned.
-   *
-   * @returns The Orchestrator instance
-   */
-  function pdfToImage(pdfPath: string): string {
-    const tifFilePath = pdfPath + '.tiff';
-    const ret = utils.spawnSync( utils.getConvertLocation(), [
-      '-density',
-      '200x200',
-      '-compress',
-      'Fax',
-      pdfPath,
-      tifFilePath,
-    ]);
-
-    if (ret.status !== 0) {
-      logger.error(ret.stderr);
-      throw new Error(
-        'ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)',
-      );
-    }
-
-    return tifFilePath;
   }
 }
 

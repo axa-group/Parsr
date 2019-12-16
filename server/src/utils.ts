@@ -34,8 +34,85 @@ import {
 } from './types/DocumentRepresentation';
 import logger from './utils/Logger';
 
-let mutoolImagesFolder: string = '';
 let mutoolExtractionFolder: string = '';
+
+export class CommandExecuter {
+  public static COMMANDS = {
+    MUTOOL: 'mutool',
+    PDF2TXT: ['pdf2txt.py', 'pdf2txt'],
+    IDENTIFY: ['magick identify', 'identify'],
+    CONVERT: ['magick convert', 'convert'],
+    PANDOC: 'pandoc',
+    DUMPPDF: ['dumppdf.py', 'dumppdf'],
+    PYTHON: ['python3', 'python'],
+    QPDF: 'qpdf',
+  };
+
+  public static async run(
+    cmd: string | string[],
+    args: string[],
+    options?: any,
+  ): Promise<string> {
+    return new Promise((resolve, reject) => {
+      let command = '';
+      if (Array.isArray(cmd)) {
+        command = getCommandLocationOnSystem(cmd[0], cmd[1] || '', cmd[2] || '');
+      } else {
+        command = getCommandLocationOnSystem(cmd);
+      }
+      if (!command) {
+        return reject({
+          found: false,
+          error: `${cmd.toString()} was not found on the system. Are you sure it is installed and added to PATH?`,
+        });
+      }
+      logger.debug(`executing command: ${command} ${args.join(' ')}`);
+      const { stderr, stdout, status } = spawnSync(command, args, options);
+      if (status === 0) {
+        return resolve((stdout || '').toString());
+      }
+      return reject({ found: true, error: (stderr || '').toString() });
+    });
+  }
+}
+
+/**
+ * Repair a pdf using the external qpdf and mutool utilities.
+ * Use qpdf to decrcrypt the pdf to avoid errors due to DRMs.
+ * @param filePath The absolute filename and path of the pdf file to be repaired.
+ */
+export async function repairPdf(filePath: string) {
+  let qpdfOutputFile = getTemporaryFile('.pdf');
+  try {
+    await CommandExecuter.run(CommandExecuter.COMMANDS.QPDF, ['--decrypt', filePath, qpdfOutputFile]);
+    logger.info(`qpdf repair successfully performed on file ${filePath}. New file at: ${qpdfOutputFile}`);
+  } catch ({ found, error }) {
+    logger.warn(error);
+    if (!found) {
+      logger.warn(`qpdf not found on the system. Not repairing the PDF...`);
+    }
+    qpdfOutputFile = filePath;
+  }
+
+  return new Promise<string>(resolve => {
+    const mupdfOutputFile = getTemporaryFile('.pdf');
+    CommandExecuter.run(CommandExecuter.COMMANDS.MUTOOL, ['clean', qpdfOutputFile, mupdfOutputFile])
+      .then(() => {
+        // Check that the file is correctly written on the file system
+        fs.fsyncSync(fs.openSync(mupdfOutputFile, 'r+'));
+        logger.info(
+          `mupdf cleaning successfully performed on file ${qpdfOutputFile}. Resulting file: ${mupdfOutputFile}`,
+        );
+        resolve(mupdfOutputFile);
+      }).catch(({ found, error }) => {
+        logger.warn(error);
+        if (!found) {
+          logger.warn('MuPDF not installed !! Skip clean PDF.');
+        }
+        resolve(qpdfOutputFile);
+      });
+  });
+}
 
 export function replaceObject<T extends Element, U extends T>(
   doc: Document,
@@ -103,77 +180,6 @@ export function spawn(cmd: string, args: string[], options: any = {}): any {
   return spawnChildProcess(cmdComponents.join(' '), args, options);
 }
 
-/**
- * Returns the location of the imagemagick identify command on the system
- */
-export function getIdentifyLocation(): string {
-  const convertLocation: string = getCommandLocationOnSystem('magick identify', 'identify');
-  if (!convertLocation) {
-    logger.warn(`Cannot find ImageMagick identify tool. Are you sure it is installed?`);
-    return '';
-  } else {
-    logger.debug(`ImageMagick was found at ${convertLocation}`);
-    return convertLocation;
-  }
-}
-
-/**
- * Returns the location of the imagemagick convert command on the system
- */
-export function getConvertLocation(): string {
-  const convertLocation: string = getCommandLocationOnSystem('magick convert', 'convert');
-  if (!convertLocation) {
-    logger.warn(`Cannot find ImageMagick convert tool. Are you sure it is installed?`);
-    return '';
-  } else {
-    logger.debug(`ImageMagick was found at ${convertLocation}`);
-    return convertLocation;
-  }
-}
-
-/**
- * Returns the location of the pipenv's Parsr environment's location
- */
-export function getPipenvParsrLocation(): string {
-  const pipenvSpawn = spawnSync(getCommandLocationOnSystem('pipenv'), ['--venv']);
-  return pipenvSpawn.status === 0 ? pipenvSpawn.stdout.toString().split(os.EOL)[0] : "";
-}
-
-/**
- * Returns the location of the python command on the system
- */
-export function getPythonLocation(): string {
-  const pipEnvParsrLocation: string = getPipenvParsrLocation();
-  return pipEnvParsrLocation !== "" ? path.join(getPipenvParsrLocation(), 'bin', 'python3') : "";
-}
-
-/**
- * Returns the location of the pdf2txt command on the system
- */
-export function getPdf2txtLocation(): string {
-  const pipEnvParsrLocation: string = getPipenvParsrLocation();
-  return pipEnvParsrLocation !== "" ? path.join(getPipenvParsrLocation(), 'bin', 'pdf2txt.py') : "";
-}
-
-/**
- * Returns the location of the dumppdf command on the system
- */
-export function getDumppdfLocation(): string {
-  const pipEnvParsrLocation: string = getPipenvParsrLocation();
-  return pipEnvParsrLocation !== "" ? path.join(getPipenvParsrLocation(), 'bin', 'dumppdf.py') : "";
-}
-
-export function getMutoolImagesPrefix(): string {
-  return 'page';
-}
-
-export function getMutoolImagesFolder(): string {
-  if (!mutoolImagesFolder) {
-    mutoolImagesFolder = getTemporaryDirectory();
-  }
-  return mutoolImagesFolder;
-}
-
 export function getMutoolExtractionFolder(): string {
   if (!mutoolExtractionFolder) {
     mutoolExtractionFolder = getTemporaryDirectory();
@@ -193,45 +199,44 @@ export function getTemporaryFile(extension: string): string {
 }
 
 /**
- * Corrects an image for rotation and returns the new destination filename promise
- * It performs clockwise rotation using jimp
+ * Applies rotation correction given an input image and returns RotationCorrection
  * @param srcImg source image
  */
-export async function correctImageForRotation(srcImg: string): Promise<string> {
-  let rotationAngle: number;
-  let newFilename: string = srcImg;
-  const pythonLocation = getPythonLocation();
-  if (pythonLocation !== '') {
-    const args: string[] = [path.join(__dirname, '../assets/ImageRotationCorrection.py'), srcImg];
-    const ret = spawnSync(pythonLocation, args);
-    if (ret.status !== 0) {
-      logger.warn(
-        `Error running image rotation calculation: ${ret.stderr}.. using the original image.`,
-      );
-      newFilename = srcImg;
-    } else {
-      rotationAngle = parseFloat(ret.stdout);
-      if (rotationAngle > 90) {
-        rotationAngle -= 180;
-      }
-      rotationAngle *= -1;
-      if (rotationAngle === 0) {
-        logger.debug(`Rotation angle for image ${srcImg} was 0`);
-        newFilename = srcImg;
-      } else {
-        newFilename = getTemporaryFile('.' + srcImg.split('.').pop());
-        logger.debug(
-          `Rotating image ${srcImg} with angle ${rotationAngle} and saving it to ${newFilename}`,
-        );
 
-        const jimp = require('jimp');
-        await jimp.read(srcImg).then(img => {
-          img.rotate(rotationAngle).write(newFilename);
-        });
-      }
-    }
+export type RotationCorrectionCoords = {
+  x: number;
+  y: number;
+};
+export type RotationCorrection = {
+  fileName: string;
+  degrees: number;
+  origin: RotationCorrectionCoords;
+  translation: RotationCorrectionCoords;
+};
+
+export async function correctImageForRotation(srcImg: string): Promise<RotationCorrection> {
+  const correctionInfo: RotationCorrection = {
+    fileName: srcImg,
+    degrees: 0,
+    origin: { x: 0, y: 0 },
+    translation: { x: 0, y: 0 },
+  };
+
+  const args: string[] = [path.join(__dirname, '../assets/ImageCorrection.py'), srcImg];
+  try {
+    const data = await CommandExecuter.run(CommandExecuter.COMMANDS.PYTHON, args);
+    const rotationData = JSON.parse(data);
+    correctionInfo.fileName = rotationData.filename;
+    correctionInfo.degrees = rotationData.degrees;
+    correctionInfo.origin = rotationData.origin;
+    correctionInfo.translation = rotationData.translation;
+  } catch ({ error }) {
+    logger.error(error);
+    logger.warn(
+      `Error running image rotation calculation.. using the original image.`,
+    );
   }
-  return newFilename;
+  return correctionInfo;
 }
 
 /**
@@ -453,7 +458,7 @@ export function removeNull(page: Page): Page {
   if (page.elements.length - newElements.length !== 0) {
     logger.debug(
       `Null elements removed for page #${page.pageNumber}: ${page.elements.length -
-        newElements.length}`,
+      newElements.length}`,
     );
     page.elements = newElements;
   }
@@ -487,11 +492,11 @@ export function getPageRegex(): RegExp {
 
   const pageRegex = new RegExp(
     `^(?:` +
-      `(?:${pagePrefix}${pageNumber})|` +
-      `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
-      `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
-      `(?:${before}${pageNumber}${after})` +
-      `)$`,
+    `(?:${pagePrefix}${pageNumber})|` +
+    `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
+    `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
+    `(?:${before}${pageNumber}${after})` +
+    `)$`,
     'i',
   );
 
@@ -767,7 +772,7 @@ export function findMostCommonFont(fonts: Font[]): Font | undefined {
  * returns the location of the executable locator command on the current system.
  * on linux/unix machines, this is 'which', on windows machines, it is 'where'.
  */
-export function getExecLocationCommandOnSystem(): string {
+function getExecLocationCommandOnSystem(): string {
   return os.platform() === 'win32' ? 'where' : 'which';
 }
 
@@ -790,10 +795,9 @@ export function getCommandLocationOnSystem(
   }
   if (result === null) {
     return null;
-  } else {
-    cmdComponents[0] = result;
   }
-  return cmdComponents.join(' ');
+
+  return firstChoice;
 }
 
 /**

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as os from 'os';
 import { Document } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import { getTemporaryFile } from '../../utils';
@@ -33,38 +32,35 @@ export class PdfExporter extends Exporter {
   public export(outputPath: string): Promise<any> {
     const markdownFilename: string = getTemporaryFile('.md');
     const markdownExporter = new MarkdownExporter(this.doc, this.includeHeaderFooter);
-    markdownExporter.export(markdownFilename).then(() => {
-      const pandocPath = utils.spawnSync('which', ['pandoc']).output.join('');
-      if (pandocPath === '' || (/^win/i.test(os.platform()) && /no pandoc in/.test(pandocPath))) {
-        logger.warn('Pandoc not installed !! Skip PDF export.');
-        return Promise.reject();
-      } else {
-        const pandocSync = utils.spawnSync(
-          'pandoc',
-          [
-            '-f',
-            'markdown_github+all_symbols_escapable',
-            '--pdf-engine=xelatex',
-            '--quiet',
-            '-s',
-            markdownFilename,
-            '-o',
-            outputPath,
-          ],
-          {
-            cwd: process.cwd(),
-            env: process.env,
-          },
-        );
-        if (pandocSync.status === 0) {
-          logger.info(`Writing file: ${outputPath}`);
-          return Promise.resolve(pandocSync.status);
-        } else {
+    return markdownExporter.export(markdownFilename).then(() => {
+      return utils.CommandExecuter.run(
+        utils.CommandExecuter.COMMANDS.PANDOC,
+        [
+          '-f',
+          'markdown_github+all_symbols_escapable',
+          '--pdf-engine=xelatex',
+          '--quiet',
+          '-s',
+          markdownFilename,
+          '-o',
+          outputPath,
+        ],
+        {
+          cwd: process.cwd(),
+          env: process.env,
+        },
+      ).then(() => {
+        logger.info(`Writing file: ${outputPath}`);
+        return Promise.resolve();
+      })
+        .catch(({ error, found }) => {
           logger.error(`Error writing PDF file ${outputPath}`);
-          return Promise.reject(pandocSync.status);
-        }
-      }
+          logger.error(error);
+          if (!found) {
+            logger.warn('Pandoc not installed !! Skip PDF export.');
+          }
+          return Promise.reject();
+        });
     });
-    return Promise.resolve();
   }
 }

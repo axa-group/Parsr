@@ -35,7 +35,10 @@ export class LinkDetectionModule extends Module {
     let mdLinks: JSON[] = [];
     const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
     if (fileType === null || fileType.ext !== 'pdf') {
-      logger.warn(`Warning: The input file ${doc.inputFile} is not a PDF (${utils.prettifyObject(fileType)}); not using meta information for link detection..`);
+      logger.warn(
+        `Warning: Input file ${doc.inputFile} is not a PDF (${utils.prettifyObject(fileType)}); \
+        not using meta info for link detection..`,
+      );
     } else {
       mdLinks = await this.extractLinksFromMetadata(doc.inputFile);
       mdLinks = mdLinks.map((link, id) => ({
@@ -67,6 +70,7 @@ export class LinkDetectionModule extends Module {
 
   private matchTextualLinks(word: Word) {
     const linkRegexp = /\b((http|https):\/\/?)[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
+    // tslint:disable-next-line:max-line-length
     const mailRegexp = /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/;
     if (word.toString().match(linkRegexp)) {
       word.properties.targetURL = word.toString().match(linkRegexp)[0];
@@ -80,32 +84,15 @@ export class LinkDetectionModule extends Module {
   */
   private getFileMetadata(pdfFilePath: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-      const pythonLocation: string = utils.getPythonLocation();
-      const dumppdfLocation: string = utils.getDumppdfLocation();
-      if (dumppdfLocation === "" || pythonLocation === "") {
-        reject(`Could not find the necessary libraries..`);
-      }
-
       logger.info(`Extracting metadata with pdfminer's dumppdf.py tool...`);
-
-      const dumppdfArguments = [dumppdfLocation, '-a', '-o', xmlOutputFile, pdfFilePath];
-
-      logger.debug(`${pythonLocation} ${dumppdfArguments.join(' ')}`);
+      const xmlOutputFile: string = utils.getTemporaryFile('.xml');
+      const dumppdfArguments = ['-a', '-o', xmlOutputFile, pdfFilePath];
 
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
-
-      const dumppdf = utils.spawn(pythonLocation, dumppdfArguments);
-
-      dumppdf.stderr.on('data', data => {
-        logger.error('dumppdf error:', data.toString('utf8'));
-        reject(data.toString('utf8'));
-      });
-
-      dumppdf.on('close', async code => {
-        if (code === 0) {
+      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.DUMPPDF, dumppdfArguments)
+        .then(() => {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
             logger.debug(`Converting dumppdf's XML output to JS object..`);
@@ -115,10 +102,15 @@ export class LinkDetectionModule extends Module {
           } catch (err) {
             reject(`parseXml failed: ${err}`);
           }
-        } else {
-          reject(`dumppdf return code is ${code}`);
-        }
-      });
+        })
+        .catch(({ found, error }) => {
+          logger.error(error);
+          if (!found) {
+            reject(`Could not find the necessary libraries..`);
+          } else {
+            reject(error);
+          }
+        });
     });
   }
 

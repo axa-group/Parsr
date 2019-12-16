@@ -43,24 +43,11 @@ import logger from '../../utils/Logger';
  */
 export function execute(pdfInputFile: string): Promise<Document> {
   return new Promise<Document>((resolveDocument, rejectDocument) => {
-    return repairPdf(pdfInputFile).then((repairedPdf: string) => {
+    return utils.repairPdf(pdfInputFile).then((repairedPdf: string) => {
       const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-
-      // find python
-      const pythonLocation: string = utils.getPythonLocation();
-
-      // find pdfminer's pdf2txt.py script
-      const pdf2txtLocation: string = utils.getPdf2txtLocation();
-
-      // If either of the tools could not be found, return an empty document and display warning
-      if (pythonLocation === '' || pdf2txtLocation === '') {
-        rejectDocument(`Could not find the necessary libraries..`);
-      }
-
       logger.info(`Extracting file contents with pdfminer's pdf2txt.py tool...`);
 
       const pdf2txtArguments: string[] = [
-        pdf2txtLocation,
         '-c',
         'utf-8',
         '-t',
@@ -70,20 +57,12 @@ export function execute(pdfInputFile: string): Promise<Document> {
         repairedPdf,
       ];
 
-      logger.debug(`${pythonLocation} ${pdf2txtArguments.join(' ')}`);
-
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      const pdf2txt = utils.spawn(pythonLocation, pdf2txtArguments);
-
-      pdf2txt.stderr.on('data', data => {
-        logger.error('pdfminer error:', data.toString('utf8'));
-      });
-
-      pdf2txt.on('close', pdf2txtReturnCode => {
-        if (pdf2txtReturnCode === 0) {
+      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.PDF2TXT, pdf2txtArguments)
+        .then(() => {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
             logger.debug(`Converting pdfminer's XML output to JS object..`);
@@ -95,11 +74,15 @@ export function execute(pdfInputFile: string): Promise<Document> {
           } catch (err) {
             rejectDocument(`parseXml failed: ${err}`);
           }
-        } else {
-          rejectDocument(`pdf2txt return code is ${pdf2txtReturnCode}`);
-        }
-      });
-      // return doc;
+        })
+        .catch(({ error, found }) => {
+          logger.error(error);
+          if (!found) {
+            rejectDocument(`Could not find the necessary libraries..`);
+          } else {
+            rejectDocument(`pdf2txt error: ${error}`);
+          }
+        });
     });
   });
 }
@@ -363,9 +346,9 @@ function ncolourToHex(color: string): Color {
 
   const cmykToRGB = (c: number, m: number, y: number, k: number) => {
     return {
-      r: 255 * (1 - c / 100) * (1 - k / 100),
-      g: 255 * (1 - m / 100) * (1 - k / 100),
-      b: 255 * (1 - y / 100) * (1 - k / 100),
+      r: (1 - c) * (1 - k),
+      g: (1 - m) * (1 - k),
+      b: (1 - y) * (1 - k),
     };
   };
 
@@ -382,53 +365,4 @@ function ncolourToHex(color: string): Color {
     finalColor = "#000000";
   }
   return finalColor;
-}
-
-/**
- * Repair a pdf using the external qpdf and mutool utilities.
- * Use qpdf to decrcrypt the pdf to avoid errors due to DRMs.
- * @param filePath The absolute filename and path of the pdf file to be repaired.
- */
-function repairPdf(filePath: string) {
-  const qpdfPath = utils.getCommandLocationOnSystem('qpdf');
-  let qpdfOutputFile = utils.getTemporaryFile('.pdf');
-  if (qpdfPath) {
-    const process = utils.spawnSync('qpdf', ['--decrypt', filePath, qpdfOutputFile]);
-
-    if (process.status === 0) {
-      logger.info(
-        `qpdf repair successfully performed on file ${filePath}. New file at: ${qpdfOutputFile}`,
-      );
-    } else {
-      logger.warn(
-        'qpdf error for file ${filePath}:',
-        process.status,
-        process.stdout.toString(),
-        process.stderr.toString(),
-      );
-      qpdfOutputFile = filePath;
-    }
-  } else {
-    logger.warn(`qpdf not found on the system. Not repairing the PDF...`);
-    qpdfOutputFile = filePath;
-  }
-
-  return new Promise<string>(resolve => {
-    const mutoolPath = utils.getCommandLocationOnSystem('mutool');
-    if (!mutoolPath) {
-      logger.warn('MuPDF not installed !! Skip clean PDF.');
-      resolve(qpdfOutputFile);
-    } else {
-      const mupdfOutputFile = utils.getTemporaryFile('.pdf');
-      const pdfFixer = utils.spawn('mutool', ['clean', qpdfOutputFile, mupdfOutputFile]);
-      pdfFixer.on('close', () => {
-        // Check that the file is correctly written on the file system
-        fs.fsyncSync(fs.openSync(qpdfOutputFile, 'r+'));
-        logger.info(
-          `mupdf cleaning successfully performed on file ${qpdfOutputFile}. Resulting file: ${mupdfOutputFile}`,
-        );
-        resolve(mupdfOutputFile);
-      });
-    }
-  });
 }
