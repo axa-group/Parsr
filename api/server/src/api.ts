@@ -22,6 +22,7 @@ import * as fs from 'fs';
 import multer from 'multer';
 import * as os from 'os';
 import * as path from 'path';
+import dependencies from './dependencies.json';
 import { FileManager } from './FileManager';
 import logger from './Logger';
 import { ProcessManager } from './ProcessManager';
@@ -94,9 +95,69 @@ export class ApiServer {
     v1_0.get('/modules', this.handleGetModules.bind(this));
     v1_0.get('/module-config/:modulename', this.handleGetModuleConfig.bind(this));
 
+    v1_0.get('/check-installation', this.handleCheckInstallation.bind(this));
+
     app.listen(port, () => {
       logger.info(`Api listening on port ${port}!`);
     });
+  }
+
+  private handleCheckInstallation(req: Request, res: Response): void {
+    const response = `
+    <style>
+      table,
+      th,
+      td {
+        text-align: left;
+        border: 1px solid black;
+      }
+      .found {
+        background: lightgreen;
+      }
+      .not.found {
+        background: red;
+      }
+    </style>
+    <table>
+      <tr>
+        <th>Dependency name</th>
+        <th>Found?</th>
+        <th>Required?</th>
+        <th>Path</th>
+      </tr>
+    `;
+    const whereIs = os.platform() === 'win32' ? 'where' : 'which';
+    const result = dependencies.required.concat(dependencies.optional)
+      .map((group: any) =>
+        (group as string[]).map(name => {
+          const { status, stdout } = spawnSync(whereIs, [`${name}`]);
+          return {
+            name,
+            found: status === 0,
+            path: status === 0 ? stdout.toString() : '',
+            required: dependencies.required.includes(group),
+          };
+        }).find(g => g.found) || {
+          name: group[0],
+          found: false,
+          path: '',
+          required: dependencies.required.includes(group),
+        },
+      );
+
+    res.type('html').send(
+      response.concat(
+        result.map(r =>
+          `<tr>
+            <td>${r.name}</td>
+            <td class="${r.found ? 'found' : 'not found'}">${r.found ? 'YES' : 'NO'}</td>
+            <td>${r.required ? 'YES' : 'NO'}</td>
+            <td>${r.path || '-'}</td>
+          </tr>`,
+        ).join(''),
+        '</table>',
+      ),
+    ).end();
   }
 
   /**

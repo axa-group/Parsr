@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as fs from 'fs';
 import * as limit from 'limit-async';
 import * as pdfjs from 'pdfjs-dist';
 import {
@@ -50,7 +49,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
   const startTime: number = Date.now();
 
   return new Promise<Document>((resolveDocument, rejectDocument) => {
-    return repairPdf(pdfInputFile).then((repairedPdf: string) => {
+    return utils.repairPdf(pdfInputFile).then((repairedPdf: string) => {
       const pages: Array<Promise<Page>> = [];
       try {
         return (pdfjs.getDocument(repairedPdf) as any).promise.then(doc => {
@@ -153,53 +152,4 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
     pageElements,
     new BoundingBox(0, 0, viewport.width, viewport.height),
   );
-}
-
-/**
- * Repair a pdf using the external qpdf and mutool utilities.
- * Use qpdf to decrcrypt the pdf to avoid errors due to DRMs.
- * @param filePath The absolute filename and path of the pdf file to be repaired.
- */
-function repairPdf(filePath: string) {
-  const qpdfPath = utils.getCommandLocationOnSystem('qpdf');
-  let qpdfOutputFile = utils.getTemporaryFile('.pdf');
-  if (qpdfPath) {
-    const process = utils.spawnSync('qpdf', ['--decrypt', filePath, qpdfOutputFile]);
-
-    if (process.status === 0) {
-      logger.info(
-        `qpdf repair successfully performed on file ${filePath}. New file at: ${qpdfOutputFile}`,
-      );
-    } else {
-      logger.warn(
-        'qpdf error for file ${filePath}:',
-        process.status,
-        process.stdout.toString(),
-        process.stderr.toString(),
-      );
-      qpdfOutputFile = filePath;
-    }
-  } else {
-    logger.warn(`qpdf not found on the system. Not repairing the PDF...`);
-    qpdfOutputFile = filePath;
-  }
-
-  return new Promise<string>(resolve => {
-    const mutoolPath = utils.getCommandLocationOnSystem('mutool');
-    if (!mutoolPath) {
-      logger.warn('MuPDF not installed !! Skip clean PDF.');
-      resolve(qpdfOutputFile);
-    } else {
-      const mupdfOutputFile = utils.getTemporaryFile('.pdf');
-      const pdfFixer = utils.spawn('mutool', ['clean', qpdfOutputFile, mupdfOutputFile]);
-      pdfFixer.on('close', () => {
-        // Check that the file is correctly written on the file system
-        fs.fsyncSync(fs.openSync(qpdfOutputFile, 'r+'));
-        logger.info(
-          `mupdf cleaning successfully performed on file ${qpdfOutputFile}. Resulting file: ${mupdfOutputFile}`,
-        );
-        resolve(mupdfOutputFile);
-      });
-    }
-  });
 }

@@ -18,6 +18,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { Document } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
+import logger from '../../utils/Logger';
 import { Extractor } from '../Extractor';
 import { setPageDimensions } from '../set-page-dimensions';
 import * as tesseract2json from './tesseract2json';
@@ -31,8 +32,9 @@ export class TesseractExtractor extends Extractor {
    * @param inputFile The name of the image to be used at input for the extraction.
    * @returns The promise of a valid Document (as per the Document Representation namespace).
    */
-  public run(inputFile: string, rotationCorrection: boolean = true): Promise<Document> {
-    return this.scanPages(this.pdfToImages(inputFile), rotationCorrection).then((doc: Document) => {
+  public async run(inputFile: string, rotationCorrection: boolean = true): Promise<Document> {
+    const imagePaths = await this.pdfToImages(inputFile);
+    return this.scanPages(imagePaths, rotationCorrection).then((doc: Document) => {
       doc.inputFile = inputFile;
       return doc;
     });
@@ -61,38 +63,44 @@ export class TesseractExtractor extends Extractor {
     });
   }
 
-  private pdfToImages(pdfPath: string): string[] {
-    const folder = path.dirname(pdfPath).concat('/samples');
-    try {
-      if (!fs.existsSync(folder)) {
-        fs.mkdirSync(folder);
+  private pdfToImages(pdfPath: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+      const folder = path.dirname(pdfPath).concat('/samples');
+      try {
+        if (!fs.existsSync(folder)) {
+          fs.mkdirSync(folder);
+        }
+      } catch (e) {
+        throw e;
       }
-    } catch (e) {
-      throw e;
-    }
-    const outPutFilePath = folder + '/Sample_%03d.tiff';
-
-    const ret = utils.spawnSync(utils.getConvertLocation(), [
-      '-density',
-      '300x300',
-      '-compress',
-      'lzw',
-      '-alpha',
-      'remove',
-      '-background',
-      'white',
-      pdfPath,
-      outPutFilePath,
-    ]);
-
-    if (ret.status !== 0) {
-      const errorMessage = [
-        'ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)',
-        ret.stderr.toString(),
-      ];
-      throw new Error(errorMessage.join('\n'));
-    }
-
-    return fs.readdirSync(folder).map(file => path.join(folder, file));
+      const outPutFilePath = folder + '/Sample_%03d.tiff';
+      utils.CommandExecuter.run(
+        utils.CommandExecuter.COMMANDS.CONVERT,
+        [
+          '-density',
+          '300x300',
+          '-compress',
+          'lzw',
+          '-alpha',
+          'remove',
+          '-background',
+          'white',
+          pdfPath,
+          outPutFilePath,
+        ],
+      )
+        .then(() => {
+          const files = fs.readdirSync(folder).map(file => path.join(folder, file));
+          logger.info(`converted files: ${files.join(', ')}`);
+          resolve(files);
+        })
+        .catch(({ found, error }) => {
+          logger.error(error);
+          if (!found) {
+            logger.warn('ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)');
+          }
+          reject(error);
+        });
+    });
   }
 }

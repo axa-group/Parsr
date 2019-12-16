@@ -84,32 +84,15 @@ export class LinkDetectionModule extends Module {
   */
   private getFileMetadata(pdfFilePath: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-      const pythonLocation: string = utils.getPythonLocation();
-      const dumppdfLocation: string = utils.getDumppdfLocation();
-      if (dumppdfLocation === "" || pythonLocation === "") {
-        reject(`Could not find the necessary libraries..`);
-      }
-
       logger.info(`Extracting metadata with pdfminer's dumppdf.py tool...`);
-
-      const dumppdfArguments = [dumppdfLocation, '-a', '-o', xmlOutputFile, pdfFilePath];
-
-      logger.debug(`${pythonLocation} ${dumppdfArguments.join(' ')}`);
+      const xmlOutputFile: string = utils.getTemporaryFile('.xml');
+      const dumppdfArguments = ['-a', '-o', xmlOutputFile, pdfFilePath];
 
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
-
-      const dumppdf = utils.spawn(pythonLocation, dumppdfArguments);
-
-      dumppdf.stderr.on('data', data => {
-        logger.error('dumppdf error:', data.toString('utf8'));
-        reject(data.toString('utf8'));
-      });
-
-      dumppdf.on('close', async code => {
-        if (code === 0) {
+      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.DUMPPDF, dumppdfArguments)
+        .then(() => {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
             logger.debug(`Converting dumppdf's XML output to JS object..`);
@@ -119,10 +102,15 @@ export class LinkDetectionModule extends Module {
           } catch (err) {
             reject(`parseXml failed: ${err}`);
           }
-        } else {
-          reject(`dumppdf return code is ${code}`);
-        }
-      });
+        })
+        .catch(({ found, error }) => {
+          logger.error(error);
+          if (!found) {
+            reject(`Could not find the necessary libraries..`);
+          } else {
+            reject(error);
+          }
+        });
     });
   }
 

@@ -78,7 +78,9 @@ describe('Table Reconstruction Module', () => {
           docBefore = json2document(json);
           docBefore.inputFile = assetsDir + 'test-table-reconstruction.pdf';
           const tableExtractor = new TableExtractorStub(0, '', camelotOutput);
-          runModules(docBefore, [new TableDetectionModule(null, tableExtractor)]).then(after => {
+          const tableDetectionModule = new TableDetectionModule();
+          tableDetectionModule.setExtractor(tableExtractor);
+          runModules(docBefore, [tableDetectionModule]).then(after => {
             table = after.getElementsOfType<Table>(Table)[0];
             done();
           });

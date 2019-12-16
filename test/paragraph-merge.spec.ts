@@ -43,10 +43,13 @@ function executePipeLine(pdfName: string, done, tableExtractor?: TableExtractor)
       console.log('We have table extractor');
     }
 
+    const tableDetectionModule = new TableDetectionModule();
+    tableDetectionModule.setExtractor(tableExtractor);
+
     return runModules(doc, [
       new OutOfPageRemovalModule(),
       new WhitespaceRemovalModule(),
-      new TableDetectionModule(null, tableExtractor),
+      tableDetectionModule,
       new ReadingOrderDetectionModule(),
       new WordsToLineModule(),
       new LinesToParagraphModule(),
