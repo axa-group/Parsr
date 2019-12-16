@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { exec, spawnSync } from 'child_process';
 import * as crypto from 'crypto';
 import express from 'express';
 import { Request, Response } from 'express-serve-static-core';
@@ -21,6 +22,7 @@ import * as fs from 'fs';
 import multer from 'multer';
 import * as os from 'os';
 import * as path from 'path';
+import dependencies from './dependencies.json';
 import { FileManager } from './FileManager';
 import logger from './Logger';
 import { ProcessManager } from './ProcessManager';
@@ -93,9 +95,69 @@ export class ApiServer {
     v1_0.get('/modules', this.handleGetModules.bind(this));
     v1_0.get('/module-config/:modulename', this.handleGetModuleConfig.bind(this));
 
+    v1_0.get('/check-installation', this.handleCheckInstallation.bind(this));
+
     app.listen(port, () => {
       logger.info(`Api listening on port ${port}!`);
     });
+  }
+
+  private handleCheckInstallation(req: Request, res: Response): void {
+    const response = `
+    <style>
+      table,
+      th,
+      td {
+        text-align: left;
+        border: 1px solid black;
+      }
+      .found {
+        background: lightgreen;
+      }
+      .not.found {
+        background: red;
+      }
+    </style>
+    <table>
+      <tr>
+        <th>Dependency name</th>
+        <th>Found?</th>
+        <th>Required?</th>
+        <th>Path</th>
+      </tr>
+    `;
+    const whereIs = os.platform() === 'win32' ? 'where' : 'which';
+    const result = dependencies.required.concat(dependencies.optional)
+      .map((group: any) =>
+        (group as string[]).map(name => {
+          const { status, stdout } = spawnSync(whereIs, [`${name}`]);
+          return {
+            name,
+            found: status === 0,
+            path: status === 0 ? stdout.toString() : '',
+            required: dependencies.required.includes(group),
+          };
+        }).find(g => g.found) || {
+          name: group[0],
+          found: false,
+          path: '',
+          required: dependencies.required.includes(group),
+        },
+      );
+
+    res.type('html').send(
+      response.concat(
+        result.map(r =>
+          `<tr>
+            <td>${r.name}</td>
+            <td class="${r.found ? 'found' : 'not found'}">${r.found ? 'YES' : 'NO'}</td>
+            <td>${r.required ? 'YES' : 'NO'}</td>
+            <td>${r.path || '-'}</td>
+          </tr>`,
+        ).join(''),
+        '</table>',
+      ),
+    ).end();
   }
 
   /**
@@ -376,7 +438,27 @@ export class ApiServer {
     let convert;
 
     if (fileType.mime.startsWith('image')) {
-      convert = require('sharp')(binder.input).resize(200, 200, { fit: 'outside' }).toFile(filePath);
+      const command = this.getCommandLocationOnSystem('magick convert', 'convert');
+      if (command) {
+        convert = new Promise((resolve, reject) => {
+          exec([
+            command,
+            '-resize',
+            '200x200\\>',
+            binder.input,
+            filePath,
+          ].join(' '), (err) => {
+            if (err) {
+              return reject(err);
+            }
+            return resolve();
+          });
+        });
+      } else {
+        convert = Promise.reject(
+          'Cannot find ImageMagick convert tool. Are you sure it is installed?',
+        );
+      }
     } else if (fileType.ext === 'pdf') {
       const pdf2Pic = require('pdf2pic');
       const pdf2picConfig = new pdf2Pic({
@@ -398,6 +480,8 @@ export class ApiServer {
               responseType: 'blob',
             },
           });
+        }).catch((error: string) => {
+          res.status(500).send(error);
         });
       } catch (error) {
         res.status(500).send(error);
@@ -434,5 +518,36 @@ export class ApiServer {
 
   private getUUID(): string {
     return crypto.randomBytes(15).toString('hex');
+  }
+
+  /**
+   * returns the location of the executable locator command on the current system.
+   * on linux/unix machines, this is 'which', on windows machines, it is 'where'.
+   */
+  private getExecLocationCommandOnSystem(): string {
+    return os.platform() === 'win32' ? 'where' : 'which';
+  }
+
+  /**
+   * returns the location of a command on a system.
+   * @param firstChoice the first choice name of the executable to be located
+   * @param secondChoice the second choice name of the executable to be located
+   * @param thirdChoice the third choice name of the executable to be located
+   */
+  private getCommandLocationOnSystem(
+    firstChoice: string,
+    secondChoice: string = '',
+    thirdChoice: string = '',
+  ): string {
+    const cmdComponents: string[] = firstChoice.split(' ');
+    const info = spawnSync(this.getExecLocationCommandOnSystem(), [cmdComponents[0]]);
+    const result = info.status === 0 ? info.stdout.toString().split(os.EOL)[0] : null;
+    if (result === null && secondChoice !== '') {
+      return this.getCommandLocationOnSystem(secondChoice, thirdChoice);
+    }
+    if (result === null) {
+      return null;
+    }
+    return firstChoice;
   }
 }

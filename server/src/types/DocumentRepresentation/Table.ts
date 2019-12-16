@@ -336,7 +336,7 @@ export class Table extends Element {
     let output: string = '';
     tableArray.forEach((row, index) => {
       row.forEach(cellMDCode => {
-        if (cellMDCode !== null) {
+        if (cellMDCode != null) {
           if (cellMDCode.startsWith('>')) {
             output += `|${cellMDCode} `;
           } else {

@@ -38,7 +38,7 @@ export class TableExtractorStub implements TableExtractor {
     this.stdout = stdout;
   }
 
-  readTables(_: string, _options: Options): TableExtractorResult {
+  public async readTables(_: string, _options: Options): Promise<TableExtractorResult> {
     return {
       stdout: this.stdout,
       stderr: this.stderr,

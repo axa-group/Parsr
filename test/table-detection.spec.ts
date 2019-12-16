@@ -1,21 +1,23 @@
 import { expect } from 'chai';
+import * as fs from 'fs';
 import 'mocha';
 import { TableDetectionModule } from '../server/src/processing/TableDetectionModule/TableDetectionModule';
-import { Element } from '../server/src/types/DocumentRepresentation/Element';
-import { getPdf, runModules, TableExtractorStub } from './helpers';
-import { Table } from '../server/src/types/DocumentRepresentation/Table';
-import * as fs from 'fs';
 import { TableRow } from '../server/src/types/DocumentRepresentation';
+import { Element } from '../server/src/types/DocumentRepresentation/Element';
+import { Table } from '../server/src/types/DocumentRepresentation/Table';
+import { getPdf, runModules, TableExtractorStub } from './helpers';
 
 const pdfName = 'table-detection.pdf';
 
 describe('No Table detection function', () => {
   let table: Element;
   const noTableDetectedExtractor = new TableExtractorStub(0, '', '[]');
+  const tableDetectionModule = new TableDetectionModule();
+  tableDetectionModule.setExtractor(noTableDetectedExtractor);
 
   before(done => {
     getPdf(
-      d => runModules(d, [new TableDetectionModule(null, noTableDetectedExtractor)]),
+      d => runModules(d, [tableDetectionModule]),
       pdfName,
     ).then(([_, pdfAfter]) => {
       pdfAfter.pages[0].getElementsOfType<Table>(Table).forEach(elt => {
@@ -38,10 +40,12 @@ describe('One Table detection function', () => {
     'utf8',
   );
   const oneTableDetectedExtractor = new TableExtractorStub(0, '', extractorOutput);
+  const tableDetectionModule = new TableDetectionModule();
+  tableDetectionModule.setExtractor(oneTableDetectedExtractor);
 
   before(done => {
     getPdf(
-      d => runModules(d, [new TableDetectionModule(null, oneTableDetectedExtractor)]),
+      d => runModules(d, [tableDetectionModule]),
       pdfName,
     ).then(([_, pdfAfter]) => {
       pdfAfter.pages[0].getElementsOfType<Table>(Table).forEach(elt => {
