@@ -20,7 +20,7 @@ import { simpleParser } from 'mailparser';
 import { Document } from '../../types/DocumentRepresentation';
 import logger from '../../utils/Logger';
 import { Extractor } from '../Extractor';
-import { PdfminerExtractor } from '../pdfminer/PdfminerExtractor';
+import { getPdfExtractor } from './../../utils';
 
 export class EmailExtractor extends Extractor {
   public async run(inputFile: string): Promise<Document> {
@@ -66,7 +66,7 @@ export class EmailExtractor extends Extractor {
       });
 
       await pdfCreator;
-      return new PdfminerExtractor(this.config).run(pdfFile);
+      return getPdfExtractor(this.config).run(pdfFile);
 
     } catch (e) {
       // logger.error(e);
