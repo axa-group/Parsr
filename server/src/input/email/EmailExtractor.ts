@@ -44,24 +44,18 @@ export class EmailExtractor extends Extractor {
       const data = readFileSync(inputFile);
       const raw = await simpleParser(data);
 
-      /*
-       * the pdf.create function seems to generate a PDF with a slightly different page size.
-       * For that reason is the scaling factor.
-      */
-      const scale = 1.36;
       const pdfFile = inputFile.replace('.eml', '.pdf');
       const toPDF = new HTMLToPDF(
         (raw.html || '').concat(styles),
         {
           pdfOptions: {
-            scale,
             width: page.width,
             height: page.height,
             margin: {
-              top: '2mm',
-              bottom: '2mm',
-              left: '2mm',
-              right: '2mm',
+              top: '10mm',
+              bottom: '10mm',
+              left: '10mm',
+              right: '10mm',
             },
           },
         },
