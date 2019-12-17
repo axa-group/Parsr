@@ -74,21 +74,20 @@ export class TesseractExtractor extends Extractor {
         throw e;
       }
       const outPutFilePath = folder + '/Sample_%03d.tiff';
-      utils.CommandExecuter.run(
-        utils.CommandExecuter.COMMANDS.CONVERT,
-        [
-          '-density',
-          '300x300',
-          '-compress',
-          'lzw',
-          '-alpha',
-          'remove',
-          '-background',
-          'white',
-          pdfPath,
-          outPutFilePath,
-        ],
-      )
+      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.CONVERT, [
+        '-colorspace',
+        'RGB',
+        '-density',
+        '300x300',
+        '-compress',
+        'lzw',
+        '-alpha',
+        'remove',
+        '-background',
+        'white',
+        pdfPath,
+        outPutFilePath,
+      ])
         .then(() => {
           const files = fs.readdirSync(folder).map(file => path.join(folder, file));
           logger.info(`converted files: ${files.join(', ')}`);
@@ -97,7 +96,9 @@ export class TesseractExtractor extends Extractor {
         .catch(({ found, error }) => {
           logger.error(error);
           if (!found) {
-            logger.warn('ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)');
+            logger.warn(
+              'ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)',
+            );
           }
           reject(error);
         });
