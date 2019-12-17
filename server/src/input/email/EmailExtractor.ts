@@ -48,6 +48,9 @@ export class EmailExtractor extends Extractor {
       const toPDF = new HTMLToPDF(
         (raw.html || '').concat(styles),
         {
+          browserOptions: {
+            args: ['--no-sandbox', '--font-render-hinting=none'],
+          },
           pdfOptions: {
             width: page.width,
             height: page.height,
