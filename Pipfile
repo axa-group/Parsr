@@ -6,11 +6,11 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-pdfminer-six = "*"
-camelot-py = {extras = ["cv"],version = "*"}
+pdfminer-six = "==20191110"
+camelot-py = {extras = ["cv"],version = "==0.7.3"}
+scikit-image = "==0.16.2"
 numpy = "==1.17.4"
 Pillow = "==6.2.1"
-scikit-image = "*"
 parabolic = "==0.1.2"
 
 [requires]
