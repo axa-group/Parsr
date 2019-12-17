@@ -48,6 +48,7 @@ export class ApiServer {
   });
 
   private allowedMimetypes: string[] = [
+    'message/rfc822', // need to check if there can be more than one "message/xxxx"
     'application/pdf',
     'application/xml',
     'text/xml',
@@ -412,6 +413,13 @@ export class ApiServer {
     const binder: Binder = this.fileManager.getBinder(docId);
 
     const filetype = require('file-type');
+
+    // if its an .eml, we have to change the binder extension to match the generated PDF
+    // in Email Extractor and get the thumbnails of that PDF file
+    if (binder.input.endsWith('.eml')) {
+      binder.input = binder.input.replace('.eml', '.pdf');
+    }
+
     const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(binder.input));
 
     const thumbFolder = path.join(os.tmpdir(), 'Doc-' + docId + '/');
