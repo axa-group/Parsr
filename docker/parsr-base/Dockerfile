@@ -1,7 +1,7 @@
 FROM debian:10 as engine
 
 RUN  apt-get update \
-  && apt-get install -y wget gnupg2 \
+  && apt-get install -y wget gnupg2 libasound2 \
   && rm -rf /var/lib/apt/lists/*
 
 # Install latest chrome dev package and fonts to support major charsets (Chinese, Japanese, Arabic, Hebrew, Thai and a few others)
