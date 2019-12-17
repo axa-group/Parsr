@@ -142,7 +142,7 @@ function main(): void {
       })
       .then((doc: Document) => {
         const promises: Array<Promise<any>> = [];
-        if (config.output.formats.json && fileTypeInfo.ext !== 'eml') {
+        if (config.output.formats.json) {
           promises.push(
             new JsonExporter(doc, config.output.granularity).export(
               `${outputFolder}/${documentName}.json`,
@@ -226,7 +226,7 @@ function main(): void {
    * @returns The Orchestrator instance
    */
   function getEmlExtractor(): Orchestrator {
-    return new Orchestrator(new EmailExtractor(null), null);
+    return new Orchestrator(new EmailExtractor(config), cleaner);
   }
 
   /**

@@ -14,13 +14,63 @@
  * limitations under the License.
  */
 
+import { readFileSync } from 'fs';
+import * as pdf from 'html-pdf';
+import { simpleParser } from 'mailparser';
 import { Document } from '../../types/DocumentRepresentation';
 import logger from '../../utils/Logger';
 import { Extractor } from '../Extractor';
+import { PdfminerExtractor } from '../pdfminer/PdfminerExtractor';
 
 export class EmailExtractor extends Extractor {
-    public async run(inputFile: string): Promise<Document> {
-        logger.info(inputFile);
-        return new Document([], inputFile);
+  public async run(inputFile: string): Promise<Document> {
+
+    const page = {
+      width: '210mm',
+      height: '297mm',
+    };
+
+    const styles = `
+    <style>
+    body, html {
+      height: ${page.height} !important;
+      width: ${page.width} !important;
     }
+    table {
+      width: 100% !important;
+    }
+  </style>
+  `;
+    try {
+      const data = readFileSync(inputFile);
+      const raw = await simpleParser(data);
+
+      /*
+       * the pdf.create function seems to generate a PDF with a slightly different page size.
+       * For that reason is the scaling factor.
+      */
+      const scale = 1.36;
+      const pdfFile = inputFile.replace('.eml', '.pdf');
+      const pdfCreator = new Promise((resolve, reject) => {
+        pdf.create(raw.html.concat(styles), {
+          width: `${parseInt(page.width, 10) * scale}mm`,
+          height: `${parseInt(page.height, 10) * scale}mm`,
+          border: '2mm',
+        }).toFile(pdfFile, (err) => {
+          if (err) {
+            logger.error(err);
+            return reject(err);
+          }
+          return resolve(err);
+        });
+      });
+
+      await pdfCreator;
+      return new PdfminerExtractor(this.config).run(pdfFile);
+
+    } catch (e) {
+      // logger.error(e);
+      throw e;
+    }
+  }
 }
