@@ -17,7 +17,7 @@
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
-import { EmailExtractor } from '../../server/src/input/email/EmailExtractor';
+// import { EmailExtractor } from '../../server/src/input/email/EmailExtractor';
 import { PDFJsExtractor } from '../../server/src/input/pdf.js/PDFJsExtractor';
 import { LinesToParagraphModule } from '../../server/src/processing/LinesToParagraphModule/LinesToParagraphModule';
 import { OutOfPageRemovalModule } from '../../server/src/processing/OutOfPageRemovalModule/OutOfPageRemovalModule';
