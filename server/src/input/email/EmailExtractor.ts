@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { readFileSync } from 'fs';
-import * as pdf from 'html-pdf';
+import HTMLToPDF from 'convert-html-to-pdf';
+import { readFileSync, writeFileSync } from 'fs';
 import { simpleParser } from 'mailparser';
 import { Document } from '../../types/DocumentRepresentation';
-import logger from '../../utils/Logger';
 import { Extractor } from '../Extractor';
 import { getPdfExtractor } from './../../utils';
 
@@ -51,25 +50,28 @@ export class EmailExtractor extends Extractor {
       */
       const scale = 1.36;
       const pdfFile = inputFile.replace('.eml', '.pdf');
-      const pdfCreator = new Promise((resolve, reject) => {
-        pdf.create(raw.html.concat(styles), {
-          width: `${parseInt(page.width, 10) * scale}mm`,
-          height: `${parseInt(page.height, 10) * scale}mm`,
-          border: '2mm',
-        }).toFile(pdfFile, (err) => {
-          if (err) {
-            logger.error(err);
-            return reject(err);
-          }
-          return resolve(err);
-        });
-      });
+      const toPDF = new HTMLToPDF(
+        (raw.html || '').concat(styles),
+        {
+          pdfOptions: {
+            scale,
+            width: page.width,
+            height: page.height,
+            margin: {
+              top: '2mm',
+              bottom: '2mm',
+              left: '2mm',
+              right: '2mm',
+            },
+          },
+        },
+      );
 
-      await pdfCreator;
+      const pdfBuffer: Buffer = await toPDF.convert();
+      writeFileSync(pdfFile, pdfBuffer);
       return getPdfExtractor(this.config).run(pdfFile);
 
     } catch (e) {
-      // logger.error(e);
       throw e;
     }
   }
