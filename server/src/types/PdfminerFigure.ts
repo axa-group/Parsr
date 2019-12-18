@@ -23,11 +23,13 @@ export class PdfminerFigure {
     bbox: string;
   };
   public image: PdfminerImage[];
+  public figure: PdfminerFigure[];
   public text: PdfminerText[];
 
   constructor(figure: PdfminerFigure) {
     this._attr = figure._attr;
     this.image = figure.image;
     this.text = figure.text;
+    this.figure = figure.figure;
   }
 }
