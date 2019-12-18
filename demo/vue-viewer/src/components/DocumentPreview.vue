@@ -2,13 +2,23 @@
   <div class="DocPreview">
     <div id="DocPagesContainer" @scroll="handleScroll">
       <Page
-        v-for="(page, index) in document.pages"
+        v-for="(page, index) in document.pages.slice(
+          pagination.offset * pagination.limit,
+          pagination.offset * pagination.limit + pagination.limit,
+        )"
         :key="index"
         :page="page"
         :fonts="document.fonts"
         :zoom="zoom"
       />
     </div>
+    <v-pagination
+      v-if="document.pages.length > pagination.limit"
+      :length="Math.ceil(document.pages.length / pagination.limit)"
+      v-model="paginationOffset"
+      :total-visible="10"
+      class="paginator"
+    />
     <documentZoom @zoomIn="zoomInClicked" @zoomOut="zoomOutClicked" />
   </div>
 </template>
@@ -16,7 +26,7 @@
 <script>
 //import lazyLoadComponent from '@/utils/lazy-Load-Components.js';
 //import PageSkeleton from '@/components/DocumentPreview/PageSkeleton';
-
+import { mapState } from 'vuex';
 import { smoothScroll, isVisibleInScroll } from '@/mixins/smoothScroll.js';
 import DocumentZoom from '@/components/DocumentPreview/Zoom';
 import Page from '@/components/DocumentPreview/Page';
@@ -45,6 +55,15 @@ export default {
     },
   },
   computed: {
+    paginationOffset: {
+      get() {
+        return this.pagination.offset + 1;
+      },
+      set(value) {
+        this.pagination.offset = value - 1;
+      },
+    },
+    ...mapState(['pagination']),
     scroll() {
       return document.getElementById('DocPagesContainer');
     },
@@ -68,17 +87,26 @@ export default {
     //ZoomIn requires to be procesed after DOOM changes because we
     //need adjust scroll offset top after new zoom is applied
     this.$nextTick(function() {
-      var scrollWidth = parseFloat(window.getComputedStyle(this.scroll).width);
-      var pageWidth = parseFloat(window.getComputedStyle(this.page(this.selectedPage)).width);
-      if (pageWidth >= scrollWidth) {
-        this.scroll.scrollLeft = (pageWidth - scrollWidth) / 2;
-      }
-      if (this.zoomFactor > 0) {
-        this.scroll.scrollTop += this.scroll.scrollTop * this.zoomFactor;
-      }
+      // and another nextTick for the pagination
+      this.$nextTick(() => {
+        var scrollWidth = parseFloat(window.getComputedStyle(this.scroll).width);
+        var pageWidth = parseFloat(window.getComputedStyle(this.page(this.selectedPage)).width);
+        if (pageWidth >= scrollWidth) {
+          this.scroll.scrollLeft = (pageWidth - scrollWidth) / 2;
+        }
+        if (this.zoomFactor > 0) {
+          this.scroll.scrollTop += this.scroll.scrollTop * this.zoomFactor;
+        }
+      });
     });
   },
   watch: {
+    paginationOffset() {
+      this.$nextTick(() => {
+        this.scroll.scrollTop = 0;
+        this.$store.commit('setSelectedPage', this.pagination.limit * this.pagination.offset + 1);
+      });
+    },
     selectedPage(index) {
       if (!this.watchSelectedPageEnabled) {
         return;
@@ -145,5 +173,10 @@ export default {
 }
 .Page {
   margin: 0 auto;
+}
+
+.paginator {
+  position: sticky;
+  bottom: 10px;
 }
 </style>

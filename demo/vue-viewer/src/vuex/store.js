@@ -6,6 +6,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    pagination: {
+      limit: 10, //items per page
+      offset: 0, // starting index
+    },
     selectedPage: 1,
     zoom: 1.0,
     uuid: null,
