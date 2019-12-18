@@ -57,14 +57,17 @@ export class CommandExecuter {
   public static async run(
     cmd: string | string[],
     args: string[],
+    pythonCommand: boolean = false,
     options?: any,
   ): Promise<string> {
     return new Promise((resolve, reject) => {
       let command = '';
       if (Array.isArray(cmd)) {
-        command = getCommandLocationOnSystem(cmd[0], cmd[1] || '', cmd[2] || '');
+        command = pythonCommand ?
+          getPythonCommandLocationOnSystem(cmd[0], cmd[1] || '', cmd[2] || '') :
+          getCommandLocationOnSystem(cmd[0], cmd[1] || '', cmd[2] || '');
       } else {
-        command = getCommandLocationOnSystem(cmd);
+        command = pythonCommand ? getPythonCommandLocationOnSystem(cmd) : getCommandLocationOnSystem(cmd);
       }
       if (!command) {
         return reject({
@@ -230,7 +233,7 @@ export async function correctImageForRotation(srcImg: string): Promise<RotationC
 
   const args: string[] = [path.join(__dirname, '../assets/ImageCorrection.py'), srcImg];
   try {
-    const data = await CommandExecuter.run(CommandExecuter.COMMANDS.PYTHON, args);
+    const data = await CommandExecuter.run(CommandExecuter.COMMANDS.PYTHON, args, true);
     const rotationData = JSON.parse(data);
     correctionInfo.fileName = rotationData.filename;
     correctionInfo.degrees = rotationData.degrees;
@@ -783,6 +786,39 @@ function getExecLocationCommandOnSystem(): string {
 }
 
 /**
+ * Returns the location of the python command on the system
+ * @param firstChoice the first choice name of the executable to be located
+ * @param secondChoice the second choice name of the executable to be located
+ * @param thirdChoice the third choice name of the executable to be located
+ */
+function getPythonCommandLocationOnSystem(
+  firstChoice: string,
+  secondChoice: string = '',
+  thirdChoice: string = '',
+): string {
+  const pipenvSpawn = spawnSync(getCommandLocationOnSystem('pipenv'), ['--venv']);
+  const pipEnvParsrLocation: string =
+    pipenvSpawn.status === 0 ? pipenvSpawn.stdout.toString().split(os.EOL)[0] : "";
+  const result = pipEnvParsrLocation !== "" ? path.join(pipEnvParsrLocation, 'bin', firstChoice) : "";
+
+  if (result === null && secondChoice !== '') {
+    return getPythonCommandLocationOnSystem(secondChoice, thirdChoice);
+  }
+  if (result === null) {
+    return null;
+  }
+
+  if (CommandExecuter.COMMANDS.PYTHON.includes(firstChoice)) {
+    return result;
+  } else {
+    const pythonCommands: string[] = CommandExecuter.COMMANDS.PYTHON;
+    return getPythonCommandLocationOnSystem(pythonCommands[0], pythonCommands[1] || '', pythonCommands[2] || '')
+       + ' '
+       + result;
+  }
+}
+
+/**
  * returns the location of a command on a system.
  * @param firstChoice the first choice name of the executable to be located
  * @param secondChoice the second choice name of the executable to be located
@@ -803,7 +839,7 @@ export function getCommandLocationOnSystem(
     return null;
   }
 
-  return firstChoice;
+  return result;
 }
 
 /**

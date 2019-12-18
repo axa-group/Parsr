@@ -45,6 +45,7 @@ export class PdfExporter extends Exporter {
           '-o',
           outputPath,
         ],
+        false,
         {
           cwd: process.cwd(),
           env: process.env,
