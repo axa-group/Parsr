@@ -20,6 +20,13 @@
           transformOrigin: page.rotation.origin.x + 'px ' + page.rotation.origin.y + 'px',
         }"
       >
+        <imageData
+          v-for="element in elementsOfType('image')"
+          :key="element.id"
+          :element="element"
+          :fonts="fonts"
+          @custom-event="elementSelected"
+        />
         <heading
           v-for="element in elementsOfType('heading')"
           :key="element.id"
@@ -60,8 +67,9 @@ import Paragraph from '@/components/DocumentPreview/Paragraph';
 import Heading from '@/components/DocumentPreview/Heading';
 import TableData from '@/components/DocumentPreview/Table';
 import List from '@/components/DocumentPreview/List';
+import ImageData from '@/components/DocumentPreview/Image';
 export default {
-  components: { Paragraph, Heading, TableData, List },
+  components: { Paragraph, Heading, TableData, List, ImageData },
   mixins: [scrollItemMixin],
   data() {
     return {
@@ -209,6 +217,10 @@ export default {
   cursor: pointer;
   fill: red !important;
 }
+.Page rect.Image {
+  fill: fuchsia !important;
+}
+
 .VisibleWords rect.Word {
   fill: transparent;
   stroke: rgb(0, 124, 12);
