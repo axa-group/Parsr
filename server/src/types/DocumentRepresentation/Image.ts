@@ -38,11 +38,29 @@ export class Image extends Element {
     this._src = value;
   }
 
+  /**
+   * Getter src
+   * @return {string}
+   */
+  public get refId(): string {
+    return this._refId;
+  }
+
+  /**
+   * Setter src
+   * @param {string} value
+   */
+  public set refId(value: string) {
+    this._refId = value;
+  }
+
   public content: null = null;
   private _src: string;
+  private _refId: string;
 
-  constructor(boundingBox: BoundingBox, src?: string) {
+  constructor(boundingBox: BoundingBox, src?: string, refId?: string) {
     super(boundingBox);
     this.src = src;
+    this.refId = refId;
   }
 }
