@@ -29,17 +29,20 @@ The documentation to build and run Docker containers is [here](docker.md).
 Under a **Debian** based distribution:
 
 ```sh
-sudo apt install software-properties-common python-software-properties
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
-sudo add-apt-repository ppa:pypa/ppa
 sudo apt-get update
-sudo apt-get install nodejs npm qpdf imagemagick graphicsmagick tesseract-ocr libtesseract-dev python3-tk pipenv
+sudo apt-get install nodejs npm qpdf imagemagick graphicsmagick tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
+pip install camelot-py
+pip install numpy pillow scikit-image
+pip install pdfminer.six
 ```
 
 Under **Arch** Linux :
 
 ```sh
-pacman -S nodejs npm qpdf imagemagick graphicsmagick pdfminer tesseract python-pipenv
+pacman -S nodejs npm qpdf imagemagick graphicsmagick pdfminer tesseract python-pip
+pip install camelot-py
+pip install numpy pillow scikit-image
 ```
 
 ### 2.2. Installing Dependencies under MacOS
@@ -54,7 +57,22 @@ To install it, launch the following in a terminal
 Next, install the required dependencies:
 
 ```sh
-brew install node qpdf imagemagick graphicsmagick tesseract tesseract-lang pipenv
+brew install node qpdf imagemagick graphicsmagick tesseract tesseract-lang tcl-tk ghostscript
+```
+
+To install the python based dependencies (pdfminer and camelot), install, first install `pip`:
+
+```sh
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python get-pip.py
+```
+
+and then the dependencies:
+
+```sh
+pip install pdfminer.six
+pip install camelot-py
+pip install numpy pillow scikit-image
 ```
 
 ### 2.3. Installing Dependencies under Windows
@@ -70,19 +88,16 @@ Then,
 
 1. We recommend using [Chocolatey](https://chocolatey.org) as the package manager for installing dependencies under Windows. To install Chocolatey, [follow these instructions](https://chocolatey.org/install#installing-chocolatey).
 2. [Download and install **`node.js`**](https://nodejs.org/en/download)
-3. Install **`qpdf`** and **`imagemagick`** using Powershell (Run as Administrator):
+3. For the **pdfminer** extractor for pdfs, [follow these steps](https://github.com/pdfminer/pdfminer.six#how-to-install).
+4. Install **`qpdf`** and **`imagemagick`** using Powershell (Run as Administrator):
 
    ```sh
    choco install qpdf imagemagick
    ```
 
-4. Install [**graphicsmagick**](http://www.graphicsmagick.org/).
-5. Make sure that you have a working Python installation (with pip), then launch the following:
+5. Install [**graphicsmagick**](http://www.graphicsmagick.org/).
 
-   ```sh
-   pip install --user pipenv
-   ```
-
+6. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install-deps.html#for-windows).
 
 #### 2.3.1. Tesseract
 

@@ -27,7 +27,7 @@ export function extractImagesAndFonts(pdfInputFile: string): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     const folder = utils.getMutoolExtractionFolder();
     logger.info(`Extracting images and fonts to ${folder}`);
-    utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.MUTOOL, ['extract', pdfInputFile], false, { cwd: folder })
+    utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.MUTOOL, ['extract', pdfInputFile], { cwd: folder })
       .then(() => {
         const ttfRegExp = /^[A-Z]{6}\+(.*)\-[0-9]+\.ttf$/;
         fs.readdirSync(folder).forEach(file => {
