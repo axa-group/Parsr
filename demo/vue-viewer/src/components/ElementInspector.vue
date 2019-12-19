@@ -25,10 +25,22 @@
                 <ul style="list-style-type: none; margin:0px; padding:0px">
                   <li><span>Usage ratio:</span></li>
                   <li style="padding-left:10px;">
-                    <span>- Document {{ fontUsageRatio(currentElement.font).documentRatio }}</span>
+                    <span
+                      >- Document
+                      {{
+                        fontUsageRatio[currentElement.font] &&
+                          fontUsageRatio[currentElement.font].documentRatio
+                      }}</span
+                    >
                   </li>
                   <li style="padding-left:10px;">
-                    <span>- Page {{ fontUsageRatio(currentElement.font).pageRatio }}</span>
+                    <span
+                      >- Page
+                      {{
+                        fontUsageRatio[currentElement.font] &&
+                          fontUsageRatio[currentElement.font].pageRatio
+                      }}</span
+                    >
                   </li>
                 </ul>
               </li>

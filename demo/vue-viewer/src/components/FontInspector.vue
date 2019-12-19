@@ -15,7 +15,7 @@
                   {{ fontKey }}: <span class="fontValue">{{ font[fontKey] }}</span>
                   <br />
                 </span>
-                <span>Ratio: {{ fontUsageRatio(font.id) }}</span>
+                <span>Ratio: {{ fontUsageRatio[font.id] }}</span>
               </li>
             </ul>
           </div>

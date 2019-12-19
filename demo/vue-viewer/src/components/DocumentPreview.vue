@@ -2,10 +2,7 @@
   <div class="DocPreview">
     <div id="DocPagesContainer" @scroll="handleScroll">
       <Page
-        v-for="(page, index) in document.pages.slice(
-          pagination.offset * pagination.limit,
-          pagination.offset * pagination.limit + pagination.limit,
-        )"
+        v-for="(page, index) in paginatedPages"
         :key="index"
         :page="page"
         :fonts="document.fonts"
@@ -55,6 +52,12 @@ export default {
     },
   },
   computed: {
+    paginatedPages() {
+      return this.document.pages.slice(
+        this.pagination.offset * this.pagination.limit,
+        this.pagination.offset * this.pagination.limit + this.pagination.limit,
+      );
+    },
     paginationOffset: {
       get() {
         return this.pagination.offset + 1;
@@ -74,6 +77,9 @@ export default {
   components: {
     DocumentZoom,
     Page,
+  },
+  mounted() {
+    this.$store.commit('setElementSelected', null);
   },
   beforeUpdate: function() {
     //ZoomOut requires to be procesed before DOOM changes

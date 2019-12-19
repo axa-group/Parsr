@@ -165,7 +165,6 @@ export default {
     this.container.style.width = parseFloat(this.containerSize.width) * this.zoom + 'px';
   },
   mounted: function() {
-    this.$store.commit('setElementSelected', null);
     this.$nextTick(function() {
       var style = window.getComputedStyle(this.scroll);
       this.containerSize = { width: parseFloat(style.width), height: parseFloat(style.height) };
