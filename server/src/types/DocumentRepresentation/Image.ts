@@ -54,9 +54,26 @@ export class Image extends Element {
     this._refId = value;
   }
 
+  /**
+   * Getter src
+   * @return {string}
+   */
+  public get xObjId(): string {
+    return this._xObjId;
+  }
+
+  /**
+   * Setter src
+   * @param {string} value
+   */
+  public set xObjId(value: string) {
+    this._xObjId = value;
+  }
+
   public content: null = null;
   private _src: string;
   private _refId: string;
+  private _xObjId: string;
 
   constructor(boundingBox: BoundingBox, src?: string, refId?: string) {
     super(boundingBox);
