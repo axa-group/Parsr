@@ -30,7 +30,11 @@ export class PdfminerExtractor extends Extractor {
     const pdfminerExtract: Promise<Document> = pdfminer.execute(inputFile);
 
     const extractFont = extractImagesAndFonts(inputFile);
-
-    return Promise.all([pdfminerExtract, extractFont]).then(([doc]: [Document, void]) => doc);
+    return Promise.all([pdfminerExtract, extractFont]).then(
+      ([doc, assetsFolder]: [Document, string]) => {
+        doc.assetsFolder = assetsFolder;
+        return doc;
+      },
+    );
   }
 }

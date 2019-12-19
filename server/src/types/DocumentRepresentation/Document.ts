@@ -35,6 +35,13 @@ type Margins = {
  */
 export class Document {
   /**
+   * Getter assetsFolder
+   * @return {string}
+   */
+  public get assetsFolder(): string {
+    return this._assetsFolder;
+  }
+  /**
    * Getter inputFile
    * @return {string}
    */
@@ -56,6 +63,14 @@ export class Document {
    */
   public get margins(): Margins {
     return this._margins;
+  }
+
+  /**
+   * Setter assetsFolder
+   * @param {string} value
+   */
+  public set assetsFolder(value: string) {
+    this._assetsFolder = value;
   }
 
   /**
@@ -93,11 +108,13 @@ export class Document {
   }
   private _pages: Page[];
   private _inputFile: string;
+  private _assetsFolder: string;
   private _margins: Margins;
 
-  constructor(pages: Page[] = [], inputFile?: string) {
+  constructor(pages: Page[] = [], inputFile?: string, assetsFolder?: string) {
     this.pages = pages;
     this.inputFile = inputFile;
+    this.assetsFolder = assetsFolder;
     this.margins = { top: -1, left: -1, bottom: -1, right: -1 };
   }
 
