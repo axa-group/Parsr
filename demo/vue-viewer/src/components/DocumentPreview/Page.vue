@@ -25,6 +25,7 @@
           :key="element.id"
           :element="element"
           :fonts="fonts"
+          :documentId="documentId"
           @custom-event="elementSelected"
         />
         <heading
@@ -68,6 +69,7 @@ import Heading from '@/components/DocumentPreview/Heading';
 import TableData from '@/components/DocumentPreview/Table';
 import List from '@/components/DocumentPreview/List';
 import ImageData from '@/components/DocumentPreview/Image';
+import { mapState } from 'vuex';
 export default {
   components: { Paragraph, Heading, TableData, List, ImageData },
   mixins: [scrollItemMixin],
@@ -94,6 +96,9 @@ export default {
     },
   },
   computed: {
+    ...mapState({
+      documentId: state => state.uuid,
+    }),
     elementsOfType() {
       return elementType => this.pageElements.filter(element => element.type === elementType);
     },
