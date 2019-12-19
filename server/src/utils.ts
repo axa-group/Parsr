@@ -790,10 +790,11 @@ function getPythonCommandLocationOnSystem(
   secondChoice: string = '',
   thirdChoice: string = '',
 ): string {
+  const cmdComponents: string[] = firstChoice.split(' ');
   const pipenvSpawn = spawnSync(getCommandLocationOnSystem('pipenv'), ['--venv']);
   const pipEnvParsrLocation: string =
     pipenvSpawn.status === 0 ? pipenvSpawn.stdout.toString().split(os.EOL)[0] : "";
-  const result = pipEnvParsrLocation !== "" ? path.join(pipEnvParsrLocation, 'bin', firstChoice) : "";
+  const result = pipEnvParsrLocation !== "" ? path.join(pipEnvParsrLocation, 'bin', cmdComponents[0]) : "";
 
   if (result === null && secondChoice !== '') {
     return getPythonCommandLocationOnSystem(secondChoice, thirdChoice);
@@ -802,14 +803,7 @@ function getPythonCommandLocationOnSystem(
     return null;
   }
 
-  if (CommandExecuter.COMMANDS.PYTHON.includes(firstChoice)) {
-    return result;
-  } else {
-    const pythonCommands: string[] = CommandExecuter.COMMANDS.PYTHON;
-    return getPythonCommandLocationOnSystem(pythonCommands[0], pythonCommands[1] || '', pythonCommands[2] || '')
-       + ' '
-       + result;
-  }
+  return [result , ...cmdComponents.slice(1, cmdComponents.length)].join(" ");
 }
 
 /**
@@ -833,7 +827,7 @@ export function getCommandLocationOnSystem(
     return null;
   }
 
-  return result;
+  return [result , ...cmdComponents.slice(1, cmdComponents.length)].join(" ");
 }
 
 /**
