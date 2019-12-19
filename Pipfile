@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-pdfminer-six = "==20191110"
+'pdfminer.six' = "==20191110"
 camelot-py = {extras = ["cv"],version = "==0.7.3"}
 scikit-image = "==0.16.2"
 numpy = "==1.17.4"
