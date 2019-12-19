@@ -96,7 +96,9 @@ export class TesseractExtractor extends Extractor {
         .catch(({ found, error }) => {
           logger.error(error);
           if (!found) {
-            logger.warn('ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)');
+            logger.warn(
+              'ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)',
+            );
           }
           reject(error);
         });

@@ -21,10 +21,9 @@ import * as path from 'path';
 import { Cleaner } from '../src/Cleaner';
 import { AbbyyTools } from '../src/input/abbyy/AbbyyTools';
 import { AbbyyToolsXml } from '../src/input/abbyy/AbbyyToolsXml';
+import { EmailExtractor } from '../src/input/email/EmailExtractor';
 import { GoogleVisionExtractor } from '../src/input/google-vision/GoogleVisionExtractor';
 import { JsonExtractor } from '../src/input/json/JsonExtractor';
-import { PDFJsExtractor } from '../src/input/pdf.js/PDFJsExtractor';
-import { PdfminerExtractor } from '../src/input/pdfminer/PdfminerExtractor';
 import { TesseractExtractor } from '../src/input/tesseract/TesseractExtractor';
 import { Orchestrator } from '../src/Orchestrator';
 import { CsvExporter } from '../src/output/csv/CsvExporter';
@@ -100,14 +99,15 @@ function main(): void {
   if (fileType.ext === 'xml') {
     orchestrator = new Orchestrator(new AbbyyToolsXml(config), cleaner);
   } else if (fileType.ext === 'pdf') {
-    orchestrator = getPdfExtractor();
+    orchestrator = new Orchestrator(utils.getPdfExtractor(config), cleaner);
   } else if (fileType.mime.slice(0, 5) === 'image') {
     orchestrator = getImgExtractor();
   } else if (fileType.ext === 'json') {
     orchestrator = getJsonExtractor();
+  } else if (fileType.ext === 'eml') {
+    orchestrator = getEmlExtractor();
   } else {
-    process.exit(1);
-    throw new Error('Input file is neither a PDF nor an image');
+    throw new Error('Input file format is unsupported');
   }
 
   /**
@@ -140,7 +140,6 @@ function main(): void {
       })
       .then((doc: Document) => {
         const promises: Array<Promise<any>> = [];
-
         if (config.output.formats.json) {
           promises.push(
             new JsonExporter(doc, config.output.granularity).export(
@@ -220,20 +219,12 @@ function main(): void {
   }
 
   /**
-   * Returns the pdf extraction orchestrator depending on the extractor selection made in the configuration.
-   *
+   * Returns the email extraction orchestrator.
+   * This extractor has no need of a configuration file or a cleaner
    * @returns The Orchestrator instance
    */
-  function getPdfExtractor(): Orchestrator {
-    if (config.extractor.pdf === 'abbyy') {
-      return new Orchestrator(new AbbyyTools(config), cleaner);
-    } else if (config.extractor.pdf === 'tesseract') {
-      return new Orchestrator(new TesseractExtractor(config), cleaner);
-    } else if (config.extractor.pdf === 'pdfjs') {
-      return new Orchestrator(new PDFJsExtractor(config), cleaner);
-    } else {
-      return new Orchestrator(new PdfminerExtractor(config), cleaner);
-    }
+  function getEmlExtractor(): Orchestrator {
+    return new Orchestrator(new EmailExtractor(config), cleaner);
   }
 
   /**

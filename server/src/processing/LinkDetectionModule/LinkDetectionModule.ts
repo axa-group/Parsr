@@ -91,7 +91,7 @@ export class LinkDetectionModule extends Module {
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
-      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.DUMPPDF, dumppdfArguments, true)
+      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.DUMPPDF, dumppdfArguments)
         .then(() => {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
