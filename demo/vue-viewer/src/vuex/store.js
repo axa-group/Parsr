@@ -25,7 +25,7 @@ let allPageWordsCache = null;
 export default new Vuex.Store({
   state: {
     pagination: {
-      limit: 20, //items per page
+      limit: 10, //items per page
       offset: 0, // starting index
     },
     fontUsageRatioCache: {},

@@ -14,6 +14,7 @@
     "sass-loader": "^7.1.0",
     "vue": "^2.6.10",
     "vue-markdown": "^2.2.4",
+    "vue-observe-visibility": "^0.4.6",
     "vue-router": "^3.0.3",
     "vuetify": "^2.0.5",
     "vuex": "^3.0.1"

@@ -133,6 +133,9 @@ export default {
   methods: {
     ...mapMutations(['switchExpansionPanel']),
     fontInfo(fontId) {
+      if (!this.fontUsageRatio[fontId]) {
+        this.$store.dispatch('calculateFontUsageRatio', fontId);
+      }
       const font = this.fonts.filter(font => font.id === fontId).shift();
       if (font) {
         return '(' + font.name + ', ' + font.weight + ', size ' + font.size + ')';

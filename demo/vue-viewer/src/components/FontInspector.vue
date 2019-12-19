@@ -15,7 +15,9 @@
                   {{ fontKey }}: <span class="fontValue">{{ font[fontKey] }}</span>
                   <br />
                 </span>
-                <span>Ratio: {{ fontUsageRatio[font.id] }}</span>
+                <span v-observe-visibility="visibilityChanged" :id="`usage_ratio_${font.id}`"
+                  >Ratio: {{ fontUsageRatio[font.id] }}</span
+                >
               </li>
             </ul>
           </div>
@@ -41,6 +43,14 @@ export default {
   },
   methods: {
     ...mapMutations(['switchExpansionPanel']),
+    visibilityChanged(v, { target }) {
+      if (v) {
+        const [, , id] = target.id.split('_');
+        if (!this.fontUsageRatio[id]) {
+          this.$store.dispatch('calculateFontUsageRatio', id);
+        }
+      }
+    },
   },
 };
 </script>
