@@ -139,6 +139,30 @@ function main(): void {
         return doc;
       })
       .then((doc: Document) => {
+        const destinationFolder = outputFolder + '/assets_' + documentName;
+        const filesToCopy: Array<{ from: string; to: string }> = [];
+        fs.readdirSync(doc.assetsFolder).forEach(file => {
+          if (file.endsWith('.png')) {
+            filesToCopy.push({
+              from: doc.assetsFolder + '/' + file,
+              to: destinationFolder + '/' + path.basename(file),
+            });
+          }
+        });
+        filesToCopy.forEach(file => {
+          try {
+            if (!fs.existsSync(destinationFolder)) {
+              fs.mkdirSync(destinationFolder);
+            }
+            fs.copyFileSync(file.from, file.to);
+          } catch (e) {
+            logger.error('Error copying assets');
+            logger.error(e);
+          }
+        });
+        return doc;
+      })
+      .then((doc: Document) => {
         const promises: Array<Promise<any>> = [];
         if (config.output.formats.json) {
           promises.push(
