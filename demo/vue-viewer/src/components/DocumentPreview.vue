@@ -2,8 +2,8 @@
   <div class="DocPreview">
     <div id="DocPagesContainer" @scroll="handleScroll">
       <Page
-        v-for="(page, index) in paginatedPages"
-        :key="index"
+        v-for="page in paginatedPages"
+        :key="page.pageNumber"
         :page="page"
         :fonts="document.fonts"
         :zoom="zoom"
