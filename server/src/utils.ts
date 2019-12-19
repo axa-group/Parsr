@@ -794,7 +794,7 @@ function getPythonCommandLocationOnSystem(
   const pipenvSpawn = spawnSync(getCommandLocationOnSystem('pipenv'), ['--venv']);
   const pipEnvParsrLocation: string =
     pipenvSpawn.status === 0 ? pipenvSpawn.stdout.toString().split(os.EOL)[0] : "";
-  const result = pipEnvParsrLocation !== "" ? path.join(pipEnvParsrLocation, 'bin', cmdComponents[0]) : "";
+  let result = pipEnvParsrLocation !== "" ? path.join(pipEnvParsrLocation, 'bin', cmdComponents[0]) : "";
 
   if (result === null && secondChoice !== '') {
     return getPythonCommandLocationOnSystem(secondChoice, thirdChoice);
@@ -803,7 +803,18 @@ function getPythonCommandLocationOnSystem(
     return null;
   }
 
-  return [result , ...cmdComponents.slice(1, cmdComponents.length)].join(" ");
+  // re-insert the other words into the command (if any)
+  result = [result , ...cmdComponents.slice(1, cmdComponents.length)].join(" ");
+
+  // append python to the beginning if the command looked for isnt python itself
+  if (CommandExecuter.COMMANDS.PYTHON.includes(firstChoice)) {
+    return result;
+  } else {
+    const pythonCommands: string[] = CommandExecuter.COMMANDS.PYTHON;
+    return getPythonCommandLocationOnSystem(pythonCommands[0], pythonCommands[1] || '', pythonCommands[2] || '')
+       + ' '
+       + result;
+  }
 }
 
 /**
