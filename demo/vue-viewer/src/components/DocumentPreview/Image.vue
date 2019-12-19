@@ -15,7 +15,7 @@
       :x="props.element.box.l"
       :y="props.element.box.t + props.element.box.h / 2"
     >
-      {{ props.element.refId }}
+      {{ props.element.refId }} / {{ props.element.xObjId }}
     </text>
   </g>
 </template>
