@@ -21,29 +21,29 @@
         }"
       >
         <heading
-          v-for="element in elementsOfType('heading')"
-          :key="element.id"
+          v-for="element in headings"
+          :key="`heading_${element.id}`"
           :element="element"
           :fonts="fonts"
           @custom-event="elementSelected"
         />
         <paragraph
-          v-for="element in elementsOfType('paragraph')"
-          :key="element.id"
+          v-for="element in paragraphs"
+          :key="`paragraph_${element.id}`"
           :element="element"
           :fonts="fonts"
           @custom-event="elementSelected"
         />
         <tableData
-          v-for="element in elementsOfType('table')"
-          :key="element.id"
+          v-for="element in tables"
+          :key="`table_${element.id}`"
           :element="element"
           :fonts="fonts"
           @custom-event="elementSelected"
         />
         <list
-          v-for="element in elementsOfType('list')"
-          :key="element.id"
+          v-for="element in lists"
+          :key="`list_${element.id}`"
           :element="element"
           :fonts="fonts"
           @custom-event="elementSelected"
@@ -65,6 +65,7 @@ export default {
   mixins: [scrollItemMixin],
   data() {
     return {
+      elementsOfType: {},
       containerSize: { width: 0, height: 0 },
       zoomToFitPage: 1.0,
       appeared: false,
@@ -86,8 +87,17 @@ export default {
     },
   },
   computed: {
-    elementsOfType() {
-      return elementType => this.pageElements.filter(element => element.type === elementType);
+    headings() {
+      return this.elementsOfType['heading'] || [];
+    },
+    paragraphs() {
+      return this.elementsOfType['paragraph'] || [];
+    },
+    tables() {
+      return this.elementsOfType['table'] || [];
+    },
+    lists() {
+      return this.elementsOfType['list'] || [];
     },
     pageElements() {
       if (!this.appeared) {
@@ -174,6 +184,19 @@ export default {
     this.onAppear('PageContainer_' + this.page.pageNumber, 0.1, () => {
       this.appeared = true;
     });
+  },
+  watch: {
+    'pageElements.length': {
+      handler() {
+        this.elementsOfType = {};
+        this.pageElements.forEach(element => {
+          if (!this.elementsOfType[element.type]) {
+            this.elementsOfType[element.type] = [];
+          }
+          this.elementsOfType[element.type].push(element);
+        });
+      },
+    },
   },
 };
 </script>
