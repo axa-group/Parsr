@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "8d7ad4adc82347668c81efcd4a9889f395913810880579200258554c5ca1bf1e"
+            "sha256": "25a4ee59de1d74f539834151a9fd1ef7ef7e7d278a8ade7e4b961e0fbba10687"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -258,18 +258,12 @@
             "index": "pypi",
             "version": "==0.1.2"
         },
-        "pdfminer-six": {
-            "hashes": [
-                "sha256:ca2ca58f3ac66a486bce53a6ddba95dc2b27781612915fa41c444790ba9cd2a8"
-            ],
-            "index": "pypi",
-            "version": "==20191110"
-        },
         "pdfminer.six": {
             "hashes": [
                 "sha256:141a53ec491bee6d45bf9b2c7f82601426fb5d32636bcf6b9c8a8f3b6431fea6",
                 "sha256:ca2ca58f3ac66a486bce53a6ddba95dc2b27781612915fa41c444790ba9cd2a8"
             ],
+            "index": "pypi",
             "version": "==20191110"
         },
         "pillow": {
@@ -310,10 +304,10 @@
         },
         "pipdate": {
             "hashes": [
-                "sha256:26bd12075e63ef7f8094da36c27bf5539d298f4ef2af6acba20e98b502439d6d",
-                "sha256:779cff20be9d0179d81dceec6faabb1a382a99a4b4bfc728f881b63fa10dc59d"
+                "sha256:240c0f270ddb7470ad7b8c8fba4106e3dbd8817a370624fd8c32cf19155c9547",
+                "sha256:3d11fadaae2903f2e4a8e01bdb2384ba7463a26526f4a146f6d41bbf4b2064bf"
             ],
-            "version": "==0.3.4"
+            "version": "==0.3.5"
         },
         "pycryptodome": {
             "hashes": [
