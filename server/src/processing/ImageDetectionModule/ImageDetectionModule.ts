@@ -13,15 +13,71 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Document } from '../../types/DocumentRepresentation';
+import * as filetype from 'file-type';
+import * as fs from 'fs';
+import { Document, Image } from '../../types/DocumentRepresentation';
+import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
+
+export type ImageObject = {
+  refId: string;
+  xObjId: string;
+};
 
 export class ImageDetectionModule extends Module {
   public static moduleName = 'image-detection';
 
   public async main(doc: Document): Promise<Document> {
-    logger.info('Image detection for ' + doc.inputFile);
+    const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
+    if (fileType === null || fileType.ext !== 'pdf') {
+      logger.warn(
+        `Warning: Input file ${doc.inputFile} is not a PDF (${utils.prettifyObject(fileType)}); \
+        not using meta info for image detection..`,
+      );
+      return doc;
+    }
+    const images = doc.getElementsOfType(Image, true);
+    if (images.length > 0) {
+      const dumpPdf = await this.getFileMetadata(doc.inputFile);
+      this.linkXObjectToImages(images, dumpPdf);
+    }
     return doc;
+  }
+
+  private linkXObjectToImages(images: Image[], xObjectData: string): ImageObject[] {
+    const linkedImages = [];
+    images.forEach(img => {
+      const regepx = '<key>' + img.refId + '</key>\n<value><ref id="(\\d+)" /></value>';
+      const xObjId = xObjectData.match(new RegExp(regepx));
+      if (xObjId != null && xObjId.length === 2) {
+        img.xObjId = xObjId[1];
+      }
+    });
+    return linkedImages;
+  }
+
+  private getFileMetadata(pdfFilePath: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      logger.info(`Extracting metadata with pdfminer's dumppdf.py tool...`);
+      const xmlOutputFile: string = utils.getTemporaryFile('.xml');
+      const dumppdfArguments = ['-a', '-o', xmlOutputFile, pdfFilePath];
+
+      if (!fs.existsSync(xmlOutputFile)) {
+        fs.appendFileSync(xmlOutputFile, '');
+      }
+      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.DUMPPDF, dumppdfArguments)
+        .then(() => {
+          resolve(fs.readFileSync(xmlOutputFile, 'utf8'));
+        })
+        .catch(({ found, error }) => {
+          logger.error(error);
+          if (!found) {
+            reject(`Could not find the necessary libraries..`);
+          } else {
+            reject(error);
+          }
+        });
+    });
   }
 }
