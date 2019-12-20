@@ -36,7 +36,8 @@ Parsr can generate the following output formats:
 5. PDF
 
 ## Table of Contents
-- [Introduction](#turn-your-documents-into-data)
+- [Turn your documents into data!](#turn-your-documents-into-data)
+  - [Table of Contents](#table-of-contents)
   - [Getting Started](#getting-started)
     - [Installation](#installation)
     - [Usage](#usage)
@@ -53,15 +54,15 @@ Parsr can generate the following output formats:
 
 The quickest way to install and run the Parsr API is through the [docker image](https://hub.docker.com/r/axarev/parsr):
 
-For the master (stable) branch:
-```sh
-docker pull axarev/parsr:master
-```
+- For the master (stable) branch:
+    ```sh
+    docker pull axarev/parsr:master
+    ```
 
-For the develop branch:
-```sh
-docker pull axarev/parsr:master
-```
+- For the develop (latest) branch:
+    ```sh
+    docker pull axarev/parsr:latest
+    ```
 
 If you also wish to install the GUI for sending documents and visualising results:
 ```sh
