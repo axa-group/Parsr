@@ -99,7 +99,7 @@ export default {
   },
   computed: {
     images() {
-      return this.elementsOfType['images'] || [];
+      return this.elementsOfType['image'] || [];
     },
     headings() {
       return this.elementsOfType['heading'] || [];
