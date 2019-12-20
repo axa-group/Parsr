@@ -797,7 +797,7 @@ function getPythonCommandLocationOnSystem(
   thirdChoice: string = '',
 ): string {
   const cmdComponents: string[] = firstChoice.split(' ');
-  const pipenvSpawn = spawnSync(getCommandLocationOnSystem('pipenv'), ['--venv']);
+  const pipenvSpawn = spawnSync('pipenv', ['--venv'], { cwd: process.cwd(), env: process.env });
   const pipEnvParsrLocation: string =
     pipenvSpawn.status === 0 ? pipenvSpawn.stdout.toString().split(os.EOL)[0] : "";
   logger.info(`Pipenv location: ${pipEnvParsrLocation}`);
