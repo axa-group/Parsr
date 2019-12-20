@@ -60,7 +60,7 @@ const defaultExtractor: TableExtractor = {
       scriptArgs.push(options.table_areas.join(';'));
     }
 
-    return utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.PYTHON, scriptArgs)
+    return utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.PYTHON, scriptArgs, true)
       .then((stdout) => ({
         stdout,
         stderr: '',

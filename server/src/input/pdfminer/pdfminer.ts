@@ -61,7 +61,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
         fs.appendFileSync(xmlOutputFile, '');
       }
 
-      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.PDF2TXT, pdf2txtArguments)
+      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.PDF2TXT, pdf2txtArguments, true)
         .then(() => {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
