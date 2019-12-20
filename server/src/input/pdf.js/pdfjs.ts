@@ -79,18 +79,23 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
 
   const pageElements: Word[] = [];
   const fontStyles = textContent.styles;
-
   /*
     each 'item.str' returned by pdf.js can be a string with multiple words and even have a splitted word.
     for this reason, we:
       - split the 'item.str' into words,
       - calculate each single word's BBox,
       - search for splitted words to join them together
+
+      MAtrix reference on page 142 of PDF doc https://via.hypothes.is/https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdfs/pdf_reference_archives/PDFReference.pdf#annotations:SVudloF5EemLBgPm0gmY3Q
   */
   textContent.items.forEach(item => {
     const text = item.str;
     if (text.length > 0) {
       const transform = (pdfjs.Util as any).transform(viewport.transform, item.transform);
+      // trying to fix some case where pdf.js switch bounding box coordinates
+      if (item.width < 0) {
+        item.width = -item.width;
+      }
       const f = fontStyles[item.fontName];
       const font = new Font(
         [f.fontName, f.fontFamily].join(','),
@@ -113,7 +118,6 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
           wordWidth,
           item.height,
         );
-
         /*
           if this condition is met, it means that the actual word was splitted in half
           and it should be part of the last word pushed to the pageElements array.
