@@ -62,7 +62,7 @@ steps:
   - docker/parsr/build.sh
 
 - name: Tests
-  image: axarev/parsr-base
+  image: axarev/parsr-base:${DRONE_BRANCH}
   commands:
   - npm run test
 
