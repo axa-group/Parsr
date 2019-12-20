@@ -4,8 +4,15 @@ set -e
 
 export PATH=$PATH:$PWD/node_modules/.bin
 
+echo "DEBUG -- PATH $PATH"
+
 echo "Installing node packages : npm install"
 npm install
+
+echo 
+
+echo "DEBUG -- dpkg -l pipenv"
+dpkg -l pipenv
 
 echo 
 
