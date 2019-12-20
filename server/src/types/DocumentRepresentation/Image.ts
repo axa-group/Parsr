@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import * as fs from 'fs';
+import * as path from 'path';
 import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
 
@@ -79,5 +81,20 @@ export class Image extends Element {
     super(boundingBox);
     this.src = src;
     this.refId = refId;
+  }
+
+  /**
+   * Converts the entire paragraph into a string form with formatting, with spaces between words.
+   */
+  public toMarkdownImage(assetsFolder: string, docName: string): string {
+    const imageName: string = 'img-' + this.xObjId.padStart(4, '0') + '.';
+    const paths: string[] = fs.readdirSync(assetsFolder).filter(filename => {
+      return path.basename(filename).startsWith(imageName);
+    });
+
+    if (paths.length > 0) {
+      return '![](assets_' + docName + '/' + paths[0] + ')';
+    }
+    return '';
   }
 }

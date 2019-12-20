@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-import { Document, Heading, List, Paragraph, Table } from '../../types/DocumentRepresentation';
+import {
+  Document,
+  Heading,
+  Image,
+  List,
+  Paragraph,
+  Table,
+} from '../../types/DocumentRepresentation';
 import logger from '../../utils/Logger';
 import { Exporter } from '../Exporter';
 
 export class MarkdownExporter extends Exporter {
   private includeHeaderFooter: boolean;
+  private docName: string;
 
-  constructor(doc: Document, includeHeaderFooter: boolean) {
+  constructor(doc: Document, includeHeaderFooter: boolean, docName?: string) {
     super(doc);
     this.includeHeaderFooter = includeHeaderFooter;
+    this.docName = docName;
   }
 
   public export(outputPath: string): Promise<any> {
@@ -49,6 +58,8 @@ export class MarkdownExporter extends Exporter {
           output += element.toMarkdown();
         } else if (element instanceof Table) {
           output += element.toMarkdown();
+        } else if (element instanceof Image) {
+          output += element.toMarkdownImage(this.doc.assetsFolder, this.docName);
         }
         output += '\n'.repeat(2);
       });

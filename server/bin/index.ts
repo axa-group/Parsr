@@ -170,7 +170,7 @@ function main(): void {
 
         if (config.output.formats.markdown) {
           promises.push(
-            new MarkdownExporter(doc, config.output.includeMarginals).export(
+            new MarkdownExporter(doc, config.output.includeMarginals, documentName).export(
               `${outputFolder}/${documentName}.md`,
             ),
           );
