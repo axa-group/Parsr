@@ -56,6 +56,7 @@ steps:
 
 - name: Build API
   image: axarev/parsr-base:${DRONE_BRANCH}
+  pull: always
   environment:
     NODE_ENV: development
   commands:
