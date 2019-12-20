@@ -26,6 +26,7 @@
           :element="element"
           :fonts="fonts"
           :documentId="documentId"
+          :apiURL="baseAPIUrl"
           @custom-event="elementSelected"
         />
         <heading
@@ -69,7 +70,7 @@ import Heading from '@/components/DocumentPreview/Heading';
 import TableData from '@/components/DocumentPreview/Table';
 import List from '@/components/DocumentPreview/List';
 import ImageData from '@/components/DocumentPreview/Image';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 export default {
   components: { Paragraph, Heading, TableData, List, ImageData },
   mixins: [scrollItemMixin],
@@ -96,6 +97,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['baseAPIUrl']),
     ...mapState({
       documentId: state => state.uuid,
     }),

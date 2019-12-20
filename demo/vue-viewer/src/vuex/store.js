@@ -193,6 +193,9 @@ export default new Vuex.Store({
     },
   },
   getters: {
+    baseAPIUrl() {
+      return DocumentService.getAPIURL();
+    },
     currentPageElements(state) {
       try {
         return state.document.pages[state.selectedPage - 1].elements;

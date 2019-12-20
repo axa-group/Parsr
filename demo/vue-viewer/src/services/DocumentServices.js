@@ -1,9 +1,11 @@
 import axios from 'axios';
 
+const baseURL = process.env.VUE_APP_API
+  ? process.env.VUE_APP_API + '/api/v1'
+  : 'http://localhost:3001/api/v1';
+
 const apiClient = axios.create({
-  baseURL: process.env.VUE_APP_API
-    ? process.env.VUE_APP_API + '/api/v1'
-    : 'http://localhost:3001/api/v1',
+  baseURL: baseURL,
   withCredentials: false,
   headers: {},
   timeout: 10000,
@@ -69,5 +71,8 @@ export default {
   },
   getDefaultConfiguration() {
     return apiClient.get('/default-config?specs=true');
+  },
+  getAPIURL() {
+    return baseURL;
   },
 };
