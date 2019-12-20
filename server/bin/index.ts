@@ -139,27 +139,7 @@ function main(): void {
         return doc;
       })
       .then((doc: Document) => {
-        const destinationFolder = outputFolder + '/assets_' + documentName;
-        const filesToCopy: Array<{ from: string; to: string }> = [];
-        fs.readdirSync(doc.assetsFolder).forEach(file => {
-          if (file.endsWith('.png')) {
-            filesToCopy.push({
-              from: doc.assetsFolder + '/' + file,
-              to: destinationFolder + '/' + path.basename(file),
-            });
-          }
-        });
-        filesToCopy.forEach(file => {
-          try {
-            if (!fs.existsSync(destinationFolder)) {
-              fs.mkdirSync(destinationFolder);
-            }
-            fs.copyFileSync(file.from, file.to);
-          } catch (e) {
-            logger.error('Error copying assets');
-            logger.error(e);
-          }
-        });
+        copyAssetsToOutputFolder(doc);
         return doc;
       })
       .then((doc: Document) => {
@@ -230,6 +210,34 @@ function main(): void {
       .catch(err => {
         logger.error(`There was an error running the orchestrator: ${err}`);
       });
+  }
+
+  function copyAssetsToOutputFolder(doc: Document) {
+    const destinationFolder = outputFolder + '/assets_' + documentName;
+    const filesToCopy: Array<{ from: string; to: string }> = [];
+    fs.readdirSync(doc.assetsFolder).forEach(file => {
+      const imageFileType: { ext: string; mime: string } = filetype(
+        fs.readFileSync(doc.assetsFolder + '/' + file),
+      );
+
+      if (imageFileType != null && imageFileType.mime.slice(0, 5) === 'image') {
+        filesToCopy.push({
+          from: doc.assetsFolder + '/' + file,
+          to: destinationFolder + '/' + path.basename(file),
+        });
+      }
+    });
+    filesToCopy.forEach(file => {
+      try {
+        if (!fs.existsSync(destinationFolder)) {
+          fs.mkdirSync(destinationFolder);
+        }
+        fs.copyFileSync(file.from, file.to);
+      } catch (e) {
+        logger.error('Error copying assets');
+        logger.error(e);
+      }
+    });
   }
 
   /**
