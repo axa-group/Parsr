@@ -24,6 +24,15 @@ export default {
     }
     return result;
   },
+  normalizeImagesSrc(markdown, docId) {
+    const regexp = /!\[\]\(assets_.{1,}\/img-(\d+).{1,}/g;
+    for (const matching of markdown.matchAll(regexp)) {
+      const url =
+        '![](' + baseURL + '/image/' + docId + '/' + parseInt(matching[1]).toString() + ')';
+      markdown = markdown.replace(matching[0], url);
+    }
+    return markdown;
+  },
   normalizeWordsSpace(document) {
     var lines = this.search(document, function(key, value) {
       return key === 'type' && value === 'line';
