@@ -42,47 +42,45 @@ import logger from '../../utils/Logger';
  */
 export function execute(pdfInputFile: string): Promise<Document> {
   return new Promise<Document>((resolveDocument, rejectDocument) => {
-    return utils.repairPdf(pdfInputFile).then((repairedPdf: string) => {
-      const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-      logger.info(`Extracting file contents with pdfminer's pdf2txt.py tool...`);
+    const xmlOutputFile: string = utils.getTemporaryFile('.xml');
+    logger.info(`Extracting file contents with pdfminer's pdf2txt.py tool...`);
 
-      const pdf2txtArguments: string[] = [
-        '-c',
-        'utf-8',
-        '-t',
-        'xml',
-        '-o',
-        xmlOutputFile,
-        repairedPdf,
-      ];
+    const pdf2txtArguments: string[] = [
+      '-c',
+      'utf-8',
+      '-t',
+      'xml',
+      '-o',
+      xmlOutputFile,
+      pdfInputFile,
+    ];
 
-      if (!fs.existsSync(xmlOutputFile)) {
-        fs.appendFileSync(xmlOutputFile, '');
-      }
+    if (!fs.existsSync(xmlOutputFile)) {
+      fs.appendFileSync(xmlOutputFile, '');
+    }
 
-      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.PDF2TXT, pdf2txtArguments)
-        .then(() => {
-          const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
-          try {
-            logger.debug(`Converting pdfminer's XML output to JS object..`);
-            utils.parseXmlToObject(xml, { attrkey: '_attr' }).then((obj: any) => {
-              const pages: Page[] = [];
-              obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj)));
-              resolveDocument(new Document(pages, repairedPdf));
-            });
-          } catch (err) {
-            rejectDocument(`parseXml failed: ${err}`);
-          }
-        })
-        .catch(({ error, found }) => {
-          logger.error(error);
-          if (!found) {
-            rejectDocument(`Could not find the necessary libraries..`);
-          } else {
-            rejectDocument(`pdf2txt error: ${error}`);
-          }
-        });
-    });
+    utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.PDF2TXT, pdf2txtArguments)
+      .then(() => {
+        const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
+        try {
+          logger.debug(`Converting pdfminer's XML output to JS object..`);
+          utils.parseXmlToObject(xml, { attrkey: '_attr' }).then((obj: any) => {
+            const pages: Page[] = [];
+            obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj)));
+            resolveDocument(new Document(pages, pdfInputFile));
+          });
+        } catch (err) {
+          rejectDocument(`parseXml failed: ${err}`);
+        }
+      })
+      .catch(({ error, found }) => {
+        logger.error(error);
+        if (!found) {
+          rejectDocument(`Could not find the necessary libraries..`);
+        } else {
+          rejectDocument(`pdf2txt error: ${error}`);
+        }
+      });
   });
 }
 
