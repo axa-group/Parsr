@@ -15,6 +15,7 @@
  */
 
 import { expect } from 'chai';
+import { existsSync, unlinkSync } from 'fs';
 import { withData } from 'leche';
 import 'mocha';
 import { EmailExtractor } from '../../server/src/input/email/EmailExtractor';
@@ -120,6 +121,13 @@ describe('EML input module', () => {
 
             it('EML extractor should export expected text', () => {
                 expect(exportedText).to.eq(expectedText);
+            });
+
+            after(done => {
+                if (existsSync(ASSETS_DIR + fileName.replace('.eml', '-tmp.pdf'))) {
+                    unlinkSync(ASSETS_DIR + fileName.replace('.eml', '-tmp.pdf'));
+                }
+                done();
             });
         },
     );
