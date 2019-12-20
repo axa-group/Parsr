@@ -4,10 +4,11 @@
       <h1>{{ title }}</h1>
       <span>{{ totalPages }}p.</span>
     </header>
+    <span>Pages {{ availablePages[0] }} to {{ availablePages[availablePages.length - 1] }}</span>
     <div id="ThumbsContainer" v-if="canShowThumbnails">
       <thumbnail
         class="Thumb"
-        v-for="index in totalPages"
+        v-for="index in availablePages"
         :id="'Thumb_' + index"
         :key="index"
         :class="isSelected(index)"
@@ -44,6 +45,12 @@ export default {
       return { selected: index === this.selectedPage };
     },
     thumbClicked(index, updateStore = true) {
+      if (index < this.pagination.limit * this.pagination.offset + 1) {
+        this.pagination.offset = Math.floor(index / this.pagination.limit);
+      } else if (index > this.pagination.limit * this.pagination.offset + this.pagination.limit) {
+        this.pagination.offset = Math.ceil(index / this.pagination.limit);
+      }
+
       var thumb = document.getElementById('Thumb_' + index);
       var scroll = document.getElementById('ThumbsContainer');
 
@@ -68,7 +75,19 @@ export default {
     };
   },
   computed: {
-    ...mapState(['inputFileName']),
+    ...mapState(['inputFileName', 'pagination']),
+    availablePages() {
+      const from = this.pagination.offset * this.pagination.limit + 1;
+      const to = Math.min(
+        this.pagination.offset * this.pagination.limit + this.pagination.limit,
+        this.totalPages,
+      );
+      const values = [];
+      for (let i = from; i <= to; i += 1) {
+        values.push(i);
+      }
+      return values;
+    },
     canShowThumbnails() {
       return this.allowedFormatsForThumbnails.includes(
         this.inputFileName
