@@ -215,7 +215,10 @@ export default new Vuex.Store({
       return DocumentService.getDocumentMarkdown(this.state.uuid)
         .then(response => {
           commit('setMarkdownLoading', false);
-          commit('SET_DOCUMENT_MARKDOWN', response.data);
+          commit(
+            'SET_DOCUMENT_MARKDOWN',
+            DocumentService.normalizeImagesSrc(response.data, this.state.uuid),
+          );
           return response.data;
         })
         .catch(error => {
@@ -266,6 +269,9 @@ export default new Vuex.Store({
     },
   },
   getters: {
+    baseAPIUrl() {
+      return DocumentService.getAPIURL();
+    },
     currentPageElements(state) {
       try {
         return state.document.pages[state.selectedPage - 1].elements;

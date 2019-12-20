@@ -20,6 +20,15 @@
           transformOrigin: page.rotation.origin.x + 'px ' + page.rotation.origin.y + 'px',
         }"
       >
+        <imageData
+          v-for="element in images"
+          :key="`images_${element.id}`"
+          :element="element"
+          :fonts="fonts"
+          :documentId="documentId"
+          :apiURL="baseAPIUrl"
+          @custom-event="elementSelected"
+        />
         <heading
           v-for="element in headings"
           :key="`heading_${element.id}`"
@@ -60,8 +69,10 @@ import Paragraph from '@/components/DocumentPreview/Paragraph';
 import Heading from '@/components/DocumentPreview/Heading';
 import TableData from '@/components/DocumentPreview/Table';
 import List from '@/components/DocumentPreview/List';
+import ImageData from '@/components/DocumentPreview/Image';
+import { mapState, mapGetters } from 'vuex';
 export default {
-  components: { Paragraph, Heading, TableData, List },
+  components: { Paragraph, Heading, TableData, List, ImageData },
   mixins: [scrollItemMixin],
   data() {
     return {
@@ -87,6 +98,9 @@ export default {
     },
   },
   computed: {
+    images() {
+      return this.elementsOfType['images'] || [];
+    },
     headings() {
       return this.elementsOfType['heading'] || [];
     },
@@ -98,6 +112,13 @@ export default {
     },
     lists() {
       return this.elementsOfType['list'] || [];
+    },
+    ...mapGetters(['baseAPIUrl']),
+    ...mapState({
+      documentId: state => state.uuid,
+    }),
+    elementsOfType() {
+      return elementType => this.pageElements.filter(element => element.type === elementType);
     },
     pageElements() {
       if (!this.appeared) {
@@ -231,6 +252,10 @@ export default {
   cursor: pointer;
   fill: red !important;
 }
+.Page rect.Image {
+  fill: fuchsia !important;
+}
+
 .VisibleWords rect.Word {
   fill: transparent;
   stroke: rgb(0, 124, 12);

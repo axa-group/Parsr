@@ -15,6 +15,7 @@
  */
 
 import { Document } from '../../types/DocumentRepresentation';
+import * as utils from '../../utils';
 import { extractImagesAndFonts } from '../extractImagesFonts';
 import { Extractor } from '../Extractor';
 import * as pdfminer from './pdfminer';
@@ -27,10 +28,16 @@ import * as pdfminer from './pdfminer';
  */
 export class PdfminerExtractor extends Extractor {
   public run(inputFile: string): Promise<Document> {
-    const pdfminerExtract: Promise<Document> = pdfminer.execute(inputFile);
+    return utils.repairPdf(inputFile).then((repairedPdf: string) => {
+      const pdfminerExtract: Promise<Document> = pdfminer.execute(repairedPdf);
 
-    const extractFont = extractImagesAndFonts(inputFile);
-
-    return Promise.all([pdfminerExtract, extractFont]).then(([doc]: [Document, void]) => doc);
+      const extractFont = extractImagesAndFonts(repairedPdf);
+      return Promise.all([pdfminerExtract, extractFont]).then(
+        ([doc, assetsFolder]: [Document, string]) => {
+          doc.assetsFolder = assetsFolder;
+          return doc;
+        },
+      );
+    });
   }
 }
