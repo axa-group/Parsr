@@ -2,6 +2,8 @@
 
 set -e
 
+echo "Building for branch ${DRONE_BRANCH}"
+
 export PATH=$PATH:$PWD/node_modules/.bin
 
 echo "DEBUG -- PATH $PATH"
