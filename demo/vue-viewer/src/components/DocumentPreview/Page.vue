@@ -117,9 +117,6 @@ export default {
     ...mapState({
       documentId: state => state.uuid,
     }),
-    elementsOfType() {
-      return elementType => this.pageElements.filter(element => element.type === elementType);
-    },
     pageElements() {
       if (!this.appeared) {
         return [];
