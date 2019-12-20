@@ -59,7 +59,7 @@ export class MarkdownExporter extends Exporter {
         } else if (element instanceof Table) {
           output += element.toMarkdown();
         } else if (element instanceof Image) {
-          output += element.toMarkdownImage(this.doc.assetsFolder, this.docName);
+          output += element.toMarkdownImage(this.docName);
         }
         output += '\n'.repeat(2);
       });

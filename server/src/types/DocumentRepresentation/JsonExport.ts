@@ -57,6 +57,7 @@ export interface JsonElement {
   src?: string;
   refId?: string;
   xObjId?: string;
+  xObjExt?: string;
   codeType?: string;
   codeValue?: string;
   conf?: number;
