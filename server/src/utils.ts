@@ -844,7 +844,7 @@ export function getCommandLocationOnSystem(
     return null;
   }
 
-  return [firstChoice , ...cmdComponents.slice(1, cmdComponents.length)].join(" ");
+  return firstChoice;
 }
 
 /**
