@@ -417,7 +417,7 @@ export class ApiServer {
     res.setHeader('Access-Control-Allow-Origin', '*');
 
     const docId: string = req.params.docId;
-    const image: string = 'img-' + this.zeroPad(req.params.imageId, 4) + '.png';
+    const imageName: string = 'img-' + req.params.imageId.padStart(4, '0') + '.';
     const binder: Binder = this.fileManager.getBinder(docId);
     const assetsFolder = binder.outputPath + '/assets_' + binder.name;
     const imagePath = assetsFolder + '/' + image;
@@ -581,9 +581,5 @@ export class ApiServer {
       return null;
     }
     return firstChoice;
-  }
-
-  private zeroPad(input: string, length: number) {
-    return (Array(length + 1).join('0') + input).slice(-length);
   }
 }
