@@ -1,5 +1,5 @@
 <template>
-  <div @click="$emit('clicked', page)">
+  <div @click="$emit('clicked', page)" v-observe-visibility="visibilityChanged">
     <img v-if="!errorMessage" :src="thumbnailImage" :class="isLoading" />
     <span v-if="errorMessage">Thumbnail {{ page }}<br />{{ errorMessage }}</span>
   </div>
@@ -27,18 +27,20 @@ export default {
       return this.thumbnailImage === spinner ? 'loading' : '';
     },
   },
-  mounted: function() {
-    this.onAppear('Thumb_' + this.page, 0.3, () => {
-      this.$store
-        .dispatch('fetchThumbnail', { page: this.page })
-        .then(response => {
-          this.thumbnailImage = URL.createObjectURL(response.data);
-        })
-        .catch(error => {
-          console.log(error);
-          this.errorMessage = error.message;
-        });
-    });
+  methods: {
+    visibilityChanged(visible) {
+      if (visible) {
+        this.$store
+          .dispatch('fetchThumbnail', { page: this.page })
+          .then(response => {
+            this.thumbnailImage = URL.createObjectURL(response.data);
+          })
+          .catch(error => {
+            console.log(error);
+            this.errorMessage = error.message;
+          });
+      }
+    },
   },
 };
 </script>
