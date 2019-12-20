@@ -75,7 +75,7 @@ export class CommandExecuter {
           error: `${cmd.toString()} was not found on the system. Are you sure it is installed and added to PATH?`,
         });
       }
-      logger.debug(`executing command: ${command} ${args.join(' ')}`);
+      logger.info(`Executing command: ${command} ${args.join(' ')}`);
       const { stderr, stdout, status } = spawnSync(command, args, options);
       if (status === 0) {
         return resolve((stdout || '').toString());
@@ -800,6 +800,7 @@ function getPythonCommandLocationOnSystem(
   const pipenvSpawn = spawnSync(getCommandLocationOnSystem('pipenv'), ['--venv']);
   const pipEnvParsrLocation: string =
     pipenvSpawn.status === 0 ? pipenvSpawn.stdout.toString().split(os.EOL)[0] : "";
+  logger.info(`Pipenv location: ${pipEnvParsrLocation}`);
   let result = pipEnvParsrLocation !== "" ? path.join(pipEnvParsrLocation, 'bin', cmdComponents[0]) : "";
 
   if (result === null && secondChoice !== '') {
