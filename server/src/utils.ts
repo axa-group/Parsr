@@ -803,7 +803,7 @@ export function getCommandLocationOnSystem(
     return null;
   }
 
-  return firstChoice;
+  return [result , ...cmdComponents.slice(1, cmdComponents.length)].join(" ");
 }
 
 /**
