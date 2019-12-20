@@ -60,7 +60,7 @@ docker pull axarev/parsr:master
 
 For the develop branch:
 ```sh
-docker pull axarev/parsr:latest
+docker pull axarev/parsr:master
 ```
 
 If you also wish to install the GUI for sending documents and visualising results:
