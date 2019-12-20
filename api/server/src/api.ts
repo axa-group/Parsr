@@ -420,10 +420,16 @@ export class ApiServer {
     const imageName: string = 'img-' + req.params.imageId.padStart(4, '0') + '.';
     const binder: Binder = this.fileManager.getBinder(docId);
     const assetsFolder = binder.outputPath + '/assets_' + binder.name;
-    const imagePath = assetsFolder + '/' + image;
-    if (fs.existsSync(imagePath)) {
-      logger.info('Return image at path ' + imagePath);
-      res.sendFile(imagePath, {
+    const paths: string[] = fs
+      .readdirSync(assetsFolder)
+      .filter(filename => {
+        return path.basename(filename).startsWith(imageName);
+      })
+      .map(file => assetsFolder + '/' + file);
+
+    if (paths.length > 0) {
+      logger.info('Return image at path ' + paths[0]);
+      res.sendFile(paths[0], {
         headers: {
           responseType: 'blob',
         },
