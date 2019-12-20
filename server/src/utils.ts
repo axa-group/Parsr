@@ -23,6 +23,12 @@ import * as path from 'path';
 import { inspect } from 'util';
 import { OptionsV2, parseString } from 'xml2js';
 import { DOMParser } from 'xmldom';
+import { AbbyyTools } from './input/abbyy/AbbyyTools';
+import { Extractor } from './input/Extractor';
+import { PDFJsExtractor } from './input/pdf.js/PDFJsExtractor';
+import { PdfminerExtractor } from './input/pdfminer/PdfminerExtractor';
+import { TesseractExtractor } from './input/tesseract/TesseractExtractor';
+import { Config } from './types/Config';
 import {
   BoundingBox,
   Document,
@@ -846,4 +852,21 @@ export function getEmphazisChars(text: string): string {
     return '***';
   }
   return '';
+}
+
+/**
+ * Returns the pdf extraction orchestrator depending on the extractor selection made in the configuration.
+ *
+ * @returns The Orchestrator instance
+ */
+export function getPdfExtractor(config: Config): Extractor {
+  if (config.extractor.pdf === 'abbyy') {
+    return new AbbyyTools(config);
+  } else if (config.extractor.pdf === 'tesseract') {
+    return new TesseractExtractor(config);
+  } else if (config.extractor.pdf === 'pdfjs') {
+    return new PDFJsExtractor(config);
+  } else {
+    return new PdfminerExtractor(config);
+  }
 }

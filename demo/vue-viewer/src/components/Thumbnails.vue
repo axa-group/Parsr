@@ -62,10 +62,15 @@ export default {
       this.thumbClicked(index, false);
     },
   },
+  data() {
+    return {
+      allowedFormatsForThumbnails: ['pdf', 'jpg', 'jpeg', 'png', 'tiff', 'eml'],
+    };
+  },
   computed: {
     ...mapState(['inputFileName']),
     canShowThumbnails() {
-      return ['pdf', 'jpg', 'jpeg', 'png', 'tiff'].includes(
+      return this.allowedFormatsForThumbnails.includes(
         this.inputFileName
           .toLowerCase()
           .split('.')
