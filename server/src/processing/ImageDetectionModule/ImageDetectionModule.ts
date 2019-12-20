@@ -20,11 +20,6 @@ import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 
-export type ImageObject = {
-  refId: string;
-  xObjId: string;
-};
-
 export class ImageDetectionModule extends Module {
   public static moduleName = 'image-detection';
 
@@ -39,14 +34,26 @@ export class ImageDetectionModule extends Module {
     }
     const images = doc.getElementsOfType(Image, true);
     if (images.length > 0) {
+      const assets: string[] = fs.readdirSync(doc.assetsFolder);
       const dumpPdf = await this.getFileMetadata(doc.inputFile);
       this.linkXObjectToImages(images, dumpPdf);
+      this.linkXObjectWithExtensions(images, assets);
     }
     return doc;
   }
 
-  private linkXObjectToImages(images: Image[], xObjectData: string): ImageObject[] {
-    const linkedImages = [];
+  private linkXObjectWithExtensions(images: Image[], assets: string[]) {
+    images.forEach(img => {
+      const asset = assets.filter(filename => {
+        return filename.startsWith('img-' + img.xObjId.padStart(4, '0'));
+      });
+      if (asset.length === 1) {
+        img.xObjExt = asset[0].split('.').pop();
+      }
+    });
+  }
+
+  private linkXObjectToImages(images: Image[], xObjectData: string) {
     images.forEach(img => {
       const regepx = '<key>' + img.refId + '</key>\n<value><ref id="(\\d+)" /></value>';
       const xObjId = xObjectData.match(new RegExp(regepx));
@@ -54,7 +61,6 @@ export class ImageDetectionModule extends Module {
         img.xObjId = xObjId[1];
       }
     });
-    return linkedImages;
   }
 
   private getFileMetadata(pdfFilePath: string): Promise<any> {

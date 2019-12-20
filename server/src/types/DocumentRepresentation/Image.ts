@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
 import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
 
@@ -68,6 +66,22 @@ export class Image extends Element {
    * Setter src
    * @param {string} value
    */
+  public set xObjExt(value: string) {
+    this._xObjExt = value;
+  }
+
+  /**
+   * Getter src
+   * @return {string}
+   */
+  public get xObjExt(): string {
+    return this._xObjExt;
+  }
+
+  /**
+   * Setter src
+   * @param {string} value
+   */
   public set xObjId(value: string) {
     this._xObjId = value;
   }
@@ -76,6 +90,7 @@ export class Image extends Element {
   private _src: string;
   private _refId: string;
   private _xObjId: string;
+  private _xObjExt: string;
 
   constructor(boundingBox: BoundingBox, src?: string, refId?: string) {
     super(boundingBox);
@@ -84,17 +99,10 @@ export class Image extends Element {
   }
 
   /**
-   * Converts the entire paragraph into a string form with formatting, with spaces between words.
+   * Converts the image to MD code
    */
-  public toMarkdownImage(assetsFolder: string, docName: string): string {
-    const imageName: string = 'img-' + this.xObjId.padStart(4, '0') + '.';
-    const paths: string[] = fs.readdirSync(assetsFolder).filter(filename => {
-      return path.basename(filename).startsWith(imageName);
-    });
-
-    if (paths.length > 0) {
-      return '![](assets_' + docName + '/' + paths[0] + ')';
-    }
-    return '';
+  public toMarkdownImage(docName: string): string {
+    const imageName: string = 'img-' + this.xObjId.padStart(4, '0') + '.' + this.xObjExt;
+    return '![](assets_' + docName + '/' + imageName + ')';
   }
 }
