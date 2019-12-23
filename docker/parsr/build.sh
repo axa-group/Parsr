@@ -4,15 +4,10 @@ set -e
 
 export PATH=$PATH:$PWD/node_modules/.bin
 
-echo "Installing node packages : npm install"
+echo "Installing packages : npm install"
 npm install
 
 echo 
-
-echo "Installing python packages : pipenv install"
-pipenv install
-
-echo
 
 echo "Building typescript : npm run build:ts"
 npm run build:ts

@@ -53,14 +53,8 @@ Parsr can generate the following output formats:
 
 The quickest way to install and run the Parsr API is through the [docker image](https://hub.docker.com/r/axarev/parsr):
 
-For the master (stable) branch:
 ```sh
-docker pull axarev/parsr:master
-```
-
-For the develop branch:
-```sh
-docker pull axarev/parsr:master
+docker pull axarev/parsr
 ```
 
 If you also wish to install the GUI for sending documents and visualising results:
