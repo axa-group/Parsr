@@ -15,7 +15,9 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && \
-    apt-get install -y nodejs npm pipenv imagemagick graphicsmagick mupdf mupdf-tools qpdf pandoc tesseract-ocr-all
+    apt-get install -y imagemagick graphicsmagick mupdf mupdf-tools qpdf pandoc tesseract-ocr-all nodejs npm python-pdfminer python-pip python3-pip python-tk python3-pdfminer python3-opencv && \
+    pip install ghostscript camelot-py scikit-image numpy pillow && \
+    pip3 install ghostscript camelot-py scikit-image numpy pillow
     
 WORKDIR /opt/app-root/src
 RUN chown 1001:0 /opt/app-root/src

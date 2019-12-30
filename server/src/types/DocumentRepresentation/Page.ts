@@ -79,7 +79,7 @@ export class Page {
 
     const horizontalBarriers: number[][] = this.getBarriers('horizontal');
     horizontalBarriers.forEach(a => {
-      for (let i = Math.floor(a[0]); i !== Math.floor(a[1]) + 1; ++i) {
+      for (let i = Math.floor(a[0]); i <= Math.floor(a[1]) + 1; ++i) {
         if (!this.horizontalOccupancy[i]) {
           this.horizontalOccupancy[i] = true;
         }
@@ -87,7 +87,7 @@ export class Page {
     });
     const verticalBarriers: number[][] = this.getBarriers('vertical');
     verticalBarriers.forEach(a => {
-      for (let i = Math.floor(a[0]); i !== Math.floor(a[1]) + 1; ++i) {
+      for (let i = Math.floor(a[0]); i <= Math.floor(a[1]) + 1; ++i) {
         if (!this.verticalOccupancy[i]) {
           this.verticalOccupancy[i] = true;
         }
