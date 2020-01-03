@@ -104,39 +104,47 @@ export class EmailExtractor extends Extractor {
 
   private attachmentToPDF(rawHTML: string): (data: MailAttachmentData) => Promise<string> {
     return async (attachment: MailAttachmentData): Promise<string> => {
-      const outputFilePath = getTemporaryFile('.pdf');
-
       if (attachment.contentType === 'application/pdf') {
-        writeFileSync(outputFilePath, attachment.content);
-        return outputFilePath;
+        return this.pdfAttachmentToPDF(attachment);
       }
 
       if (attachment.contentType.startsWith('image/')) {
-        /*
-          if the attached image is represented in the HTML body as a base64-encoded img
-          then it's not considered as an attached *extra* file
-          (e.g., logo images, social media link images, etc)
-        */
-        const imageSrcRegexp = new RegExp(/src="data:image\/[a-z]{3,4};base64,([a-zA-Z0-9/+=]+)/gm);
-        const imagesInHTML = rawHTML.match(imageSrcRegexp);
-        const fileBase64 = attachment.content.toString('base64');
-        if (imagesInHTML && imagesInHTML.some(i => i.split(',')[1] === fileBase64)) {
-          return null;
-        }
-
-        const imageFile = getTemporaryFile('.' + attachment.filename.split('.')[1]);
-        writeFileSync(imageFile, attachment.content);
-        return CommandExecuter.run(CommandExecuter.COMMANDS.CONVERT, [
-          imageFile,
-          '-units', 'PixelsPerInch',
-          '-density', '96',
-          outputFilePath,
-        ]).then(() => {
-          return outputFilePath;
-        });
+        return this.imageAttachmentToPDF(attachment, rawHTML);
       }
 
       return null;
     };
+  }
+
+  private async pdfAttachmentToPDF(attachment: MailAttachmentData): Promise<string> {
+    const outputFilePath = getTemporaryFile('.pdf');
+    writeFileSync(outputFilePath, attachment.content);
+    return outputFilePath;
+  }
+
+  private async imageAttachmentToPDF(attachment: MailAttachmentData, rawHTML: string): Promise<string> {
+    const outputFilePath = getTemporaryFile('.pdf');
+    /*
+      if the attached image is represented in the HTML body as a base64-encoded img
+      then it's not considered as an attached *extra* file
+      (e.g., logo images, social media link images, etc)
+    */
+    const imageSrcRegexp = new RegExp(/src="data:image\/[a-z]{3,4};base64,([a-zA-Z0-9/+=]+)/gm);
+    const imagesInHTML = rawHTML.match(imageSrcRegexp);
+    const fileBase64 = attachment.content.toString('base64');
+    if (imagesInHTML && imagesInHTML.some(i => i.split(',')[1] === fileBase64)) {
+      return null;
+    }
+
+    const imageFile = getTemporaryFile('.' + attachment.filename.split('.')[1]);
+    writeFileSync(imageFile, attachment.content);
+    return CommandExecuter.run(CommandExecuter.COMMANDS.CONVERT, [
+      imageFile,
+      '-units', 'PixelsPerInch',
+      '-density', '96',
+      outputFilePath,
+    ]).then(() => {
+      return outputFilePath;
+    });
   }
 }
