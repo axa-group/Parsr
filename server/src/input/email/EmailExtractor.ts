@@ -38,23 +38,29 @@ interface MailAttachmentData {
 
 export class EmailExtractor extends Extractor {
   public async run(inputFile: string): Promise<Document> {
+    const fullPDF = await this.convertEMLtoPDF(inputFile);
+    const mainDocument: Document = await getPdfExtractor(this.config).run(fullPDF);
+    mainDocument.inputFile = fullPDF;
+    return mainDocument;
+  }
 
+  private async convertEMLtoPDF(inputFile: string): Promise<string> {
     const page = {
       width: '210mm',
       height: '297mm',
     };
 
     const styles = `
-    <style>
-    body, html {
-      height: ${page.height} !important;
-      width: ${page.width} !important;
-    }
-    table {
-      width: 100% !important;
-    }
-  </style>
-  `;
+      <style>
+      body, html {
+        height: ${page.height} !important;
+        width: ${page.width} !important;
+      }
+      table {
+        width: 100% !important;
+      }
+      </style>
+    `;
     try {
       const data = readFileSync(inputFile);
       const raw = await simpleParser(data);
@@ -90,9 +96,7 @@ export class EmailExtractor extends Extractor {
       const files = await Promise.all(pdfFilesToJoin);
       const fullPDF = inputFile.replace('.eml', '.pdf');
       await mergePDFs(files, fullPDF);
-      const mainDocument: Document = await getPdfExtractor(this.config).run(fullPDF);
-      mainDocument.inputFile = fullPDF;
-      return mainDocument;
+      return fullPDF;
     } catch (e) {
       throw e;
     }
