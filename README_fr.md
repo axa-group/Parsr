@@ -8,22 +8,23 @@
 
 [English](README.md) | [中文](README_zh-cn.md)
 
-**Parsr**, est une chaîne d'outils de nettoyage, d'analyse et d'extraction de documents (image, pdf) qui génère des données facilement disponibles, organisées et utilisables pour les développeurs et les scientifiques de données (data scientists).
+**Parsr** est une chaîne d'outils de nettoyage, d'analyse et d'extraction de documents (image, pdf) qui génère des données facilement disponibles, organisées et utilisables pour les développeurs et les scientifiques de données (data scientists).
 
-Il fournit aux utilisateurs un ensemble d'informations structuré et enrichi d'étiquettes propres pour des applications prêtes à l'emploi allant de l'automatisation de la saisie de données et de l'analyse de documents à l'archivage et bien d'autres.
+Il fournit aux utilisateurs un ensemble d'informations structurées et enrichies de label propres pour des applications prêtes à l'emploi allant de l'automatisation de la saisie de données à l'analyse de documents, en passant par l'archivage et bien d'autres.
 
 Actuellement, Parsr peut effectuer:
 
-- Régénération de la hiérarchie des documents - Mots, lignes et paragraphes
+- Régénération de la hiérarchie des documents
+- Mots, lignes et paragraphes
 - Détection des titres
 - Détection et reconstruction des tableaux
 - Détection des listes
 - Détection de l'ordre des paragraphes
 - Reconnaissance des entités nommées (dates, pourcentages, etc.)
 - Détection de paires clé-valeur (pour l'extraction d'entrées spécifiques basées sur un formulaire)
-- Détection du numéro de page
+- Détection des numéros de page
 - Détection d'entête et pied de page
-- Détection de lien
+- Détections de liens
 - Suppression des espaces blancs
 
 Parsr prend en entrée une image (.jpg, .png, .tiff, ...) ou un pdf et génère les formats de sortie suivants:
@@ -36,20 +37,20 @@ Parsr prend en entrée une image (.jpg, .png, .tiff, ...) ou un pdf et génère 
 
 ## Table des matières
 - [Transformez vos documents en données!](#transformez-vos-documents-en-données)
-  - [Table des matières](#table-des-matières)
-  - [Débuter avec Parsr](#débuter-avec-parsr)
-    - [Installation](#installation)
-    - [Utilisation](#utilisation)
-  - [Documentation](#documentation)
-  - [Comment Contribuer](#comment-contribuer)
-  - [Licences tierces](#licences-tierces)
-  - [Licence](#licence)
+	- [Table des matières](#table-des-matières)
+	- [Débuter avec Parsr](#débuter-avec-parsr)
+		- [Installation](#installation)
+		- [Utilisation](#utilisation)
+	- [Documentation](#documentation)
+	- [Comment contribuer](#comment-contribuer)
+	- [Licences tierces](#licences-tierces)
+	- [Licence](#licence)
   
 ## Débuter avec Parsr
 
 ### Installation
 
-*-- Le guide d'installation avancée est disponible [ici](docs/installation.md) --*
+*-- Le guide d'installation avancé est disponible [ici](docs/installation.md) --*
 
 Le moyen le plus rapide pour installer et exécuter l'API Parsr est via [l'image docker](https://hub.docker.com/r/axarev/parsr):
 
@@ -63,11 +64,11 @@ Si vous souhaitez également installer l'interface graphique pour l'envoi de doc
 docker pull axarev/parsr-ui-localhost
 ```
 
-Remarque: Parsr peut également être installé nu (pas via des conteneurs Docker) - voir la procédure sur [guide d'installation](docs/installation.md).
+Remarque: Parsr peut également être installé directement sur la machine (sans Docker)" - voir la procédure sur [guide d'installation](docs/installation.md).
 
 ### Utilisation
 
-*-- Le guide d'utilisation avancée est disponible [ici](docs/usage.md) --*
+*-- Le guide d'utilisation avancé est disponible [ici](docs/usage.md) --*
 
 Pour exécuter [l'API](docs/api-guide.md), lancez:
 ```sh
@@ -85,7 +86,7 @@ Consultez la documentation sur [l'utilisation de l'API](docs/api-guide.md).
     Ensuite, accédez-y via [http://localhost:8080](http://localhost:8080).
 
 
-Reportez-vous à la [Documentation de configuration](docs/configuration.md) pour interpréter les options configurables dans la visionneuse GUI.
+Reportez-vous à la [Documentation de configuration](docs/configuration.md) pour interpréter les options configurables dans l'interface graphique.
 
 [Utilisation basée sur l'API](docs/usage.md#13-api) et [utilisation en ligne de commande](docs/usage.md#123-command-line-usage) sont documentées dans [utilisation avancée](docs/usage.md).
 
@@ -93,13 +94,13 @@ Reportez-vous à la [Documentation de configuration](docs/configuration.md) pour
 
 Tous les fichiers de documentation peuvent être trouvés [ici](docs/README.md) - actuellement en anglais seulement.
 
-## Comment Contribuer
+## Comment contribuer
 
 Veuillez vous référer aux [directives de contribution](CONTRIBUTING.md).
 
 ## Licences tierces
 
-Licences de bibliothèques tierces pour ses [dépendances](docs/dependencies.md):
+Licences de bibliothèques tierces pour ces [dépendances](docs/dependencies.md):
 
 1. **QPDF**: Apache [http://qpdf.sourceforge.net](http://qpdf.sourceforge.net/)
 2. **GraphicsMagick**: MIT [http://www.graphicsmagick.org/index.html](http://www.graphicsmagick.org/index.html)
