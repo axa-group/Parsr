@@ -25,7 +25,7 @@ import { OutOfPageRemovalModule } from '../../server/src/processing/OutOfPageRem
 import { ReadingOrderDetectionModule } from '../../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 import { WhitespaceRemovalModule } from '../../server/src/processing/WhitespaceRemovalModule/WhitespaceRemovalModule';
 import { WordsToLineModule } from '../../server/src/processing/WordsToLineModule/WordsToLineModule';
-import { Paragraph } from '../../server/src/types/DocumentRepresentation';
+import { Document, Paragraph } from '../../server/src/types/DocumentRepresentation';
 import { runModules } from './../helpers';
 
 const ASSETS_DIR = __dirname + '/assets/';
@@ -84,11 +84,16 @@ describe('EML input module', () => {
             'one paragraph text extraction': [
                 'One_Paragraph.eml',
                 "**Lorem Ipsum** is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                1,
+            ],
+            'attachments': [
+                'with_attachments.eml',
+                'this is the email body',
+                3,
             ],
         },
-        (fileName, expectedText) => {
-            let exportedText: string = '';
-
+        (fileName, expectedText, pageCount) => {
+            let docAfter: Document;
             before(done => {
                 const extractor = new EmailExtractor({
                     "version": 0.5,
@@ -113,14 +118,20 @@ describe('EML input module', () => {
                         new WordsToLineModule(),
                         new LinesToParagraphModule(),
                     ]).then(doc => {
-                        exportedText = doc.getElementsOfType<Paragraph>(Paragraph).map(p => p.toMarkdown()).join(' ');
+                        docAfter = doc;
                         done();
                     });
                 });
             });
 
             it('EML extractor should export expected text', () => {
+                const exportedText =
+                    docAfter.getElementsOfType<Paragraph>(Paragraph).map(p => p.toMarkdown()).join(' ');
                 expect(exportedText).to.eq(expectedText);
+            });
+
+            it('PDF resulting file should have the expected amount of pages', () => {
+                expect(docAfter.pages.length).to.eq(pageCount);
             });
 
             after(done => {
