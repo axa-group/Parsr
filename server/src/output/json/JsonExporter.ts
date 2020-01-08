@@ -72,6 +72,7 @@ export class JsonExporter extends Exporter {
 
     this.json.pages = this.doc.pages.map((page: Page) => {
       const jsonPage: JsonPage = {
+        margins: this.doc.margins,
         box: this.boxToJsonBox(page.box),
         rotation: this.rotationToJsonRotation(page.pageRotation),
         pageNumber: page.pageNumber,

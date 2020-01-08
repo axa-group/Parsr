@@ -7,6 +7,40 @@
       :width="page.box.w"
       :height="page.box.h"
     >
+      <svg v-show="pageMarginsFilter">
+        <line
+          stroke-dasharray="5,5"
+          :x1="page.margins.left"
+          :y1="0"
+          :x2="page.margins.left"
+          :y2="page.box.h"
+          style="stroke: #aeaeae"
+        />
+        <line
+          stroke-dasharray="5,5"
+          :x1="page.margins.right"
+          :y1="0"
+          :x2="page.margins.right"
+          :y2="page.box.h"
+          style="stroke: #aeaeae"
+        />
+        <line
+          stroke-dasharray="5,5"
+          :x1="0"
+          :y1="page.margins.top"
+          :x2="page.box.w"
+          :y2="page.margins.top"
+          style="stroke: #aeaeae"
+        />
+        <line
+          stroke-dasharray="5,5"
+          :x1="0"
+          :y1="page.margins.bottom"
+          :x2="page.box.w"
+          :y2="page.margins.bottom"
+          style="stroke: #aeaeae"
+        />
+      </svg>
       <g
         :style="{
           transform:
@@ -55,6 +89,7 @@
 
 <script>
 // import PageElements from '@/components/DocumentPreview/PageElements';
+import { mapGetters } from 'vuex';
 import scrollItemMixin from '@/mixins/scrollItemMixin.js';
 import Paragraph from '@/components/DocumentPreview/Paragraph';
 import Heading from '@/components/DocumentPreview/Heading';
@@ -87,6 +122,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['pageMarginsFilter']),
     headings() {
       return this.elementsOfType['heading'] || [];
     },

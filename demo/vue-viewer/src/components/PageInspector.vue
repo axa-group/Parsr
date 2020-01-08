@@ -57,6 +57,14 @@
               :hide-details="true"
               @change="swapFilters()"
             ></v-switch>
+            <v-switch
+              v-model="marginsFilter"
+              label="Page Margins"
+              class="switch"
+              color="indigo darken-3"
+              :hide-details="true"
+              @change="swapFilters()"
+            ></v-switch>
           </div>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -75,6 +83,7 @@ export default {
       tablesFilter: this.filters.tables,
       headingsFilter: this.filters.headings,
       listsFilter: this.filters.lists,
+      marginsFilter: this.filters.margins,
     };
   },
   props: {
@@ -104,6 +113,7 @@ export default {
         tables: this.tablesFilter,
         headings: this.headingsFilter,
         lists: this.listsFilter,
+        margins: this.marginsFilter,
       };
       this.$store.commit('setInspectorFilters', newFilters);
     },
