@@ -87,8 +87,8 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
       - search for splitted words to join them together
 
       MAtrix reference on page 142 of PDF doc
-      https://via.hypothes.is/https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdfs/
-      pdf_reference_archives/PDFReference.pdf#annotations:SVudloF5EemLBgPm0gmY3Q
+      https://via.hypothes.is/https://www.adobe.com/content/dam/acom/en/devnet/pdf/pdfs/pdf_reference_archives/
+      PDFReference.pdf#annotations:SVudloF5EemLBgPm0gmY3Q
   */
   textContent.items.forEach(item => {
     const text = item.str;

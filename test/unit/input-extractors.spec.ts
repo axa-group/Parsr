@@ -15,6 +15,7 @@
  */
 
 import { expect } from 'chai';
+import { existsSync, unlinkSync } from 'fs';
 import { withData } from 'leche';
 import 'mocha';
 import { EmailExtractor } from '../../server/src/input/email/EmailExtractor';
@@ -128,8 +129,16 @@ describe('EML input module', () => {
                     docAfter.getElementsOfType<Paragraph>(Paragraph).map(p => p.toMarkdown()).join(' ');
                 expect(exportedText).to.eq(expectedText);
             });
+
             it('PDF resulting file should have the expected amount of pages', () => {
                 expect(docAfter.pages.length).to.eq(pageCount);
+            });
+
+            after(done => {
+                if (existsSync(ASSETS_DIR + fileName.replace('.eml', '-tmp.pdf'))) {
+                    unlinkSync(ASSETS_DIR + fileName.replace('.eml', '-tmp.pdf'));
+                }
+                done();
             });
         },
     );
