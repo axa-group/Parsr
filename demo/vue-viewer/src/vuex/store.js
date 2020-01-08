@@ -300,5 +300,8 @@ export default new Vuex.Store({
     fontUsageRatio(state) {
       return state.fontUsageRatioCache;
     },
+    pageMarginsFilter(state) {
+      return state.inspectorFilters.margins;
+    },
   },
 });
