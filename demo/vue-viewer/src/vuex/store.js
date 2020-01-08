@@ -302,6 +302,6 @@ export default new Vuex.Store({
     },
     pageMarginsFilter(state) {
       return state.inspectorFilters.margins;
-    }
+    },
   },
 });
