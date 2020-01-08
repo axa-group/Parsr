@@ -44,7 +44,7 @@ export class EmailExtractor extends Extractor {
       const data = readFileSync(inputFile);
       const raw = await simpleParser(data);
 
-      const pdfFile = inputFile.replace('.eml', '.pdf');
+      const pdfFile = inputFile.replace('.eml', '-tmp.pdf');
       const toPDF = new HTMLToPDF(
         (raw.html || '').concat(styles),
         {
