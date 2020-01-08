@@ -18,8 +18,6 @@ import {
   BoundingBox,
   Document,
   Element,
-  Paragraph,
-  Text,
 } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
@@ -164,39 +162,13 @@ export class HeaderFooterDetectionModule extends Module<Options> {
 
       for (const element of footerElements) {
         element.properties.isFooter = true;
-        if (element instanceof Paragraph && isPageNumber(element)) {
-          element.properties.isPageNumber = true;
-        }
       }
 
       for (const element of headerElements) {
         element.properties.isHeader = true;
-        if (element instanceof Paragraph && isPageNumber(element)) {
-          element.properties.isPageNumber = true;
-        }
       }
     });
     logger.debug('Done with marginals detection.');
     return doc;
-
-    /**
-     * Checks if a text is a page number using a regexp matching.
-     * @param text The text entity in question
-     */
-    function isPageNumber(text: Text): boolean {
-      const match = text.toString().match(utils.getPageRegex());
-      let pageNumber: string;
-      if (!match) {
-        return false;
-      }
-
-      for (let i = 1; i < match.length; i++) {
-        if (match[i]) {
-          pageNumber = match[i];
-        }
-      }
-
-      return pageNumber && pageNumber !== '';
-    }
   }
 }

@@ -62,13 +62,7 @@
     ],
     "heading-detection",
     "list-detection",
-    [
-      "page-number-detection",
-      {
-        "ignorePages": [],
-        "maxMarginPercentage": 15
-      }
-    ],
+    "page-number-detection",
     "hierarchy-detection",
     [
       "regex-matcher",
