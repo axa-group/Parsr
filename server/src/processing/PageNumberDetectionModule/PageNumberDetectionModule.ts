@@ -32,14 +32,28 @@ export class PageNumberDetectionModule extends Module {
 
   public main(doc: Document): Document {
     const alreadyExist: boolean =
-      doc.pages.some(p => p.elements.some(e => e.properties.isPageNumber));
+      doc.pages
+        .map(p => {
+          return p.elements.filter(e => e.properties.isHeader || e.properties.isFooter).length;
+        })
+        .reduce((a, b) => a + b, 0) > 0;
 
-    if (alreadyExist) {
+    if (doc.pages.length === 1) {
       logger.warn(
-        'Not doing page number detection: page number data already exist.',
+        'Not detecting page number in headers and footers' +
+          'the document only has 1 page (not enough data).',
+      );
+      return doc;
+    } else if (alreadyExist) {
+      logger.warn(
+        'Not detecting page number in headers and footers: header and footer data already exists.',
       );
       return doc;
     }
+    logger.info(
+      'Detecting page numbers (headers and footers):',
+      '...',
+    );
 
     doc.pages.forEach(page => {
       const headerElements: Element[] = page.getElementsSubset(
