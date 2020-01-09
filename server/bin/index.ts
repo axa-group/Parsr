@@ -151,7 +151,7 @@ function main(): void {
         // if (config.output.formats['json-compact']) {
         // 	promises.push(
         // 		new JsonCompactExporter(doc).export(
-        // 			`${outputFolder}/${getBaseFilename(documentName)}.compact.json`,
+        // 			`${outputFolder}/${omitFilenameExtension(documentName)}.compact.json`,
         // 		),
         // 	);
         // }
@@ -175,7 +175,7 @@ function main(): void {
         // if (config.output.formats.xml) {
         // 	promises.push(
         // 		new XmlExporter(doc).export(
-        // 			`${outputFolder}/${getBaseFilename(documentName)}.md`
+        // 			`${outputFolder}/${omitFilenameExtension(documentName)}.md`
         // 		)
         // 	);
         // }
@@ -183,7 +183,7 @@ function main(): void {
         // if (config.output.formats.confidences) {
         // 	promises.push(
         // 		new ConfidencesExporter(doc).export(
-        // 			`${outputFolder}/${getBaseFilename(documentName)}.confidences`
+        // 			`${outputFolder}/${omitFilenameExtension(documentName)}.confidences`
         // 		)
         // 	);
         // }
