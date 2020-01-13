@@ -39,6 +39,7 @@ export class ImageDetectionModule extends Module {
     }
     const images = doc.getElementsOfType(Image, true);
     if (images.length > 0) {
+      images.forEach(img => (img.enabled = true));
       const assets: string[] = fs.readdirSync(doc.assetsFolder);
       const dumpPdf = await this.getFileMetadata(doc.inputFile);
       this.linkXObjectToImages(images, dumpPdf);
