@@ -87,6 +87,7 @@ export class Image extends Element {
   }
 
   public content: null = null;
+  public enabled: boolean = false;
   private _src: string;
   private _refId: string;
   private _xObjId: string;
