@@ -39,6 +39,12 @@ export interface JsonPage {
   rotation?: JsonPageRotation;
   pageNumber: number;
   elements: JsonElement[];
+  margins: {
+    top: number,
+    left: number,
+    bottom: number,
+    right: number,
+  };
 }
 
 export interface JsonBox {

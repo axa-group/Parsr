@@ -154,7 +154,7 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
     "link-detection",
     ["words-to-line", { "maximumSpaceBetweenWords": 100 }],
     "lines-to-paragraph",
-    ["page-number-detection", { "maxMarginPercentage": 15 }],
+    "page-number-detection",
     "hierarchy-detection",
     [
       "regex-matcher",

@@ -7,6 +7,40 @@
       :width="page.box.w"
       :height="page.box.h"
     >
+      <svg v-show="pageMarginsFilter">
+        <line
+          stroke-dasharray="5,5"
+          :x1="page.margins.left"
+          :y1="0"
+          :x2="page.margins.left"
+          :y2="page.box.h"
+          style="stroke: #aeaeae"
+        />
+        <line
+          stroke-dasharray="5,5"
+          :x1="page.margins.right"
+          :y1="0"
+          :x2="page.margins.right"
+          :y2="page.box.h"
+          style="stroke: #aeaeae"
+        />
+        <line
+          stroke-dasharray="5,5"
+          :x1="0"
+          :y1="page.margins.top"
+          :x2="page.box.w"
+          :y2="page.margins.top"
+          style="stroke: #aeaeae"
+        />
+        <line
+          stroke-dasharray="5,5"
+          :x1="0"
+          :y1="page.margins.bottom"
+          :x2="page.box.w"
+          :y2="page.margins.bottom"
+          style="stroke: #aeaeae"
+        />
+      </svg>
       <g
         :style="{
           transform:
@@ -21,7 +55,7 @@
         }"
       >
         <imageData
-          v-for="element in elementsOfType('image')"
+          v-for="element in images"
           :key="element.id"
           :element="element"
           :fonts="fonts"
@@ -30,29 +64,29 @@
           @custom-event="elementSelected"
         />
         <heading
-          v-for="element in elementsOfType('heading')"
-          :key="element.id"
+          v-for="element in headings"
+          :key="`heading_${element.id}`"
           :element="element"
           :fonts="fonts"
           @custom-event="elementSelected"
         />
         <paragraph
-          v-for="element in elementsOfType('paragraph')"
-          :key="element.id"
+          v-for="element in paragraphs"
+          :key="`paragraph_${element.id}`"
           :element="element"
           :fonts="fonts"
           @custom-event="elementSelected"
         />
         <tableData
-          v-for="element in elementsOfType('table')"
-          :key="element.id"
+          v-for="element in tables"
+          :key="`table_${element.id}`"
           :element="element"
           :fonts="fonts"
           @custom-event="elementSelected"
         />
         <list
-          v-for="element in elementsOfType('list')"
-          :key="element.id"
+          v-for="element in lists"
+          :key="`list_${element.id}`"
           :element="element"
           :fonts="fonts"
           @custom-event="elementSelected"
@@ -76,6 +110,7 @@ export default {
   mixins: [scrollItemMixin],
   data() {
     return {
+      elementsOfType: {},
       containerSize: { width: 0, height: 0 },
       zoomToFitPage: 1.0,
       appeared: false,
@@ -97,12 +132,24 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['baseAPIUrl']),
+    ...mapGetters(['baseAPIUrl', 'pageMarginsFilter']),
     ...mapState({
       documentId: state => state.uuid,
     }),
-    elementsOfType() {
-      return elementType => this.pageElements.filter(element => element.type === elementType);
+    headings() {
+      return this.elementsOfType['heading'] || [];
+    },
+    paragraphs() {
+      return this.elementsOfType['paragraph'] || [];
+    },
+    tables() {
+      return this.elementsOfType['table'] || [];
+    },
+    lists() {
+      return this.elementsOfType['list'] || [];
+    },
+    images() {
+      return this.elementsOfType['image'] || [];
     },
     pageElements() {
       if (!this.appeared) {
@@ -180,7 +227,6 @@ export default {
     this.container.style.width = parseFloat(this.containerSize.width) * this.zoom + 'px';
   },
   mounted: function() {
-    this.$store.commit('setElementSelected', null);
     this.$nextTick(function() {
       var style = window.getComputedStyle(this.scroll);
       this.containerSize = { width: parseFloat(style.width), height: parseFloat(style.height) };
@@ -190,6 +236,19 @@ export default {
     this.onAppear('PageContainer_' + this.page.pageNumber, 0.1, () => {
       this.appeared = true;
     });
+  },
+  watch: {
+    'pageElements.length': {
+      handler() {
+        this.elementsOfType = {};
+        this.pageElements.forEach(element => {
+          if (!this.elementsOfType[element.type]) {
+            this.elementsOfType[element.type] = [];
+          }
+          this.elementsOfType[element.type].push(element);
+        });
+      },
+    },
   },
 };
 </script>

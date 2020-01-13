@@ -75,6 +75,7 @@ export class TesseractExtractor extends Extractor {
       }
       const outPutFilePath = folder + '/Sample_%03d.tiff';
       utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.CONVERT, [
+        pdfPath,
         '-colorspace',
         'RGB',
         '-density',
@@ -85,7 +86,6 @@ export class TesseractExtractor extends Extractor {
         'remove',
         '-background',
         'white',
-        pdfPath,
         outPutFilePath,
       ])
         .then(() => {

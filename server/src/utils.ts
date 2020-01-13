@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { spawn as spawnChildProcess, spawnSync as spawnSyncChildProcess } from 'child_process';
+import { exec, spawn as spawnChildProcess, spawnSync as spawnSyncChildProcess } from 'child_process';
 import * as concaveman from 'concaveman';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
@@ -871,4 +871,31 @@ export function getPdfExtractor(config: Config): Extractor {
   } else {
     return new PdfminerExtractor(config);
   }
+}
+/*
+  merges multiple PDF files into a single one and writes it in the output path
+*/
+export function mergePDFs(files: string[], output: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const command = getCommandLocationOnSystem('gs');
+    if (!command) {
+      reject({
+        found: false,
+        error: `GhostScript was not found on the system. Are you sure it is installed and added to PATH?`,
+      });
+    } else {
+      /*
+        the `spawn` of CommandExecuter does not work in this case, it gets stuck in GS CLI
+        TODO: Make this command work with CommandExecuter.
+      */
+      exec(`gs -DNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=${output} -dBATCH ${files.join(' ')}`,
+        (err, stdout, stderr) => {
+          if (err) {
+            reject(stderr);
+          } else {
+            resolve(stdout);
+          }
+        });
+    }
+  });
 }

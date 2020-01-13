@@ -6,7 +6,7 @@
 
 # Turn your documents into data!
 
-[中文](README_zh-cn.md)
+[Français](README_fr.md) | [中文](README_zh-cn.md)
 
 **Parsr**, is a minimal-footprint document (image, pdf) cleaning, parsing and extraction toolchain which generates readily available, organized and usable data for data scientists and developers.
 
@@ -14,29 +14,29 @@ It provides users with clean structured and label-enriched information set for r
 
 Currently, Parsr can perform:
 
-1. Document Hierarchy Regeneration - Words, Lines and Paragraphs
-2. Headings Detection
-3. Table Detection and Reconstruction
-4. Lists Detection
-5. Text Order Detection
-6. Named Entity Recognition (Dates, Percentages, etc)
-7. Key-Value Pair Detection (for the extraction of specific form-based entries)
-8. Page Number Detection
-9. Header-Footer Detection
-10. Link Detection
-11. Heading Detection
-12. Whitespace Removal
+- Document Hierarchy Regeneration - Words, Lines and Paragraphs
+- Headings Detection
+- Table Detection and Reconstruction
+- Lists Detection
+- Text Order Detection
+- Named Entity Recognition (Dates, Percentages, etc)
+- Key-Value Pair Detection (for the extraction of specific form-based entries)
+- Page Number Detection
+- Header-Footer Detection
+- Link Detection
+- Whitespace Removal
 
-Parsr can generate the following output formats:
+Parsr takes as input an image (.JPG, .PNG, .TIFF, ...) or a PDF generates the following output formats:
 
-1. JSON
-2. Markdown
-3. Text
-4. CSV (for tables), or Pandas Dataframes (see [here](demo/jupyter-notebook/parsr_api.py))
-5. PDF
+- JSON
+- Markdown
+- Text
+- CSV (for tables), or Pandas Dataframes (see [here](demo/jupyter-notebook/parsr_api.py))
+- PDF
 
 ## Table of Contents
-- [Introduction](#turn-your-documents-into-data)
+- [Turn your documents into data!](#turn-your-documents-into-data)
+  - [Table of Contents](#table-of-contents)
   - [Getting Started](#getting-started)
     - [Installation](#installation)
     - [Usage](#usage)

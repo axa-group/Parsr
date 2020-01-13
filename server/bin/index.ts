@@ -147,7 +147,7 @@ function main(): void {
         if (config.output.formats.json) {
           promises.push(
             new JsonExporter(doc, config.output.granularity).export(
-              `${outputFolder}/${documentName}.json`,
+              `${outputFolder}/${omitFilenameExtension(documentName)}.json`,
             ),
           );
         }
@@ -155,7 +155,7 @@ function main(): void {
         // if (config.output.formats['json-compact']) {
         // 	promises.push(
         // 		new JsonCompactExporter(doc).export(
-        // 			`${outputFolder}/${documentName}.compact.json`,
+        // 			`${outputFolder}/${omitFilenameExtension(documentName)}.compact.json`,
         // 		),
         // 	);
         // }
@@ -163,7 +163,7 @@ function main(): void {
         if (config.output.formats.text) {
           promises.push(
             new TextExporter(doc, config.output.includeMarginals).export(
-              `${outputFolder}/${documentName}.txt`,
+              `${outputFolder}/${omitFilenameExtension(documentName)}.txt`,
             ),
           );
         }
@@ -171,7 +171,7 @@ function main(): void {
         if (config.output.formats.markdown) {
           promises.push(
             new MarkdownExporter(doc, config.output.includeMarginals, documentName).export(
-              `${outputFolder}/${documentName}.md`,
+              `${outputFolder}/${omitFilenameExtension(documentName)}.md`,
             ),
           );
         }
@@ -179,7 +179,7 @@ function main(): void {
         // if (config.output.formats.xml) {
         // 	promises.push(
         // 		new XmlExporter(doc).export(
-        // 			`${outputFolder}/${documentName}.md`
+        // 			`${outputFolder}/${omitFilenameExtension(documentName)}.md`
         // 		)
         // 	);
         // }
@@ -187,21 +187,29 @@ function main(): void {
         // if (config.output.formats.confidences) {
         // 	promises.push(
         // 		new ConfidencesExporter(doc).export(
-        // 			`${outputFolder}/${documentName}.confidences`
+        // 			`${outputFolder}/${omitFilenameExtension(documentName)}.confidences`
         // 		)
         // 	);
         // }
 
         if (config.output.formats.csv) {
-          promises.push(new CsvExporter(doc).export(`${outputFolder}/${documentName}.csv`));
+          promises.push(
+            new CsvExporter(doc).export(
+              `${outputFolder}/${omitFilenameExtension(documentName)}.csv`,
+            ),
+          );
         }
 
         if (config.output.formats.pdf) {
           promises.push(
             new PdfExporter(doc, config.output.includeMarginals).export(
-              `${outputFolder}/${documentName}.pdf`,
+              `${outputFolder}/${omitFilenameExtension(documentName)}.pdf`,
             ),
           );
+        }
+
+        function omitFilenameExtension(filename: string): string {
+          return filename.replace(/\.[^/.]+$/, '');
         }
 
         logger.debug('Done');

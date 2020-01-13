@@ -6,6 +6,9 @@ import '@mdi/font/css/materialdesignicons.css'; // Ensure you are using css-load
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import vuetify from '@/plugins/vuetify.js';
+import VueObserveVisibility from 'vue-observe-visibility';
+
+Vue.use(VueObserveVisibility);
 
 Vue.config.productionTip = false;
 

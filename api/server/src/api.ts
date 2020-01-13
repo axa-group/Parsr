@@ -454,7 +454,7 @@ export class ApiServer {
     // if its an .eml, we have to change the binder extension to match the generated PDF
     // in Email Extractor and get the thumbnails of that PDF file
     if (binder.input.endsWith('.eml')) {
-      binder.input = binder.input.replace('.eml', '.pdf');
+      binder.input = binder.input.replace('.eml', '-tmp.pdf');
     }
 
     const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(binder.input));
