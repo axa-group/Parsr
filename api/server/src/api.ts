@@ -415,11 +415,14 @@ export class ApiServer {
 
   private handleGetImage(req: Request, res: Response) {
     res.setHeader('Access-Control-Allow-Origin', '*');
-
     const docId: string = req.params.docId;
     const imageName: string = 'img-' + req.params.imageId.padStart(4, '0') + '.';
     const binder: Binder = this.fileManager.getBinder(docId);
     const assetsFolder = binder.outputPath + '/assets_' + binder.name;
+    if (!fs.existsSync(assetsFolder)) {
+      res.sendStatus(404);
+      return;
+    }
     const paths: string[] = fs
       .readdirSync(assetsFolder)
       .filter(filename => {

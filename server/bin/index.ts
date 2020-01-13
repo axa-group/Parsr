@@ -213,6 +213,9 @@ function main(): void {
   }
 
   function copyAssetsToOutputFolder(doc: Document) {
+    if (!doc.assetsFolder) {
+      return;
+    }
     const destinationFolder = outputFolder + '/assets_' + documentName;
     const filesToCopy: Array<{ from: string; to: string }> = [];
     fs.readdirSync(doc.assetsFolder).forEach(file => {

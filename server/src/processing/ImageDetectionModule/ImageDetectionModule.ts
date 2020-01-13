@@ -32,6 +32,11 @@ export class ImageDetectionModule extends Module {
       );
       return doc;
     }
+
+    if (!doc.assetsFolder) {
+      logger.warn('MuPDF not installed !! Skip image detection.');
+      return doc;
+    }
     const images = doc.getElementsOfType(Image, true);
     if (images.length > 0) {
       const assets: string[] = fs.readdirSync(doc.assetsFolder);

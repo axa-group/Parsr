@@ -102,6 +102,9 @@ export class Image extends Element {
    * Converts the image to MD code
    */
   public toMarkdownImage(docName: string): string {
+    if (!this.xObjId) {
+      return '';
+    }
     const imageName: string = 'img-' + this.xObjId.padStart(4, '0') + '.' + this.xObjExt;
     return '![](assets_' + docName + '/' + imageName + ')';
   }
