@@ -94,7 +94,7 @@ export class EmailExtractor extends Extractor {
       ].filter(f => !!f);
 
       const files = await Promise.all(pdfFilesToJoin);
-      const fullPDF = inputFile.replace('.eml', '.pdf');
+      const fullPDF = inputFile.replace('.eml', '-tmp.pdf');
       await mergePDFs(files, fullPDF);
       return fullPDF;
     } catch (e) {
