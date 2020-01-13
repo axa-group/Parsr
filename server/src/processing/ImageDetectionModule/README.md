@@ -40,4 +40,10 @@ Depends on the way PDF was built, if PDF is build using good practices the accur
 ## Limitations
 
 - The module could not detect correct image if PDF was built using same image name (figure name) for all images.
-- Some PDF can use more than one image file (one alpha image with one background image) to generate one visual image in PDF. In that case this module will detect two images,
+- Some PDF can use more than one image file (one alpha image with one background image) to generate one visual image in PDF, in that case the module will detect both images.
+
+##TODO
+
+- Add image detection for other extractors (Abby, Pdf.js...)
+- Improve image detection for PDF's using same figure name for more than one image.
+- Allow API /markdown end point to download a Zip when md contains images.
