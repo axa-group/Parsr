@@ -257,7 +257,7 @@ export class JsonExporter extends Exporter {
       jsonElement.codeValue = element.content;
     } else if (element instanceof Image) {
       if (!element.enabled) {
-        // Image.enabled = false if image detection module is not executed in pipe
+        // If image detection module is not executed in pipe all images have enabled = false
         return null;
       }
       jsonElement.src = element.src; // TODO replace this with a location based on an API access point
