@@ -27,7 +27,6 @@ import {
 } from '../../types/DocumentRepresentation';
 import { Color } from '../../types/DocumentRepresentation/Color';
 import { PdfminerFigure } from '../../types/PdfminerFigure';
-import { PdfminerImage } from '../../types/PdfminerImage';
 import { PdfminerPage } from '../../types/PdfminerPage';
 import { PdfminerText } from '../../types/PdfminerText';
 import * as utils from '../../utils';
@@ -43,47 +42,45 @@ import logger from '../../utils/Logger';
  */
 export function execute(pdfInputFile: string): Promise<Document> {
   return new Promise<Document>((resolveDocument, rejectDocument) => {
-    return utils.repairPdf(pdfInputFile).then((repairedPdf: string) => {
-      const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-      logger.info(`Extracting file contents with pdfminer's pdf2txt.py tool...`);
+    const xmlOutputFile: string = utils.getTemporaryFile('.xml');
+    logger.info(`Extracting file contents with pdfminer's pdf2txt.py tool...`);
 
-      const pdf2txtArguments: string[] = [
-        '-c',
-        'utf-8',
-        '-t',
-        'xml',
-        '-o',
-        xmlOutputFile,
-        repairedPdf,
-      ];
+    const pdf2txtArguments: string[] = [
+      '-c',
+      'utf-8',
+      '-t',
+      'xml',
+      '-o',
+      xmlOutputFile,
+      pdfInputFile,
+    ];
 
-      if (!fs.existsSync(xmlOutputFile)) {
-        fs.appendFileSync(xmlOutputFile, '');
-      }
+    if (!fs.existsSync(xmlOutputFile)) {
+      fs.appendFileSync(xmlOutputFile, '');
+    }
 
-      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.PDF2TXT, pdf2txtArguments)
-        .then(() => {
-          const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
-          try {
-            logger.debug(`Converting pdfminer's XML output to JS object..`);
-            utils.parseXmlToObject(xml, { attrkey: '_attr' }).then((obj: any) => {
-              const pages: Page[] = [];
-              obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj)));
-              resolveDocument(new Document(pages, repairedPdf));
-            });
-          } catch (err) {
-            rejectDocument(`parseXml failed: ${err}`);
-          }
-        })
-        .catch(({ error, found }) => {
-          logger.error(error);
-          if (!found) {
-            rejectDocument(`Could not find the necessary libraries..`);
-          } else {
-            rejectDocument(`pdf2txt error: ${error}`);
-          }
-        });
-    });
+    utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.PDF2TXT, pdf2txtArguments)
+      .then(() => {
+        const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
+        try {
+          logger.debug(`Converting pdfminer's XML output to JS object..`);
+          utils.parseXmlToObject(xml, { attrkey: '_attr' }).then((obj: any) => {
+            const pages: Page[] = [];
+            obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj)));
+            resolveDocument(new Document(pages, pdfInputFile));
+          });
+        } catch (err) {
+          rejectDocument(`parseXml failed: ${err}`);
+        }
+      })
+      .catch(({ error, found }) => {
+        logger.error(error);
+        if (!found) {
+          rejectDocument(`Could not find the necessary libraries..`);
+        } else {
+          rejectDocument(`pdf2txt error: ${error}`);
+        }
+      });
   });
 }
 
@@ -110,8 +107,9 @@ function getPage(pageObj: PdfminerPage): Page {
   // treat figures
   if (pageObj.figure !== undefined) {
     pageObj.figure.forEach(fig => {
-      if (fig.image !== undefined) {
-        elements = [...elements, ...interpretImages(fig, pageBBox.height)];
+      const allFiguresWithImages = getFiguresWithImages(fig);
+      if (allFiguresWithImages.length > 0) {
+        elements = [...elements, ...interpretImages(allFiguresWithImages, pageBBox.height)];
       }
       if (fig.text !== undefined) {
         elements = [...elements, ...breakLineIntoWords(fig.text, ',', pageBBox.height)];
@@ -120,6 +118,24 @@ function getPage(pageObj: PdfminerPage): Page {
   }
 
   return new Page(parseFloat(pageObj._attr.id), elements, pageBBox);
+}
+
+function getFiguresWithImages(figure: PdfminerFigure): PdfminerFigure[] {
+  if (figure.image !== undefined) {
+    return [figure];
+  }
+
+  if (figure.figure !== undefined) {
+    return figure.figure
+      .map(fig => {
+        if (fig !== undefined) {
+          return getFiguresWithImages(fig);
+        }
+        return [];
+      })
+      .reduce((a, b) => a.concat(b), []);
+  }
+  return [];
 }
 
 // Pdfminer's bboxes are of the format: x0, y0, x1, y1. Our BoundingBox dims are as: left, top, width, height
@@ -180,15 +196,16 @@ function getValidCharacter(character: string): string {
 }
 
 function interpretImages(
-  fig: PdfminerFigure,
+  figures: PdfminerFigure[],
   pageHeight: number,
   scalingFactor: number = 1,
 ): Image[] {
-  return fig.image.map(
-    (_img: PdfminerImage) =>
+  return figures.map(
+    fig =>
       new Image(
         getBoundingBox(fig._attr.bbox, ',', pageHeight, scalingFactor),
         '', // TODO: to be filled with the location of the image once resolved
+        fig._attr.name,
       ),
   );
 }
@@ -334,15 +351,18 @@ function isFakeChar(word: PdfminerText, fakeSpacesInLine: boolean): boolean {
 }
 
 function ncolourToHex(color: string): Color {
-  let finalColor: string = "#000000";
+  let finalColor: string = '#000000';
   if (color === undefined) {
     return finalColor;
   }
-  const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
-    const hex = Math.ceil(x * 255).toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
-  })
-    .join('');
+  const rgbToHex = (r, g, b) =>
+    '#' +
+    [r, g, b]
+      .map(x => {
+        const hex = Math.ceil(x * 255).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      })
+      .join('');
 
   const cmykToRGB = (c: number, m: number, y: number, k: number) => {
     return {
@@ -352,9 +372,7 @@ function ncolourToHex(color: string): Color {
     };
   };
 
-  const colors = color
-    .replace(/[\(\)\[\]\s]/g, '')
-    .split(',');
+  const colors = color.replace(/[\(\)\[\]\s]/g, '').split(',');
 
   if (colors.length === 3) {
     finalColor = rgbToHex(colors[0], colors[1], colors[2]);
@@ -362,7 +380,7 @@ function ncolourToHex(color: string): Color {
     const { r, g, b } = cmykToRGB(+colors[0], +colors[1], +colors[2], +colors[3]);
     finalColor = rgbToHex(r, g, b);
   } else {
-    finalColor = "#000000";
+    finalColor = '#000000';
   }
   return finalColor;
 }

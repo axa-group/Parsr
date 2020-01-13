@@ -45,6 +45,7 @@
       }
     ],
     "link-detection",
+    "image-detection",
     [
       "words-to-line",
       {

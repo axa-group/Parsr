@@ -90,7 +90,7 @@ export class ApiServer {
     v1_0.get('/xml/:id', this.handleGetXml.bind(this));
     // TODO add every other endpoint
     v1_0.get('/thumbnail/:id/:page', this.handleGetThumb.bind(this));
-
+    v1_0.get('/image/:docId/:imageId', this.handleGetImage.bind(this));
     // server info endpoints
     v1_0.get('/default-config', this.handleGetDefaultConfig.bind(this));
     v1_0.get('/modules', this.handleGetModules.bind(this));
@@ -128,37 +128,45 @@ export class ApiServer {
       </tr>
     `;
     const whereIs = os.platform() === 'win32' ? 'where' : 'which';
-    const result = dependencies.required.concat(dependencies.optional)
-      .map((group: any) =>
-        (group as string[]).map(name => {
-          const { status, stdout } = spawnSync(whereIs, [`${name}`]);
-          return {
-            name,
-            found: status === 0,
-            path: status === 0 ? stdout.toString() : '',
-            required: dependencies.required.includes(group),
-          };
-        }).find(g => g.found) || {
+    const result = dependencies.required.concat(dependencies.optional).map(
+      (group: any) =>
+        (group as string[])
+          .map(name => {
+            const { status, stdout } = spawnSync(whereIs, [`${name}`]);
+            return {
+              name,
+              found: status === 0,
+              path: status === 0 ? stdout.toString() : '',
+              required: dependencies.required.includes(group),
+            };
+          })
+          .find(g => g.found) || {
           name: group[0],
           found: false,
           path: '',
           required: dependencies.required.includes(group),
         },
-      );
+    );
 
-    res.type('html').send(
-      response.concat(
-        result.map(r =>
-          `<tr>
+    res
+      .type('html')
+      .send(
+        response.concat(
+          result
+            .map(
+              r =>
+                `<tr>
             <td>${r.name}</td>
             <td class="${r.found ? 'found' : 'not found'}">${r.found ? 'YES' : 'NO'}</td>
             <td>${r.required ? 'YES' : 'NO'}</td>
             <td>${r.path || '-'}</td>
           </tr>`,
-        ).join(''),
-        '</table>',
-      ),
-    ).end();
+            )
+            .join(''),
+          '</table>',
+        ),
+      )
+      .end();
   }
 
   /**
@@ -405,6 +413,35 @@ export class ApiServer {
     `);
   }
 
+  private handleGetImage(req: Request, res: Response) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    const docId: string = req.params.docId;
+    const imageName: string = 'img-' + req.params.imageId.padStart(4, '0') + '.';
+    const binder: Binder = this.fileManager.getBinder(docId);
+    const assetsFolder = binder.outputPath + '/assets_' + binder.name;
+    if (!fs.existsSync(assetsFolder)) {
+      res.sendStatus(404);
+      return;
+    }
+    const paths: string[] = fs
+      .readdirSync(assetsFolder)
+      .filter(filename => {
+        return path.basename(filename).startsWith(imageName);
+      })
+      .map(file => assetsFolder + '/' + file);
+
+    if (paths.length > 0) {
+      logger.info('Return image at path ' + paths[0]);
+      res.sendFile(paths[0], {
+        headers: {
+          responseType: 'blob',
+        },
+      });
+    } else {
+      res.sendStatus(404);
+    }
+  }
+
   private handleGetThumb(req: Request, res: Response) {
     res.setHeader('Access-Control-Allow-Origin', '*');
 
@@ -449,13 +486,7 @@ export class ApiServer {
       const command = this.getCommandLocationOnSystem('magick convert', 'convert');
       if (command) {
         convert = new Promise((resolve, reject) => {
-          exec([
-            command,
-            '-resize',
-            '200x200\\>',
-            binder.input,
-            filePath,
-          ].join(' '), (err) => {
+          exec([command, '-resize', '200x200\\>', binder.input, filePath].join(' '), err => {
             if (err) {
               return reject(err);
             }
@@ -481,16 +512,18 @@ export class ApiServer {
 
     if (convert) {
       try {
-        convert.then(() => {
-          logger.info('Generated Thumbnail at path ' + filePath);
-          res.sendFile(filePath, {
-            headers: {
-              responseType: 'blob',
-            },
+        convert
+          .then(() => {
+            logger.info('Generated Thumbnail at path ' + filePath);
+            res.sendFile(filePath, {
+              headers: {
+                responseType: 'blob',
+              },
+            });
+          })
+          .catch((error: string) => {
+            res.status(500).send(error);
           });
-        }).catch((error: string) => {
-          res.status(500).send(error);
-        });
       } catch (error) {
         res.status(500).send(error);
       }

@@ -38,11 +38,74 @@ export class Image extends Element {
     this._src = value;
   }
 
+  /**
+   * Getter src
+   * @return {string}
+   */
+  public get refId(): string {
+    return this._refId;
+  }
+
+  /**
+   * Setter src
+   * @param {string} value
+   */
+  public set refId(value: string) {
+    this._refId = value;
+  }
+
+  /**
+   * Getter src
+   * @return {string}
+   */
+  public get xObjId(): string {
+    return this._xObjId;
+  }
+
+  /**
+   * Setter src
+   * @param {string} value
+   */
+  public set xObjExt(value: string) {
+    this._xObjExt = value;
+  }
+
+  /**
+   * Getter src
+   * @return {string}
+   */
+  public get xObjExt(): string {
+    return this._xObjExt;
+  }
+
+  /**
+   * Setter src
+   * @param {string} value
+   */
+  public set xObjId(value: string) {
+    this._xObjId = value;
+  }
+
   public content: null = null;
   private _src: string;
+  private _refId: string;
+  private _xObjId: string;
+  private _xObjExt: string;
 
-  constructor(boundingBox: BoundingBox, src?: string) {
+  constructor(boundingBox: BoundingBox, src?: string, refId?: string) {
     super(boundingBox);
     this.src = src;
+    this.refId = refId;
+  }
+
+  /**
+   * Converts the image to MD code
+   */
+  public toMarkdownImage(docName: string): string {
+    if (!this.xObjId) {
+      return '';
+    }
+    const imageName: string = 'img-' + this.xObjId.padStart(4, '0') + '.' + this.xObjExt;
+    return '![](assets_' + docName + '/' + imageName + ')';
   }
 }

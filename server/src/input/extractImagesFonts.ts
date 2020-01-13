@@ -23,11 +23,13 @@ import logger from '../utils/Logger';
  * Stability: Experimental
  * Use Mutool to extract fonts files in a specific folder.
  */
-export function extractImagesAndFonts(pdfInputFile: string): Promise<void> {
-  return new Promise<void>((resolve, reject) => {
+export function extractImagesAndFonts(pdfInputFile: string): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
     const folder = utils.getMutoolExtractionFolder();
     logger.info(`Extracting images and fonts to ${folder}`);
-    utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.MUTOOL, ['extract', pdfInputFile], { cwd: folder })
+    utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.MUTOOL, ['extract', pdfInputFile], {
+      cwd: folder,
+    })
       .then(() => {
         const ttfRegExp = /^[A-Z]{6}\+(.*)\-[0-9]+\.ttf$/;
         fs.readdirSync(folder).forEach(file => {
@@ -36,7 +38,7 @@ export function extractImagesAndFonts(pdfInputFile: string): Promise<void> {
             fs.renameSync(`${folder}/${file}`, `${folder}/${match[1]}` + '.ttf');
           }
         });
-        resolve();
+        resolve(folder);
       })
       .catch(({ found, error }) => {
         logger.warn(error);

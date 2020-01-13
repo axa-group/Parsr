@@ -139,6 +139,10 @@ function main(): void {
         return doc;
       })
       .then((doc: Document) => {
+        copyAssetsToOutputFolder(doc);
+        return doc;
+      })
+      .then((doc: Document) => {
         const promises: Array<Promise<any>> = [];
         if (config.output.formats.json) {
           promises.push(
@@ -166,7 +170,7 @@ function main(): void {
 
         if (config.output.formats.markdown) {
           promises.push(
-            new MarkdownExporter(doc, config.output.includeMarginals).export(
+            new MarkdownExporter(doc, config.output.includeMarginals, documentName).export(
               `${outputFolder}/${omitFilenameExtension(documentName)}.md`,
             ),
           );
@@ -189,7 +193,11 @@ function main(): void {
         // }
 
         if (config.output.formats.csv) {
-          promises.push(new CsvExporter(doc).export(`${outputFolder}/${omitFilenameExtension(documentName)}.csv`));
+          promises.push(
+            new CsvExporter(doc).export(
+              `${outputFolder}/${omitFilenameExtension(documentName)}.csv`,
+            ),
+          );
         }
 
         if (config.output.formats.pdf) {
@@ -201,7 +209,7 @@ function main(): void {
         }
 
         function omitFilenameExtension(filename: string): string {
-          return filename.replace(/\.[^/.]+$/, "");
+          return filename.replace(/\.[^/.]+$/, '');
         }
 
         logger.debug('Done');
@@ -210,6 +218,37 @@ function main(): void {
       .catch(err => {
         logger.error(`There was an error running the orchestrator: ${err}`);
       });
+  }
+
+  function copyAssetsToOutputFolder(doc: Document) {
+    if (!doc.assetsFolder) {
+      return;
+    }
+    const destinationFolder = outputFolder + '/assets_' + documentName;
+    const filesToCopy: Array<{ from: string; to: string }> = [];
+    fs.readdirSync(doc.assetsFolder).forEach(file => {
+      const imageFileType: { ext: string; mime: string } = filetype(
+        fs.readFileSync(doc.assetsFolder + '/' + file),
+      );
+
+      if (imageFileType != null && imageFileType.mime.slice(0, 5) === 'image') {
+        filesToCopy.push({
+          from: doc.assetsFolder + '/' + file,
+          to: destinationFolder + '/' + path.basename(file),
+        });
+      }
+    });
+    filesToCopy.forEach(file => {
+      try {
+        if (!fs.existsSync(destinationFolder)) {
+          fs.mkdirSync(destinationFolder);
+        }
+        fs.copyFileSync(file.from, file.to);
+      } catch (e) {
+        logger.error('Error copying assets');
+        logger.error(e);
+      }
+    });
   }
 
   /**

@@ -61,6 +61,9 @@ export interface JsonElement {
   content?: JsonElement[] | string;
   font?: number;
   src?: string;
+  refId?: string;
+  xObjId?: string;
+  xObjExt?: string;
   codeType?: string;
   codeValue?: string;
   conf?: number;
