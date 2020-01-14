@@ -28,10 +28,16 @@ export class ProcessManager {
     config: string,
     docName: string,
     outputPath: string,
+    credentials: {
+      googleVision: string,
+    },
   ): void {
     logger.info('Processing ' + doc);
 
     process.env.NODE_DEBUG = 'pipeline';
+    if (credentials.googleVision) {
+      process.env.GOOGLE_APPLICATION_CREDENTIALS = credentials.googleVision;
+    }
 
     const args: string[] = [
       `../../dist/bin/index.js`,

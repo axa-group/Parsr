@@ -196,7 +196,7 @@ export class GoogleVisionExtractor extends Extractor {
       pages.push(page);
     });
 
-    const doc: Document = new Document(pages);
+    const doc: Document = new Document(pages, inputFile);
 
     return doc;
   }
