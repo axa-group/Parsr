@@ -32,7 +32,11 @@
           prefix="Images"
           solo
         ></v-select>
-        <div style="padding-left: 60px" class="selectOptionExtractor" v-if="defaultConfig.extractor.img === 'google-vision'">
+        <div
+          style="padding-left: 60px"
+          class="selectOptionExtractor"
+          v-if="defaultConfig.extractor.img === 'google-vision'"
+        >
           <legend><sup>*</sup>GOOGLE_APPLICATION_CREDENTIALS:</legend>
           <input
             type="file"
