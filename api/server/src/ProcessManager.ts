@@ -30,6 +30,10 @@ export class ProcessManager {
     outputPath: string,
     credentials: {
       googleVision: string,
+      msCognitiveServices: {
+        apiKey: string,
+        endpoint: string,
+      },
     },
   ): void {
     logger.info('Processing ' + doc);
@@ -37,6 +41,9 @@ export class ProcessManager {
     process.env.NODE_DEBUG = 'pipeline';
     if (credentials.googleVision) {
       process.env.GOOGLE_APPLICATION_CREDENTIALS = credentials.googleVision;
+    } else if (credentials.msCognitiveServices.apiKey) {
+      process.env.OCP_APIM_SUBSCRIPTION_KEY = credentials.msCognitiveServices.apiKey;
+      process.env.OCP_APIM_ENDPOINT = credentials.msCognitiveServices.endpoint;
     }
 
     const args: string[] = [

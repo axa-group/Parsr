@@ -336,6 +336,10 @@ export class ApiServer {
 
     const credentials = {
       googleVision: 'gvCredentials' in req.files && req.files.gvCredentials[0].path,
+      msCognitiveServices: {
+        apiKey: 'msApiKey' in req.body && req.body.msApiKey,
+        endpoint: 'msEndpoint' in req.body && req.body.msEndpoint,
+      },
     };
 
     this.fileManager.newBinder(docId, doc.path, config.path, outputPath, docName);

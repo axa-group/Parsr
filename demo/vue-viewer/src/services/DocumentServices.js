@@ -74,6 +74,8 @@ export default {
     formData.append('file', file, file.name);
     formData.append('config', configuration);
     formData.append('gvCredentials', credentials.googleVision);
+    formData.append('msApiKey', credentials.msApiKey);
+    formData.append('msEndpoint', credentials.msEndpoint);
     return apiClient.post('/document', formData);
   },
   getDocumentStatus(docID) {
