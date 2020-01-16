@@ -2,7 +2,9 @@ import axios, { AxiosInstance } from 'axios';
 import { readFileSync } from 'fs';
 import { Config } from '../../types/Config';
 import { BoundingBox, Document, Font, Line, Page, Word } from '../../types/DocumentRepresentation';
+import { correctImageForRotation, RotationCorrection } from '../../utils';
 import logger from '../../utils/Logger';
+import { setPageDimensions } from '../set-page-dimensions';
 import { Extractor } from './../Extractor';
 
 type MSCognitiveServicesResponse = {
@@ -44,13 +46,29 @@ export class MicrosoftCognitiveExtractor extends Extractor {
   }
 
   public async run(inputFile: string): Promise<Document> {
+    let rotationInfo: RotationCorrection = {
+      fileName: inputFile,
+      degrees: 0,
+      origin: {x: 0, y: 0},
+      translation:  {x : 0, y: 0},
+    };
+    try {
+      rotationInfo = await correctImageForRotation(inputFile);
+    } catch (e) {
+      logger.error('Error when correcting rotation on image. Using original file.');
+    }
     try {
       const { headers } = await this.apiClient.post(
-        '/vision/v2.0/read/core/asyncBatchAnalyze', readFileSync(inputFile),
+        '/vision/v2.0/read/core/asyncBatchAnalyze', readFileSync(rotationInfo.fileName),
       );
       const data: MSCognitiveServicesResponse = await this.awaitForCompletion(headers['operation-location']);
       const pages: Page[] = this.msResponseToParsrPages(data);
-      return new Document(pages, inputFile);
+      pages.forEach(p => {
+        p.pageRotation = rotationInfo;
+      });
+
+      const document = new Document(pages, inputFile);
+      return setPageDimensions(document, inputFile);
     } catch (error) {
       throw new Error(error);
     }
