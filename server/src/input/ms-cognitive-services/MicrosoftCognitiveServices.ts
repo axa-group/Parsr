@@ -84,7 +84,6 @@ export class MicrosoftCognitiveExtractor extends Extractor {
             resolve(this.awaitForCompletion(url));
           }, 1000); // check response status every 1 second
         } else if (response.status === 'Succeeded') {
-          logger.info(`Process completed. Status: ${response.status}`);
           resolve(response);
         } else {
           reject(response.status);
