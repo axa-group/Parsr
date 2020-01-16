@@ -49,8 +49,8 @@ export class MicrosoftCognitiveExtractor extends Extractor {
     let rotationInfo: RotationCorrection = {
       fileName: inputFile,
       degrees: 0,
-      origin: {x: 0, y: 0},
-      translation:  {x : 0, y: 0},
+      origin: { x: 0, y: 0 },
+      translation: { x: 0, y: 0 },
     };
     try {
       rotationInfo = await correctImageForRotation(inputFile);
@@ -112,8 +112,20 @@ export class MicrosoftCognitiveExtractor extends Extractor {
     return pages;
   }
 
+  /**
+   * @param msBB array of 8 numbers in format [x1,y1,x2,y2,x3,y3,x4,y4]
+   *  representing the 4 vertices of a Box in clockwise direction.
+   *
+   *  As this MSBox can be rotated or have an irregular shape, a transformation is required
+   *  to always return a rectangular box that fully includes the original shape
+   */
   private msBBToParsrBB(msBB: number[]): BoundingBox {
-    const [x1, y1, x2, y2, , y3] = msBB;
-    return new BoundingBox(x1, y1, x2 - x1, y3 - y2);
+    const [x1, y1, x2, y2, x3, y3, x4, y4] = msBB;
+    return new BoundingBox(
+      Math.min(x1, x2, x3, x4),
+      Math.min(y1, y2, y3, y4),
+      Math.max(x1, x2, x3, x4) - Math.min(x1, x2, x3, x4),
+      Math.max(y1, y2, y3, y4) - Math.min(y1, y2, y3, y4),
+    );
   }
 }
