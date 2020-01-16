@@ -10,7 +10,10 @@ import {
   Paragraph,
   Word,
 } from '../../types/DocumentRepresentation';
+import { correctImageForRotation, RotationCorrection } from '../../utils';
+import logger from '../../utils/Logger';
 import { Extractor } from '../Extractor';
+import { setPageDimensions } from '../set-page-dimensions';
 
 type GoogleVisionResponse = Array<{
   fullTextAnnotation: FullTextAnnotation;
@@ -115,8 +118,19 @@ export class GoogleVisionExtractor extends Extractor {
   }
 
   private async execute(inputFile: string) {
+    let rotationCorrection: RotationCorrection = {
+      fileName: inputFile,
+      degrees: 0,
+      origin: { x: 0, y: 0 },
+      translation: { x: 0, y: 0 },
+    };
+    try {
+      rotationCorrection = await correctImageForRotation(inputFile);
+    } catch (e) {
+      logger.info('There was an error while doing image rotation. Using original file...');
+    }
     const client = new vision.ImageAnnotatorClient();
-    const result: GoogleVisionResponse = await client.documentTextDetection(inputFile);
+    const result: GoogleVisionResponse = await client.documentTextDetection(rotationCorrection.fileName);
 
     if (result[0].error) {
       const e = result[0].error;
@@ -192,13 +206,12 @@ export class GoogleVisionExtractor extends Extractor {
         elements,
         new BoundingBox(0, 0, gPage.width, gPage.height),
       );
-
+      page.pageRotation = rotationCorrection;
       pages.push(page);
     });
 
     const doc: Document = new Document(pages, inputFile);
-
-    return doc;
+    return setPageDimensions(doc, inputFile);
   }
 
   private googleBoxToParsrBox(box: GoogleVisionBoundingBox): BoundingBox {
