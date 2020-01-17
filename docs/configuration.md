@@ -73,11 +73,9 @@ _This means the module called `fontMerge` will be called, then `removeOutOfPage`
 
 Different extractors are available for each input file format.
 
-- **PDF files:** four extractors are currently available for PDF files:
+- **PDF files:** two extractors are currently available for PDF files:
   - `pdfminer`, which is an advanced python based extractor capable of extracting low and high level textual structures (from characters to paragraphs),
-  - `pdfjs`, Mozilla's free solution for parsing documents. This is the recommended extractor to parse large documents (200+ pages),
-  - `abbyy` that rely on ABBYY Finereader that is paid software.,
-  - It is also possible to use `tesseract` in this case. The document will then be converted as an image, so expect the accuracy to be lower on texts.  
+  - `pdfjs`, Mozilla's free solution for parsing documents. This is the recommended extractor to parse large documents (200+ pages).
 - **Images:** four extractors are supported for images:
   - `tesseract` which is an Open Source OCR software,
   - `abbyy`, that relies on ABBYY Finereader, a paid solution for OCR on documents and images,
