@@ -15,7 +15,7 @@
       <fieldset>
         <legend>Extractor configuration</legend>
         <v-select
-          :items="['pdfminer', 'pdfjs']"
+          :items="['pdfminer', 'pdfjs', 'abbyy', 'tesseract']"
           v-model="defaultConfig.extractor.pdf"
           :flat="true"
           :hide-details="true"
