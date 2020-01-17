@@ -1,0 +1,1 @@
+# Amazon Textract Input Module

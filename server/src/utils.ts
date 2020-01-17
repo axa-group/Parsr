@@ -862,14 +862,11 @@ export function getEmphazisChars(text: string): string {
  * @returns The Orchestrator instance
  */
 export function getPdfExtractor(config: Config): Extractor {
-  if (config.extractor.pdf === 'abbyy') {
-    return new AbbyyTools(config);
-  } else if (config.extractor.pdf === 'tesseract') {
-    return new TesseractExtractor(config);
-  } else if (config.extractor.pdf === 'pdfjs') {
-    return new PDFJsExtractor(config);
-  } else {
-    return new PdfminerExtractor(config);
+  switch (config.extractor.pdf) {
+    case 'abbyy': return new AbbyyTools(config);
+    case 'tesseract': return new TesseractExtractor(config);
+    case 'pdfjs': return new PDFJsExtractor(config);
+    default: return new PdfminerExtractor(config);
   }
 }
 /*
