@@ -29,7 +29,7 @@
           color="rgba(0, 0, 0, 0.54)"
           height="20px"
           class="selectOptionExtractor"
-          prefix="Images"
+          prefix="OCR"
           solo
         ></v-select>
         <div
