@@ -73,9 +73,16 @@ _This means the module called `fontMerge` will be called, then `removeOutOfPage`
 
 Different extractors are available for each input file format.
 
-- PDF files: three extractors are currently available for PDF files: `pdfminer`, which is an advanced python based extractor capable of extracting low and high level textual structures (from characters to paragraphs) and `abbyy` that rely on ABBYY Finereader that is paid software. It is also possible to use `tesseract` in this case. The document will then be converted as an image, so expect the accuracy to be lower on texts.
-- Images: three extractors are supported for images: `tesseract` which is an Open Source OCR software, `google-vision`, which uses the Google Vision API to detect the contents of an image (see the [google vision documentation for more](google-vision.md)) and `abbyy`, that relies on ABBYY Finereader, a paid solution for OCR on documents and images.
-
+- **PDF files:** four extractors are currently available for PDF files:
+  - `pdfminer`, which is an advanced python based extractor capable of extracting low and high level textual structures (from characters to paragraphs),
+  - `pdfjs`, Mozilla's free solution for parsing documents. This is the recommended extractor to parse large documents (200+ pages),
+  - `abbyy` that rely on ABBYY Finereader that is paid software.,
+  - It is also possible to use `tesseract` in this case. The document will then be converted as an image, so expect the accuracy to be lower on texts.  
+- **Images:** four extractors are supported for images:
+  - `tesseract` which is an Open Source OCR software,
+  - `abbyy`, that relies on ABBYY Finereader, a paid solution for OCR on documents and images,
+  - `google-vision`, which uses the Google Vision API to detect the contents of an image (see the [google vision documentation for more](google-vision.md)),
+  - `ms-cognitive-services`, that uses Microsoft Cognitive Services OCR to detect and process text inside an image.
 ### 2.2. Language
 
 The language parameter is an option that will be pass to Tesseract when using it. It must be in the [Tesseract language format](https://github.com/tesseract-ocr/tesseract/blob/master/doc/tesseract.1.asc#languages), which is an equivalent of [ISO 639-2/T](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes).
