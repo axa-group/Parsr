@@ -73,9 +73,18 @@ export default {
     const formData = new FormData();
     formData.append('file', file, file.name);
     formData.append('config', configuration);
-    formData.append('gvCredentials', credentials.googleVision);
-    formData.append('msApiKey', credentials.msApiKey);
-    formData.append('msEndpoint', credentials.msEndpoint);
+
+    if (credentials.googleVision) {
+      formData.append('gvCredentials', credentials.googleVision);
+    }
+    if (credentials.msApiKey) {
+      formData.append('msApiKey', credentials.msApiKey);
+      formData.append('msEndpoint', credentials.msEndpoint);
+    }
+    if (credentials.awsAccessKeyId && credentials.awsSecretAccessKey) {
+      formData.append('awsAccessKeyId', credentials.awsAccessKeyId);
+      formData.append('awsSecretAccessKey', credentials.awsSecretAccessKey);
+    }
     return apiClient.post('/document', formData);
   },
   getDocumentStatus(docID) {

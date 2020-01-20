@@ -58,14 +58,19 @@ export class AmazonTextractExtractor extends Extractor {
 
   constructor(config: Config) {
     super(config);
-
+    if (!process.env.AWS_ACCESS_KEY_ID) {
+      throw new Error(`Required environment variable AWS_ACCESS_KEY_ID not found. Make sure you set it as 'AWS_ACCESS_KEY_ID=<KEY>' before running the tool.`);
+    }
+    if (!process.env.AWS_SECRET_ACCESS_KEY) {
+      throw new Error(`Required environment variable AWS_SECRET_ACCESS_KEY not found. Make sure you set it as 'AWS_SECRET_ACCESS_KEY=<KEY>' before running the tool.`);
+    }
     this.textract = new Textract({
-      accessKeyId: '',
-      secretAccessKey: '',
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       region: 'us-east-1',
     });
-
   }
+
   public async run(inputFile: string): Promise<Document> {
     let rotationCorrection: RotationCorrection = {
       fileName: inputFile,
