@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { exec, spawn as spawnChildProcess, spawnSync as spawnSyncChildProcess } from 'child_process';
+import {
+  exec,
+  spawn as spawnChildProcess,
+  spawnSync as spawnSyncChildProcess,
+} from 'child_process';
 import * as concaveman from 'concaveman';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
@@ -208,6 +212,47 @@ export function getTemporaryFile(extension: string): string {
   return path.resolve(`${randFilename}`);
 }
 
+export function pdfToImages(pdfPath: string): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    const folder = path.dirname(pdfPath).concat('/samples');
+    try {
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder);
+      }
+    } catch (e) {
+      throw e;
+    }
+    const outPutFilePath = folder + '/Sample_%03d.jpeg';
+    CommandExecuter.run(CommandExecuter.COMMANDS.CONVERT, [
+      '-colorspace',
+      'RGB',
+      '-density',
+      '300x300',
+      '-compress',
+      'lzw',
+      '-alpha',
+      'remove',
+      '-background',
+      'white',
+      pdfPath,
+      outPutFilePath,
+    ])
+      .then(() => {
+        const files = fs.readdirSync(folder).map(file => path.join(folder, file));
+        logger.info(`converted files: ${files.join(', ')}`);
+        resolve(files);
+      })
+      .catch(({ found, error }) => {
+        logger.error(error);
+        if (!found) {
+          logger.warn(
+            'ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)',
+          );
+        }
+        reject(error);
+      });
+  });
+}
 /**
  * Applies rotation correction given an input image and returns RotationCorrection
  * @param srcImg source image
@@ -888,14 +933,16 @@ export function mergePDFs(files: string[], output: string): Promise<string> {
         the `spawn` of CommandExecuter does not work in this case, it gets stuck in GS CLI
         TODO: Make this command work with CommandExecuter.
       */
-      exec(`gs -DNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=${output} -dBATCH ${files.join(' ')}`,
+      exec(
+        `gs -DNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=${output} -dBATCH ${files.join(' ')}`,
         (err, stdout, stderr) => {
           if (err) {
             reject(stderr);
           } else {
             resolve(stdout);
           }
-        });
+        },
+      );
     }
   });
 }
