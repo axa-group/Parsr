@@ -19,6 +19,7 @@ import { AWSError } from 'aws-sdk/lib/error';
 import { readFileSync } from 'fs';
 import { Config } from '../../types/Config';
 import { BoundingBox, Document, Font, Line, Page, Word } from '../../types/DocumentRepresentation';
+import { correctImageForRotation, RotationCorrection } from '../../utils';
 import logger from '../../utils/Logger';
 import { Extractor } from '../Extractor';
 import { setPageDimensions } from '../set-page-dimensions';
@@ -65,20 +66,37 @@ export class AmazonTextractExtractor extends Extractor {
     });
 
   }
-  public run(inputFile: string): Promise<Document> {
+  public async run(inputFile: string): Promise<Document> {
+    let rotationCorrection: RotationCorrection = {
+      fileName: inputFile,
+      degrees: 0,
+      origin: { x: 0, y: 0 },
+      translation: { x: 0, y: 0 },
+    };
+    try {
+      rotationCorrection = await correctImageForRotation(inputFile);
+    } catch (e) {
+      logger.info('There was an error while doing image rotation. Using original file...');
+    }
+
     return new Promise((resolve, reject) => {
-      logger.info(inputFile);
       this.textract.detectDocumentText({
         Document: {
-          Bytes: readFileSync(inputFile),
+          Bytes: readFileSync(rotationCorrection.fileName),
         },
       }, (error: AWSError, data: AmazonTextractResponse) => {
         if (error) {
           reject(error);
         } else {
           const pages: Page[] = this.amazonResponseToParsrPages(data);
-          const doc = new Document(pages, inputFile);
-          resolve(setPageDimensions(doc, inputFile));
+          pages.forEach(page => {
+            page.pageRotation = rotationCorrection;
+          });
+
+          resolve(
+            setPageDimensions(new Document(pages, inputFile), inputFile)
+              .then(d => this.setBBoxSizes(d)),
+          );
         }
       });
     });
@@ -95,7 +113,7 @@ export class AmazonTextractExtractor extends Extractor {
     const lines: Line[] = [];
     data.Blocks.filter(block => block.BlockType === 'LINE').forEach(amzLine => {
       let words: Word[] = [];
-      if (amzLine.Relationships.length > 0 && amzLine.Relationships.some(r => r.Type === 'CHILD')) {
+      if (amzLine.Relationships.some(r => r.Type === 'CHILD')) {
         words = this.getWordsFromIds(amzLine.Relationships.filter(r => r.Type === 'CHILD')[0].Ids, data);
       }
       const line: Line = new Line(this.amzBBToParsrBB(amzLine.Geometry.BoundingBox), words);
@@ -106,6 +124,18 @@ export class AmazonTextractExtractor extends Extractor {
 
   private amzBBToParsrBB(amzBB: { Width: number; Height: number; Left: number; Top: number }): BoundingBox {
     return new BoundingBox(amzBB.Left, amzBB.Top, amzBB.Width, amzBB.Height);
+  }
+
+  private setBBoxSizes(document: Document): Document {
+    document.pages.forEach(page => {
+      page.getAllElements().forEach(element => {
+        element.height *= page.height;
+        element.top *= page.height;
+        element.width *= page.width;
+        element.left *= page.width;
+      });
+    });
+    return document;
   }
 
   private getWordsFromIds(ids: string[], data: AmazonTextractResponse): Word[] {
