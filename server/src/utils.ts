@@ -239,7 +239,7 @@ export function pdfToImages(pdfPath: string): Promise<string[]> {
     ])
       .then(() => {
         const files = fs.readdirSync(folder).map(file => path.join(folder, file));
-        logger.info(`converted files: ${files.join(', ')}`);
+        logger.info(`Sample files: ${files.join('\n')}`);
         resolve(files);
       })
       .catch(({ found, error }) => {
@@ -252,44 +252,6 @@ export function pdfToImages(pdfPath: string): Promise<string[]> {
         reject(error);
       });
   });
-}
-/**
- * Applies rotation correction given an input image and returns RotationCorrection
- * @param srcImg source image
- */
-
-export type RotationCorrectionCoords = {
-  x: number;
-  y: number;
-};
-export type RotationCorrection = {
-  fileName: string;
-  degrees: number;
-  origin: RotationCorrectionCoords;
-  translation: RotationCorrectionCoords;
-};
-
-export async function correctImageForRotation(srcImg: string): Promise<RotationCorrection> {
-  const correctionInfo: RotationCorrection = {
-    fileName: srcImg,
-    degrees: 0,
-    origin: { x: 0, y: 0 },
-    translation: { x: 0, y: 0 },
-  };
-
-  const args: string[] = [path.join(__dirname, '../assets/ImageCorrection.py'), srcImg];
-  try {
-    const data = await CommandExecuter.run(CommandExecuter.COMMANDS.PYTHON, args);
-    const rotationData = JSON.parse(data);
-    correctionInfo.fileName = rotationData.filename;
-    correctionInfo.degrees = rotationData.degrees;
-    correctionInfo.origin = rotationData.origin;
-    correctionInfo.translation = rotationData.translation;
-  } catch ({ error }) {
-    logger.error(error);
-    logger.warn(`Error running image rotation calculation.. using the original image.`);
-  }
-  return correctionInfo;
 }
 
 /**
