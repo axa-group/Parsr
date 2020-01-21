@@ -247,8 +247,8 @@ export default new Vuex.Store({
           throw error;
         });
     },
-    postDocument({ commit }, { file, configuration }) {
-      return DocumentService.postDocument(file, configuration).then(response => {
+    postDocument({ commit }, { file, configuration, credentials }) {
+      return DocumentService.postDocument(file, configuration, credentials).then(response => {
         commit('SET_DOCUMENT_ID', response.data);
         commit('SET_DOCUMENT', null);
         commit('SET_DOCUMENT_TEXT', null);

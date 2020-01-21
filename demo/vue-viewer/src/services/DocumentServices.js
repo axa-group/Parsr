@@ -69,10 +69,11 @@ export default {
   getDocumentCsv(url) {
     return apiClient.get(url.replace('/api/v1', ''));
   },
-  postDocument(file, configuration) {
+  postDocument(file, configuration, credentials) {
     const formData = new FormData();
     formData.append('file', file, file.name);
     formData.append('config', configuration);
+    formData.append('gvCredentials', credentials.googleVision);
     return apiClient.post('/document', formData);
   },
   getDocumentStatus(docID) {

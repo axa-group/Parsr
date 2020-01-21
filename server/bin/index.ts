@@ -129,12 +129,7 @@ function main(): void {
           logger.info(
             `Since the input file is a PDF with only images, trying to run an OCR on all pages...`,
           );
-          if (config.extractor.img === 'tesseract') {
-            orchestrator = new Orchestrator(new TesseractExtractor(config), cleaner);
-          } else {
-            orchestrator = new Orchestrator(new AbbyyTools(config), cleaner);
-          }
-          return orchestrator.run(filePath);
+          return getImgExtractor().run(filePath);
         }
         return doc;
       })
