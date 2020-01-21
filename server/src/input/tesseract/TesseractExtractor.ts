@@ -15,48 +15,43 @@
  */
 
 import { Document } from '../../types/DocumentRepresentation';
-import { pdfToImages } from '../../utils';
-import { Extractor } from '../Extractor';
+import { OcrExtractorFactory } from '../OcrExtractor';
 import { setPageDimensions } from '../set-page-dimensions';
 import * as tesseract2json from './tesseract2json';
 
 /**
  * An extractor class to extract content from images using the tesseract OCR extraction tool.
  */
-export class TesseractExtractor extends Extractor {
+export class TesseractExtractor extends OcrExtractorFactory {
   /**
    * Runs the extraction process, first setting page dimensions, then extracting the document itself.
    * @param inputFile The name of the image to be used at input for the extraction.
    * @returns The promise of a valid Document (as per the Document Representation namespace).
    */
   public async run(inputFile: string, rotationCorrection: boolean = true): Promise<Document> {
-    const imagePaths = await pdfToImages(inputFile);
-    return this.scanPages(imagePaths, rotationCorrection).then((doc: Document) => {
+    if (this.isPdfFile(inputFile)) {
+      return this.ocrPDF(inputFile, rotationCorrection);
+    }
+    return this.scanImage(inputFile);
+  }
+
+  public async ocrImage(inputFile: string, fixRotation: boolean): Promise<Document> {
+    let rotationCorrection = null;
+    const orignalInput = inputFile;
+    if (fixRotation) {
+      rotationCorrection = await this.correctImageForRotation(inputFile);
+      inputFile = rotationCorrection.fileName;
+    }
+
+    return tesseract2json
+      .execute(inputFile, rotationCorrection, this.config)
+      .then((doc: Document) => setPageDimensions(doc, orignalInput));
+  }
+
+  private async scanImage(inputFile: string, fixRotation: boolean = true) {
+    return this.ocrImages([inputFile], fixRotation).then((doc: Document) => {
       doc.inputFile = inputFile;
       return doc;
-    });
-  }
-
-  private scanPage(page: string, fixRotation: boolean): Promise<Document> {
-    return tesseract2json
-      .execute(page, fixRotation, this.config)
-      .then((doc: Document) => setPageDimensions(doc, page));
-  }
-
-  private scanPages(
-    pages: string[],
-    fixRotation: boolean,
-    allPagesDoc: Document = new Document([]),
-    index: number = 0,
-  ): Promise<Document> {
-    return this.scanPage(pages[index], fixRotation).then((doc: Document) => {
-      allPagesDoc.pages = allPagesDoc.pages.concat(doc.pages);
-      allPagesDoc.pages[index].pageNumber = index + 1;
-      if (pages.length > index + 1) {
-        return this.scanPages(pages, fixRotation, allPagesDoc, index + 1);
-      } else {
-        return allPagesDoc;
-      }
     });
   }
 }
