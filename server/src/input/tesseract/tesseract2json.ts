@@ -20,6 +20,7 @@ import { BoundingBox, Document, Font, Page, Word } from '../../types/DocumentRep
 import { TsvElement } from '../../types/TsvElement';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
+import { RotationCorrection } from '../OcrExtractor';
 
 /**
  * Executes the tesseract to json conversion module, which entails calling
@@ -29,7 +30,7 @@ import logger from '../../utils/Logger';
  */
 export function execute(
   imageInputFile: string,
-  fixRotation: boolean,
+  rotationCorrection: RotationCorrection,
   config: Config,
 ): Promise<Document> {
   return new Promise<Document>(async (resolve, reject) => {
@@ -74,13 +75,6 @@ export function execute(
     }
 
     const tesseractLanguages = validLanguages.map(lang => lang.trim()).join('+');
-
-    // correct for the rotation in the image
-    let rotationCorrection = null;
-    if (fixRotation) {
-      rotationCorrection = await utils.correctImageForRotation(imageInputFile);
-      imageInputFile = rotationCorrection.fileName;
-    }
 
     /**
      * From man page

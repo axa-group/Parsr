@@ -130,8 +130,7 @@ function main(): void {
           logger.info(
             `Since the input file is a PDF with only images, trying to run an OCR on all pages...`,
           );
-          orchestrator = getImgExtractor();
-          return orchestrator.run(filePath);
+          return getImgExtractor().run(filePath);
         }
         return doc;
       })

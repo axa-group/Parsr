@@ -10,9 +10,8 @@ import {
   Paragraph,
   Word,
 } from '../../types/DocumentRepresentation';
-import { correctImageForRotation, RotationCorrection } from '../../utils';
 import logger from '../../utils/Logger';
-import { Extractor } from '../Extractor';
+import { OcrExtractorFactory } from '../OcrExtractor';
 import { setPageDimensions } from '../set-page-dimensions';
 
 type GoogleVisionResponse = Array<{
@@ -107,30 +106,35 @@ type TextAnnotation = {
 /**
  * An extractor class to extract content from images using Google Vision
  */
-export class GoogleVisionExtractor extends Extractor {
+export class GoogleVisionExtractor extends OcrExtractorFactory {
   /**
    * Runs the extraction process, first setting page dimensions, then extracting the document itself.
    * @param inputFile The name of the image to be used at input for the extraction.
    * @returns The promise of a valid Document (as per the Document Representation namespace).
    */
-  public run(inputFile: string): Promise<Document> {
-    return this.execute(inputFile);
+  public async run(inputFile: string, rotationCorrection: boolean = true): Promise<Document> {
+    if (this.isPdfFile(inputFile)) {
+      return this.ocrPDF(inputFile, rotationCorrection);
+    }
+    return this.scanImage(inputFile);
   }
 
-  private async execute(inputFile: string) {
-    let rotationCorrection: RotationCorrection = {
-      fileName: inputFile,
-      degrees: 0,
-      origin: { x: 0, y: 0 },
-      translation: { x: 0, y: 0 },
-    };
+  public async ocrImage(page: string, fixRotation: boolean): Promise<Document> {
+    return this.scanImage(page, fixRotation).then((doc: Document) => setPageDimensions(doc, page));
+  }
+
+  private async scanImage(inputFile: string, fixRotation: boolean = true) {
+    let rotationCorrection = null;
     try {
-      rotationCorrection = await correctImageForRotation(inputFile);
+      if (fixRotation) {
+        rotationCorrection = await this.correctImageForRotation(inputFile);
+        inputFile = rotationCorrection.fileName;
+      }
     } catch (e) {
       logger.info('There was an error while doing image rotation. Using original file...');
     }
     const client = new vision.ImageAnnotatorClient();
-    const result: GoogleVisionResponse = await client.documentTextDetection(rotationCorrection.fileName);
+    const result: GoogleVisionResponse = await client.documentTextDetection(inputFile);
 
     if (result[0].error) {
       const e = result[0].error;
@@ -206,7 +210,9 @@ export class GoogleVisionExtractor extends Extractor {
         elements,
         new BoundingBox(0, 0, gPage.width, gPage.height),
       );
-      page.pageRotation = rotationCorrection;
+      if (rotationCorrection != null) {
+        page.pageRotation = rotationCorrection;
+      }
       pages.push(page);
     });
 
