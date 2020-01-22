@@ -20,7 +20,6 @@ import { BoundingBox, Document, Font, Page, Word } from '../../types/DocumentRep
 import { TsvElement } from '../../types/TsvElement';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
-import { RotationCorrection } from '../OcrExtractor';
 
 /**
  * Executes the tesseract to json conversion module, which entails calling
@@ -28,11 +27,7 @@ import { RotationCorrection } from '../OcrExtractor';
  * @param config The input configuration for tesseract.
  * @returns The promise of a valid Document (as in the Document Representation data structure).
  */
-export function execute(
-  imageInputFile: string,
-  rotationCorrection: RotationCorrection,
-  config: Config,
-): Promise<Document> {
+export function execute(imageInputFile: string, config: Config): Promise<Document> {
   return new Promise<Document>(async (resolve, reject) => {
     const tsvOutputFile: string = utils.getTemporaryFile('.json');
 
@@ -132,9 +127,6 @@ export function execute(
               [],
               new BoundingBox(0, 0, 10000, 10000), // This is set by the setPageDimension module
             );
-            if (rotationCorrection != null) {
-              page.pageRotation = rotationCorrection;
-            }
             pages.push(page);
           }
 
