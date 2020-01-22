@@ -239,7 +239,7 @@ export function pdfToImages(pdfPath: string): Promise<string[]> {
     ])
       .then(() => {
         const files = fs.readdirSync(folder).map(file => path.join(folder, file));
-        logger.info(`Sample files: ${files.join('\n')}`);
+        logger.debug(`Sample files: ${files.join('\n')}`);
         resolve(files);
       })
       .catch(({ found, error }) => {

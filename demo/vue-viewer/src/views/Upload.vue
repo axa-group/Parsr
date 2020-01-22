@@ -21,7 +21,7 @@
           solo
         ></v-select>
         <v-select
-          :items="['tesseract', 'abbyy', 'google-vision']"
+          :items="['tesseract', 'abbyy', 'google-vision', 'ms-cognitive-services']"
           v-model="defaultConfig.extractor.img"
           :flat="true"
           :hide-details="true"
@@ -29,7 +29,7 @@
           color="rgba(0, 0, 0, 0.54)"
           height="20px"
           class="selectOptionExtractor"
-          prefix="Images"
+          prefix="OCR"
           solo
         ></v-select>
         <div
@@ -44,6 +44,22 @@
             id="googleVisionCredentials"
             name="googleVisionCredentials"
             accept="application/json"
+          />
+        </div>
+        <div
+          style="padding-left: 60px; text-align: left"
+          class="selectOptionExtractor"
+          v-if="defaultConfig.extractor.img === 'ms-cognitive-services'"
+        >
+          <legend><sup>*</sup>Ocp-Apim-Subscription-Key:</legend>
+          <input style="border-style: groove" id="MSAPIKEY" name="MSAPIKEY" v-model="msApiKey" />
+
+          <legend><sup>*</sup>Endpoint:</legend>
+          <input
+            style="border-style: groove"
+            id="MSENDPOINT"
+            name="MSENDPOINT"
+            v-model="msEndpoint"
           />
         </div>
       </fieldset>
@@ -98,6 +114,8 @@ export default {
       checkIcon: CheckIcon,
       file: null,
       gvCredentials: null,
+      msApiKey: null,
+      msEndpoint: 'https://westeurope.api.cognitive.microsoft.com/',
       loading: false,
       processStatus: [],
       processStatusCompleted: false,
@@ -121,7 +139,10 @@ export default {
     },
     isSubmitDisabled() {
       return (
-        !this.file || (this.customConfig.extractor.img === 'google-vision' && !this.gvCredentials)
+        !this.file ||
+        (this.customConfig.extractor.img === 'google-vision' && !this.gvCredentials) ||
+        (this.customConfig.extractor.img === 'ms-cognitive-services' &&
+          !(this.msApiKey && this.msEndpoint))
       );
     },
     /*
@@ -233,6 +254,8 @@ export default {
           configuration: this.configAsBinary,
           credentials: {
             googleVision: this.gvCredentials,
+            msApiKey: this.msApiKey,
+            msEndpoint: this.msEndpoint,
           },
         })
         .then(() => {

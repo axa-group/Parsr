@@ -24,6 +24,7 @@ import { AbbyyToolsXml } from '../src/input/abbyy/AbbyyToolsXml';
 import { EmailExtractor } from '../src/input/email/EmailExtractor';
 import { GoogleVisionExtractor } from '../src/input/google-vision/GoogleVisionExtractor';
 import { JsonExtractor } from '../src/input/json/JsonExtractor';
+import { MicrosoftCognitiveExtractor } from '../src/input/ms-cognitive-services/MicrosoftCognitiveServices';
 import { TesseractExtractor } from '../src/input/tesseract/TesseractExtractor';
 import { Orchestrator } from '../src/Orchestrator';
 import { CsvExporter } from '../src/output/csv/CsvExporter';
@@ -284,6 +285,8 @@ function main(): void {
       return new Orchestrator(new TesseractExtractor(config), cleaner);
     } else if (config.extractor.img === 'google-vision') {
       return new Orchestrator(new GoogleVisionExtractor(config), cleaner);
+    } else if (config.extractor.img === 'ms-cognitive-services') {
+      return new Orchestrator(new MicrosoftCognitiveExtractor(config), cleaner);
     } else {
       return new Orchestrator(new AbbyyTools(config), cleaner);
     }

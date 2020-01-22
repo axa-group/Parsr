@@ -10,9 +10,7 @@ import {
   Paragraph,
   Word,
 } from '../../types/DocumentRepresentation';
-import logger from '../../utils/Logger';
 import { OcrExtractorFactory } from '../OcrExtractor';
-import { setPageDimensions } from '../set-page-dimensions';
 
 type GoogleVisionResponse = Array<{
   fullTextAnnotation: FullTextAnnotation;
@@ -113,26 +111,10 @@ export class GoogleVisionExtractor extends OcrExtractorFactory {
    * @returns The promise of a valid Document (as per the Document Representation namespace).
    */
   public async run(inputFile: string, rotationCorrection: boolean = true): Promise<Document> {
-    if (this.isPdfFile(inputFile)) {
-      return this.ocrPDF(inputFile, rotationCorrection);
-    }
-    return this.scanImage(inputFile);
+    return this.ocrFile(inputFile, rotationCorrection);
   }
 
-  public async ocrImage(page: string, fixRotation: boolean): Promise<Document> {
-    return this.scanImage(page, fixRotation).then((doc: Document) => setPageDimensions(doc, page));
-  }
-
-  private async scanImage(inputFile: string, fixRotation: boolean = true) {
-    let rotationCorrection = null;
-    try {
-      if (fixRotation) {
-        rotationCorrection = await this.correctImageForRotation(inputFile);
-        inputFile = rotationCorrection.fileName;
-      }
-    } catch (e) {
-      logger.info('There was an error while doing image rotation. Using original file...');
-    }
+  public async scanImage(inputFile: string) {
     const client = new vision.ImageAnnotatorClient();
     const result: GoogleVisionResponse = await client.documentTextDetection(inputFile);
 
@@ -210,14 +192,10 @@ export class GoogleVisionExtractor extends OcrExtractorFactory {
         elements,
         new BoundingBox(0, 0, gPage.width, gPage.height),
       );
-      if (rotationCorrection != null) {
-        page.pageRotation = rotationCorrection;
-      }
       pages.push(page);
     });
 
-    const doc: Document = new Document(pages, inputFile);
-    return setPageDimensions(doc, inputFile);
+    return new Document(pages, inputFile);
   }
 
   private googleBoxToParsrBox(box: GoogleVisionBoundingBox): BoundingBox {

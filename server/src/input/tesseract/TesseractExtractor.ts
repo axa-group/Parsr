@@ -16,7 +16,6 @@
 
 import { Document } from '../../types/DocumentRepresentation';
 import { OcrExtractorFactory } from '../OcrExtractor';
-import { setPageDimensions } from '../set-page-dimensions';
 import * as tesseract2json from './tesseract2json';
 
 /**
@@ -29,29 +28,10 @@ export class TesseractExtractor extends OcrExtractorFactory {
    * @returns The promise of a valid Document (as per the Document Representation namespace).
    */
   public async run(inputFile: string, rotationCorrection: boolean = true): Promise<Document> {
-    if (this.isPdfFile(inputFile)) {
-      return this.ocrPDF(inputFile, rotationCorrection);
-    }
-    return this.scanImage(inputFile);
+    return this.ocrFile(inputFile, rotationCorrection);
   }
 
-  public async ocrImage(inputFile: string, fixRotation: boolean): Promise<Document> {
-    let rotationCorrection = null;
-    const orignalInput = inputFile;
-    if (fixRotation) {
-      rotationCorrection = await this.correctImageForRotation(inputFile);
-      inputFile = rotationCorrection.fileName;
-    }
-
-    return tesseract2json
-      .execute(inputFile, rotationCorrection, this.config)
-      .then((doc: Document) => setPageDimensions(doc, orignalInput));
-  }
-
-  private async scanImage(inputFile: string, fixRotation: boolean = true) {
-    return this.ocrImages([inputFile], fixRotation).then((doc: Document) => {
-      doc.inputFile = inputFile;
-      return doc;
-    });
+  public async scanImage(inputFile: string) {
+    return tesseract2json.execute(inputFile, this.config);
   }
 }
