@@ -18,13 +18,22 @@ import { TableOfContentsItem } from './TableOfContentsItem';
 
 export class TableOfContents extends Element {
 
-  private _content: TableOfContentsItem[] = [];
+  private _items: TableOfContentsItem[] = [];
+  private _content: Element[] = [];
 
-  public get content(): TableOfContentsItem[] {
+  public get content(): Element[] {
     return this._content;
   }
-  public set content(value: TableOfContentsItem[]) {
+  public set content(value: Element[]) {
     this._content = value;
+  }
+
+  public get items(): TableOfContentsItem[] {
+    return this._items;
+  }
+
+  public set items(items: TableOfContentsItem[]) {
+    this._items = items;
   }
 
   public toHTML() {

@@ -33,3 +33,4 @@ export * from './Font';
 export * from './Line';
 export * from './Barcode';
 export * from './JsonExport';
+export * from './TableOfContents';
