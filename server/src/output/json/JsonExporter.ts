@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { RotationCorrection } from '../../input/OcrExtractor';
 import {
   Barcode,
   BoundingBox,
@@ -288,7 +289,7 @@ export class JsonExporter extends Exporter {
     return jsonBox;
   }
 
-  private rotationToJsonRotation(rotation: utils.RotationCorrection): JsonPageRotation {
+  private rotationToJsonRotation(rotation: RotationCorrection): JsonPageRotation {
     if (rotation != null) {
       const jsonRotation: JsonPageRotation = {
         degrees: rotation.degrees,

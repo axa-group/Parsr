@@ -27,11 +27,7 @@ import logger from '../../utils/Logger';
  * @param config The input configuration for tesseract.
  * @returns The promise of a valid Document (as in the Document Representation data structure).
  */
-export function execute(
-  imageInputFile: string,
-  fixRotation: boolean,
-  config: Config,
-): Promise<Document> {
+export function execute(imageInputFile: string, config: Config): Promise<Document> {
   return new Promise<Document>(async (resolve, reject) => {
     const tsvOutputFile: string = utils.getTemporaryFile('.json');
 
@@ -74,13 +70,6 @@ export function execute(
     }
 
     const tesseractLanguages = validLanguages.map(lang => lang.trim()).join('+');
-
-    // correct for the rotation in the image
-    let rotationCorrection = null;
-    if (fixRotation) {
-      rotationCorrection = await utils.correctImageForRotation(imageInputFile);
-      imageInputFile = rotationCorrection.fileName;
-    }
 
     /**
      * From man page
@@ -138,9 +127,6 @@ export function execute(
               [],
               new BoundingBox(0, 0, 10000, 10000), // This is set by the setPageDimension module
             );
-            if (rotationCorrection != null) {
-              page.pageRotation = rotationCorrection;
-            }
             pages.push(page);
           }
 

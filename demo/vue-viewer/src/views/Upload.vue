@@ -3,13 +3,7 @@
     <form @submit.prevent="upload">
       <fieldset>
         <legend>Input file</legend>
-        <input
-          type="file"
-          id="file"
-          name="file"
-          @change="fileChanged($event)"
-          style="margin:10px 0px"
-        />
+        <input type="file" id="file" name="file" @change="fileChanged" style="margin:10px 0px" />
       </fieldset>
 
       <fieldset>
@@ -26,6 +20,48 @@
           prefix="Pdf"
           solo
         ></v-select>
+        <v-select
+          :items="['tesseract', 'abbyy', 'google-vision', 'ms-cognitive-services']"
+          v-model="defaultConfig.extractor.img"
+          :flat="true"
+          :hide-details="true"
+          background-color="transparent"
+          color="rgba(0, 0, 0, 0.54)"
+          height="20px"
+          class="selectOptionExtractor"
+          prefix="OCR"
+          solo
+        ></v-select>
+        <div
+          style="padding-left: 60px"
+          class="selectOptionExtractor"
+          v-if="defaultConfig.extractor.img === 'google-vision'"
+        >
+          <legend><sup>*</sup>GOOGLE_APPLICATION_CREDENTIALS:</legend>
+          <input
+            type="file"
+            @change="googleCredentialsChanged"
+            id="googleVisionCredentials"
+            name="googleVisionCredentials"
+            accept="application/json"
+          />
+        </div>
+        <div
+          style="padding-left: 60px; text-align: left"
+          class="selectOptionExtractor"
+          v-if="defaultConfig.extractor.img === 'ms-cognitive-services'"
+        >
+          <legend><sup>*</sup>Ocp-Apim-Subscription-Key:</legend>
+          <input style="border-style: groove" id="MSAPIKEY" name="MSAPIKEY" v-model="msApiKey" />
+
+          <legend><sup>*</sup>Endpoint:</legend>
+          <input
+            style="border-style: groove"
+            id="MSENDPOINT"
+            name="MSENDPOINT"
+            v-model="msEndpoint"
+          />
+        </div>
       </fieldset>
 
       <fieldset>
@@ -77,6 +113,9 @@ export default {
       items: [true, false],
       checkIcon: CheckIcon,
       file: null,
+      gvCredentials: null,
+      msApiKey: null,
+      msEndpoint: 'https://westeurope.api.cognitive.microsoft.com/',
       loading: false,
       processStatus: [],
       processStatusCompleted: false,
@@ -99,9 +138,14 @@ export default {
       });
     },
     isSubmitDisabled() {
-      return !this.file;
+      return (
+        !this.file ||
+        (this.customConfig.extractor.img === 'google-vision' && !this.gvCredentials) ||
+        (this.customConfig.extractor.img === 'ms-cognitive-services' &&
+          !(this.msApiKey && this.msEndpoint))
+      );
     },
-    /* 
+    /*
 			this function takes the config in 'specs' format and returns only the values of each parameter
 			ex:
 				parameter: {
@@ -166,6 +210,9 @@ export default {
     fileChanged(event) {
       this.file = event.target.files[0];
     },
+    googleCredentialsChanged(event) {
+      this.gvCredentials = event.target.files[0];
+    },
     trackPipeStatus() {
       const interval = setInterval(() => {
         this.$store
@@ -205,6 +252,11 @@ export default {
         .dispatch('postDocument', {
           file: this.file,
           configuration: this.configAsBinary,
+          credentials: {
+            googleVision: this.gvCredentials,
+            msApiKey: this.msApiKey,
+            msEndpoint: this.msEndpoint,
+          },
         })
         .then(() => {
           this.processStatus = ['Upload Completed'];
@@ -244,7 +296,7 @@ export default {
   padding: 0 !important;
 }
 .selectOptionExtractor div.v-input__control div.v-select__slot {
-  width: 100px;
+  width: 210px;
 }
 .selectOptionExtractor div.v-input__control div.v-select__slot div.v-text-field__prefix {
   min-width: 60px;
@@ -252,7 +304,7 @@ export default {
 }
 .selectOptionExtractor div.v-input__control div.v-input__slot div.v-select__selection {
   border: solid 1px #cccccc;
-  min-width: 90px;
+  min-width: 120px;
   text-align: center;
   display: block;
   padding: 0 5px;

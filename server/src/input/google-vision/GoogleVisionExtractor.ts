@@ -10,7 +10,7 @@ import {
   Paragraph,
   Word,
 } from '../../types/DocumentRepresentation';
-import { Extractor } from '../Extractor';
+import { OcrExtractorFactory } from '../OcrExtractor';
 
 type GoogleVisionResponse = Array<{
   fullTextAnnotation: FullTextAnnotation;
@@ -104,17 +104,17 @@ type TextAnnotation = {
 /**
  * An extractor class to extract content from images using Google Vision
  */
-export class GoogleVisionExtractor extends Extractor {
+export class GoogleVisionExtractor extends OcrExtractorFactory {
   /**
    * Runs the extraction process, first setting page dimensions, then extracting the document itself.
    * @param inputFile The name of the image to be used at input for the extraction.
    * @returns The promise of a valid Document (as per the Document Representation namespace).
    */
-  public run(inputFile: string): Promise<Document> {
-    return this.execute(inputFile);
+  public async run(inputFile: string, rotationCorrection: boolean = true): Promise<Document> {
+    return this.ocrFile(inputFile, rotationCorrection);
   }
 
-  private async execute(inputFile: string) {
+  public async scanImage(inputFile: string) {
     const client = new vision.ImageAnnotatorClient();
     const result: GoogleVisionResponse = await client.documentTextDetection(inputFile);
 
@@ -192,13 +192,10 @@ export class GoogleVisionExtractor extends Extractor {
         elements,
         new BoundingBox(0, 0, gPage.width, gPage.height),
       );
-
       pages.push(page);
     });
 
-    const doc: Document = new Document(pages);
-
-    return doc;
+    return new Document(pages, inputFile);
   }
 
   private googleBoxToParsrBox(box: GoogleVisionBoundingBox): BoundingBox {

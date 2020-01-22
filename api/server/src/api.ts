@@ -77,6 +77,7 @@ export class ApiServer {
     const uploadsConf: multer.Field[] = [
       { name: 'file', maxCount: 1 },
       { name: 'config', maxCount: 1 },
+      { name: 'gvCredentials', maxCount: 1 },
     ];
 
     v1_0.post('/document', this.upload.fields(uploadsConf), this.handlePostDoc.bind(this));
@@ -333,8 +334,16 @@ export class ApiServer {
       return;
     }
 
+    const credentials = {
+      googleVision: 'gvCredentials' in req.files && req.files.gvCredentials[0].path,
+      msCognitiveServices: {
+        apiKey: 'msApiKey' in req.body && req.body.msApiKey,
+        endpoint: 'msEndpoint' in req.body && req.body.msEndpoint,
+      },
+    };
+
     this.fileManager.newBinder(docId, doc.path, config.path, outputPath, docName);
-    this.processManager.start(doc.path, docId, config.path, docName, outputPath);
+    this.processManager.start(doc.path, docId, config.path, docName, outputPath, credentials);
 
     res
       .status(202)
