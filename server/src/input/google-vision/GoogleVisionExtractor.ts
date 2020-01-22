@@ -10,10 +10,7 @@ import {
   Paragraph,
   Word,
 } from '../../types/DocumentRepresentation';
-import { correctImageForRotation, RotationCorrection } from '../../utils';
-import logger from '../../utils/Logger';
-import { Extractor } from '../Extractor';
-import { setPageDimensions } from '../set-page-dimensions';
+import { OcrExtractorFactory } from '../OcrExtractor';
 
 type GoogleVisionResponse = Array<{
   fullTextAnnotation: FullTextAnnotation;
@@ -107,30 +104,19 @@ type TextAnnotation = {
 /**
  * An extractor class to extract content from images using Google Vision
  */
-export class GoogleVisionExtractor extends Extractor {
+export class GoogleVisionExtractor extends OcrExtractorFactory {
   /**
    * Runs the extraction process, first setting page dimensions, then extracting the document itself.
    * @param inputFile The name of the image to be used at input for the extraction.
    * @returns The promise of a valid Document (as per the Document Representation namespace).
    */
-  public run(inputFile: string): Promise<Document> {
-    return this.execute(inputFile);
+  public async run(inputFile: string, rotationCorrection: boolean = true): Promise<Document> {
+    return this.ocrFile(inputFile, rotationCorrection);
   }
 
-  private async execute(inputFile: string) {
-    let rotationCorrection: RotationCorrection = {
-      fileName: inputFile,
-      degrees: 0,
-      origin: { x: 0, y: 0 },
-      translation: { x: 0, y: 0 },
-    };
-    try {
-      rotationCorrection = await correctImageForRotation(inputFile);
-    } catch (e) {
-      logger.info('There was an error while doing image rotation. Using original file...');
-    }
+  public async scanImage(inputFile: string) {
     const client = new vision.ImageAnnotatorClient();
-    const result: GoogleVisionResponse = await client.documentTextDetection(rotationCorrection.fileName);
+    const result: GoogleVisionResponse = await client.documentTextDetection(inputFile);
 
     if (result[0].error) {
       const e = result[0].error;
@@ -206,12 +192,10 @@ export class GoogleVisionExtractor extends Extractor {
         elements,
         new BoundingBox(0, 0, gPage.width, gPage.height),
       );
-      page.pageRotation = rotationCorrection;
       pages.push(page);
     });
 
-    const doc: Document = new Document(pages, inputFile);
-    return setPageDimensions(doc, inputFile);
+    return new Document(pages, inputFile);
   }
 
   private googleBoxToParsrBox(box: GoogleVisionBoundingBox): BoundingBox {

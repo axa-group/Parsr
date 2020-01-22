@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { findMostCommonFont, isInBox, RotationCorrection } from '../../utils';
+import { RotationCorrection } from '../../input/OcrExtractor';
+import { findMostCommonFont, isInBox } from '../../utils';
 import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
