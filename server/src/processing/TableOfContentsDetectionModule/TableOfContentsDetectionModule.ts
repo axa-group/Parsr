@@ -14,35 +14,54 @@
  * limitations under the License.
  */
 
-import { BoundingBox, Document, Element, Paragraph, TableOfContents, Word } from '../../types/DocumentRepresentation';
-import logger from '../../utils/Logger';
+import { BoundingBox, Document, Heading, Paragraph, TableOfContents, Word } from '../../types/DocumentRepresentation';
 import { Module } from '../Module';
 
 export class TableOfContentsDetectionModule extends Module {
   public static moduleName = 'table-of-contents-detection';
 
   private intersectionBoxWidthPercentage = 0.1;
-  private detectionThreshold = 0.4;
+  private detectionThreshold = 0.45;
+
+  // TODO maybe handle this in a different way
+  private tocKeywords = [
+    'contents',
+    'index',
+    'table of contents',
+    'contenidos',
+    'indice',
+    'índice',
+    'tabla de contenidos',
+  ];
 
   public main(doc: Document): Document {
-    doc.pages.forEach((page, i) => {
+    let foundTOC = false;
+    let previousPageHadTOC = true;
+    for (let i = 0; i <= doc.pages.length - 1 && (!foundTOC || previousPageHadTOC); i++) {
+      const page = doc.pages[i];
+
       const allParagraphs = page.getElementsOfType<Paragraph>(Paragraph, false)
-      .filter(e => !e.properties.isFooter && !e.properties.isHeader);
-      logger.info('---------- page '.concat((i + 1).toString(), ' ----------'));
-      logger.info('all paragraphs: '.concat(allParagraphs.map(p => p.id).join(', ')));
+        .filter(e => !e.properties.isFooter && !e.properties.isHeader);
       const tocItemCandidates = allParagraphs.filter(this.endsWithNumber.bind(this));
-      logger.info('tocItemCandidates: '.concat(tocItemCandidates.map(t => t.id).join(', ')));
-      logger.info('page elements: '.concat(page.elements.map(e => e.id).join(', ')));
-      logger.info('----------------------------');
-      if (tocItemCandidates.length >= allParagraphs.length * this.detectionThreshold) {
-        const tocItems: Element[] = [];
+
+      /*
+        - if the page doesn't have any 'TOC' keywords, the detection threshold is increased to avoid false positives.
+      */
+      const headings = allParagraphs.filter(p => p instanceof Heading);
+      if (
+        tocItemCandidates.length >=
+        allParagraphs.length * this.detectionThreshold * (this.hasKeyword(headings) ? 1 : 2)
+      ) {
+        foundTOC = true;
         const toc = new TableOfContents();
-        tocItems.push(...tocItemCandidates);
-        toc.content = tocItems;
+        toc.content = tocItemCandidates;
         page.elements = page.elements.filter(e => !tocItemCandidates.map(t => t.id).includes(e.id));
         page.elements.push(toc);
+      } else {
+        previousPageHadTOC = false;
       }
-    });
+    }
+
     return doc;
   }
 
@@ -51,20 +70,24 @@ export class TableOfContentsDetectionModule extends Module {
     const intersectionBox = new BoundingBox(e.right - w, e.top, w, e.height);
     const wordsInsideIntersection =
       e.getWords()
-        .filter(word => BoundingBox.getOverlap(word.box, intersectionBox).box1OverlapProportion > 0.9)
+        .filter(word => BoundingBox.getOverlap(word.box, intersectionBox).box1OverlapProportion > 0)
         .filter(word => !this.isSeparator(word));
 
     return wordsInsideIntersection.filter(this.isNumber).length > Math.floor(wordsInsideIntersection.length * 0.9);
   }
 
   private isNumber(word: Word): boolean {
-    // decimal and roman notation
-    const validNumbers = new RegExp(/^[0-9IVXLCDMivxlcdm]+$/);
+    const validNumbers = new RegExp(/[0-9]+$/);
     return validNumbers.test(word.toString());
   }
 
   private isSeparator(word: Word): boolean {
     const separators = new RegExp(/^[-. ]+$/);
     return separators.test(word.toString().trim());
+  }
+
+  private hasKeyword(pageParagraphs: Paragraph[]): boolean {
+    const rawText = pageParagraphs.map(p => p.toString()).join(' ');
+    return this.tocKeywords.some(k => rawText.toLowerCase().includes(k.toLowerCase()));
   }
 }
