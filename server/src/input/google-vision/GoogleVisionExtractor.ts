@@ -105,15 +105,6 @@ type TextAnnotation = {
  * An extractor class to extract content from images using Google Vision
  */
 export class GoogleVisionExtractor extends OcrExtractorFactory {
-  /**
-   * Runs the extraction process, first setting page dimensions, then extracting the document itself.
-   * @param inputFile The name of the image to be used at input for the extraction.
-   * @returns The promise of a valid Document (as per the Document Representation namespace).
-   */
-  public async run(inputFile: string, rotationCorrection: boolean = true): Promise<Document> {
-    return this.ocrFile(inputFile, rotationCorrection);
-  }
-
   public async scanImage(inputFile: string) {
     const client = new vision.ImageAnnotatorClient();
     const result: GoogleVisionResponse = await client.documentTextDetection(inputFile);

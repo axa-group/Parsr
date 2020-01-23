@@ -20,8 +20,7 @@
       "
       :style="{
         fontFamily: props.fonts.filter(font => font.id === props.element.font).shift().name,
-        fontSize: `${props.fonts.filter(font => font.id === props.element.font).shift().size *
-          0.6}${props.fonts.filter(font => font.id === props.element.font).shift().sizeUnit}`,
+        fontSize: $options.methods.fontSize(props),
         fill:
           props.fonts.filter(font => font.id === props.element.font).shift().color != '#ffffff'
             ? props.fonts.filter(font => font.id === props.element.font).shift().color
@@ -44,5 +43,14 @@ import pageElementMixin from '@/mixins/pageElementMixin';
 
 export default {
   mixins: [pageElementMixin],
+  methods: {
+    fontSize(props) {
+      const font = props.fonts.filter(font => font.id === props.element.font).shift();
+      if (font.size == 0) {
+        return props.element.box.h + 'px';
+      }
+      return font.size * 0.6 + font.sizeUnit;
+    },
+  },
 };
 </script>

@@ -25,6 +25,9 @@ export type RotationCorrection = {
 
 // tslint:disable-next-line: max-classes-per-file
 export abstract class OcrExtractorFactory extends OcrExtractor {
+  public async run(inputFile: string, rotationCorrection: boolean = true): Promise<Document> {
+    return this.ocrFile(inputFile, rotationCorrection);
+  }
   public async ocrFile(inputFile: string, fixRotation: boolean = true): Promise<Document> {
     if (this.isPdfFile(inputFile)) {
       return this.ocrPDF(inputFile, fixRotation);
