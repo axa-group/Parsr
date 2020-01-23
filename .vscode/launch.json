@@ -27,7 +27,9 @@
       "env": {
         "NODE_DEBUG": "pipeline",
         "GOOGLE_APPLICATION_CREDENTIALS": "${workspaceRoot}/***.json",
-        "OCP_APIM_SUBSCRIPTION_KEY": ""
+        "OCP_APIM_SUBSCRIPTION_KEY": "",
+        "AWS_ACCESS_KEY_ID": "",
+        "AWS_SECRET_ACCESS_KEY": "",
       },
       "outputCapture": "std"
     }

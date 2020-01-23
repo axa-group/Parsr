@@ -76,11 +76,12 @@ Different extractors are available for each input file format.
 - **PDF files:** two extractors are currently available for PDF files:
   - `pdfminer`, which is an advanced python based extractor capable of extracting low and high level textual structures (from characters to paragraphs),
   - `pdfjs`, Mozilla's free solution for parsing documents. This is the recommended extractor to parse large documents (200+ pages).
-- **Images:** four extractors are supported for images:
+- **Images:** four OCR extractors are supported for images:
   - `tesseract` which is an Open Source OCR software,
   - `abbyy`, that relies on ABBYY Finereader, a paid solution for OCR on documents and images,
-  - `google-vision`, which uses the Google Vision API to detect the contents of an image (see the [google vision documentation for more](google-vision.md)),
-  - `ms-cognitive-services`, that uses Microsoft Cognitive Services OCR to detect and process text inside an image.
+  - `google-vision`, which uses the [Google Vision](https://cloud.google.com/vision/) API to detect the contents of an image (see the [google vision documentation for more](google-vision.md)),
+  - `ms-cognitive-services`, that uses [Microsoft Cognitive Services](https://azure.microsoft.com/es-es/services/cognitive-services/) OCR to detect and process text inside an image.
+  - `amazon-textract`, that uses [Amazon Textract](https://us-east-2.console.aws.amazon.com/textract/home) service to detect and process text inside an image.
 ### 2.2. Language
 
 The language parameter is an option that will be pass to Tesseract when using it. It must be in the [Tesseract language format](https://github.com/tesseract-ocr/tesseract/blob/master/doc/tesseract.1.asc#languages), which is an equivalent of [ISO 639-2/T](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes).

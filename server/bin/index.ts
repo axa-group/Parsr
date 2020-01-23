@@ -21,6 +21,7 @@ import * as path from 'path';
 import { Cleaner } from '../src/Cleaner';
 import { AbbyyTools } from '../src/input/abbyy/AbbyyTools';
 import { AbbyyToolsXml } from '../src/input/abbyy/AbbyyToolsXml';
+import { AmazonTextractExtractor } from '../src/input/amazon-textract/AmazonTextractExtractor';
 import { EmailExtractor } from '../src/input/email/EmailExtractor';
 import { GoogleVisionExtractor } from '../src/input/google-vision/GoogleVisionExtractor';
 import { JsonExtractor } from '../src/input/json/JsonExtractor';
@@ -281,14 +282,12 @@ function main(): void {
    * @returns The Orchestrator instance
    */
   function getImgExtractor(): Orchestrator {
-    if (config.extractor.img === 'tesseract') {
-      return new Orchestrator(new TesseractExtractor(config), cleaner);
-    } else if (config.extractor.img === 'google-vision') {
-      return new Orchestrator(new GoogleVisionExtractor(config), cleaner);
-    } else if (config.extractor.img === 'ms-cognitive-services') {
-      return new Orchestrator(new MicrosoftCognitiveExtractor(config), cleaner);
-    } else {
-      return new Orchestrator(new AbbyyTools(config), cleaner);
+    switch (config.extractor.img) {
+      case 'tesseract': return new Orchestrator(new TesseractExtractor(config), cleaner);
+      case 'google-vision': return new Orchestrator(new GoogleVisionExtractor(config), cleaner);
+      case 'ms-cognitive-services': return new Orchestrator(new MicrosoftCognitiveExtractor(config), cleaner);
+      case 'amazon-textract': return new Orchestrator(new AmazonTextractExtractor(config), cleaner);
+      default: return new Orchestrator(new AbbyyTools(config), cleaner);
     }
   }
 }

@@ -60,10 +60,6 @@ export class MicrosoftCognitiveExtractor extends OcrExtractorFactory {
     });
   }
 
-  public async run(inputFile: string, rotationCorrection: boolean = true): Promise<Document> {
-    return this.ocrFile(inputFile, rotationCorrection);
-  }
-
   public async scanImage(inputFile: string) {
     try {
       const { headers } = await this.apiClient.post(

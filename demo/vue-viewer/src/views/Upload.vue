@@ -21,7 +21,13 @@
           solo
         ></v-select>
         <v-select
-          :items="['tesseract', 'abbyy', 'google-vision', 'ms-cognitive-services']"
+          :items="[
+            'tesseract',
+            'abbyy',
+            'google-vision',
+            'ms-cognitive-services',
+            'amazon-textract',
+          ]"
           v-model="defaultConfig.extractor.img"
           :flat="true"
           :hide-details="true"
@@ -60,6 +66,27 @@
             id="MSENDPOINT"
             name="MSENDPOINT"
             v-model="msEndpoint"
+          />
+        </div>
+        <div
+          style="padding-left: 60px; text-align: left"
+          class="selectOptionExtractor"
+          v-if="defaultConfig.extractor.img === 'amazon-textract'"
+        >
+          <legend><sup>*</sup>access_key_id:</legend>
+          <input
+            style="border-style: groove"
+            id="awsKeyId"
+            name="awsKeyId"
+            v-model="awsAccessKeyId"
+          />
+
+          <legend><sup>*</sup>secret_access_key:</legend>
+          <input
+            style="border-style: groove"
+            id="awsSecretKey"
+            name="awsSecretKey"
+            v-model="awsSecretAccessKey"
           />
         </div>
       </fieldset>
@@ -116,6 +143,8 @@ export default {
       gvCredentials: null,
       msApiKey: null,
       msEndpoint: 'https://westeurope.api.cognitive.microsoft.com/',
+      awsAccessKeyId: null,
+      awsSecretAccessKey: null,
       loading: false,
       processStatus: [],
       processStatusCompleted: false,
@@ -142,7 +171,9 @@ export default {
         !this.file ||
         (this.customConfig.extractor.img === 'google-vision' && !this.gvCredentials) ||
         (this.customConfig.extractor.img === 'ms-cognitive-services' &&
-          !(this.msApiKey && this.msEndpoint))
+          !(this.msApiKey && this.msEndpoint)) ||
+        (this.customConfig.extractor.img === 'amazon-textract' &&
+          !(this.awsAccessKeyId && this.awsSecretAccessKey))
       );
     },
     /*
@@ -256,6 +287,8 @@ export default {
             googleVision: this.gvCredentials,
             msApiKey: this.msApiKey,
             msEndpoint: this.msEndpoint,
+            awsAccessKeyId: this.awsAccessKeyId,
+            awsSecretAccessKey: this.awsSecretAccessKey,
           },
         })
         .then(() => {

@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -339,6 +339,10 @@ export class ApiServer {
       msCognitiveServices: {
         apiKey: 'msApiKey' in req.body && req.body.msApiKey,
         endpoint: 'msEndpoint' in req.body && req.body.msEndpoint,
+      },
+      amazonTextract: {
+        accessKeyId: 'awsAccessKeyId' in req.body && req.body.awsAccessKeyId,
+        secretAccessKey: 'awsSecretAccessKey' in req.body && req.body.awsSecretAccessKey,
       },
     };
 
