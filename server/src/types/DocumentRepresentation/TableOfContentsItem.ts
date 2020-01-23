@@ -38,13 +38,18 @@ export class TableOfContentsItem extends Element {
   }
 
   public toHTML() {
-    return '%%%'.repeat(this.level + 1).concat(this.description);
+    return '&nbsp;'.repeat(this.level).concat(this.description, ': ', this.pageNumber);
   }
   public toMarkdown() {
-    return this.toHTML();
+    return ' '.repeat(this.level).concat(`[${this.description}](#${this.toLinkableStr(this.description)})`);
   }
-
   public toString() {
-    return this.toHTML();
+    return ' '.repeat(this.level).concat([this.description, this.pageNumber].join(' '));
+  }
+  private toLinkableStr(str: string): string {
+    return str
+      .split(' ')
+      .join('-')
+      .toLowerCase();
   }
 }

@@ -48,11 +48,15 @@ export class TableOfContents extends Element {
   }
 
   private updateItems() {
-    this.items = this.content.map(this.contentToTOCItem);
+    this.items = this.content.map(this.contentToTOCItem).filter(c => !!c);
   }
 
   private contentToTOCItem(element: Element): TableOfContentsItem {
-    return new TableOfContentsItem(element.toMarkdown(), '0', 0);
-
+    const matches = new RegExp(/(.*) (\d+)/).exec(element.toString());
+    if (matches) {
+      const [, description, pageNum] = matches;
+      return new TableOfContentsItem(description, pageNum, 0);
+    }
+    return null;
   }
 }
