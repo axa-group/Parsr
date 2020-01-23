@@ -230,6 +230,8 @@ export class JsonExporter extends Exporter {
             jsonElement.font = this.fontCatalog.get(wordFont[0]);
           }
         }
+      } else if (element instanceof Heading) {
+        jsonElement.level = element.level;
       }
     } else if (element instanceof List) {
       jsonElement.isOrdered = element.isOrdered;
@@ -265,8 +267,6 @@ export class JsonExporter extends Exporter {
       jsonElement.refId = element.refId;
       jsonElement.xObjId = element.xObjId;
       jsonElement.xObjExt = element.xObjExt;
-    } else if (element instanceof Heading) {
-      jsonElement.level = element.level;
     }
 
     return jsonElement;
