@@ -38,7 +38,7 @@ export class TableOfContentsItem extends Element {
   }
 
   public toHTML() {
-    return '\t'.repeat(this.level).concat(this.description, ' - page ', this.pageNumber);
+    return '%%%'.repeat(this.level + 1).concat(this.description);
   }
   public toMarkdown() {
     return this.toHTML();
