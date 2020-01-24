@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { RotationCorrection } from '../../input/OcrExtractor';
 import {
   Barcode,
   BoundingBox,
@@ -229,6 +230,8 @@ export class JsonExporter extends Exporter {
             jsonElement.font = this.fontCatalog.get(wordFont[0]);
           }
         }
+      } else if (element instanceof Heading) {
+        jsonElement.level = element.level;
       }
     } else if (element instanceof List) {
       jsonElement.isOrdered = element.isOrdered;
@@ -264,8 +267,6 @@ export class JsonExporter extends Exporter {
       jsonElement.refId = element.refId;
       jsonElement.xObjId = element.xObjId;
       jsonElement.xObjExt = element.xObjExt;
-    } else if (element instanceof Heading) {
-      jsonElement.level = element.level;
     }
 
     return jsonElement;
@@ -282,7 +283,7 @@ export class JsonExporter extends Exporter {
     return jsonBox;
   }
 
-  private rotationToJsonRotation(rotation: utils.RotationCorrection): JsonPageRotation {
+  private rotationToJsonRotation(rotation: RotationCorrection): JsonPageRotation {
     if (rotation != null) {
       const jsonRotation: JsonPageRotation = {
         degrees: rotation.degrees,

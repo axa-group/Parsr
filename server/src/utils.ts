@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { exec, spawn as spawnChildProcess, spawnSync as spawnSyncChildProcess } from 'child_process';
+import {
+  exec,
+  spawn as spawnChildProcess,
+  spawnSync as spawnSyncChildProcess,
+} from 'child_process';
 import * as concaveman from 'concaveman';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
@@ -208,43 +212,46 @@ export function getTemporaryFile(extension: string): string {
   return path.resolve(`${randFilename}`);
 }
 
-/**
- * Applies rotation correction given an input image and returns RotationCorrection
- * @param srcImg source image
- */
-
-export type RotationCorrectionCoords = {
-  x: number;
-  y: number;
-};
-export type RotationCorrection = {
-  fileName: string;
-  degrees: number;
-  origin: RotationCorrectionCoords;
-  translation: RotationCorrectionCoords;
-};
-
-export async function correctImageForRotation(srcImg: string): Promise<RotationCorrection> {
-  const correctionInfo: RotationCorrection = {
-    fileName: srcImg,
-    degrees: 0,
-    origin: { x: 0, y: 0 },
-    translation: { x: 0, y: 0 },
-  };
-
-  const args: string[] = [path.join(__dirname, '../assets/ImageCorrection.py'), srcImg];
-  try {
-    const data = await CommandExecuter.run(CommandExecuter.COMMANDS.PYTHON, args);
-    const rotationData = JSON.parse(data);
-    correctionInfo.fileName = rotationData.filename;
-    correctionInfo.degrees = rotationData.degrees;
-    correctionInfo.origin = rotationData.origin;
-    correctionInfo.translation = rotationData.translation;
-  } catch ({ error }) {
-    logger.error(error);
-    logger.warn(`Error running image rotation calculation.. using the original image.`);
-  }
-  return correctionInfo;
+export function pdfToImages(pdfPath: string): Promise<string[]> {
+  return new Promise((resolve, reject) => {
+    const folder = path.dirname(pdfPath).concat('/samples');
+    try {
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder);
+      }
+    } catch (e) {
+      throw e;
+    }
+    const outPutFilePath = folder + '/Sample_%03d.jpeg';
+    CommandExecuter.run(CommandExecuter.COMMANDS.CONVERT, [
+      '-colorspace',
+      'RGB',
+      '-density',
+      '300x300',
+      '-compress',
+      'lzw',
+      '-alpha',
+      'remove',
+      '-background',
+      'white',
+      pdfPath,
+      outPutFilePath,
+    ])
+      .then(() => {
+        const files = fs.readdirSync(folder).map(file => path.join(folder, file));
+        logger.debug(`Sample files: ${files.join('\n')}`);
+        resolve(files);
+      })
+      .catch(({ found, error }) => {
+        logger.error(error);
+        if (!found) {
+          logger.warn(
+            'ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)',
+          );
+        }
+        reject(error);
+      });
+  });
 }
 
 /**
@@ -862,14 +869,11 @@ export function getEmphazisChars(text: string): string {
  * @returns The Orchestrator instance
  */
 export function getPdfExtractor(config: Config): Extractor {
-  if (config.extractor.pdf === 'abbyy') {
-    return new AbbyyTools(config);
-  } else if (config.extractor.pdf === 'tesseract') {
-    return new TesseractExtractor(config);
-  } else if (config.extractor.pdf === 'pdfjs') {
-    return new PDFJsExtractor(config);
-  } else {
-    return new PdfminerExtractor(config);
+  switch (config.extractor.pdf) {
+    case 'abbyy': return new AbbyyTools(config);
+    case 'tesseract': return new TesseractExtractor(config);
+    case 'pdfjs': return new PDFJsExtractor(config);
+    default: return new PdfminerExtractor(config);
   }
 }
 /*
@@ -888,14 +892,16 @@ export function mergePDFs(files: string[], output: string): Promise<string> {
         the `spawn` of CommandExecuter does not work in this case, it gets stuck in GS CLI
         TODO: Make this command work with CommandExecuter.
       */
-      exec(`gs -DNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=${output} -dBATCH ${files.join(' ')}`,
+      exec(
+        `gs -DNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=${output} -dBATCH ${files.join(' ')}`,
         (err, stdout, stderr) => {
           if (err) {
             reject(stderr);
           } else {
             resolve(stdout);
           }
-        });
+        },
+      );
     }
   });
 }

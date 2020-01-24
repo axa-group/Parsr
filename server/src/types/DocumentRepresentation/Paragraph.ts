@@ -81,7 +81,7 @@ export class Paragraph extends Text {
    * Get every words from the paragraph in a flat array.
    */
   public getWords(): Word[] {
-    return this.content.map(l => l.content).reduce((a, b) => [...a, ...b]);
+    return this.content.map(l => l.content).reduce((a, b) => [...a, ...b], []);
   }
 
   /**

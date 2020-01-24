@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,46 @@ export class ProcessManager {
     config: string,
     docName: string,
     outputPath: string,
+    credentials: {
+      googleVision: string;
+      msCognitiveServices: {
+        apiKey: string;
+        endpoint: string;
+      };
+      amazonTextract: {
+        accessKeyId: string;
+        secretAccessKey: string;
+      };
+      abbyy: {
+        serverUrl: string;
+        serverVer: string;
+        serverWorkflow: string;
+      };
+    },
   ): void {
     logger.info('Processing ' + doc);
 
     process.env.NODE_DEBUG = 'pipeline';
+    if (credentials.googleVision) {
+      process.env.GOOGLE_APPLICATION_CREDENTIALS = credentials.googleVision;
+    } else if (credentials.msCognitiveServices.apiKey) {
+      process.env.OCP_APIM_SUBSCRIPTION_KEY = credentials.msCognitiveServices.apiKey;
+      process.env.OCP_APIM_ENDPOINT = credentials.msCognitiveServices.endpoint;
+    } else if (
+      credentials.amazonTextract.accessKeyId &&
+      credentials.amazonTextract.secretAccessKey
+    ) {
+      process.env.AWS_ACCESS_KEY_ID = credentials.amazonTextract.accessKeyId;
+      process.env.AWS_SECRET_ACCESS_KEY = credentials.amazonTextract.secretAccessKey;
+    } else if (
+      credentials.abbyy.serverUrl &&
+      credentials.abbyy.serverVer &&
+      credentials.abbyy.serverWorkflow
+    ) {
+      process.env.ABBYY_SERVER_URL = credentials.abbyy.serverUrl;
+      process.env.ABBYY_SERVER_VER = credentials.abbyy.serverVer;
+      process.env.ABBYY_WORKFLOW = credentials.abbyy.serverWorkflow;
+    }
 
     const args: string[] = [
       `../../dist/bin/index.js`,

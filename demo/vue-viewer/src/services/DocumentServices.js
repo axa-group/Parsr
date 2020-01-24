@@ -69,10 +69,31 @@ export default {
   getDocumentCsv(url) {
     return apiClient.get(url.replace('/api/v1', ''));
   },
-  postDocument(file, configuration) {
+  postDocument(file, configuration, credentials) {
     const formData = new FormData();
     formData.append('file', file, file.name);
     formData.append('config', configuration);
+
+    if (credentials.googleVision) {
+      formData.append('gvCredentials', credentials.googleVision);
+    }
+    if (credentials.msApiKey) {
+      formData.append('msApiKey', credentials.msApiKey);
+      formData.append('msEndpoint', credentials.msEndpoint);
+    }
+    if (credentials.awsAccessKeyId && credentials.awsSecretAccessKey) {
+      formData.append('awsAccessKeyId', credentials.awsAccessKeyId);
+      formData.append('awsSecretAccessKey', credentials.awsSecretAccessKey);
+    }
+    if (
+      credentials.abbyyServerUrl &&
+      credentials.abbyyServerVer &&
+      credentials.abbyyServerWorkflow
+    ) {
+      formData.append('abbyyServerUrl', credentials.abbyyServerUrl);
+      formData.append('abbyyServerVer', credentials.abbyyServerVer);
+      formData.append('abbyyServerWorkflow', credentials.abbyyServerWorkflow);
+    }
     return apiClient.post('/document', formData);
   },
   getDocumentStatus(docID) {

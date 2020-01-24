@@ -171,7 +171,7 @@ export default {
 }
 .switch div.v-expansion-panels {
   margin-left: 40px;
-  width: 273px;
+  width: 267px;
 }
 .switch div.v-expansion-panels button.v-expansion-panel-header {
   padding: 0;

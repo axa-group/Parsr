@@ -59,7 +59,7 @@ export type CleanerConfig = Array<string | [string, object]>;
 
 export interface ExtractorConfig {
   pdf: 'pdfminer' | 'tesseract' | 'abbyy' | 'pdfjs';
-  img: 'tesseract' | 'abbyy' | 'google-vision';
+  img: 'tesseract' | 'abbyy' | 'google-vision' | 'ms-cognitive-services' | 'amazon-textract';
   language: TesseractLanguage | TesseractLanguage[];
 }
 
