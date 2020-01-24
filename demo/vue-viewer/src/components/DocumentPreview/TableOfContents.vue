@@ -8,19 +8,9 @@
       :y="props.element.box.t"
       :width="props.element.box.w"
       :height="props.element.box.h"
-      style="fill:white;"
     />
     <component
-      :is="props.components.Paragraph"
-      v-for="element in props.element.content"
-      :key="element.id"
-      :element="element"
-      :fonts="props.fonts"
-      @custom-event="listeners['custom-event']"
-    ></component>
-
-    <component
-      :is="props.components.Heading"
+      :is="element.type === 'paragraph' ? props.components.Paragraph : props.components.Heading"
       v-for="element in props.element.content"
       :key="element.id"
       :element="element"

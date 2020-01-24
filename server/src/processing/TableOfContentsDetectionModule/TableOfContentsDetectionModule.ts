@@ -73,7 +73,7 @@ export class TableOfContentsDetectionModule extends Module {
         .filter(word => BoundingBox.getOverlap(word.box, intersectionBox).box1OverlapProportion > 0)
         .filter(word => !this.isSeparator(word));
 
-    return wordsInsideIntersection.filter(this.isNumber).length > Math.floor(wordsInsideIntersection.length * 0.9);
+    return wordsInsideIntersection.filter(this.isNumber).length > Math.floor(wordsInsideIntersection.length * 0.8);
   }
 
   private isNumber(word: Word): boolean {
