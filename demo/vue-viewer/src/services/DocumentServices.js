@@ -85,6 +85,15 @@ export default {
       formData.append('awsAccessKeyId', credentials.awsAccessKeyId);
       formData.append('awsSecretAccessKey', credentials.awsSecretAccessKey);
     }
+    if (
+      credentials.abbyyServerUrl &&
+      credentials.abbyyServerVer &&
+      credentials.abbyyServerWorkflow
+    ) {
+      formData.append('abbyyServerUrl', credentials.abbyyServerUrl);
+      formData.append('abbyyServerVer', credentials.abbyyServerVer);
+      formData.append('abbyyServerWorkflow', credentials.abbyyServerWorkflow);
+    }
     return apiClient.post('/document', formData);
   },
   getDocumentStatus(docID) {
