@@ -340,4 +340,9 @@ g.TableContainer text {
   stroke: orange;
   stroke-width: 1;
 }
+
+.VisibleTOC rect.TOC {
+  stroke: purple;
+  stroke-width: 1;
+}
 </style>

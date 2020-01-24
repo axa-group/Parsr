@@ -12,6 +12,7 @@
       :selectedPage="selectedPage"
       :zoom="zoom"
       :class="{
+        VisibleTOC: isTOCFilter,
         VisibleWords: isWordFilter,
         VisibleLines: isLineFilter,
         VisibleParagraphs: isParagraphFilter,
@@ -79,6 +80,9 @@ export default {
     ...docComputed,
     isWordFilter() {
       return this.inspectorFilters.words;
+    },
+    isTOCFilter() {
+      return this.inspectorFilters.TOC;
     },
     isLineFilter() {
       return this.inspectorFilters.lines;
