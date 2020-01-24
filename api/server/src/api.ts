@@ -344,6 +344,11 @@ export class ApiServer {
         accessKeyId: 'awsAccessKeyId' in req.body && req.body.awsAccessKeyId,
         secretAccessKey: 'awsSecretAccessKey' in req.body && req.body.awsSecretAccessKey,
       },
+      abbyy: {
+        serverUrl: 'abbyyServerUrl' in req.body && req.body.abbyyServerUrl,
+        serverVer: 'abbyyServerVer' in req.body && req.body.abbyyServerVer,
+        serverWorkflow: 'abbyyServerWorkflow' in req.body && req.body.abbyyServerWorkflow,
+      },
     };
 
     this.fileManager.newBinder(docId, doc.path, config.path, outputPath, docName);
