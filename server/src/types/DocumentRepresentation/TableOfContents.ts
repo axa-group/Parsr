@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
 import { TableOfContentsItem } from './TableOfContentsItem';
 
@@ -24,6 +25,7 @@ export class TableOfContents extends Element {
   public set content(value: Element[]) {
     this._content = value;
     this.updateItems();
+    this.updateBoundingBox();
   }
 
   public get items(): TableOfContentsItem[] {
@@ -55,8 +57,16 @@ export class TableOfContents extends Element {
     const matches = new RegExp(/(.*) (\d+)/).exec(element.toString());
     if (matches) {
       const [, description, pageNum] = matches;
-      return new TableOfContentsItem(description, pageNum, 0);
+      return new TableOfContentsItem(element.box, description, pageNum);
     }
     return null;
+  }
+
+  private updateBoundingBox() {
+    const left = Math.min(...this.items.map(i => i.box.left));
+    const top = Math.min(...this.items.map(i => i.box.top));
+    const width = Math.max(...this.items.map(i => i.box.right)) - left;
+    const height = Math.max(...this.items.map(i => i.box.bottom)) - top;
+    this.box = new BoundingBox(left, top, width, height);
   }
 }

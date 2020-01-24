@@ -91,6 +91,13 @@
           :fonts="fonts"
           @custom-event="elementSelected"
         />
+        <table-of-contents
+          v-for="element in toc"
+          :key="`toc_${element.id}`"
+          :element="element"
+          :fonts="fonts"
+          @custom-event="elementSelected"
+        />
       </g>
     </svg>
   </div>
@@ -102,11 +109,12 @@ import scrollItemMixin from '@/mixins/scrollItemMixin.js';
 import Paragraph from '@/components/DocumentPreview/Paragraph';
 import Heading from '@/components/DocumentPreview/Heading';
 import TableData from '@/components/DocumentPreview/Table';
+import TableOfContents from '@/components/DocumentPreview/TableOfContents';
 import List from '@/components/DocumentPreview/List';
 import ImageData from '@/components/DocumentPreview/Image';
 import { mapState, mapGetters } from 'vuex';
 export default {
-  components: { Paragraph, Heading, TableData, List, ImageData },
+  components: { Paragraph, Heading, TableData, List, ImageData, TableOfContents },
   mixins: [scrollItemMixin],
   data() {
     return {
@@ -150,6 +158,9 @@ export default {
     },
     images() {
       return this.elementsOfType['image'] || [];
+    },
+    toc() {
+      return this.elementsOfType['table-of-contents'] || [];
     },
     pageElements() {
       if (!this.appeared) {

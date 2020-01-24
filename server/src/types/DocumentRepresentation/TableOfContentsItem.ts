@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
 
 export class TableOfContentsItem extends Element {
@@ -22,8 +23,8 @@ export class TableOfContentsItem extends Element {
   public pageNumber: string = '';
   public level: number = 0;
 
-  constructor(description, pageNumber, level = 0) {
-    super();
+  constructor(box: BoundingBox, description: string, pageNumber: string, level = 0) {
+    super(box);
     this.description = description;
     this.pageNumber = pageNumber;
     this.level = level;
@@ -38,16 +39,17 @@ export class TableOfContentsItem extends Element {
   }
 
   public toHTML() {
-    return '&nbsp;'.repeat(this.level).concat(this.description, ': ', this.pageNumber);
+    return '&nbsp;&nbsp;'.repeat(this.level).concat(this.description, ' - ', this.pageNumber);
   }
   public toMarkdown() {
-    return ' '.repeat(this.level).concat(`[${this.description}](#${this.toLinkableStr(this.description)})`);
+    return '  '.repeat(this.level).concat(`[${this.description}](#${this.toLinkableStr(this.description)})`);
   }
   public toString() {
-    return ' '.repeat(this.level).concat([this.description, this.pageNumber].join(' '));
+    return '  '.repeat(this.level).concat(this.description, ' - ', this.pageNumber);
   }
   private toLinkableStr(str: string): string {
     return str
+      .replace(/[^a-zA-Z\d]+/g, ' ')
       .split(' ')
       .join('-')
       .toLowerCase();
