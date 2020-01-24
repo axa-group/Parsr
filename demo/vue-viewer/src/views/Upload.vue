@@ -39,11 +39,10 @@
           solo
         ></v-select>
         <div
-          style="padding-left: 60px"
-          class="selectOptionExtractor"
+          class="selectOptionExtractor ocrParameters"
           v-if="defaultConfig.extractor.img === 'google-vision'"
         >
-          <legend><sup>*</sup>GOOGLE_APPLICATION_CREDENTIALS:</legend>
+          <legend>GOOGLE_APPLICATION_CREDENTIALS<sup>*</sup></legend>
           <input
             type="file"
             @change="googleCredentialsChanged"
@@ -53,14 +52,13 @@
           />
         </div>
         <div
-          style="padding-left: 60px; text-align: left"
-          class="selectOptionExtractor"
+          class="selectOptionExtractor ocrParameters"
           v-if="defaultConfig.extractor.img === 'ms-cognitive-services'"
         >
-          <legend><sup>*</sup>Ocp-Apim-Subscription-Key:</legend>
+          <legend>Ocp-Apim-Subscription-Key<sup>*</sup></legend>
           <input style="border-style: groove" id="MSAPIKEY" name="MSAPIKEY" v-model="msApiKey" />
 
-          <legend><sup>*</sup>Endpoint:</legend>
+          <legend>Endpoint<sup>*</sup></legend>
           <input
             style="border-style: groove"
             id="MSENDPOINT"
@@ -69,11 +67,10 @@
           />
         </div>
         <div
-          style="padding-left: 60px; text-align: left"
-          class="selectOptionExtractor"
+          class="selectOptionExtractor ocrParameters"
           v-if="defaultConfig.extractor.img === 'amazon-textract'"
         >
-          <legend><sup>*</sup>access_key_id:</legend>
+          <legend>Access_key_id<sup>*</sup></legend>
           <input
             style="border-style: groove"
             id="awsKeyId"
@@ -81,12 +78,41 @@
             v-model="awsAccessKeyId"
           />
 
-          <legend><sup>*</sup>secret_access_key:</legend>
+          <legend>Secret_access_key<sup>*</sup></legend>
           <input
             style="border-style: groove"
             id="awsSecretKey"
             name="awsSecretKey"
             v-model="awsSecretAccessKey"
+          />
+        </div>
+
+        <div
+          class="selectOptionExtractor ocrParameters"
+          v-if="defaultConfig.extractor.img === 'abbyy'"
+        >
+          <legend>Abbyy_server_url<sup>*</sup></legend>
+          <input
+            style="border-style: groove"
+            id="abbyyServerUrl"
+            name="abbyyServerUrl"
+            v-model="abbyyServerUrl"
+          />
+
+          <legend>Abbyy_server_ver<sup>*</sup></legend>
+          <input
+            style="border-style: groove"
+            id="abbyyServerVer"
+            name="abbyyServerVer"
+            v-model="abbyyServerVer"
+          />
+
+          <legend>Abbyy_server_workflow<sup>*</sup></legend>
+          <input
+            style="border-style: groove"
+            id="abbyyServerWorkflow"
+            name="abbyyServerWorkflow"
+            v-model="abbyyServerWorkflow"
           />
         </div>
       </fieldset>
@@ -145,6 +171,9 @@ export default {
       msEndpoint: 'https://westeurope.api.cognitive.microsoft.com/',
       awsAccessKeyId: null,
       awsSecretAccessKey: null,
+      abbyyServerUrl: null,
+      abbyyServerVer: null,
+      abbyyServerWorkflow: null,
       loading: false,
       processStatus: [],
       processStatusCompleted: false,
@@ -173,7 +202,9 @@ export default {
         (this.customConfig.extractor.img === 'ms-cognitive-services' &&
           !(this.msApiKey && this.msEndpoint)) ||
         (this.customConfig.extractor.img === 'amazon-textract' &&
-          !(this.awsAccessKeyId && this.awsSecretAccessKey))
+          !(this.awsAccessKeyId && this.awsSecretAccessKey)) ||
+        (this.customConfig.extractor.img === 'abbyy' &&
+          !(this.abbyyServerUrl && this.abbyyServerVer && this.abbyyServerWorkflow))
       );
     },
     /*
@@ -289,6 +320,9 @@ export default {
             msEndpoint: this.msEndpoint,
             awsAccessKeyId: this.awsAccessKeyId,
             awsSecretAccessKey: this.awsSecretAccessKey,
+            abbyyServerUrl: this.abbyyServerUrl,
+            abbyyServerVer: this.abbyyServerVer,
+            abbyyServerWorkflow: this.abbyyServerWorkflow,
           },
         })
         .then(() => {
@@ -434,5 +468,19 @@ label span {
 }
 .selectOptionExtractor div {
   min-height: auto !important;
+}
+
+.ocrParameters {
+  padding-left: 60px;
+  text-align: left;
+}
+
+.ocrParameters legend {
+  font-size: 0.8em;
+}
+.ocrParameters input {
+  font-size: 0.8em;
+  width: 230px;
+  color: rgba(0, 0, 0, 0.87);
 }
 </style>

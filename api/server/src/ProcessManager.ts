@@ -29,15 +29,20 @@ export class ProcessManager {
     docName: string,
     outputPath: string,
     credentials: {
-      googleVision: string,
+      googleVision: string;
       msCognitiveServices: {
-        apiKey: string,
-        endpoint: string,
-      },
+        apiKey: string;
+        endpoint: string;
+      };
       amazonTextract: {
-        accessKeyId: string,
-        secretAccessKey: string,
-      },
+        accessKeyId: string;
+        secretAccessKey: string;
+      };
+      abbyy: {
+        serverUrl: string;
+        serverVer: string;
+        serverWorkflow: string;
+      };
     },
   ): void {
     logger.info('Processing ' + doc);
@@ -48,9 +53,20 @@ export class ProcessManager {
     } else if (credentials.msCognitiveServices.apiKey) {
       process.env.OCP_APIM_SUBSCRIPTION_KEY = credentials.msCognitiveServices.apiKey;
       process.env.OCP_APIM_ENDPOINT = credentials.msCognitiveServices.endpoint;
-    } else if (credentials.amazonTextract.accessKeyId && credentials.amazonTextract.secretAccessKey) {
+    } else if (
+      credentials.amazonTextract.accessKeyId &&
+      credentials.amazonTextract.secretAccessKey
+    ) {
       process.env.AWS_ACCESS_KEY_ID = credentials.amazonTextract.accessKeyId;
       process.env.AWS_SECRET_ACCESS_KEY = credentials.amazonTextract.secretAccessKey;
+    } else if (
+      credentials.abbyy.serverUrl &&
+      credentials.abbyy.serverVer &&
+      credentials.abbyy.serverWorkflow
+    ) {
+      process.env.ABBYY_SERVER_URL = credentials.abbyy.serverUrl;
+      process.env.ABBYY_SERVER_VER = credentials.abbyy.serverVer;
+      process.env.ABBYY_WORKFLOW = credentials.abbyy.serverWorkflow;
     }
 
     const args: string[] = [
