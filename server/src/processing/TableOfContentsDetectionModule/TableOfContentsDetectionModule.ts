@@ -21,7 +21,7 @@ export class TableOfContentsDetectionModule extends Module {
   public static moduleName = 'table-of-contents-detection';
 
   private intersectionBoxWidthPercentage = 0.1;
-  private detectionThreshold = 0.45;
+  private detectionThreshold = 0.4;
 
   // TODO maybe handle this in a different way
   private tocKeywords = [
@@ -50,7 +50,7 @@ export class TableOfContentsDetectionModule extends Module {
       const headings = allParagraphs.filter(p => p instanceof Heading);
       if (
         tocItemCandidates.length >=
-        allParagraphs.length * this.detectionThreshold * (this.hasKeyword(headings) ? 1 : 2)
+        Math.floor(allParagraphs.length * this.detectionThreshold * (this.hasKeyword(headings) ? 1 : 2))
       ) {
         foundTOC = true;
         const toc = new TableOfContents();
