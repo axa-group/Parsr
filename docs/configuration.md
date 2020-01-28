@@ -18,7 +18,7 @@ There is only a few required keys:
 - `version` `[Number]` is the version number of the API.
 - `extractor` `[Object]` is a bunch of parameters about the extraction.
 - `cleaner` `[Array]` is a list of every cleaning tools that will be called.
-- `output` `[Object]` contains the list of fromats to export and some other details.
+- `output` `[Object]` contains the list of formats to export and some other details.
 
 Cleaning tools have default parameters that work pretty well, but you can override the parameters by providing the in the config.
 
@@ -35,7 +35,7 @@ The cleaner array may appear unconventionnal but is really easy to use. Every it
     "extractor": {                // Extraction options (See section 2.)
         "pdf": "extractor-tool",  // Select the tool to extract PDF files
         "img": "extractor-tool",  // Select the tool to extract image files (JPG, PNG, TIFF, etc.)
-        "language": "lang"        // Select the defaut language of your document. This is used to increase the accuracy of OCR tools (See section 2.2)
+        "language": "lang"        // Select the default language of your document. This is used to increase the accuracy of OCR tools (See section 2.2)
     },
     // The cleaner pipeline consists of a list of modules that will run on given file (See section 3.)
     "cleaner": [
