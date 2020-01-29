@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
+import { Line } from './Line';
 import { TableOfContentsItem } from './TableOfContentsItem';
 
 export class TableOfContents extends Element {
@@ -50,14 +52,24 @@ export class TableOfContents extends Element {
   }
 
   private updateItems() {
-    this.items = this.content.map(this.contentToTOCItem).filter(c => !!c);
+    this.items = this.splitInVerticalGroups(this.content)
+      .map(this.contentToTOCItem)
+      .filter(c => !!c);
   }
 
-  private contentToTOCItem(element: Element): TableOfContentsItem {
-    const matches = new RegExp(/(.*) (\d+)/).exec(element.toString());
+  private contentToTOCItem(elements: Element[]): TableOfContentsItem {
+    const matches = new RegExp(/([\d\.]*)([A-Za-z\s\?\’\_\.\-\–]+)([\d]*)/)
+      .exec(elements.map(e => e.toString()).join(' '));
+
     if (matches) {
-      const [, description, pageNum] = matches;
-      return new TableOfContentsItem(element.box, description, pageNum);
+      const [, section, descr, pageNum] = matches;
+      const [originalDescription, trimmedDescription] = new RegExp(/([\w\s\-\–\?]*)/g).exec(descr);
+      return new TableOfContentsItem(
+        BoundingBox.merge(elements.map(e => e.box)),
+        [section, trimmedDescription || originalDescription].filter(c => !!c).map(c => c.trim()).join(' '),
+        pageNum,
+        section ? (section.match(/\./g) || []).length : 0,
+      );
     }
     return null;
   }
@@ -68,5 +80,18 @@ export class TableOfContents extends Element {
     const width = Math.max(...this.items.map(i => i.box.right)) - left;
     const height = Math.max(...this.items.map(i => i.box.bottom)) - top;
     this.box = new BoundingBox(left, top, width, height);
+  }
+
+  private splitInVerticalGroups(content: Element[]): Element[][] {
+    const verticalGroups = {};
+    content.forEach(paragraph => {
+      (paragraph.content as Line[]).forEach(line => {
+        if (!verticalGroups[Math.round(line.box.top)]) {
+          verticalGroups[Math.round(line.box.top)] = [];
+        }
+        verticalGroups[Math.round(line.box.top)].push(line);
+      });
+    });
+    return Object.values(verticalGroups);
   }
 }

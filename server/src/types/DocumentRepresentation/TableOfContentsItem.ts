@@ -39,19 +39,18 @@ export class TableOfContentsItem extends Element {
   }
 
   public toHTML() {
-    return '&nbsp;&nbsp;'.repeat(this.level).concat(this.description, ' - ', this.pageNumber);
+    return '&nbsp;&nbsp;'
+      .repeat(this.level)
+      .concat(`${this.description}${this.pageNumber ? ' - '.concat(this.pageNumber) : ''}`);
   }
+
   public toMarkdown() {
-    return '  '.repeat(this.level).concat(`[${this.description}](#${this.toLinkableStr(this.description)})`);
+    return this.toString();
   }
+
   public toString() {
-    return '  '.repeat(this.level).concat(this.description, ' - ', this.pageNumber);
-  }
-  private toLinkableStr(str: string): string {
-    return str
-      .replace(/[^a-zA-Z\d]+/g, ' ')
-      .split(' ')
-      .join('-')
-      .toLowerCase();
+    return '  '
+      .repeat(this.level)
+      .concat(`${this.description}${this.pageNumber ? ' - '.concat(this.pageNumber) : ''}`);
   }
 }
