@@ -77,8 +77,10 @@ export class TableOfContentsDetectionModule extends Module {
   }
 
   private isNumber(word: Word): boolean {
-    const validNumbers = new RegExp(/[0-9]+$/);
-    return validNumbers.test(word.toString());
+    const decimalNumbers = new RegExp(/[0-9]+$/);
+    const romanNumbers = new RegExp(/^[ivxlcdmIVXLCDM]+$/);
+    const w = word.toString();
+    return decimalNumbers.test(w) || romanNumbers.test(w);
   }
 
   private isSeparator(word: Word): boolean {
