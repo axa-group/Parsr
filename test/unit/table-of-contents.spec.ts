@@ -28,8 +28,11 @@ const assetsDir = __dirname + '/assets/';
 describe('Table of Contents Detection Module', () => {
   withData(
     {
-      'one paragraph per TOC Item': [
+      'one TOC Item per paragraph': [
         '2_1_185_CarPolicyWording-3.json', 21,
+      ],
+      'multiple TOC Items per paragraph': [
+        '756_pages-3-5.json', 49,
       ],
     },
     (fileName, tocItemCount) => {
