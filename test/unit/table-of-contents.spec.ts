@@ -46,9 +46,8 @@ describe('Table of Contents Detection Module', () => {
 
         docBefore = json2document(json);
         docBefore.inputFile = assetsDir + fileName;
-        const tableOfContentsDetectionModule = new TableOfContentsDetectionModule();
-        runModules(docBefore, [tableOfContentsDetectionModule]).then(after => {
-          toc = after.getElementsOfType<TableOfContents>(TableOfContents)[0];
+        runModules(docBefore, [new TableOfContentsDetectionModule()]).then(after => {
+          [toc] = after.getElementsOfType<TableOfContents>(TableOfContents);
           done();
         });
       });
@@ -58,4 +57,41 @@ describe('Table of Contents Detection Module', () => {
       });
     },
   );
+
+  withData(
+    {
+      '(1) document with no Table of Contents': [
+        'testReadingOrder.json',
+      ],
+      '(2) document with no Table of Contents': [
+        'paragraph-merge-2.json',
+      ],
+      '(3) document with no Table of Contents': [
+        'paragraph-merge-3.json',
+      ],
+      '(4) document with no Table of Contents': [
+        'paragraph-merge-5.json',
+      ],
+    },
+    (fileName) => {
+      let docBefore: Document;
+      let toc: TableOfContents;
+
+      before(done => {
+        const json = JSON.parse(
+          fs.readFileSync(assetsDir + fileName, { encoding: 'utf8' }),
+        );
+
+        docBefore = json2document(json);
+        docBefore.inputFile = assetsDir + fileName;
+        runModules(docBefore, [new TableOfContentsDetectionModule()]).then(after => {
+          [toc] = after.getElementsOfType<TableOfContents>(TableOfContents);
+          done();
+        });
+      });
+      it('document should not have a TOC', () => {
+        // tslint:disable-next-line: no-unused-expression
+        expect(toc).to.be.undefined;
+      });
+    });
 });

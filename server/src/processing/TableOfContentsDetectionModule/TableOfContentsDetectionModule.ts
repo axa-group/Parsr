@@ -49,6 +49,7 @@ export class TableOfContentsDetectionModule extends Module {
       */
       const headings = allParagraphs.filter(p => p instanceof Heading);
       if (
+        tocItemCandidates.length > 0 &&
         tocItemCandidates.length >=
         Math.floor(allParagraphs.length * this.detectionThreshold * (this.hasKeyword(headings) ? 1 : 2))
       ) {
