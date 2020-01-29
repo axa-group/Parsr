@@ -56,7 +56,7 @@ export class TableOfContentsDetectionModule extends Module {
         foundTOC = true;
         const toc = new TableOfContents();
         toc.content = tocItemCandidates;
-        page.elements = page.elements.filter(e => !tocItemCandidates.map(t => t.id).includes(e.id));
+        page.elements = page.elements.filter(e => !toc.items.map(t => t.id).includes(e.id));
         page.elements.push(toc);
       } else {
         previousPageHadTOC = false;
