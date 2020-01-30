@@ -20,6 +20,9 @@ const detectionMethods = {
 
     return wordsInsideIntersection.filter(isNumber).length > Math.floor(wordsInsideIntersection.length * 0.5);
   },
+  hasPageNKeyword: (p: Paragraph): boolean => {
+    return new RegExp(/^pag.* (\d+) (.+)/gi).test(p.toString());
+  },
 };
 
 // TODO maybe handle this in a different way
@@ -35,7 +38,7 @@ const tocKeywords = [
 
 function isNumber(word: Word): boolean {
   const decimalNumbers = new RegExp(/[0-9]+$/);
-  const romanNumbers = new RegExp(/^[ivxlcdmIVXLCDM]+$/);
+  const romanNumbers = new RegExp(/^[ivxlcdm]+$/i);
   const w = word.toString();
   return decimalNumbers.test(w) || romanNumbers.test(w);
 }

@@ -34,3 +34,4 @@ export * from './Line';
 export * from './Barcode';
 export * from './JsonExport';
 export * from './TableOfContents';
+export * from './TableOfContentsItem';

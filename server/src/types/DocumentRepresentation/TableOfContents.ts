@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { reconstructTOCItem } from '../../processing/TableOfContentsDetectionModule/reconstruction-methods';
 import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
 import { Line } from './Line';
@@ -59,21 +60,13 @@ export class TableOfContents extends Element {
 
   private contentToTOCItem(elements: Element[]): TableOfContentsItem {
     // detects and removes possible separation chains
-    const text = elements.map(e => e.toString()).join(' ').replace(/(\.{2,}|\.\s|\s\.)/g, ' ');
-
-    // reconstruction regexp as: <section?> <description> <page number?>
-    const matches = new RegExp(/([\d\.]*)(.*) ([\d\-]*)/).exec(text);
-    if (matches) {
-      const [, section, description, pageNum] = matches;
-      return new TableOfContentsItem(
-        BoundingBox.merge(elements.map(e => e.box)),
-        [section, description].filter(c => !!c).map(c => c.trim()).join(' '),
-        pageNum,
-        // TOC item level is based on the amount of dots in the section number
-        section ? (section.match(/\./g) || []).length : 0,
-      );
-    }
-    return null;
+    const text = elements
+      .map(e => e.toString())
+      .join(' ')
+      .replace(/(\.{2,}|\.\s|\s\.)/g, ' ')
+      .replace(/ +/g, ' ');
+    const bbox = BoundingBox.merge(elements.map(e => e.box));
+    return reconstructTOCItem(text, bbox);
   }
 
   private updateBoundingBox() {

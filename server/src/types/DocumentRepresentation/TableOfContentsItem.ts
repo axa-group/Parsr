@@ -23,7 +23,7 @@ export class TableOfContentsItem extends Element {
   public pageNumber: string = '';
   public level: number = 0;
 
-  constructor(box: BoundingBox, description: string, pageNumber: string, level = 0) {
+  constructor(box: BoundingBox, description: string, pageNumber?: string, level = 0) {
     super(box);
     this.description = description;
     this.pageNumber = pageNumber;
