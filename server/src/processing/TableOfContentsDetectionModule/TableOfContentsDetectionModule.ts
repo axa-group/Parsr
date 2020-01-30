@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-import { BoundingBox, Document, Heading, Paragraph, TableOfContents, Word } from '../../types/DocumentRepresentation';
+import { Document, Heading, Paragraph, TableOfContents } from '../../types/DocumentRepresentation';
 import { Module } from '../Module';
+import * as detection from './detection-methods';
 
 export class TableOfContentsDetectionModule extends Module {
   public static moduleName = 'table-of-contents-detection';
-
-  private intersectionBoxWidthPercentage = 0.1;
-  private detectionThreshold = 0.4;
 
   // TODO maybe handle this in a different way
   private tocKeywords = [
@@ -42,7 +40,7 @@ export class TableOfContentsDetectionModule extends Module {
 
       const allParagraphs = page.getElementsOfType<Paragraph>(Paragraph, false)
         .filter(e => !e.properties.isFooter && !e.properties.isHeader);
-      const tocItemCandidates = allParagraphs.filter(this.endsWithNumber.bind(this));
+      const tocItemCandidates = allParagraphs.filter(detection.endsWithNumber);
 
       /*
         - if the page doesn't have any 'TOC' keywords, the detection threshold is increased to avoid false positives.
@@ -53,7 +51,7 @@ export class TableOfContentsDetectionModule extends Module {
         tocItemCandidates.length > 0 &&
         tocItemCandidates.length >=
         Math.floor(allParagraphs.length
-          * this.detectionThreshold
+          * detection.threshold
           * (this.hasKeyword(headings) ? 1 : 1.25)
           * Math.pow(1.05, pagesSinceLastTOC))
       ) {
@@ -69,29 +67,6 @@ export class TableOfContentsDetectionModule extends Module {
     }
 
     return doc;
-  }
-
-  private endsWithNumber(e: Paragraph): boolean {
-    const w = e.width * this.intersectionBoxWidthPercentage;
-    const intersectionBox = new BoundingBox(e.right - w, e.top, w, e.height);
-    const wordsInsideIntersection =
-      e.getWords()
-        .filter(word => BoundingBox.getOverlap(word.box, intersectionBox).box1OverlapProportion > 0)
-        .filter(word => !this.isSeparator(word));
-
-    return wordsInsideIntersection.filter(this.isNumber).length > Math.floor(wordsInsideIntersection.length * 0.5);
-  }
-
-  private isNumber(word: Word): boolean {
-    const decimalNumbers = new RegExp(/[0-9]+$/);
-    const romanNumbers = new RegExp(/^[ivxlcdmIVXLCDM]+$/);
-    const w = word.toString();
-    return decimalNumbers.test(w) || romanNumbers.test(w);
-  }
-
-  private isSeparator(word: Word): boolean {
-    const separators = new RegExp(/^[-. ]+$/);
-    return separators.test(word.toString().trim());
   }
 
   private hasKeyword(pageParagraphs: Paragraph[]): boolean {
