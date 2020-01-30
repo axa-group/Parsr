@@ -21,17 +21,6 @@ import * as detection from './detection-methods';
 export class TableOfContentsDetectionModule extends Module {
   public static moduleName = 'table-of-contents-detection';
 
-  // TODO maybe handle this in a different way
-  private tocKeywords = [
-    'contents',
-    'index',
-    'table of contents',
-    'contenidos',
-    'indice',
-    'índice',
-    'tabla de contenidos',
-  ];
-
   public main(doc: Document): Document {
     let foundTOC = false;
     let pagesSinceLastTOC = 0;
@@ -40,25 +29,25 @@ export class TableOfContentsDetectionModule extends Module {
 
       const allParagraphs = page.getElementsOfType<Paragraph>(Paragraph, false)
         .filter(e => !e.properties.isFooter && !e.properties.isHeader);
-      const tocItemCandidates = allParagraphs.filter(detection.endsWithNumber);
 
+      const tocItemParagraphs = allParagraphs.filter(detection.TOCDetected);
       /*
         - if the page doesn't have any 'TOC' keywords, the detection threshold is increased to avoid false positives.
         - the detection threshold is increased a little if the previous page didn't have a TOC.
       */
       const headings = allParagraphs.filter(p => p instanceof Heading);
       if (
-        tocItemCandidates.length > 0 &&
-        tocItemCandidates.length >=
+        tocItemParagraphs.length > 0 &&
+        tocItemParagraphs.length >=
         Math.floor(allParagraphs.length
           * detection.threshold
-          * (this.hasKeyword(headings) ? 1 : 1.25)
+          * (detection.hasKeyword(headings) ? 1 : 1.25)
           * Math.pow(1.05, pagesSinceLastTOC))
       ) {
         foundTOC = true;
         const toc = new TableOfContents();
-        toc.content = tocItemCandidates;
-        page.elements = page.elements.filter(e => !tocItemCandidates.map(t => t.id).includes(e.id));
+        toc.content = tocItemParagraphs;
+        page.elements = page.elements.filter(e => !tocItemParagraphs.map(t => t.id).includes(e.id));
         page.elements.push(toc);
         pagesSinceLastTOC = 0;
       } else {
@@ -67,10 +56,5 @@ export class TableOfContentsDetectionModule extends Module {
     }
 
     return doc;
-  }
-
-  private hasKeyword(pageParagraphs: Paragraph[]): boolean {
-    const rawText = pageParagraphs.map(p => p.toString()).join(' ');
-    return this.tocKeywords.some(k => rawText.toLowerCase().includes(k.toLowerCase()));
   }
 }
