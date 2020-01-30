@@ -232,6 +232,8 @@ export class JsonExporter extends Exporter {
             jsonElement.font = this.fontCatalog.get(wordFont[0]);
           }
         }
+      } else if (element instanceof Heading) {
+        jsonElement.level = element.level;
       }
     } else if (element instanceof List) {
       jsonElement.isOrdered = element.isOrdered;

@@ -1,6 +1,7 @@
 <template>
   <div id="nav">
     <span class="brand">
+      <img :src="logoIcon" />
       <span>Parsr</span>
     </span>
 
@@ -28,6 +29,7 @@
 import NavItem from '@/components/NavBarItem.vue';
 import SearchIcon from '@/assets/search.png';
 import GuideIcon from '@/assets/guide.png';
+import Logo from '@/assets/logo.png';
 
 export default {
   components: { NavItem },
@@ -35,6 +37,7 @@ export default {
     return {
       searchIcon: SearchIcon,
       guideIcon: GuideIcon,
+      logoIcon: Logo,
     };
   },
   methods: {
@@ -53,9 +56,11 @@ export default {
 }
 #nav .brand span {
   font-weight: bold;
-  font-size: 2em;
+  font-family: auto;
+  font-size: 2.5em;
   color: #00008a;
   margin: 0 0 0 0.3em;
+  line-height: 1em;
 }
 #nav .brand * {
   vertical-align: middle;
