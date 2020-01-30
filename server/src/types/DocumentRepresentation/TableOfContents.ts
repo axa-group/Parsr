@@ -58,16 +58,18 @@ export class TableOfContents extends Element {
   }
 
   private contentToTOCItem(elements: Element[]): TableOfContentsItem {
-    const matches = new RegExp(/([\d\.]*)([A-Za-z\s\?\’\_\.\-\–]+)([\d]*)/)
-      .exec(elements.map(e => e.toString()).join(' '));
+    // detects and removes possible separation chains
+    const text = elements.map(e => e.toString()).join(' ').replace(/(\.{2,}|\.\s|\s\.)/g, ' ');
 
+    // reconstruction regexp as: <section?> <description> <page number?>
+    const matches = new RegExp(/([\d\.]*)(.*) ([\d]*)/).exec(text);
     if (matches) {
-      const [, section, descr, pageNum] = matches;
-      const [originalDescription, trimmedDescription] = new RegExp(/([\w\s\-\–\?]*)/g).exec(descr);
+      const [, section, description, pageNum] = matches;
       return new TableOfContentsItem(
         BoundingBox.merge(elements.map(e => e.box)),
-        [section, trimmedDescription || originalDescription].filter(c => !!c).map(c => c.trim()).join(' '),
+        [section, description].filter(c => !!c).map(c => c.trim()).join(' '),
         pageNum,
+        // TOC item level is based on the amount of dots in the section number
         section ? (section.match(/\./g) || []).length : 0,
       );
     }
