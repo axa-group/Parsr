@@ -36,8 +36,8 @@ export class TableOfContentsDetectionModule extends Module {
 
   public main(doc: Document): Document {
     let foundTOC = false;
-    let previousPageHadTOC = true;
-    for (let i = 0; i <= doc.pages.length - 1 && (!foundTOC || previousPageHadTOC); i++) {
+    let pagesSinceLastTOC = 0;
+    for (let i = 0; i <= doc.pages.length - 1 && (!foundTOC || pagesSinceLastTOC < 5); i++) {
       const page = doc.pages[i];
 
       const allParagraphs = page.getElementsOfType<Paragraph>(Paragraph, false)
@@ -46,20 +46,25 @@ export class TableOfContentsDetectionModule extends Module {
 
       /*
         - if the page doesn't have any 'TOC' keywords, the detection threshold is increased to avoid false positives.
+        - the detection threshold is increased a little if the previous page didn't have a TOC.
       */
       const headings = allParagraphs.filter(p => p instanceof Heading);
       if (
         tocItemCandidates.length > 0 &&
         tocItemCandidates.length >=
-        Math.floor(allParagraphs.length * this.detectionThreshold * (this.hasKeyword(headings) ? 1 : 2))
+        Math.floor(allParagraphs.length
+          * this.detectionThreshold
+          * (this.hasKeyword(headings) ? 1 : 1.25)
+          * Math.pow(1.05, pagesSinceLastTOC))
       ) {
         foundTOC = true;
         const toc = new TableOfContents();
         toc.content = tocItemCandidates;
         page.elements = page.elements.filter(e => !tocItemCandidates.map(t => t.id).includes(e.id));
         page.elements.push(toc);
+        pagesSinceLastTOC = 0;
       } else {
-        previousPageHadTOC = false;
+        pagesSinceLastTOC++;
       }
     }
 
@@ -74,7 +79,7 @@ export class TableOfContentsDetectionModule extends Module {
         .filter(word => BoundingBox.getOverlap(word.box, intersectionBox).box1OverlapProportion > 0)
         .filter(word => !this.isSeparator(word));
 
-    return wordsInsideIntersection.filter(this.isNumber).length > Math.floor(wordsInsideIntersection.length * 0.8);
+    return wordsInsideIntersection.filter(this.isNumber).length > Math.floor(wordsInsideIntersection.length * 0.5);
   }
 
   private isNumber(word: Word): boolean {
