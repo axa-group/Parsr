@@ -62,7 +62,7 @@ export class TableOfContents extends Element {
     const text = elements.map(e => e.toString()).join(' ').replace(/(\.{2,}|\.\s|\s\.)/g, ' ');
 
     // reconstruction regexp as: <section?> <description> <page number?>
-    const matches = new RegExp(/([\d\.]*)(.*) ([\d]*)/).exec(text);
+    const matches = new RegExp(/([\d\.]*)(.*) ([\d\-]*)/).exec(text);
     if (matches) {
       const [, section, description, pageNum] = matches;
       return new TableOfContentsItem(
