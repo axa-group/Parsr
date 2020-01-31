@@ -34,8 +34,23 @@ const reconstructionMethods = {
     }
     return null;
   },
-  // <section?> <description> <page number?>
+  // <section?> <description> <page as roman numbers?>
   method_2: (text: string, bbox: BoundingBox): TableOfContentsItem => {
+    const matches = new RegExp(/^([\d\.]*)(.*) ([ivxlcdm]*)$/i).exec(text);
+    if (matches) {
+      const [, section, description, pageNum] = matches;
+      return new TableOfContentsItem(
+        bbox,
+        [section, description].filter(c => !!c).map(c => c.trim()).join(' '),
+        pageNum,
+        // TOC item level is based on the amount of dots in the section number
+        section ? (section.match(/\./g) || []).length : 0,
+      );
+    }
+    return null;
+  },
+  // <section?> <description> <page number?>
+  method_3: (text: string, bbox: BoundingBox): TableOfContentsItem => {
     const matches = new RegExp(/^([\d\.]*)(.*) ([\d\-]*)$/).exec(text);
     if (matches) {
       const [, section, description, pageNum] = matches;
