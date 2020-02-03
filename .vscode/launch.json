@@ -13,7 +13,7 @@
       "sourceMaps": true,
       "args": [
         "-f",
-        "/Users/mrodriguez/Documents/table_of_contents/icann-1-4.pdf",
+        "${workspaceRoot}/samples/README.pdf",
         "-o",
         "${workspaceRoot}/tmp",
         "-n",
