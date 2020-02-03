@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,8 @@ import {
 } from '../../types/DocumentRepresentation';
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import { SvgShape } from '../../types/DocumentRepresentation/SvgShape';
+import { TableOfContents } from '../../types/DocumentRepresentation/TableOfContents';
+import { TableOfContentsItem } from '../../types/DocumentRepresentation/TableOfContentsItem';
 import { ComplexMetadata, Metadata, NumberMetadata } from '../../types/Metadata';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
@@ -267,6 +269,12 @@ export class JsonExporter extends Exporter {
       jsonElement.refId = element.refId;
       jsonElement.xObjId = element.xObjId;
       jsonElement.xObjExt = element.xObjExt;
+    } else if (element instanceof Heading) {
+      jsonElement.level = element.level;
+    } else if (element instanceof TableOfContents) {
+      jsonElement.content = element.content.map(elem => this.elementToJsonElement(elem));
+    } else if (element instanceof TableOfContentsItem) {
+      jsonElement.content = element.toString();
     }
 
     return jsonElement;

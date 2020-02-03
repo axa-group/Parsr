@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,6 +79,8 @@ export interface JsonElement {
   properties?: JsonProperties;
   metadata?: number[];
   level?: number;
+  description?: string;
+  pageNumber?: string;
 }
 
 export type JsonProperties = Properties;

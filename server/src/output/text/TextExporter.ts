@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 
 import { Document, List, Paragraph, Table } from '../../types/DocumentRepresentation';
+import { TableOfContents } from '../../types/DocumentRepresentation/TableOfContents';
 import { Exporter } from '../Exporter';
 
 export class TextExporter extends Exporter {
@@ -42,6 +43,8 @@ export class TextExporter extends Exporter {
         if (element instanceof Paragraph) {
           output = output.concat(element.toString());
         } else if (element instanceof List) {
+          output = output.concat(element.toString());
+        } else if (element instanceof TableOfContents) {
           output = output.concat(element.toString());
         } else if (element instanceof Table) {
           element.content.forEach(tableRow => {
