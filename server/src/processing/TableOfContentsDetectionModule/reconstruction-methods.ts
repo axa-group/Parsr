@@ -16,19 +16,22 @@
 
 import { BoundingBox, TableOfContentsItem } from './../../types/DocumentRepresentation';
 
-export function reconstructTOCItem(text: string, bbox: BoundingBox): TableOfContentsItem {
-  return Object.values(reconstructionMethods).map(method => method(text, bbox)).filter(r => !!r)[0];
+export function reconstructTOCItem(text: string, bbox: BoundingBox, pageKeywords: string[]): TableOfContentsItem {
+  return Object.values(reconstructionMethods)
+    .map(method => method(text, bbox, pageKeywords))
+    .filter(r => !!r)[0];
 }
 
 const reconstructionMethods = {
   // Page <page number> <description>
-  method_1: (text: string, bbox: BoundingBox): TableOfContentsItem => {
-    const matches = new RegExp(/^page (\d+) (.+)/gi).exec(text);
+  method_1: (text: string, bbox: BoundingBox, pageKeywords: string[]): TableOfContentsItem => {
+    const regexp = `^(?:${pageKeywords.join('|')}) (\\d+) (.+)`;
+    const matches = new RegExp(regexp, 'gi').exec(text);
     if (matches) {
       const [, pageNum, description] = matches;
       return new TableOfContentsItem(
         bbox,
-        description.trim(),
+        description ? description.trim() : '',
         pageNum,
       );
     }

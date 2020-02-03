@@ -31,6 +31,14 @@ export class TableOfContents extends Element {
     this.updateBoundingBox();
   }
 
+  public get pageKeywords(): string[] {
+    return this._pageKeywords;
+  }
+
+  public set pageKeywords(pageKeywords: string[]) {
+    this._pageKeywords = pageKeywords;
+  }
+
   public get items(): TableOfContentsItem[] {
     return this._items;
   }
@@ -41,12 +49,13 @@ export class TableOfContents extends Element {
 
   private _items: TableOfContentsItem[] = [];
   private _content: Element[] = [];
+  private _pageKeywords: string[] = ['pag'];
 
   public toHTML() {
     return this.items.map(c => c.toHTML()).join('<br>');
   }
   public toMarkdown() {
-    return this.items.map(c => c.toMarkdown()).join('\n');
+    return this.items.map(c => c.toMarkdown()).join('  \n');
   }
   public toString() {
     return this.items.map(c => c.toString()).join('\n');
@@ -54,11 +63,11 @@ export class TableOfContents extends Element {
 
   private updateItems() {
     this.items = this.splitInVerticalGroups(this.content)
-      .map(this.contentToTOCItem)
+      .map(g => this.contentToTOCItem(g, this.pageKeywords))
       .filter(c => !!c);
   }
 
-  private contentToTOCItem(elements: Element[]): TableOfContentsItem {
+  private contentToTOCItem(elements: Element[], pageKeywords: string[]): TableOfContentsItem {
     // detects and removes possible separation chains
     const text = elements
       .map(e => e.toString())
@@ -66,7 +75,7 @@ export class TableOfContents extends Element {
       .replace(/(\.{2,}|\.\s|\s\.)/g, ' ')
       .replace(/ +/g, ' ');
     const bbox = BoundingBox.merge(elements.map(e => e.box));
-    return reconstructTOCItem(text, bbox);
+    return reconstructTOCItem(text, bbox, pageKeywords);
   }
 
   private updateBoundingBox() {

@@ -18,8 +18,8 @@ import { BoundingBox, Paragraph, Word } from './../../types/DocumentRepresentati
 
 export const threshold = 0.4;
 
-export function TOCDetected(p: Paragraph): boolean {
-  return Object.values(detectionMethods).some(method => method(p));
+export function TOCDetected(p: Paragraph, pageKeywords: string[]): boolean {
+  return Object.values(detectionMethods).some(method => method(p, pageKeywords));
 }
 
 const detectionMethods = {
@@ -36,21 +36,11 @@ const detectionMethods = {
 
     return wordsInsideIntersection.filter(isNumber).length > Math.floor(wordsInsideIntersection.length * 0.5);
   },
-  hasPageNKeyword: (p: Paragraph): boolean => {
-    return new RegExp(/^pag.* (\d+) (.+)/gi).test(p.toString());
+  hasPageNKeyword: (p: Paragraph, pageKeywords: string[]): boolean => {
+    const regexp = `^(${pageKeywords.join('|')}).* (\\d+) (.+)`;
+    return new RegExp(regexp, 'gi').test(p.toString());
   },
 };
-
-// TODO maybe handle this in a different way
-const tocKeywords = [
-  'contents',
-  'index',
-  'table of contents',
-  'contenidos',
-  'indice',
-  'índice',
-  'tabla de contenidos',
-];
 
 function isNumber(word: Word): boolean {
   const decimalNumbers = new RegExp(/[0-9]+$/);
@@ -64,7 +54,7 @@ function isSeparator(word: Word): boolean {
   return separators.test(word.toString().trim());
 }
 
-export function hasKeyword(pageParagraphs: Paragraph[]): boolean {
+export function hasKeyword(pageParagraphs: Paragraph[], keywords: string[]): boolean {
   const rawText = pageParagraphs.map(p => p.toString()).join(' ');
-  return tocKeywords.some(k => rawText.toLowerCase().includes(k.toLowerCase()));
+  return keywords.some(k => rawText.toLowerCase().includes(k.toLowerCase()));
 }

@@ -16,10 +16,22 @@
 
 import { Document, Heading, Paragraph, TableOfContents } from '../../types/DocumentRepresentation';
 import { Module } from '../Module';
+import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
 
-export class TableOfContentsDetectionModule extends Module {
+interface Options {
+  keywords?: string[];
+  pageKeywords?: string[];
+}
+
+const defaultOptions = (defaultConfig as any) as Options;
+
+export class TableOfContentsDetectionModule extends Module<Options> {
   public static moduleName = 'table-of-contents-detection';
+
+  constructor(options?: Options) {
+    super(options, defaultOptions);
+  }
 
   public main(doc: Document): Document {
     let foundTOC = false;
@@ -30,7 +42,7 @@ export class TableOfContentsDetectionModule extends Module {
       const allParagraphs = page.getElementsOfType<Paragraph>(Paragraph, false)
         .filter(e => !e.properties.isFooter && !e.properties.isHeader);
 
-      const tocItemParagraphs = allParagraphs.filter(detection.TOCDetected);
+      const tocItemParagraphs = allParagraphs.filter(p => detection.TOCDetected(p, this.options.pageKeywords));
       /*
         - if the page doesn't have any 'TOC' keywords, the detection threshold is increased to avoid false positives.
         - the detection threshold is increased a little if the previous page didn't have a TOC.
@@ -41,11 +53,12 @@ export class TableOfContentsDetectionModule extends Module {
         tocItemParagraphs.length >=
         Math.floor(allParagraphs.length
           * detection.threshold
-          * (detection.hasKeyword(headings) ? 1 : 1.25)
+          * (detection.hasKeyword(headings, this.options.keywords || []) ? 1 : 1.25)
           * Math.pow(1.05, pagesSinceLastTOC))
       ) {
         foundTOC = true;
         const toc = new TableOfContents();
+        toc.pageKeywords = this.options.pageKeywords;
         toc.content = tocItemParagraphs;
         page.elements = page.elements.filter(e => !tocItemParagraphs.map(t => t.id).includes(e.id));
         page.elements.push(toc);
