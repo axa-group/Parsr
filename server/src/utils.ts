@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import {
   spawnSync as spawnSyncChildProcess,
 } from 'child_process';
 import * as concaveman from 'concaveman';
+import HTMLToPDF from 'convert-html-to-pdf';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as os from 'os';
@@ -473,7 +474,7 @@ export function removeNull(page: Page): Page {
   if (page.elements.length - newElements.length !== 0) {
     logger.debug(
       `Null elements removed for page #${page.pageNumber}: ${page.elements.length -
-        newElements.length}`,
+      newElements.length}`,
     );
     page.elements = newElements;
   }
@@ -507,11 +508,11 @@ export function getPageRegex(): RegExp {
 
   const pageRegex = new RegExp(
     `^(?:` +
-      `(?:${pagePrefix}${pageNumber})|` +
-      `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
-      `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
-      `(?:${before}${pageNumber}${after})` +
-      `)$`,
+    `(?:${pagePrefix}${pageNumber})|` +
+    `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
+    `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
+    `(?:${before}${pageNumber}${after})` +
+    `)$`,
     'i',
   );
 
@@ -904,4 +905,33 @@ export function mergePDFs(files: string[], output: string): Promise<string> {
       );
     }
   });
+}
+
+export async function convertHTMLToPDF(html: string, outputFile?: string): Promise<string> {
+  let mainPDF = getTemporaryFile('.pdf');
+  if (outputFile) {
+    mainPDF = outputFile;
+  }
+  const toPDF = new HTMLToPDF(
+    html,
+    {
+      browserOptions: {
+        args: ['--no-sandbox', '--font-render-hinting=none'],
+      },
+      pdfOptions: {
+        width: '210mm',
+        height: '297mm',
+        margin: {
+          top: '10mm',
+          bottom: '10mm',
+          left: '10mm',
+          right: '10mm',
+        },
+      },
+    },
+  );
+
+  const pdfBuffer: Buffer = await toPDF.convert();
+  fs.writeFileSync(mainPDF, pdfBuffer);
+  return mainPDF;
 }
