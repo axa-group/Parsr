@@ -48,7 +48,8 @@ export class ApiServer {
   });
 
   private allowedMimetypes: string[] = [
-    'message/rfc822', // need to check if there can be more than one "message/xxxx"
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+    'message/rfc822', // .eml
     'application/pdf',
     'application/xml',
     'text/xml',
@@ -471,9 +472,11 @@ export class ApiServer {
 
     // if its an .eml, we have to change the binder extension to match the generated PDF
     // in Email Extractor and get the thumbnails of that PDF file
-    if (binder.input.endsWith('.eml')) {
-      binder.input = binder.input.replace('.eml', '-tmp.pdf');
-    }
+    ['.eml', '.docx'].forEach(ext => {
+      if (binder.input.endsWith(ext)) {
+        binder.input = binder.input.replace(ext, '-tmp.pdf');
+      }
+    });
 
     const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(binder.input));
 

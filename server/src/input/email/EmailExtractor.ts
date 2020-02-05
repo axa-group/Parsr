@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import HTMLToPDF from 'convert-html-to-pdf';
 import { readFileSync, writeFileSync } from 'fs';
 import { simpleParser } from 'mailparser';
 import { Document } from '../../types/DocumentRepresentation';
 import { Extractor } from '../Extractor';
-import { CommandExecuter, getPdfExtractor, getTemporaryFile, mergePDFs } from './../../utils';
+import { CommandExecuter, convertHTMLToPDF, getPdfExtractor, getTemporaryFile, mergePDFs } from './../../utils';
 
 interface MailAttachmentData {
   type: string;
@@ -40,7 +39,6 @@ export class EmailExtractor extends Extractor {
   public async run(inputFile: string): Promise<Document> {
     const fullPDF = await this.convertEMLtoPDF(inputFile);
     const mainDocument: Document = await getPdfExtractor(this.config).run(fullPDF);
-    mainDocument.inputFile = fullPDF;
     return mainDocument;
   }
 
@@ -64,30 +62,7 @@ export class EmailExtractor extends Extractor {
     try {
       const data = readFileSync(inputFile);
       const raw = await simpleParser(data);
-
-      const mainPDF = getTemporaryFile('.pdf');
-      const toPDF = new HTMLToPDF(
-        (raw.html || '').concat(styles),
-        {
-          browserOptions: {
-            args: ['--no-sandbox', '--font-render-hinting=none'],
-          },
-          pdfOptions: {
-            width: page.width,
-            height: page.height,
-            margin: {
-              top: '10mm',
-              bottom: '10mm',
-              left: '10mm',
-              right: '10mm',
-            },
-          },
-        },
-      );
-
-      const pdfBuffer: Buffer = await toPDF.convert();
-      writeFileSync(mainPDF, pdfBuffer);
-
+      const mainPDF = convertHTMLToPDF((raw.html || '').concat(styles));
       const pdfFilesToJoin: Array<Promise<string>> = [
         mainPDF,
         ...(raw.attachments || []).map(this.attachmentToPDF.bind(this)(raw.html)),
