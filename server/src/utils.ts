@@ -912,6 +912,9 @@ export async function convertHTMLToPDF(html: string, outputFile?: string): Promi
   if (outputFile) {
     mainPDF = outputFile;
   }
+
+  html = embedImagesInHTML(html);
+
   const toPDF = new HTMLToPDF(
     html,
     {
@@ -919,19 +922,37 @@ export async function convertHTMLToPDF(html: string, outputFile?: string): Promi
         args: ['--no-sandbox', '--font-render-hinting=none'],
       },
       pdfOptions: {
+        path: mainPDF,
         width: '210mm',
         height: '297mm',
         margin: {
-          top: '10mm',
-          bottom: '10mm',
-          left: '10mm',
-          right: '10mm',
+          top: '5mm',
+          bottom: '5mm',
+          left: '5mm',
+          right: '5mm',
         },
       },
     },
   );
 
-  const pdfBuffer: Buffer = await toPDF.convert();
-  fs.writeFileSync(mainPDF, pdfBuffer);
+  await toPDF.convert();
   return mainPDF;
+}
+
+// converts the image tags in the HTML with absolute paths to tags with the data as base64
+function embedImagesInHTML(html: string): string {
+  const regexp = new RegExp(/<img src="(\/.*?)"\s(?:style=.*?)*?\s\/>/);
+  let match = null;
+  // tslint:disable-next-line: no-conditional-assignment
+  while ((match = regexp.exec(html)) !== null) {
+    const imagePath = match[1];
+
+    const extension = path.extname(imagePath);
+    let base64 = '';
+    if (fs.existsSync(imagePath)) {
+      base64 = Buffer.from(fs.readFileSync(imagePath)).toString('base64');
+    }
+    html = html.replace(imagePath, `data:image/${extension};base64,${base64}`);
+  }
+  return html;
 }

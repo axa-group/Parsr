@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { dirname } from 'path';
 import { Document } from '../../types/DocumentRepresentation';
 import { CommandExecuter, convertHTMLToPDF, getPdfExtractor } from '../../utils';
 import { Extractor } from '../Extractor';
@@ -22,27 +23,29 @@ export class DocxExtractor extends Extractor {
   public async run(inputFile: string): Promise<Document> {
     const fullPDF = await this.convertDocxToPDF(inputFile, inputFile.replace('.docx', '-tmp.pdf'));
     const mainDocument: Document = await getPdfExtractor(this.config).run(fullPDF);
-    mainDocument.inputFile = fullPDF;
     return mainDocument;
   }
 
   private async convertDocxToPDF(inputFile: string, outputFile: string): Promise<string> {
-    return CommandExecuter.run(CommandExecuter.COMMANDS.PANDOC, [
+    const assetsFolder = dirname(inputFile);
+    const html = await CommandExecuter.run(CommandExecuter.COMMANDS.PANDOC, [
       inputFile,
+      '--extract-media',
+      assetsFolder,
       '-t',
       'html5',
-    ]).then((html) => {
-      return convertHTMLToPDF(`
-        <style>
-        body, html {
-          height: 210mm !important;
-          width: 297mm !important;
-        }
-        table {
-          width: 100% !important;
-        }
-        </style>
+    ]);
+
+    return convertHTMLToPDF(`
+      <style>
+      body, html {
+        height: 210mm !important;
+        width: 297mm !important;
+      }
+      table {
+        width: 100% !important;
+      }
+      </style>
       `.concat(html), outputFile);
-    });
   }
 }
