@@ -71,6 +71,7 @@
     "string-similarity": "^1.2.1",
     "svgson": "^3.1.0",
     "tslint": "^5.19.0",
+    "xml-stream": "^0.4.5",
     "xml2js": "^0.4.19",
     "xmldom": "^0.1.27"
   },
