@@ -45,6 +45,10 @@ export class DocxExtractor extends Extractor {
       table {
         width: 100% !important;
       }
+      td, table, tr {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
       </style>
       `.concat(html), outputFile);
   }
