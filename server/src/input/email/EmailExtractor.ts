@@ -39,7 +39,6 @@ export class EmailExtractor extends Extractor {
   public async run(inputFile: string): Promise<Document> {
     const fullPDF = await this.convertEMLtoPDF(inputFile);
     const mainDocument: Document = await getPdfExtractor(this.config).run(fullPDF);
-    mainDocument.inputFile = fullPDF;
     return mainDocument;
   }
 
