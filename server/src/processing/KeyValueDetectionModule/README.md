@@ -10,7 +10,7 @@ Generates new `metadata` instances for each match of a key-value pair which vali
 
 ## Dependencies
 
-[Words to Line Module](words-to-line-module.md)
+[Words to Line Module](../WordsToLineModule/README.md)
 
 ## How it works
 

@@ -10,7 +10,7 @@ It creates new line elements that contains arrays of word elements.
 
 ## Dependencies
 
-[Reading Order Module](reading-order-module.md)
+[Reading Order Module](../ReadingOrderDetectionModule/README.md)
 
 ## How it works
 

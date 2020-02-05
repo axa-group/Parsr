@@ -10,7 +10,7 @@ Here's a quick guide to create a pull request:
 
         $ git clone git@github.com:YOUR-GITHUB-USERNAME/Parsr.git
 
-3.  Create a new branch in your git repository (branched from `develop` - see [Notes about branching](#notes-about-branching) below).
+3.  Create a new branch in your git repository (branched from `develop` - see [Notes about branching](#branching) below).
 
         $ cd Parsr/
         $ git checkout develop
