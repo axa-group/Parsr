@@ -30,7 +30,7 @@
     "start:api:background": "npm run start:api&",
     "format": "prettier --write --list-different \"{,!(dist)/**/}*.{js,md,ts,css,scss}\"",
     "postinstall": "cp ./server/assets/pdf.worker.js ./node_modules/pdfjs-dist/build/",
-    "remark": "remark -fqu 'remark-lint-no-dead-urls=\"skipLocalhost\": true' -u remark-validate-links ."
+    "remark": "remark -fqu 'remark-lint-no-dead-urls=\"skipLocalhost\": true, \"skipOffline\": true' -u remark-validate-links -i .remark-ignore ."
   },
   "husky": {
     "hooks": {
