@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import { expect } from 'chai';
 import { existsSync, unlinkSync } from 'fs';
 import { withData } from 'leche';
 import 'mocha';
+import { DocxExtractor } from '../../server/src/input/doc/DocxExtractor';
 import { EmailExtractor } from '../../server/src/input/email/EmailExtractor';
 import { PDFJsExtractor } from '../../server/src/input/pdf.js/PDFJsExtractor';
 import { LinesToParagraphModule } from '../../server/src/processing/LinesToParagraphModule/LinesToParagraphModule';
@@ -137,6 +138,67 @@ describe('EML input module', () => {
             after(done => {
                 if (existsSync(ASSETS_DIR + fileName.replace('.eml', '-tmp.pdf'))) {
                     unlinkSync(ASSETS_DIR + fileName.replace('.eml', '-tmp.pdf'));
+                }
+                done();
+            });
+        },
+    );
+});
+
+describe('MS Word input module', () => {
+    withData(
+        {
+            'one paragraph text extraction': [
+                'One_Paragraph.docx',
+                "**Lorem Ipsum** is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+                1,
+            ],
+        },
+        (fileName, expectedText, pageCount) => {
+            let docAfter: Document;
+            before(done => {
+                const extractor = new DocxExtractor({
+                    "version": 0.5,
+                    "extractor": {
+                        "pdf": "pdfjs",
+                        "img": "tesseract",
+                        "language": ["eng", "fra"],
+                    },
+                    "cleaner": [],
+                    "output": {
+                        "granularity": "word",
+                        "includeMarginals": false,
+                        "formats": {},
+                    },
+                });
+
+                extractor.run(ASSETS_DIR + fileName).then(document => {
+                    runModules(document, [
+                        new OutOfPageRemovalModule(),
+                        new WhitespaceRemovalModule(),
+                        new ReadingOrderDetectionModule(),
+                        new WordsToLineModule(),
+                        new LinesToParagraphModule(),
+                    ]).then(doc => {
+                        docAfter = doc;
+                        done();
+                    });
+                });
+            });
+
+            it('doc extractor should export expected text', () => {
+                const exportedText =
+                    docAfter.getElementsOfType<Paragraph>(Paragraph).map(p => p.toMarkdown()).join(' ');
+                expect(exportedText).to.eq(expectedText);
+            });
+
+            it('PDF resulting file should have the expected amount of pages', () => {
+                expect(docAfter.pages.length).to.eq(pageCount);
+            });
+
+            after(done => {
+                if (existsSync(ASSETS_DIR + fileName.replace('.docx', '-tmp.pdf'))) {
+                    unlinkSync(ASSETS_DIR + fileName.replace('.docx', '-tmp.pdf'));
                 }
                 done();
             });
