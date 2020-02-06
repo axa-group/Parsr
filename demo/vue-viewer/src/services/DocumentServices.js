@@ -105,4 +105,12 @@ export default {
   getAPIURL() {
     return baseURL;
   },
+  downloadLinks(docID) {
+    return {
+      json: `${baseURL}/json/${docID}?download=1`,
+      markdown: `${baseURL}/markdown/${docID}?download=1`,
+      text: `${baseURL}/text/${docID}?download=1`,
+      csv: `${baseURL}/csv/${docID}?download=1`,
+    };
+  },
 };

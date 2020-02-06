@@ -416,7 +416,11 @@ export class ApiServer {
 
     try {
       const file: string = this.fileManager.getFilePath(req.params.id, type);
-      res.sendFile(file);
+      if (req.query.download) {
+        res.download(file);
+      } else {
+        res.sendFile(file);
+      }
     } catch (err) {
       res.status(404).send(err.stack);
     }
