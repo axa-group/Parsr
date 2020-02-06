@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import archiver from 'archiver';
 import { exec, spawnSync } from 'child_process';
 import * as crypto from 'crypto';
 import express from 'express';
@@ -411,19 +412,56 @@ export class ApiServer {
     this.handleGetFile(req, res, 'xml');
   }
 
-  private handleGetFile(req: Request, res: Response, type: SingleFileType): void {
+  private async handleGetFile(req: Request, res: Response, type: SingleFileType): Promise<void> {
     res.setHeader('Access-Control-Allow-Origin', '*');
 
     try {
-      const file: string = this.fileManager.getFilePath(req.params.id, type);
-      if (req.query.download) {
-        res.download(file);
-      } else {
-        res.sendFile(file);
+      let file: string = this.fileManager.getFilePath(req.params.id, type);
+      if (req.query.download && type === 'markdown') {
+        const fileName = this.fileManager.getBinder(req.params.id).name;
+        const assetsFolder = path.join(path.dirname(file), `assets_${fileName}`);
+        const filesToCompress = [file, assetsFolder].filter(fs.existsSync);
+        if (filesToCompress.length > 1) {
+          file = await this.compress(filesToCompress, fileName);
+        }
       }
+      req.query.download ? res.download(file) : res.sendFile(file);
     } catch (err) {
       res.status(404).send(err.stack);
     }
+  }
+
+  /**
+   * puts all files and folders in files array into a compressed zip file and returns it's path
+   * @param files array of paths with files and folders to compress.
+   *  The path to the first file on this array will be used as the .zip output path
+   * @param zipFileName name of the compressed zip file to generate
+   * @return path to the compressed zip file
+   */
+  private compress(files: string[], fileName: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      try {
+        const zipPath = files[0].concat('.zip');
+        const outputZip = fs.createWriteStream(zipPath);
+        logger.info(`compressing files: ${files.join(', ')} into ${zipPath}`);
+        outputZip.on('close', () => {
+          resolve(zipPath);
+        });
+        const archive = archiver('zip', { zlib: { level: 0 } });
+        archive.pipe(outputZip);
+        files.forEach(f => {
+          const stats = fs.statSync(f);
+          if (stats.isFile()) {
+            archive.file(f, { name: path.basename(f) });
+          } else {
+            archive.directory(f, f.split(path.sep).pop());
+          }
+        });
+        archive.finalize();
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   private handleRoot(req: Request, res: Response): void {
