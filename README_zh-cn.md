@@ -8,7 +8,7 @@
 
 它为用户提供了结构化且标记完全的信息集，适用于包括数据输入和文档分析自动化，存档等即用型应用程序。
 
-- [Parsr: 从文档到数据，一步到位!](#parsr-从文档到数据一步到位)
+- [Parsr: 从文档到数据，一步到位!](#parsr-从文档到数据，一步到位)
   - [1. 开始 / 安装](#1-开始--安装)
     - [1.1. 通过 Docker 安装](#11-通过-docker-安装)
     - [1.2. 直接安装](#12-直接安装)
@@ -210,7 +210,7 @@ npm install
 
 该工具包含一系列模块，可逐步处理文档，并且具有高度可配置性。
 
-要更改它的默认配置，请参阅 [配置文档](docs/configuration-file.md).
+要更改它的默认配置，请参阅 [配置文档](docs/configuration.md).
 
 #### 2.2.2. 演示: Web Viewer
 
@@ -328,7 +328,7 @@ Parsr 默认的 OCR 解决方案是 tesseract，这是 Parsr 的基本依赖。
 1. **QPDF**: Apache [http://qpdf.sourceforge.net](http://qpdf.sourceforge.net/)
 2. **GraphicsMagick**: MIT [http://www.graphicsmagick.org/index.html](http://www.graphicsmagick.org/index.html)
 3. **ImageMagick**: Apache 2.0 [https://imagemagick.org/script/license.php](https://imagemagick.org/script/license.php)
-4. **Pdfminer.six**: MIT [https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE](https://github.com/pdfminer/pfminer.six/blob/master/LICENSE)
+4. **Pdfminer.six**: MIT [https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE](https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE)
 5. **PDF.js**: Apache 2.0 [https://github.com/mozilla/pdf.js](https://github.com/mozilla/pdf.js)
 6. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
 7. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)

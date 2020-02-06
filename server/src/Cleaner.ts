@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import { RegexMatcherModule } from './processing/RegexMatcherModule/RegexMatcher
 import { RemoteModule } from './processing/RemoteModule/RemoteModule';
 import { SeparateWordsModule } from './processing/SeparateWordsModule/SeparateWordsModule';
 import { TableDetectionModule } from './processing/TableDetectionModule/TableDetectionModule';
+import { TableOfContentsDetectionModule } from './processing/TableOfContentsDetectionModule/TableOfContentsDetectionModule';
 import { WhitespaceRemovalModule } from './processing/WhitespaceRemovalModule/WhitespaceRemovalModule';
 import { WordsToLineModule } from './processing/WordsToLineModule/WordsToLineModule';
 import { CleanerConfig, Config } from './types/Config';
@@ -70,6 +71,7 @@ export class Cleaner {
     RegexMatcherModule,
     RemoteModule,
     SeparateWordsModule,
+    TableOfContentsDetectionModule,
     // Add your own module here!
   ];
 

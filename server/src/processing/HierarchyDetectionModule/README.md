@@ -8,7 +8,7 @@ Detects the Hierarchy within a document, respecting indentation of element block
 
 ## Dependencies
 
-[Lines To Paragraph Module](lines-to-paragraph-module.md)
+[Lines To Paragraph Module](../LinesToParagraphModule/README.md)
 
 ## How it works
 

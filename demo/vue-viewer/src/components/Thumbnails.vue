@@ -71,7 +71,7 @@ export default {
   },
   data() {
     return {
-      allowedFormatsForThumbnails: ['pdf', 'jpg', 'jpeg', 'png', 'tiff', 'eml'],
+      allowedFormatsForThumbnails: ['pdf', 'jpg', 'jpeg', 'png', 'tiff', 'eml', 'docx'],
     };
   },
   computed: {

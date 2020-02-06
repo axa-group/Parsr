@@ -29,12 +29,13 @@
     "start:api": "npm run build:ts && npm run install:api && npm run --prefix api/server start",
     "start:api:background": "npm run start:api&",
     "format": "prettier --write --list-different \"{,!(dist)/**/}*.{js,md,ts,css,scss}\"",
-    "postinstall": "cp ./server/assets/pdf.worker.js ./node_modules/pdfjs-dist/build/"
+    "postinstall": "cp ./server/assets/pdf.worker.js ./node_modules/pdfjs-dist/build/",
+    "remark": "remark -fqu 'remark-lint-no-dead-urls=\"skipLocalhost\": true, \"skipOffline\": true' -u remark-validate-links -i .remark-ignore ."
   },
   "husky": {
     "hooks": {
       "pre-commit": "npm run lint",
-      "pre-push": "npm test && npm audit"
+      "pre-push": "npm test && npm audit && npm run remark"
     }
   },
   "lint-staged": {
@@ -96,6 +97,9 @@
     "lint-staged": "^8.2.1",
     "mocha": "^5.2.0",
     "prettier": "^1.18.2",
+    "remark-cli": "^7.0.1",
+    "remark-lint-no-dead-urls": "^1.0.1",
+    "remark-validate-links": "^9.2.0",
     "ts-node": "^7.0.1",
     "typescript": "^3.5.3"
   }

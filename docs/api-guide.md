@@ -42,7 +42,7 @@ The API has an endpoint prefix `/api` and then, optionally, the version number `
 - `/api/v1`: will use the latest API version 1.x
 - `/api`: will use the latest API version
 
-## 1. Send Your Document: [POST /document](https://axatechlab.github.io/Parsr/docs/api.html#api-Input-postDocument)
+## 1. Send Your Document: `POST /document`
 
 First of all, you need to do a POST request to send the document to Parsr. Along that, you need to send the configuration to tell Parsr what kind of processing it must perform on the file.
 
@@ -70,7 +70,7 @@ The document you sent has been accepted and is being processed. The body contain
 
 This error means the file format you sent is not supported by the platform (it's probably not a PDF or an Image).
 
-## 2. Get the queue status: [GET /queue/{id}](https://axatechlab.github.io/Parsr/docs/api.html#api-Processing-getQueueStatus)
+## 2. Get the queue status: `GET /queue/{id}`
 
 This request allows you to get the status of the queued document being processed. You need to give it the **queue ID** that was return in the previous request.
 
@@ -124,10 +124,10 @@ This error means that something went terribly wrong on the backend, probably an 
 
 You can have results in different formats:
 
-- JSON: [GET /json/{id}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getJson)
-- Markdown [GET /markdown/{id}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getMarkdown)
-- Raw text [GET /text/{id}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getText)
-- CSV [GET /csv/{id}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getCsvList)
+- JSON: `GET /json/{id}`
+- Markdown: `GET /markdown/{id}`
+- Raw text: `GET /text/{id}`
+- CSV: `GET /csv/{id}`
 
 These requests allow you to get the results of the processed document. You need to give it the **queue ID** that was return in a previous request.
 
@@ -158,7 +158,7 @@ For more information on the JSON format, please [refer to the specific guide](js
 
 This error means that the result file doesn't exist. Maybe it wasn't asked to be outputted in the config you sent in the first request.
 
-### 3.2. CSV List of Files: [GET /csv/{id}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getCsvList)
+### 3.2. CSV List of Files: `GET /csv/{id}`
 
 Since you can have multiple tables per page, you need to query them in two steps:
 
@@ -186,7 +186,7 @@ curl -X GET \
 
 This error means that the result file doesn't exist. Maybe it wasn't asked to be outputted in the config you sent in the first request.
 
-### 3.3. CSV File: [GET /csv/{id}/{page}/{table}](https://axatechlab.github.io/Parsr/docs/api.html#api-Output-getCsv)
+### 3.3. CSV File: `GET /csv/{id}/{page}/{table}`
 
 Then, we can get the CSV files one by one with the following parameters:
 

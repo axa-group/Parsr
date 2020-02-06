@@ -10,7 +10,7 @@ Sets the `isHeader` or `isFooter` property flags for each one of the elements de
 
 ## Dependencies
 
-[Lines To Paragraph Module](lines-to-paragraph-module.md)
+[Lines To Paragraph Module](../LinesToParagraphModule/README.md)
 
 ## How it works
 
