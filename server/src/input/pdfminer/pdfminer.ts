@@ -110,12 +110,12 @@ export function xmlParser(xmlPath: string): Promise<any> {
     };
 
     const pushWord = (word, array) => {
-      if (word.$ != null) {
-        if (word.$text != null) {
-          array.push({ _: word.$text.toString(), _attr: word.$ });
-        } else {
-          array.push({ _attr: word.$ });
-        }
+      if (word.$text != null && word.$ != null) {
+        array.push({ _: word.$text.toString(), _attr: word.$ });
+      } else if (word.$ != null) {
+        array.push({ _attr: word.$ });
+      } else {
+        array.push({}); // Needed or 'spaces' will not work to split lines into words
       }
     };
 
