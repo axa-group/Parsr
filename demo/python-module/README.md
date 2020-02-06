@@ -10,7 +10,7 @@ Run it with:
 $ python3 echo-module.py
 ```
 
-Then call it in your [configuration](../../docs/configuration-file.md):
+Then call it in your [configuration](../../docs/configuration.md):
 
 ```json
 [

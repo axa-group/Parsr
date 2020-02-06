@@ -31,7 +31,7 @@ Parsr takes as input an image (.JPG, .PNG, .TIFF, ...) or a PDF generates the fo
 - JSON
 - Markdown
 - Text
-- CSV (for tables), or Pandas Dataframes (see [here](demo/jupyter-notebook/parsr_api.py))
+- CSV (for tables), or Pandas Dataframes (see [here](demo/jupyter-notebook/parsr_client.py))
 - PDF
 
 ## Table of Contents
@@ -85,7 +85,7 @@ Consult the documentation on the [usage of the API](docs/api-guide.md).
 
 Refer to the [Configuration documentation](docs/configuration.md) to interpret the configurable options in the GUI viewer.
 
-The [API based usage](docs/usage.md#13-api) and the [command line usage](docs/usage.md#123-command-line-usage) are documented in the [advanced usage](docs/usage.md) guide.
+The [API based usage](docs/usage.md#3-api) and the [command line usage](docs/usage.md#23-command-line-usage) are documented in the [advanced usage](docs/usage.md) guide.
 
 ## Documentation
 
@@ -102,7 +102,7 @@ Third Party Libraries licenses for its [dependencies](docs/dependencies.md):
 1. **QPDF**: Apache [http://qpdf.sourceforge.net](http://qpdf.sourceforge.net/)
 2. **GraphicsMagick**: MIT [http://www.graphicsmagick.org/index.html](http://www.graphicsmagick.org/index.html)
 3. **ImageMagick**: Apache 2.0 [https://imagemagick.org/script/license.php](https://imagemagick.org/script/license.php)
-4. **Pdfminer.six**: MIT [https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE](https://github.com/pdfminer/pfminer.six/blob/master/LICENSE)
+4. **Pdfminer.six**: MIT [https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE](https://github.com/pdfminer/pdfminer.six/blob/master/LICENSE)
 5. **PDF.js**: Apache 2.0 [https://github.com/mozilla/pdf.js](https://github.com/mozilla/pdf.js)
 6. **Tesseract**: Apache 2.0 [https://github.com/tesseract-ocr/tesseract](https://github.com/tesseract-ocr/tesseract)
 7. **Camelot**: MIT [https://github.com/camelot-dev/camelot](https://github.com/camelot-dev/camelot)
