@@ -26,7 +26,6 @@ import * as os from 'os';
 import * as path from 'path';
 import { inspect } from 'util';
 import { OptionsV2, parseString } from 'xml2js';
-import { DOMParser } from 'xmldom';
 import { AbbyyTools } from './input/abbyy/AbbyyTools';
 import { Extractor } from './input/Extractor';
 import { PDFJsExtractor } from './input/pdf.js/PDFJsExtractor';
@@ -836,8 +835,7 @@ export function groupConsecutiveNumbersInArray(theArray: number[]): number[][] {
 
 export function parseXmlToObject(xml: string, options: OptionsV2 = null): Promise<object> {
   const promise = new Promise<object>((resolveObject, rejectObject) => {
-    const xmlStringSerialized = new DOMParser().parseFromString(xml, 'text/xml');
-    parseString(xmlStringSerialized, options, (error, dataObject) => {
+    parseString(xml, options, (error, dataObject) => {
       if (error) {
         rejectObject(error);
       }
@@ -870,10 +868,14 @@ export function getEmphazisChars(text: string): string {
  */
 export function getPdfExtractor(config: Config): Extractor {
   switch (config.extractor.pdf) {
-    case 'abbyy': return new AbbyyTools(config);
-    case 'tesseract': return new TesseractExtractor(config);
-    case 'pdfjs': return new PDFJsExtractor(config);
-    default: return new PdfminerExtractor(config);
+    case 'abbyy':
+      return new AbbyyTools(config);
+    case 'tesseract':
+      return new TesseractExtractor(config);
+    case 'pdfjs':
+      return new PDFJsExtractor(config);
+    default:
+      return new PdfminerExtractor(config);
   }
 }
 /*
