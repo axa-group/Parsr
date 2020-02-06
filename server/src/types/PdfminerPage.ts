@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,6 @@ export class PdfminerPage {
   };
   public textbox: PdfminerTextbox[];
   public figure: PdfminerFigure[];
-  /*public line: object[];
-  public rect: object[];
-  public curve: object[];
-  public layout: object[];*/
 
   constructor(jsonObj: any) {
     this._attr = jsonObj._attr;
@@ -42,9 +38,5 @@ export class PdfminerPage {
     } else if (jsonObj.figure != null) {
       this.figure = [new PdfminerFigure(jsonObj.figure)];
     }
-    /*this.line = jsonObj.line;
-    this.rect = jsonObj.rect;
-    this.curve = jsonObj.curve;
-    this.layout = jsonObj.layout;*/
   }
 }

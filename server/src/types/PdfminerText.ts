@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,6 @@ export class PdfminerText {
 
   constructor(jsonObj: any) {
     this._attr = jsonObj._attr;
-
-    if (jsonObj._) {
-      this._ = jsonObj._;
-    } else {
-      this._ = jsonObj['#text'];
-    }
+    this._ = jsonObj._;
   }
 }
