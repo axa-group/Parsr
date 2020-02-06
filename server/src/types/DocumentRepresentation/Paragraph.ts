@@ -484,7 +484,7 @@ export class Paragraph extends Text {
       output = mergedStyles.paragraphOutput;
       output += mergedStyles.lineOutput;
       if (line.lineBreak) {
-        output += format === 'md' ? '\n' : '<br/>';
+        output += format === 'md' ? '  \n' : '<br/>';
       } else if (index + 1 < lines.length) {
         output += ' ';
       }
