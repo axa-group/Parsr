@@ -25,18 +25,26 @@ export class PdfminerPage {
   };
   public textbox: PdfminerTextbox[];
   public figure: PdfminerFigure[];
-  public line: object[];
+  /*public line: object[];
   public rect: object[];
   public curve: object[];
-  public layout: object[];
+  public layout: object[];*/
 
-  constructor(page: PdfminerPage) {
-    this._attr = page._attr;
-    this.textbox = page.textbox;
-    this.figure = page.figure;
-    this.line = page.line;
-    this.rect = page.rect;
-    this.curve = page.curve;
-    this.layout = page.layout;
+  constructor(jsonObj: any) {
+    this._attr = jsonObj._attr;
+    if (Array.isArray(jsonObj.textbox)) {
+      this.textbox = jsonObj.textbox.map(tb => new PdfminerTextbox(tb));
+    } else if (jsonObj.textbox != null) {
+      this.textbox = [new PdfminerTextbox(jsonObj.textbox)];
+    }
+    if (Array.isArray(jsonObj.figure)) {
+      this.figure = jsonObj.figure.map(fig => new PdfminerFigure(fig));
+    } else if (jsonObj.figure != null) {
+      this.figure = [new PdfminerFigure(jsonObj.figure)];
+    }
+    /*this.line = jsonObj.line;
+    this.rect = jsonObj.rect;
+    this.curve = jsonObj.curve;
+    this.layout = jsonObj.layout;*/
   }
 }

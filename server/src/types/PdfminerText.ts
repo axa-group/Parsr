@@ -24,8 +24,13 @@ export class PdfminerText {
   };
   public _: string;
 
-  constructor(text: PdfminerText) {
-    this._attr = text._attr;
-    this._ = text._;
+  constructor(jsonObj: any) {
+    this._attr = jsonObj._attr;
+
+    if (jsonObj._) {
+      this._ = jsonObj._;
+    } else {
+      this._ = jsonObj['#text'];
+    }
   }
 }
