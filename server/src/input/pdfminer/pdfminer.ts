@@ -44,9 +44,7 @@ import logger from '../../utils/Logger';
 export function extractPages(pdfInputFile: string, pages: string): Promise<string> {
   return new Promise<string>((resolveXml, rejectXml) => {
     const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-    const pdf2txtArguments: string[] = [
-      '-p',
-      pages,
+    let pdf2txtArguments: string[] = [
       '-c',
       'utf-8',
       '-t',
@@ -56,15 +54,19 @@ export function extractPages(pdfInputFile: string, pages: string): Promise<strin
       pdfInputFile,
     ];
 
+    if (pages != null) {
+      pdf2txtArguments = ['-p', pages].concat(pdf2txtArguments);
+      const from = pages.split(',').shift();
+      const to = pages.split(',').pop();
+      logger.info(
+        'Extracting contents (pages ' + from + ' to ' + to + ") with pdfminer's pdf2txt.py tool...",
+      );
+    }
+
     if (!fs.existsSync(xmlOutputFile)) {
       fs.appendFileSync(xmlOutputFile, '');
     }
 
-    const from = pages.split(',').shift();
-    const to = pages.split(',').pop();
-    logger.info(
-      'Extracting contents (pages ' + from + ' to ' + to + ") with pdfminer's pdf2txt.py tool...",
-    );
     const startTime: number = Date.now();
     utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.PDF2TXT, pdf2txtArguments)
       .then(() => {

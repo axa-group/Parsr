@@ -33,11 +33,11 @@ export class PdfminerExtractor extends Extractor {
   public async run(inputFile: string): Promise<Document> {
     return utils.repairPdf(inputFile).then((repairedPdf: string) => {
       return this.pageNumber(repairedPdf).then(totalPages => {
-        logger.info(
-          'Extracting contents (' +
-            totalPages.toString() +
-            " pages) with pdfminer's pdf2txt.py tool...",
-        );
+        let loggerMsg = "Extracting contents with pdfminer's pdf2txt.py tool...";
+        if (totalPages != null) {
+          loggerMsg = `Extracting contents (${totalPages.toString()} pages) with pdfminer's pdf2txt.py tool...`;
+        }
+        logger.info(loggerMsg);
         const startTime: number = Date.now();
         const extractFont = extractImagesAndFonts(repairedPdf);
         const pdfminerExtract = this.extractFile(repairedPdf, 1, 500, totalPages);
@@ -47,8 +47,9 @@ export class PdfminerExtractor extends Extractor {
             doc.inputFile = repairedPdf;
             const totalSeconds = (Date.now() - startTime) / 1000;
             logger.info(
-              `Total PdfMiner (${totalPages.toString()}) time: ${totalSeconds} sec - ${totalSeconds /
-                60} min`,
+              `Total PdfMiner ${
+                totalPages != null ? '(' + totalPages.toString() + ')' : ''
+              } time: ${totalSeconds} sec - ${totalSeconds / 60} min`,
             );
             return doc;
           },
@@ -75,25 +76,28 @@ export class PdfminerExtractor extends Extractor {
     totalPages: number,
     document: Document = new Document([]),
   ): Promise<Document> {
-    const fromPage = (pageIndex - 1) * maxPages;
     const toPage = pageIndex * maxPages - 1;
-    const pages = [...Array(maxPages).keys()]
-      .map(el => el + fromPage + 1)
-      .filter(el => el <= totalPages)
-      .join(',');
-
+    const extractPages = this.pagesToExtract(pageIndex, maxPages, totalPages);
     return pdfminer
-      .extractPages(inputFile, pages)
+      .extractPages(inputFile, totalPages != null ? extractPages : null)
       .then((xmlOutputFile: string) => pdfminer.xmlParser(xmlOutputFile))
       .then((json: any) => pdfminer.jsParser(json))
       .then((doc: Document) => {
         document.pages = document.pages.concat(doc.pages);
         document.pages.forEach((page, index) => (page.pageNumber = index + 1));
-        if (totalPages > toPage + 1) {
+        if (totalPages != null && totalPages > toPage + 1) {
           return this.extractFile(inputFile, pageIndex + 1, maxPages, totalPages, document);
         } else {
           return document;
         }
       });
+  }
+
+  private pagesToExtract(pageIndex: number, maxPages: number, totalPages: number) {
+    const fromPage = (pageIndex - 1) * maxPages;
+    return [...Array(maxPages).keys()]
+      .map(el => el + fromPage + 1)
+      .filter(el => el <= totalPages)
+      .join(',');
   }
 }
