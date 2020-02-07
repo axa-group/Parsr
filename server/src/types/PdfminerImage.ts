@@ -19,9 +19,9 @@ export class PdfminerImage {
     src: string;
     width: string;
     height: string;
-};
+  };
 
-constructor(textbox: PdfminerImage) {
+  constructor(textbox: any) {
     this._attr = textbox._attr;
   }
 }

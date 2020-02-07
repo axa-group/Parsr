@@ -168,17 +168,24 @@ export class Paragraph extends Text {
     if (!!prevLine.lastWordLink && prevLine.lastWordLink === line.firstWordLink) {
       // gets the last link MD in the previous line
       const mdLinksInPreviousLine = output.paragraphOutput.match(new RegExp(/\[.*?\]\(.*?\)/gs));
-      if (!mdLinksInPreviousLine) { return; }
+      if (!mdLinksInPreviousLine) {
+        return;
+      }
 
       const lastWordLinkMD = mdLinksInPreviousLine[mdLinksInPreviousLine.length - 1];
       // gets the first link MD and description in the current line
       const firstLinkMDInLine = output.lineOutput.match(new RegExp(/\[.*?\]\((.*?)\)/));
 
-      if (!firstLinkMDInLine) { return; }
+      if (!firstLinkMDInLine) {
+        return;
+      }
       const lastLinkMDDescription = firstLinkMDInLine[0].replace(/\[(.*?)\]\(.*?\)/, '$1');
 
       // merges the last link in previous line with the description of the first link in current line
-      const mergedLinkMD = lastWordLinkMD.replace(/\[(.*?)\]\((.*?)\)/s, `[$1  \n${lastLinkMDDescription}]($2)`);
+      const mergedLinkMD = lastWordLinkMD.replace(
+        /\[(.*?)\]\((.*?)\)/s,
+        `[$1  \n${lastLinkMDDescription}]($2)`,
+      );
       output.paragraphOutput = output.paragraphOutput.replace(lastWordLinkMD, mergedLinkMD).trim();
 
       // removes the first link in current line, to avoid duplicated (it's already merged in the previous line)
@@ -228,7 +235,7 @@ export class Paragraph extends Text {
     bWordsIdx = utils.groupConsecutiveNumbersInArray(bWordsIdx[0]).filter(p => p.length !== 0);
     iWordsIdx = utils.groupConsecutiveNumbersInArray(iWordsIdx[0]).filter(p => p.length !== 0);
 
-    Object.keys(linkWordsIdx).forEach((link) => {
+    Object.keys(linkWordsIdx).forEach(link => {
       linkWordsIdx[link] = utils.groupConsecutiveNumbersInArray(linkWordsIdx[link][0] as number[]);
     });
 
@@ -258,12 +265,16 @@ export class Paragraph extends Text {
     */
     Object.keys(linkWordsIdx).forEach(lw => {
       linkWordsIdx[lw].forEach(idGroup => {
-        let linkDescription = idGroup.map(id => result[id].replace(/\[(.*?)\]\(.*?\)/, "$1")).join(' ');
+        let linkDescription = idGroup
+          .map(id => result[id].replace(/\[(.*?)\]\(.*?\)/, '$1'))
+          .join(' ');
         const emphazisChars = utils.getEmphazisChars(linkDescription);
         if (emphazisChars !== '') {
           linkDescription = linkDescription.split(emphazisChars)[1];
         }
-        result[idGroup[0]] = `${emphazisChars}[${linkDescription.trim()}](${lw.trim()})${emphazisChars}`;
+        result[
+          idGroup[0]
+        ] = `${emphazisChars}[${linkDescription.trim()}](${lw.trim()})${emphazisChars}`;
 
         // after the merging, i set as null the rest of the words with that link so it doesn't repeat.
         for (let i = 1; i < idGroup.length; i++) {
@@ -309,7 +320,7 @@ export class Paragraph extends Text {
     bWordsIdx = utils.groupConsecutiveNumbersInArray(bWordsIdx[0]).filter(p => p.length !== 0);
     iWordsIdx = utils.groupConsecutiveNumbersInArray(iWordsIdx[0]).filter(p => p.length !== 0);
 
-    Object.keys(linkWordsIdx).forEach((link) => {
+    Object.keys(linkWordsIdx).forEach(link => {
       linkWordsIdx[link] = utils.groupConsecutiveNumbersInArray(linkWordsIdx[link][0] as number[]);
     });
 
@@ -339,7 +350,9 @@ export class Paragraph extends Text {
     */
     Object.keys(linkWordsIdx).forEach(lw => {
       linkWordsIdx[lw].forEach(idGroup => {
-        const linkDescription = idGroup.map(id => result[id].replace(/\[(.*?)\]\(.*?\)/, "$1")).join(' ');
+        const linkDescription = idGroup
+          .map(id => result[id].replace(/\[(.*?)\]\(.*?\)/, '$1'))
+          .join(' ');
         result[idGroup[0]] = `<a href="${lw.trim()}">${linkDescription.trim()}</a>`;
 
         // after the merging, i set as null the rest of the words with that link so it doesn't repeat.

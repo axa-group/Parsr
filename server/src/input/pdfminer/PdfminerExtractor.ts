@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
+import * as path from 'path';
 import { Document } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
+import { CommandExecuter } from '../../utils';
+import logger from '../../utils/Logger';
 import { extractImagesAndFonts } from '../extractImagesFonts';
 import { Extractor } from '../Extractor';
 import * as pdfminer from './pdfminer';
@@ -27,17 +30,70 @@ import * as pdfminer from './pdfminer';
  * information in a clever way.
  */
 export class PdfminerExtractor extends Extractor {
-  public run(inputFile: string): Promise<Document> {
+  public async run(inputFile: string): Promise<Document> {
     return utils.repairPdf(inputFile).then((repairedPdf: string) => {
-      const pdfminerExtract: Promise<Document> = pdfminer.execute(repairedPdf);
-
-      const extractFont = extractImagesAndFonts(repairedPdf);
-      return Promise.all([pdfminerExtract, extractFont]).then(
-        ([doc, assetsFolder]: [Document, string]) => {
-          doc.assetsFolder = assetsFolder;
-          return doc;
-        },
-      );
+      return this.pageNumber(repairedPdf).then(totalPages => {
+        logger.info(
+          'Extracting contents (' +
+            totalPages.toString() +
+            " pages) with pdfminer's pdf2txt.py tool...",
+        );
+        const startTime: number = Date.now();
+        const extractFont = extractImagesAndFonts(repairedPdf);
+        const pdfminerExtract = this.extractFile(repairedPdf, 1, 500, totalPages);
+        return Promise.all([pdfminerExtract, extractFont]).then(
+          ([doc, assetsFolder]: [Document, string]) => {
+            doc.assetsFolder = assetsFolder;
+            doc.inputFile = repairedPdf;
+            const totalSeconds = (Date.now() - startTime) / 1000;
+            logger.info(
+              `Total PdfMiner (${totalPages.toString()}) time: ${totalSeconds} sec - ${totalSeconds /
+                60} min`,
+            );
+            return doc;
+          },
+        );
+      });
     });
+  }
+
+  private async pageNumber(inputFile: string): Promise<number> {
+    const args: string[] = [path.join(__dirname, '../../../assets/PdfPageNumber.py'), inputFile];
+    try {
+      const data = await CommandExecuter.run(CommandExecuter.COMMANDS.PYTHON, args);
+      return parseInt(data, 10);
+    } catch ({ error }) {
+      logger.error(`Error reading pdf total page number... ${error}`);
+    }
+    return null;
+  }
+
+  private async extractFile(
+    inputFile: string,
+    pageIndex: number,
+    maxPages: number,
+    totalPages: number,
+    document: Document = new Document([]),
+  ): Promise<Document> {
+    const fromPage = (pageIndex - 1) * maxPages;
+    const toPage = pageIndex * maxPages - 1;
+    const pages = [...Array(maxPages).keys()]
+      .map(el => el + fromPage + 1)
+      .filter(el => el <= totalPages)
+      .join(',');
+
+    return pdfminer
+      .extractPages(inputFile, pages)
+      .then((xmlOutputFile: string) => pdfminer.xmlParser(xmlOutputFile))
+      .then((json: any) => pdfminer.jsParser(json))
+      .then((doc: Document) => {
+        document.pages = document.pages.concat(doc.pages);
+        document.pages.forEach((page, index) => (page.pageNumber = index + 1));
+        if (totalPages > toPage + 1) {
+          return this.extractFile(inputFile, pageIndex + 1, maxPages, totalPages, document);
+        } else {
+          return document;
+        }
+      });
   }
 }

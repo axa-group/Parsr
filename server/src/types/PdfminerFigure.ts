@@ -26,10 +26,24 @@ export class PdfminerFigure {
   public figure: PdfminerFigure[];
   public text: PdfminerText[];
 
-  constructor(figure: PdfminerFigure) {
-    this._attr = figure._attr;
-    this.image = figure.image;
-    this.text = figure.text;
-    this.figure = figure.figure;
+  constructor(jsonObj: any) {
+    this._attr = jsonObj._attr;
+    if (Array.isArray(jsonObj.image)) {
+      this.image = jsonObj.image.map(image => new PdfminerImage(image));
+    } else if (jsonObj.image != null) {
+      this.image = [new PdfminerImage(jsonObj.image)];
+    }
+
+    if (Array.isArray(jsonObj.text)) {
+      this.text = jsonObj.text.map(text => new PdfminerText(text));
+    } else if (jsonObj.text != null) {
+      this.text = [new PdfminerText(jsonObj.text)];
+    }
+
+    if (Array.isArray(jsonObj.figure)) {
+      this.figure = jsonObj.figure.map(figure => new PdfminerFigure(figure));
+    } else if (jsonObj.figure != null) {
+      this.figure = [new PdfminerFigure(jsonObj.figure)];
+    }
   }
 }
