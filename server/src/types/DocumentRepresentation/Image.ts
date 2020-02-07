@@ -107,6 +107,6 @@ export class Image extends Element {
       return '';
     }
     const imageName: string = 'img-' + this.xObjId.padStart(4, '0') + '.' + this.xObjExt;
-    return '![](assets_' + docName + '/' + imageName + ')';
+    return `![](${encodeURI(`assets_${docName}/${imageName}`)})`;
   }
 }
