@@ -138,6 +138,9 @@ export function xmlParser(xmlPath: string): Promise<any> {
     });
 
     xml.on('startElement: image', figImage => {
+      if (recursiveFigures.images[recursiveFigures.currentFigure()] == null) {
+        recursiveFigures.images[recursiveFigures.currentFigure()] = [];
+      }
       recursiveFigures.images[recursiveFigures.currentFigure()].push({ _attr: figImage.$ });
     });
 
