@@ -15,6 +15,7 @@
  */
 import * as filetype from 'file-type';
 import * as fs from 'fs';
+import { DOMParser } from 'xmldom';
 import { BoundingBox, Document, Page, Word } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
@@ -96,7 +97,8 @@ export class LinkDetectionModule extends Module {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
             logger.debug(`Converting dumppdf's XML output to JS object..`);
-            utils.parseXmlToObject(xml).then((obj: any) => {
+            const xmlStringSerialized = new DOMParser().parseFromString(xml, 'text/xml');
+            utils.parseXmlToObject(xmlStringSerialized).then((obj: any) => {
               resolve(obj);
             });
           } catch (err) {
@@ -124,7 +126,9 @@ export class LinkDetectionModule extends Module {
         pdf: { object: objects },
       } = await this.getFileMetadata(file);
 
-      const pages = objects.filter(o => o.dict && o.dict[0].value.some(v => v.literal && v.literal.includes('Page')));
+      const pages = objects.filter(
+        o => o.dict && o.dict[0].value.some(v => v.literal && v.literal.includes('Page')),
+      );
       const pagesWithAnnots = pages.filter(o => o.dict && o.dict[0].key.includes('Annots'));
       pagesWithAnnots.forEach(pageObject => {
         const pageHeightIndex = pageObject.dict[0].key.indexOf('MediaBox');
