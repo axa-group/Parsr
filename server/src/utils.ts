@@ -215,6 +215,7 @@ export function getTemporaryFile(extension: string): string {
 export function pdfToImages(pdfPath: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
     const folder = path.dirname(pdfPath).concat('/samples');
+    logger.info('Images folder --> ' + folder);
     try {
       if (!fs.existsSync(folder)) {
         fs.mkdirSync(folder);
@@ -473,7 +474,7 @@ export function removeNull(page: Page): Page {
   if (page.elements.length - newElements.length !== 0) {
     logger.debug(
       `Null elements removed for page #${page.pageNumber}: ${page.elements.length -
-      newElements.length}`,
+        newElements.length}`,
     );
     page.elements = newElements;
   }
@@ -507,11 +508,11 @@ export function getPageRegex(): RegExp {
 
   const pageRegex = new RegExp(
     `^(?:` +
-    `(?:${pagePrefix}${pageNumber})|` +
-    `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
-    `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
-    `(?:${before}${pageNumber}${after})` +
-    `)$`,
+      `(?:${pagePrefix}${pageNumber})|` +
+      `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
+      `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
+      `(?:${before}${pageNumber}${after})` +
+      `)$`,
     'i',
   );
 
@@ -917,25 +918,22 @@ export async function convertHTMLToPDF(html: string, outputFile?: string): Promi
 
   html = embedImagesInHTML(html);
 
-  const toPDF = new HTMLToPDF(
-    html,
-    {
-      browserOptions: {
-        args: ['--no-sandbox', '--font-render-hinting=none'],
-      },
-      pdfOptions: {
-        path: mainPDF,
-        width: '210mm',
-        height: '297mm',
-        margin: {
-          top: '5mm',
-          bottom: '5mm',
-          left: '5mm',
-          right: '5mm',
-        },
+  const toPDF = new HTMLToPDF(html, {
+    browserOptions: {
+      args: ['--no-sandbox', '--font-render-hinting=none'],
+    },
+    pdfOptions: {
+      path: mainPDF,
+      width: '210mm',
+      height: '297mm',
+      margin: {
+        top: '5mm',
+        bottom: '5mm',
+        left: '5mm',
+        right: '5mm',
       },
     },
-  );
+  });
 
   await toPDF.convert();
   return mainPDF;
