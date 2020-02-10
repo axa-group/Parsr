@@ -27,6 +27,7 @@ This page is a guide on how to use the API.
 			- [`curl` command](#curl-command-4)
 			- [Status: 200 - OK](#status-200---ok-3)
 			- [Status: 404 - Not Found](#status-404---not-found-3)
+		- [3.4. Download Results](#34-download-results)
 	- [4. Server Configuration Access](#4-server-configuration-access)
 
 ## 0. Introduction
@@ -216,6 +217,20 @@ This CSV output example contains multiline cells and an empty column.
 #### Status: 404 - Not Found
 
 This error means that the result file doesn't exist. Maybe `{page}` and `{table}` parameters doesn't refer to an or it wasn't asked to be outputted in the config you sent in the first request.
+
+### 3.4. Download Results
+
+You can download any of the available output formats:
+- JSON: `GET /json/{id}?download=1`
+- Markdown: `GET /markdown/{id}?download=1`
+- Raw text: `GET /text/{id}?download=1`
+- CSV: `GET /csv/{id}?download=1`
+
+Being `{id}` the same **queue ID** obtained in [Section 3 - Get the results](#3-get-the-results).
+
+For JSON and Raw Text, a `json` or `txt` file will start downloading.
+For Markdown, if the document has any embedded assets like images, a `zip` file will start downloading, including the markdown and a folder with all required assets. If it does not contain any images, a single `md` file will be downloaded.
+For CSV option, a `zip` will be downloaded, containing one `csv` file per each table in the document.
 
 ## 4. Server Configuration Access
 
