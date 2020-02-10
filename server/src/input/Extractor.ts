@@ -34,7 +34,9 @@ export abstract class Extractor {
       this.config.extractor.credentials = {};
     }
     Object.keys(credentials).forEach(key => {
-      this.config.extractor.credentials[key] = credentials[key];
+      if (!this.config.extractor.credentials[key]) {
+        this.config.extractor.credentials[key] = credentials[key];
+      }
     });
   }
 
@@ -66,7 +68,7 @@ ${
     const fileExists = existsSync(filePath);
     if (!fileExists || !filePath.endsWith(format)) {
       throw new Error(
-        `${credential} must be a path to a ${format} file.`,
+        `${credential} must be an absolute path to a ${format} file.`,
       );
     }
   }
