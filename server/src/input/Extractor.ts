@@ -15,6 +15,7 @@
  */
 
 import { existsSync } from 'fs';
+import { URL } from 'url';
 import { Config } from '../types/Config';
 import { Document } from '../types/DocumentRepresentation/Document';
 
@@ -71,6 +72,16 @@ ${
         `${credential} must be an absolute path to a ${format} file.`,
       );
     }
+  }
+
+  public checkCredentialAsURL(credential: string) {
+      try {
+        // tslint:disable-next-line: no-unused-expression
+        new URL(this.config.extractor.credentials[credential]);
+      } catch (err) {
+        throw new Error(
+          `${credential} must be a valid URL`,
+        );      }
   }
 
   public abstract run(inputFile: string): Promise<Document>;

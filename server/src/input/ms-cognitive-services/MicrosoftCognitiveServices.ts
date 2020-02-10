@@ -50,6 +50,8 @@ export class MicrosoftCognitiveExtractor extends OcrExtractorFactory {
       'OCP_APIM_ENDPOINT',
     ]);
 
+    this.checkCredentialAsURL('OCP_APIM_ENDPOINT');
+
     this.apiClient = axios.create({
       baseURL: this.config.extractor.credentials.OCP_APIM_ENDPOINT,
       headers: {

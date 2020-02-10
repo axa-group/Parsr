@@ -68,6 +68,8 @@ export class AbbyyTools extends Extractor {
       'ABBYY_SERVER_VER',
       'ABBYY_WORKFLOW',
     ]);
+
+    this.checkCredentialAsURL('ABBYY_SERVER_URL');
   }
 
   public abbyyXMLToObject(xml: string): Promise<object> {
