@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { existsSync } from 'fs';
 import { Config } from '../types/Config';
 import { Document } from '../types/DocumentRepresentation/Document';
 
@@ -26,9 +27,50 @@ import { Document } from '../types/DocumentRepresentation/Document';
 export abstract class Extractor {
   public config: Config;
 
-  constructor(config: Config) {
+  constructor(config: Config, credentials: any = {}) {
     this.config = config;
+
+    if (!this.config.extractor.credentials) {
+      this.config.extractor.credentials = {};
+    }
+    Object.keys(credentials).forEach(key => {
+      this.config.extractor.credentials[key] = credentials[key];
+    });
+  }
+
+  public checkCredentials(required: string[]) {
+    const missingCredentials: string[] = required.filter(c => !this.config.extractor.credentials[c]);
+    if (missingCredentials.length > 0) {
+      throw new Error(`Required credentials not found: ${missingCredentials.join(', ')}. Make sure you set it in the extractor configuration:
+${
+        JSON.stringify({
+          extractor: {
+            pdf: '...',
+            ocr: '...',
+            language: [],
+            credentials: {
+              ...missingCredentials.reduce((acc, cred) => {
+                acc[cred] = '...';
+                return acc;
+              }, {}),
+            },
+          },
+        }, null, 2)
+        }`,
+      );
+    }
+  }
+
+  public checkCredentialAsFile(credential: string, format: string) {
+    const filePath = this.config.extractor.credentials[credential];
+    const fileExists = existsSync(filePath);
+    if (!fileExists || !filePath.endsWith(format)) {
+      throw new Error(
+        `${credential} must be a path to a ${format} file.`,
+      );
+    }
   }
 
   public abstract run(inputFile: string): Promise<Document>;
+
 }

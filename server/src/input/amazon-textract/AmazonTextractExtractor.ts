@@ -21,6 +21,7 @@ import { Config } from '../../types/Config';
 import { BoundingBox, Document, Font, Line, Page, Word } from '../../types/DocumentRepresentation';
 import { OcrExtractorFactory } from '../OcrExtractor';
 import { setPageDimensions } from '../set-page-dimensions';
+import * as credentials from './credentials.json';
 
 type AmazonTextractResponse = {
   DocumentMetadata: {
@@ -55,20 +56,15 @@ export class AmazonTextractExtractor extends OcrExtractorFactory {
   private textract = null;
 
   constructor(config: Config) {
-    super(config);
-    if (!process.env.AWS_ACCESS_KEY_ID) {
-      throw new Error(
-        `Required environment variable AWS_ACCESS_KEY_ID not found. Make sure you set it as 'AWS_ACCESS_KEY_ID=<KEY>' before running the tool.`,
-      );
-    }
-    if (!process.env.AWS_SECRET_ACCESS_KEY) {
-      throw new Error(
-        `Required environment variable AWS_SECRET_ACCESS_KEY not found. Make sure you set it as 'AWS_SECRET_ACCESS_KEY=<KEY>' before running the tool.`,
-      );
-    }
+    super(config, credentials);
+    this.checkCredentials([
+      'AWS_ACCESS_KEY_ID',
+      'AWS_SECRET_ACCESS_KEY',
+    ]);
+
     this.textract = new Textract({
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      accessKeyId: this.config.extractor.credentials.AWS_ACCESS_KEY_ID,
+      secretAccessKey: this.config.extractor.credentials.AWS_SECRET_ACCESS_KEY,
       region: 'us-east-1',
     });
   }

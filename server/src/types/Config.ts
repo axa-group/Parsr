@@ -60,6 +60,17 @@ export type CleanerConfig = Array<string | [string, object]>;
 export interface ExtractorConfig {
   pdf: 'pdfminer' | 'tesseract' | 'abbyy' | 'pdfjs';
   img: 'tesseract' | 'abbyy' | 'google-vision' | 'ms-cognitive-services' | 'amazon-textract';
+  credentials?: {
+    ABBYY_SERVER_URL?: string; // ABBYY
+    ABBYY_SERVER_VER?: string; // ABBYY
+    ABBYY_WORKFLOW?: string; // ABBYY
+    AWS_ACCESS_KEY_ID?: string; // AWS TEXTRACT
+    AWS_SECRET_ACCESS_KEY?: string; // AWS TEXTRACT
+    GOOGLE_APPLICATION_CREDENTIALS?: string; // GOOGLE VISION
+    OCP_APIM_SUBSCRIPTION_KEY?: string; // MS COGNITIVE SERVICES
+    OCP_APIM_ENDPOINT?: string; // MS COGNITIVE SERVICES
+  };
+
   language: TesseractLanguage | TesseractLanguage[];
 }
 
