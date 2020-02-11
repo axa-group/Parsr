@@ -28,7 +28,7 @@
             'ms-cognitive-services',
             'amazon-textract',
           ]"
-          v-model="defaultConfig.extractor.img"
+          v-model="defaultConfig.extractor.ocr"
           :flat="true"
           :hide-details="true"
           background-color="transparent"
@@ -40,7 +40,7 @@
         ></v-select>
         <div
           class="selectOptionExtractor ocrParameters"
-          v-if="defaultConfig.extractor.img === 'google-vision'"
+          v-if="defaultConfig.extractor.ocr === 'google-vision'"
         >
           <legend>GOOGLE_APPLICATION_CREDENTIALS<sup>*</sup></legend>
           <input
@@ -54,7 +54,7 @@
         </div>
         <div
           class="selectOptionExtractor ocrParameters"
-          v-if="defaultConfig.extractor.img === 'ms-cognitive-services'"
+          v-if="defaultConfig.extractor.ocr === 'ms-cognitive-services'"
         >
           <legend>Ocp-Apim-Subscription-Key<sup>*</sup></legend>
           <input
@@ -74,7 +74,7 @@
         </div>
         <div
           class="selectOptionExtractor ocrParameters"
-          v-if="defaultConfig.extractor.img === 'amazon-textract'"
+          v-if="defaultConfig.extractor.ocr === 'amazon-textract'"
         >
           <legend>Access_key_id<sup>*</sup></legend>
           <input
@@ -95,7 +95,7 @@
 
         <div
           class="selectOptionExtractor ocrParameters"
-          v-if="defaultConfig.extractor.img === 'abbyy'"
+          v-if="defaultConfig.extractor.ocr === 'abbyy'"
         >
           <legend>Abbyy_server_url<sup>*</sup></legend>
           <input
@@ -198,13 +198,13 @@ export default {
     isSubmitDisabled() {
       return (
         !this.file ||
-        (this.customConfig.extractor.img === 'google-vision' &&
+        (this.customConfig.extractor.ocr === 'google-vision' &&
           !this.GOOGLE_APPLICATION_CREDENTIALS) ||
-        (this.customConfig.extractor.img === 'ms-cognitive-services' &&
+        (this.customConfig.extractor.ocr === 'ms-cognitive-services' &&
           !(this.OCP_APIM_SUBSCRIPTION_KEY && this.OCP_APIM_ENDPOINT)) ||
-        (this.customConfig.extractor.img === 'amazon-textract' &&
+        (this.customConfig.extractor.ocr === 'amazon-textract' &&
           !(this.AWS_ACCESS_KEY_ID && this.AWS_SECRET_ACCESS_KEY)) ||
-        (this.customConfig.extractor.img === 'abbyy' &&
+        (this.customConfig.extractor.ocr === 'abbyy' &&
           !(this.ABBYY_SERVER_URL && this.ABBYY_SERVER_VER && this.ABBYY_WORKFLOW))
       );
     },

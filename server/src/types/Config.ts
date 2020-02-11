@@ -29,8 +29,8 @@ export class Config {
       this.extractor.pdf = 'pdfminer';
     }
 
-    if (typeof this.extractor.img === 'undefined') {
-      this.extractor.img = 'tesseract';
+    if (typeof this.extractor.ocr === 'undefined') {
+      this.extractor.ocr = 'tesseract';
     }
 
     if (typeof this.output.granularity === 'undefined') {
@@ -59,7 +59,7 @@ export type CleanerConfig = Array<string | [string, object]>;
 
 export interface ExtractorConfig {
   pdf: 'pdfminer' | 'tesseract' | 'abbyy' | 'pdfjs';
-  img: 'tesseract' | 'abbyy' | 'google-vision' | 'ms-cognitive-services' | 'amazon-textract';
+  ocr: 'tesseract' | 'abbyy' | 'google-vision' | 'ms-cognitive-services' | 'amazon-textract';
   credentials?: {
     ABBYY_SERVER_URL?: string; // ABBYY
     ABBYY_SERVER_VER?: string; // ABBYY

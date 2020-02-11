@@ -34,7 +34,7 @@ The cleaner array may appear unconventionnal but is really easy to use. Every it
     "version": 0.5,               // Version number of the configuration file format
     "extractor": {                // Extraction options (See section 2.)
         "pdf": "extractor-tool",  // Select the tool to extract PDF files
-        "img": "extractor-tool",  // Select the tool to extract image files (JPG, PNG, TIFF, etc.)
+        "ocr": "extractor-tool",  // Select the tool to extract image files (JPG, PNG, TIFF, etc.)
         "language": "lang"        // Select the defaut language of your document. This is used to increase the accuracy of OCR tools (See section 2.2)
     },
     // The cleaner pipeline consists of a list of modules that will run on given file (See section 3.)
@@ -147,7 +147,7 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
   "version": 0.5,
   "extractor": {
     "pdf": "pdfminer",
-    "img": "tesseract",
+    "ocr": "tesseract",
     "language": ["eng", "fra"]
   },
   "cleaner": [

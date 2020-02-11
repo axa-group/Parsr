@@ -104,7 +104,7 @@ function main(): void {
   } else if (fileType.ext === 'pdf') {
     orchestrator = new Orchestrator(utils.getPdfExtractor(config), cleaner);
   } else if (fileType.mime.slice(0, 5) === 'image') {
-    orchestrator = getImgExtractor();
+    orchestrator = getOcrExtractor();
   } else if (fileType.ext === 'json') {
     orchestrator = getJsonExtractor();
   } else if (fileType.ext === 'eml') {
@@ -134,7 +134,7 @@ function main(): void {
           logger.info(
             `Since the input file is a PDF with only images, trying to run an OCR on all pages...`,
           );
-          return getImgExtractor().run(filePath);
+          return getOcrExtractor().run(filePath);
         }
         return doc;
       })
@@ -288,12 +288,12 @@ function main(): void {
   }
 
   /**
-   * Returns the img extraction orchestrator depending on the extractor selection made in the configuration.
+   * Returns the ocr extraction orchestrator depending on the extractor selection made in the configuration.
    *
    * @returns The Orchestrator instance
    */
-  function getImgExtractor(): Orchestrator {
-    switch (config.extractor.img) {
+  function getOcrExtractor(): Orchestrator {
+    switch (config.extractor.ocr) {
       case 'tesseract': return new Orchestrator(new TesseractExtractor(config), cleaner);
       case 'google-vision': return new Orchestrator(new GoogleVisionExtractor(config), cleaner);
       case 'ms-cognitive-services': return new Orchestrator(new MicrosoftCognitiveExtractor(config), cleaner);

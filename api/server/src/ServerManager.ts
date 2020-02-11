@@ -19,7 +19,7 @@ export interface ConfigFile {
   version: number;
   extractor: {
     pdf: string;
-    img: string;
+    ocr: string;
     language: string[];
     credentials?: object;
   };
@@ -103,7 +103,7 @@ export class ServerManager {
 
   private fillExtractorConfig(extractor: ConfigFile["extractor"]): ConfigFile["extractor"] {
     const pdfConfig = this.getExtractorConfig(extractor.pdf);
-    const ocrConfig = this.getExtractorConfig(extractor.img);
+    const ocrConfig = this.getExtractorConfig(extractor.ocr);
     if (!extractor.credentials) {
       extractor.credentials = {};
     }
