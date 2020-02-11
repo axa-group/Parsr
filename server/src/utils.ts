@@ -59,6 +59,37 @@ export class CommandExecuter {
   };
 
   public static async run(cmd: string | string[], args: string[], options?: any): Promise<string> {
+    if (this.COMMANDS.PDF2TXT === cmd || this.COMMANDS.DUMPPDF === cmd) {
+      // Last PdfMiner requires to be ran --> python /path_to_pdf2txt/pdf2txt.py
+      return this.runPythonCommand(cmd, args, options);
+    } else {
+      return this.runCommand(cmd, args, options);
+    }
+  }
+
+  private static runPythonCommand(
+    cmd: string | string[],
+    args: string[],
+    options?: any,
+  ): Promise<string> {
+    const pdf2txtPath = getCommandLocationOnSystem(cmd[0], cmd[1]);
+    if (!pdf2txtPath) {
+      return new Promise((_resolve, reject) => {
+        return reject({
+          found: false,
+          error: `${cmd.toString()} was not found on the system. Are you sure it is installed and added to PATH?`,
+        });
+      });
+    }
+    const newArgs = [pdf2txtPath].concat(args);
+    return this.runCommand(this.COMMANDS.PYTHON, newArgs, options);
+  }
+
+  private static runCommand(
+    cmd: string | string[],
+    args: string[],
+    options?: any,
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
       let command = '';
       if (Array.isArray(cmd)) {
@@ -812,8 +843,7 @@ export function getCommandLocationOnSystem(
   if (result === null) {
     return null;
   }
-
-  return firstChoice;
+  return result;
 }
 
 /**
