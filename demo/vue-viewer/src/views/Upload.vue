@@ -45,10 +45,11 @@
           <legend>GOOGLE_APPLICATION_CREDENTIALS<sup>*</sup></legend>
           <input
             type="file"
-            @change="googleCredentialsChanged"
+            @change="googleCredentialChanged"
             id="googleVisionCredentials"
             name="googleVisionCredentials"
             accept="application/json"
+            style="border-style: groove"
           />
         </div>
         <div
@@ -56,14 +57,19 @@
           v-if="defaultConfig.extractor.img === 'ms-cognitive-services'"
         >
           <legend>Ocp-Apim-Subscription-Key<sup>*</sup></legend>
-          <input style="border-style: groove" id="MSAPIKEY" name="MSAPIKEY" v-model="msApiKey" />
+          <input
+            style="border-style: groove"
+            id="MSAPIKEY"
+            name="MSAPIKEY"
+            v-model="OCP_APIM_SUBSCRIPTION_KEY"
+          />
 
           <legend>Endpoint<sup>*</sup></legend>
           <input
             style="border-style: groove"
             id="MSENDPOINT"
             name="MSENDPOINT"
-            v-model="msEndpoint"
+            v-model="OCP_APIM_ENDPOINT"
           />
         </div>
         <div
@@ -75,7 +81,7 @@
             style="border-style: groove"
             id="awsKeyId"
             name="awsKeyId"
-            v-model="awsAccessKeyId"
+            v-model="AWS_ACCESS_KEY_ID"
           />
 
           <legend>Secret_access_key<sup>*</sup></legend>
@@ -83,7 +89,7 @@
             style="border-style: groove"
             id="awsSecretKey"
             name="awsSecretKey"
-            v-model="awsSecretAccessKey"
+            v-model="AWS_SECRET_ACCESS_KEY"
           />
         </div>
 
@@ -96,7 +102,7 @@
             style="border-style: groove"
             id="abbyyServerUrl"
             name="abbyyServerUrl"
-            v-model="abbyyServerUrl"
+            v-model="ABBYY_SERVER_URL"
           />
 
           <legend>Abbyy_server_ver<sup>*</sup></legend>
@@ -104,7 +110,7 @@
             style="border-style: groove"
             id="abbyyServerVer"
             name="abbyyServerVer"
-            v-model="abbyyServerVer"
+            v-model="ABBYY_SERVER_VER"
           />
 
           <legend>Abbyy_server_workflow<sup>*</sup></legend>
@@ -112,7 +118,7 @@
             style="border-style: groove"
             id="abbyyServerWorkflow"
             name="abbyyServerWorkflow"
-            v-model="abbyyServerWorkflow"
+            v-model="ABBYY_WORKFLOW"
           />
         </div>
       </fieldset>
@@ -159,6 +165,7 @@
 import CheckIcon from '@/assets/check.png';
 import { mapState } from 'vuex';
 import { setInterval, clearInterval, setTimeout } from 'timers';
+import credentialsMixin from '@/mixins/serviceCredentials';
 import ConfigItem from '@/components/UploadConfig/ConfigItem';
 export default {
   data() {
@@ -166,14 +173,6 @@ export default {
       items: [true, false],
       checkIcon: CheckIcon,
       file: null,
-      gvCredentials: null,
-      msApiKey: null,
-      msEndpoint: 'https://westeurope.api.cognitive.microsoft.com/',
-      awsAccessKeyId: null,
-      awsSecretAccessKey: null,
-      abbyyServerUrl: null,
-      abbyyServerVer: null,
-      abbyyServerWorkflow: null,
       loading: false,
       processStatus: [],
       processStatusCompleted: false,
@@ -181,6 +180,7 @@ export default {
       customConfig: null,
     };
   },
+  mixins: [credentialsMixin],
   components: { ConfigItem },
   computed: {
     ...mapState({
@@ -198,13 +198,14 @@ export default {
     isSubmitDisabled() {
       return (
         !this.file ||
-        (this.customConfig.extractor.img === 'google-vision' && !this.gvCredentials) ||
+        (this.customConfig.extractor.img === 'google-vision' &&
+          !this.GOOGLE_APPLICATION_CREDENTIALS) ||
         (this.customConfig.extractor.img === 'ms-cognitive-services' &&
-          !(this.msApiKey && this.msEndpoint)) ||
+          !(this.OCP_APIM_SUBSCRIPTION_KEY && this.OCP_APIM_ENDPOINT)) ||
         (this.customConfig.extractor.img === 'amazon-textract' &&
-          !(this.awsAccessKeyId && this.awsSecretAccessKey)) ||
+          !(this.AWS_ACCESS_KEY_ID && this.AWS_SECRET_ACCESS_KEY)) ||
         (this.customConfig.extractor.img === 'abbyy' &&
-          !(this.abbyyServerUrl && this.abbyyServerVer && this.abbyyServerWorkflow))
+          !(this.ABBYY_SERVER_URL && this.ABBYY_SERVER_VER && this.ABBYY_WORKFLOW))
       );
     },
     /*
@@ -272,8 +273,12 @@ export default {
     fileChanged(event) {
       this.file = event.target.files[0];
     },
-    googleCredentialsChanged(event) {
-      this.gvCredentials = event.target.files[0];
+    googleCredentialChanged(event) {
+      const reader = new FileReader();
+      reader.readAsText(event.target.files[0]);
+      reader.onload = e => {
+        this.GOOGLE_APPLICATION_CREDENTIALS = JSON.parse(e.target.result);
+      };
     },
     trackPipeStatus() {
       const interval = setInterval(() => {
@@ -314,16 +319,6 @@ export default {
         .dispatch('postDocument', {
           file: this.file,
           configuration: this.configAsBinary,
-          credentials: {
-            googleVision: this.gvCredentials,
-            msApiKey: this.msApiKey,
-            msEndpoint: this.msEndpoint,
-            awsAccessKeyId: this.awsAccessKeyId,
-            awsSecretAccessKey: this.awsSecretAccessKey,
-            abbyyServerUrl: this.abbyyServerUrl,
-            abbyyServerVer: this.abbyyServerVer,
-            abbyyServerWorkflow: this.abbyyServerWorkflow,
-          },
         })
         .then(() => {
           this.processStatus = ['Upload Completed'];

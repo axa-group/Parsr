@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-import { readdirSync, readFileSync } from 'fs';
+import { existsSync, readdirSync, readFileSync } from 'fs';
 export interface ConfigFile {
   version: number;
-  extractor: object;
+  extractor: {
+    pdf: string;
+    img: string;
+    language: string[];
+    credentials?: object;
+  };
   cleaner: object[];
   output: object[];
 }
@@ -25,6 +30,7 @@ export interface ConfigFile {
 export class ServerManager {
   private defaultConfigPath: string = `../../server/defaultConfig.json`;
   private defaultModulesFolder: string = `../../server/src/processing`;
+  private defaultExtractorsFolder: string = '../../server/src/input';
 
   /**
    * Returns the default configuration of the server
@@ -36,6 +42,7 @@ export class ServerManager {
   public getDefaultConfigWithSpecs(): ConfigFile {
     const mainDefaultConfig = this.getDefaultConfig();
     mainDefaultConfig.cleaner = mainDefaultConfig.cleaner.map(this.fillModuleWithSpecs.bind(this));
+    mainDefaultConfig.extractor = this.fillExtractorConfig(mainDefaultConfig.extractor);
     return mainDefaultConfig;
   }
 
@@ -92,5 +99,34 @@ export class ServerManager {
 
     // if length === 2, config has parameters. if not, i return only the module name as a string
     return mergedResult.length === 2 ? mergedResult : mergedResult[0];
+  }
+
+  private fillExtractorConfig(extractor: ConfigFile["extractor"]): ConfigFile["extractor"] {
+    const pdfConfig = this.getExtractorConfig(extractor.pdf);
+    const ocrConfig = this.getExtractorConfig(extractor.img);
+    if (!extractor.credentials) {
+      extractor.credentials = {};
+    }
+    extractor.credentials = {
+      ...pdfConfig,
+      ...ocrConfig,
+      ...extractor.credentials,
+    };
+    return extractor;
+  }
+
+  private getExtractorConfig(name: string): any {
+    const path = this.defaultExtractorsFolder
+    + '/' + name + '/credentials.json';
+    if (existsSync(path)) {
+      return JSON.parse(
+        readFileSync(
+          path,
+          'utf-8',
+        ),
+      );
+    } else {
+      return {};
+    }
   }
 }

@@ -1,4 +1,5 @@
 import * as vision from '@google-cloud/vision';
+import { writeFileSync } from 'fs';
 import { Config } from '../../types/Config';
 import {
   BoundingBox,
@@ -11,6 +12,7 @@ import {
   Paragraph,
   Word,
 } from '../../types/DocumentRepresentation';
+import { getTemporaryFile } from '../../utils';
 import { OcrExtractorFactory } from '../OcrExtractor';
 import * as credentials from './credentials.json';
 
@@ -111,11 +113,21 @@ export class GoogleVisionExtractor extends OcrExtractorFactory {
   constructor(config: Config) {
     super(config, credentials);
     this.checkCredentials([
-      'GOOGLE_APPLICATION_CREDENTIALS',
+      "auth_provider_x509_cert_url",
+      "auth_uri",
+      "client_email",
+      "client_id",
+      "client_x509_cert_url",
+      "private_key",
+      "private_key_id",
+      "project_id",
+      "token_uri",
+      "type",
     ]);
-    this.checkCredentialAsFile('GOOGLE_APPLICATION_CREDENTIALS', 'json');
 
-    process.env.GOOGLE_APPLICATION_CREDENTIALS = this.config.extractor.credentials.GOOGLE_APPLICATION_CREDENTIALS;
+    const filePath = getTemporaryFile('.json');
+    writeFileSync(filePath, JSON.stringify(this.config.extractor.credentials));
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = filePath;
   }
 
   public async scanImage(inputFile: string) {

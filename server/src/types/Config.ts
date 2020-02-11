@@ -66,9 +66,22 @@ export interface ExtractorConfig {
     ABBYY_WORKFLOW?: string; // ABBYY
     AWS_ACCESS_KEY_ID?: string; // AWS TEXTRACT
     AWS_SECRET_ACCESS_KEY?: string; // AWS TEXTRACT
-    GOOGLE_APPLICATION_CREDENTIALS?: string; // GOOGLE VISION
-    OCP_APIM_SUBSCRIPTION_KEY?: string; // MS COGNITIVE SERVICES
-    OCP_APIM_ENDPOINT?: string; // MS COGNITIVE SERVICES
+
+    // GOOGLE VISION
+    auth_provider_x509_cert_url?: string;
+    auth_uri?: string;
+    client_email?: string;
+    client_id?: string;
+    client_x509_cert_url?: string;
+    private_key?: string;
+    private_key_id?: string;
+    project_id?: string;
+    token_uri?: string;
+    type?: string;
+
+    // MS COGNITIVE SERVICES
+    OCP_APIM_SUBSCRIPTION_KEY?: string;
+    OCP_APIM_ENDPOINT?: string;
   };
 
   language: TesseractLanguage | TesseractLanguage[];
