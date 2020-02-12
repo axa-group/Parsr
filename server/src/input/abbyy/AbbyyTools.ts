@@ -85,9 +85,9 @@ export class AbbyyTools extends Extractor {
   }
 
   public run(inputFile: string): Promise<Document> {
-    const host: string = this.config.extractor.credentials.ABBYY_SERVER_URL; // 172.23.132.137
-    const serverVersion: string = this.config.extractor.credentials.ABBYY_SERVER_VER; // 14
-    const workflowName: string = this.config.extractor.credentials.ABBYY_WORKFLOW; // workflow-hotfolder-d_drive
+    const host: string = this.config.extractor.credentials.ABBYY_SERVER_URL;
+    const serverVersion: string = this.config.extractor.credentials.ABBYY_SERVER_VER;
+    const workflowName: string = this.config.extractor.credentials.ABBYY_WORKFLOW;
     const serverTimeout: number = 50000;
     const jobPollingInterval: number = 1000;
 
