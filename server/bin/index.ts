@@ -216,7 +216,10 @@ function main(): void {
         return Promise.all(promises);
       })
       .catch(err => {
-        logger.error(`There was an error running the orchestrator: ${JSON.stringify(err)}`);
+        if (err && err.stack) {
+          logger.error(`There was an error running the orchestrator: ${err.stack}`);
+        }
+        logger.error(JSON.stringify(err));
       });
   }
 

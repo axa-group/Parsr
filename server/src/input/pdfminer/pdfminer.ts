@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,13 +111,23 @@ export function xmlParser(xmlPath: string): Promise<any> {
       },
     };
 
-    const pushWord = (word, array) => {
+    const pushWord = (word, array, index = null) => {
+      let element = {};
       if (word.$text != null && word.$ != null) {
-        array.push({ _: word.$text.toString(), _attr: word.$ });
+        element = { _: word.$text.toString(), _attr: word.$ };
       } else if (word.$ != null) {
-        array.push({ _attr: word.$ });
+        element = { _attr: word.$ };
+      }
+      pushElement(element, array, index);
+    };
+
+    const pushElement = (element, array, index = null) => {
+      if (index != null) {
+        array[index] = array[index] || [];
+        array[index].push(element);
       } else {
-        array.push({}); // Needed or 'spaces' will not work to split lines into words
+        array = array || [];
+        array.push(element);
       }
     };
 
@@ -126,28 +136,26 @@ export function xmlParser(xmlPath: string): Promise<any> {
     });
 
     xml.on('endElement: page > textbox > textline', line => {
-      textLines.push({ _attr: line.$, text: texts });
+      pushElement({ _attr: line.$, text: texts }, textLines);
       texts = [];
     });
 
     xml.on('endElement: page > textbox', line => {
-      textBoxes.push({ _attr: line.$, textline: textLines });
+      pushElement({ _attr: line.$, textline: textLines }, textBoxes);
       textLines = [];
     });
 
     xml.on('startElement: figure', figFigure => {
-      recursiveFigures.ids.push(figFigure.$.name);
+      pushElement(figFigure.$.name, recursiveFigures.ids);
     });
 
     xml.on('startElement: image', figImage => {
-      if (recursiveFigures.images[recursiveFigures.currentFigure()] == null) {
-        recursiveFigures.images[recursiveFigures.currentFigure()] = [];
-      }
-      recursiveFigures.images[recursiveFigures.currentFigure()].push({ _attr: figImage.$ });
+      pushElement({ _attr: figImage.$ }, recursiveFigures.images, recursiveFigures.currentFigure());
     });
 
     xml.on('endElement: figure text', figText => {
-      pushWord(figText, recursiveFigures.texts[recursiveFigures.currentFigure()]);
+      const index = recursiveFigures.currentFigure();
+      pushWord(figText, recursiveFigures.texts, index);
     });
 
     xml.on('endElement: page > figure figure', figure => {
@@ -159,20 +167,20 @@ export function xmlParser(xmlPath: string): Promise<any> {
         figure: recursiveFigures.figures[current],
       };
       recursiveFigures.ids.pop();
-      recursiveFigures.figures[recursiveFigures.currentFigure()].push(recursiveFigure);
+      pushElement(recursiveFigure, recursiveFigures.figures, recursiveFigures.currentFigure());
     });
 
     xml.on('endElement: page > figure', figure => {
-      figures.push({
+      pushElement({
         _attr: figure.$,
         image: recursiveFigures.images[figure.$.name],
         text: recursiveFigures.texts[figure.$.name],
         figure: recursiveFigures.figures[figure.$.name],
-      });
+      }, figures);
     });
 
     xml.on('updateElement: page', pageElement => {
-      allPages.push({ _attr: pageElement.$, textbox: textBoxes, figure: figures });
+      pushElement({ _attr: pageElement.$, textbox: textBoxes, figure: figures }, allPages);
       textBoxes = [];
       figures = [];
     });
