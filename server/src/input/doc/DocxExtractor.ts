@@ -14,29 +14,24 @@
  * limitations under the License.
  */
 
-import { dirname } from 'path';
 import { Document } from '../../types/DocumentRepresentation';
-import { CommandExecuter, convertHTMLToPDF, getPdfExtractor } from '../../utils';
+import { convertHTMLToPDF, getPdfExtractor } from '../../utils';
+import * as CommandExecuter from '../../utils/CommandExecuter';
 import { Extractor } from '../Extractor';
 
 export class DocxExtractor extends Extractor {
   public async run(inputFile: string): Promise<Document> {
-    const fullPDF = await this.convertDocxToPDF(inputFile, inputFile.replace('.docx', '-tmp.pdf'));
-    const mainDocument: Document = await getPdfExtractor(this.config).run(fullPDF);
+    const html = await CommandExecuter.pandocDocxToHtml(inputFile);
+    const htmlToPdf = await convertHTMLToPDF(
+      this.applyStyles(html),
+      inputFile.replace('.docx', '-tmp.pdf'),
+    );
+    const mainDocument: Document = await getPdfExtractor(this.config).run(htmlToPdf);
     return mainDocument;
   }
 
-  private async convertDocxToPDF(inputFile: string, outputFile: string): Promise<string> {
-    const assetsFolder = dirname(inputFile);
-    const html = await CommandExecuter.run(CommandExecuter.COMMANDS.PANDOC, [
-      inputFile,
-      '--extract-media',
-      assetsFolder,
-      '-t',
-      'html5',
-    ]);
-
-    return convertHTMLToPDF(`
+  private applyStyles(html: string): string {
+    return `
       <style>
       body, html {
         height: 210mm !important;
@@ -50,6 +45,6 @@ export class DocxExtractor extends Extractor {
         border-collapse: collapse;
       }
       </style>
-      `.concat(html), outputFile);
+      `.concat(html);
   }
 }

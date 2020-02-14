@@ -37,6 +37,7 @@ import { TextExporter } from '../src/output/text/TextExporter';
 import { Config } from '../src/types/Config';
 import { Document, Image } from '../src/types/DocumentRepresentation/';
 import * as utils from '../src/utils';
+import * as CommandExecuter from '../src/utils/CommandExecuter';
 import logger from '../src/utils/Logger';
 
 /**
@@ -294,11 +295,16 @@ function main(): void {
    */
   function getImgExtractor(): Orchestrator {
     switch (config.extractor.img) {
-      case 'tesseract': return new Orchestrator(new TesseractExtractor(config), cleaner);
-      case 'google-vision': return new Orchestrator(new GoogleVisionExtractor(config), cleaner);
-      case 'ms-cognitive-services': return new Orchestrator(new MicrosoftCognitiveExtractor(config), cleaner);
-      case 'amazon-textract': return new Orchestrator(new AmazonTextractExtractor(config), cleaner);
-      default: return new Orchestrator(new AbbyyTools(config), cleaner);
+      case 'tesseract':
+        return new Orchestrator(new TesseractExtractor(config), cleaner);
+      case 'google-vision':
+        return new Orchestrator(new GoogleVisionExtractor(config), cleaner);
+      case 'ms-cognitive-services':
+        return new Orchestrator(new MicrosoftCognitiveExtractor(config), cleaner);
+      case 'amazon-textract':
+        return new Orchestrator(new AmazonTextractExtractor(config), cleaner);
+      default:
+        return new Orchestrator(new AbbyyTools(config), cleaner);
     }
   }
 }
@@ -310,12 +316,11 @@ function main(): void {
  */
 function printVersion() {
   try {
-    const message = utils
-      .spawnSync(
-        'git',
-        ['--no-pager', 'show', '-s', '--no-color', '--format=[%h] %d - %s - (%cd, %cn <%ce>)'],
-        { encoding: 'utf-8' },
-      )
+    const message = CommandExecuter.spawnSync(
+      'git',
+      ['--no-pager', 'show', '-s', '--no-color', '--format=[%h] %d - %s - (%cd, %cn <%ce>)'],
+      { encoding: 'utf-8' },
+    )
       .output.join('')
       .trim();
     logger.info('Current version: ' + message);

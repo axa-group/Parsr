@@ -16,14 +16,8 @@
 
 import * as limit from 'limit-async';
 import * as pdfjs from 'pdfjs-dist';
-import {
-  BoundingBox,
-  Document,
-  Font,
-  Page,
-  Word,
-} from '../../types/DocumentRepresentation';
-import * as utils from '../../utils';
+import { BoundingBox, Document, Font, Page, Word } from '../../types/DocumentRepresentation';
+import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 
 /**
@@ -38,18 +32,21 @@ import logger from '../../utils/Logger';
 // this is for limiting page fetching to 10 at the same time and avoid memory overflows
 const limiter = limit(10);
 
-const rgbToHex = (r, g, b) => '#' + [r, g, b].map(x => {
-  const hex = x.toString(16);
-  return hex.length === 1 ? '0' + hex : hex;
-})
-  .join('');
+const rgbToHex = (r, g, b) =>
+  '#' +
+  [r, g, b]
+    .map(x => {
+      const hex = x.toString(16);
+      return hex.length === 1 ? '0' + hex : hex;
+    })
+    .join('');
 
 export function execute(pdfInputFile: string): Promise<Document> {
   logger.info('Running extractor PDF.js');
   const startTime: number = Date.now();
 
   return new Promise<Document>((resolveDocument, rejectDocument) => {
-    return utils.repairPdf(pdfInputFile).then((repairedPdf: string) => {
+    return CommandExecuter.repairPdf(pdfInputFile).then((repairedPdf: string) => {
       const pages: Array<Promise<Page>> = [];
       try {
         return (pdfjs.getDocument(repairedPdf) as any).promise.then(doc => {
@@ -99,19 +96,15 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
         item.width = -item.width;
       }
       const f = fontStyles[item.fontName];
-      const font = new Font(
-        [f.fontName, f.fontFamily].join(','),
-        transform[0],
-        {
-          isItalic: f.italic,
-          weight: f.bold ? 'bold' : 'normal',
-          color: rgbToHex(item.color[0], item.color[1], item.color[2]),
-        },
-      );
+      const font = new Font([f.fontName, f.fontFamily].join(','), transform[0], {
+        isItalic: f.italic,
+        weight: f.bold ? 'bold' : 'normal',
+        color: rgbToHex(item.color[0], item.color[1], item.color[2]),
+      });
       const words = text.split(' ');
       let wordLeft = transform[4];
       const avgCharWidth = item.width / text.length;
-      words.forEach((word) => {
+      words.forEach(word => {
         const wordWidth = (word.length / text.length) * item.width;
         // TODO use transform array to calculate BBox rotation for vertical words (ex. in testReadingOrder.pdf)
         const wordBB = new BoundingBox(
@@ -125,23 +118,23 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
           and it should be part of the last word pushed to the pageElements array.
         */
         if (
-          pageElements[pageElements.length - 1]
-          && pageElements[pageElements.length - 1].content.toString().trim().length > 0
-          && pageElements[pageElements.length - 1].left
-          + pageElements[pageElements.length - 1].width + 1 > wordBB.left
-          && pageElements[pageElements.length - 1].left
-          + pageElements[pageElements.length - 1].width - 1 < wordBB.left
+          pageElements[pageElements.length - 1] &&
+          pageElements[pageElements.length - 1].content.toString().trim().length > 0 &&
+          pageElements[pageElements.length - 1].left +
+            pageElements[pageElements.length - 1].width +
+            1 >
+            wordBB.left &&
+          pageElements[pageElements.length - 1].left +
+            pageElements[pageElements.length - 1].width -
+            1 <
+            wordBB.left
         ) {
           pageElements[pageElements.length - 1].width += wordBB.width;
-          pageElements[pageElements.length - 1].content = pageElements[pageElements.length - 1].content.concat(word);
+          pageElements[pageElements.length - 1].content = pageElements[
+            pageElements.length - 1
+          ].content.concat(word);
         } else {
-          pageElements.push(
-            new Word(
-              wordBB,
-              word,
-              font,
-            ),
-          );
+          pageElements.push(new Word(wordBB, word, font));
         }
 
         /*
@@ -153,9 +146,5 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
     }
   });
 
-  return new Page(
-    pageNum,
-    pageElements,
-    new BoundingBox(0, 0, viewport.width, viewport.height),
-  );
+  return new Page(pageNum, pageElements, new BoundingBox(0, 0, viewport.width, viewport.height));
 }

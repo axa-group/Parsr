@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ import * as fs from 'fs';
 import { DOMParser } from 'xmldom';
 import { BoundingBox, Document, Page, Word } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
+import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 
@@ -85,6 +86,26 @@ export class LinkDetectionModule extends Module {
   */
   private getFileMetadata(pdfFilePath: string): Promise<any> {
     return new Promise((resolve, reject) => {
+      CommandExecuter.dumpPdf(pdfFilePath)
+        .then(xmlOutputPath => {
+          const xml: string = fs.readFileSync(xmlOutputPath, 'utf8');
+          try {
+            logger.debug(`Converting dumppdf's XML output to JS object..`);
+            const xmlStringSerialized = new DOMParser().parseFromString(xml, 'text/xml');
+            utils.parseXmlToObject(xmlStringSerialized).then((obj: any) => {
+              resolve(obj);
+            });
+          } catch (err) {
+            reject(`parseXml failed: ${err}`);
+          }
+        })
+        .catch(() => {
+          resolve();
+        });
+    });
+  }
+  /*private getFileMetadata_(pdfFilePath: string): Promise<any> {
+    return new Promise((resolve, reject) => {
       logger.info(`Extracting metadata with pdfminer's dumppdf.py tool...`);
       const xmlOutputFile: string = utils.getTemporaryFile('.xml');
       const dumppdfArguments = ['-a', '-o', xmlOutputFile, pdfFilePath];
@@ -92,7 +113,7 @@ export class LinkDetectionModule extends Module {
       if (!fs.existsSync(xmlOutputFile)) {
         fs.appendFileSync(xmlOutputFile, '');
       }
-      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.DUMPPDF, dumppdfArguments)
+      CommandExecuter.run(CommandExecuter.COMMANDS.DUMPPDF, dumppdfArguments)
         .then(() => {
           const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
           try {
@@ -114,7 +135,7 @@ export class LinkDetectionModule extends Module {
           }
         });
     });
-  }
+  }*/
 
   /*
     parses the JSON metadata given by dumppdf.py and returns only the matched links on each page

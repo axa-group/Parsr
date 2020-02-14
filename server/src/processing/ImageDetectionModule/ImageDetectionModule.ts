@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ import * as filetype from 'file-type';
 import * as fs from 'fs';
 import { Document, Image } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
+import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 
@@ -41,9 +42,11 @@ export class ImageDetectionModule extends Module {
     if (images.length > 0) {
       images.forEach(img => (img.enabled = true));
       const assets: string[] = fs.readdirSync(doc.assetsFolder);
-      const dumpPdf = await this.getFileMetadata(doc.inputFile);
-      this.linkXObjectToImages(images, dumpPdf);
-      this.linkXObjectWithExtensions(images, assets);
+      const dumpPdfData = await this.getFileMetadata(doc.inputFile);
+      if (dumpPdfData != null) {
+        this.linkXObjectToImages(images, dumpPdfData);
+        this.linkXObjectWithExtensions(images, assets);
+      }
     }
     return doc;
   }
@@ -70,25 +73,13 @@ export class ImageDetectionModule extends Module {
   }
 
   private getFileMetadata(pdfFilePath: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      logger.info(`Extracting metadata with pdfminer's dumppdf.py tool...`);
-      const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-      const dumppdfArguments = ['-a', '-o', xmlOutputFile, pdfFilePath];
-
-      if (!fs.existsSync(xmlOutputFile)) {
-        fs.appendFileSync(xmlOutputFile, '');
-      }
-      utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.DUMPPDF, dumppdfArguments)
-        .then(() => {
-          resolve(fs.readFileSync(xmlOutputFile, 'utf8'));
+    return new Promise(resolve => {
+      CommandExecuter.dumpPdf(pdfFilePath)
+        .then(xmlOutputPath => {
+          resolve(fs.readFileSync(xmlOutputPath, 'utf8'));
         })
-        .catch(({ found, error }) => {
-          logger.error(error);
-          if (!found) {
-            reject(`Could not find the necessary libraries..`);
-          } else {
-            reject(error);
-          }
+        .catch(() => {
+          resolve();
         });
     });
   }
