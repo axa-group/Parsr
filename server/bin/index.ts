@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import { Cleaner } from '../src/Cleaner';
 import { AbbyyTools } from '../src/input/abbyy/AbbyyTools';
 import { AbbyyToolsXml } from '../src/input/abbyy/AbbyyToolsXml';
 import { AmazonTextractExtractor } from '../src/input/amazon-textract/AmazonTextractExtractor';
+import { DocxExtractor } from '../src/input/doc/DocxExtractor';
 import { EmailExtractor } from '../src/input/email/EmailExtractor';
 import { GoogleVisionExtractor } from '../src/input/google-vision/GoogleVisionExtractor';
 import { JsonExtractor } from '../src/input/json/JsonExtractor';
@@ -108,6 +109,8 @@ function main(): void {
     orchestrator = getJsonExtractor();
   } else if (fileType.ext === 'eml') {
     orchestrator = getEmlExtractor();
+  } else if (fileType.ext === 'docx') {
+    orchestrator = getDocxExtractor();
   } else {
     throw new Error('Input file format is unsupported');
   }
@@ -213,7 +216,10 @@ function main(): void {
         return Promise.all(promises);
       })
       .catch(err => {
-        logger.error(`There was an error running the orchestrator: ${err}`);
+        if (err && err.stack) {
+          logger.error(`There was an error running the orchestrator: ${err.stack}`);
+        }
+        logger.error(JSON.stringify(err));
       });
   }
 
@@ -265,6 +271,14 @@ function main(): void {
    */
   function getEmlExtractor(): Orchestrator {
     return new Orchestrator(new EmailExtractor(config), cleaner);
+  }
+
+  /**
+   * Returns the docx extraction orchestrator.
+   * @returns The Orchestrator instance
+   */
+  function getDocxExtractor(): Orchestrator {
+    return new Orchestrator(new DocxExtractor(config), cleaner);
   }
 
   /**

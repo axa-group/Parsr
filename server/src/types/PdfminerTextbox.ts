@@ -23,8 +23,12 @@ export class PdfminerTextbox {
   };
   public textline: PdfminerTextline[];
 
-  constructor(textbox: PdfminerTextbox) {
-    this._attr = textbox._attr;
-    this.textline = textbox.textline;
+  constructor(jsonObj: any) {
+    this._attr = jsonObj._attr;
+    if (Array.isArray(jsonObj.textline)) {
+      this.textline = jsonObj.textline.map(textLine => new PdfminerTextline(textLine));
+    } else if (jsonObj.textline != null) {
+      this.textline = [new PdfminerTextline(jsonObj.textline)];
+    }
   }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,13 @@ import {
   spawnSync as spawnSyncChildProcess,
 } from 'child_process';
 import * as concaveman from 'concaveman';
+import HTMLToPDF from 'convert-html-to-pdf';
 import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { inspect } from 'util';
 import { OptionsV2, parseString } from 'xml2js';
-import { DOMParser } from 'xmldom';
 import { AbbyyTools } from './input/abbyy/AbbyyTools';
 import { Extractor } from './input/Extractor';
 import { PDFJsExtractor } from './input/pdf.js/PDFJsExtractor';
@@ -215,6 +215,7 @@ export function getTemporaryFile(extension: string): string {
 export function pdfToImages(pdfPath: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
     const folder = path.dirname(pdfPath).concat('/samples');
+    logger.info('Images folder --> ' + folder);
     try {
       if (!fs.existsSync(folder)) {
         fs.mkdirSync(folder);
@@ -836,8 +837,7 @@ export function groupConsecutiveNumbersInArray(theArray: number[]): number[][] {
 
 export function parseXmlToObject(xml: string, options: OptionsV2 = null): Promise<object> {
   const promise = new Promise<object>((resolveObject, rejectObject) => {
-    const xmlStringSerialized = new DOMParser().parseFromString(xml, 'text/xml');
-    parseString(xmlStringSerialized, options, (error, dataObject) => {
+    parseString(xml, options, (error, dataObject) => {
       if (error) {
         rejectObject(error);
       }
@@ -870,10 +870,14 @@ export function getEmphazisChars(text: string): string {
  */
 export function getPdfExtractor(config: Config): Extractor {
   switch (config.extractor.pdf) {
-    case 'abbyy': return new AbbyyTools(config);
-    case 'tesseract': return new TesseractExtractor(config);
-    case 'pdfjs': return new PDFJsExtractor(config);
-    default: return new PdfminerExtractor(config);
+    case 'abbyy':
+      return new AbbyyTools(config);
+    case 'tesseract':
+      return new TesseractExtractor(config);
+    case 'pdfjs':
+      return new PDFJsExtractor(config);
+    default:
+      return new PdfminerExtractor(config);
   }
 }
 /*
@@ -904,4 +908,51 @@ export function mergePDFs(files: string[], output: string): Promise<string> {
       );
     }
   });
+}
+
+export async function convertHTMLToPDF(html: string, outputFile?: string): Promise<string> {
+  let mainPDF = getTemporaryFile('.pdf');
+  if (outputFile) {
+    mainPDF = outputFile;
+  }
+
+  html = embedImagesInHTML(html);
+
+  const toPDF = new HTMLToPDF(html, {
+    browserOptions: {
+      args: ['--no-sandbox', '--font-render-hinting=none'],
+    },
+    pdfOptions: {
+      path: mainPDF,
+      width: '210mm',
+      height: '297mm',
+      margin: {
+        top: '5mm',
+        bottom: '5mm',
+        left: '5mm',
+        right: '5mm',
+      },
+    },
+  });
+
+  await toPDF.convert();
+  return mainPDF;
+}
+
+// converts the image tags in the HTML with absolute paths to tags with the data as base64
+function embedImagesInHTML(html: string): string {
+  const regexp = new RegExp(/<img src="(\/.*?)"\s(?:style=.*?)*?\s\/>/);
+  let match = null;
+  // tslint:disable-next-line: no-conditional-assignment
+  while ((match = regexp.exec(html)) !== null) {
+    const imagePath = match[1];
+
+    const extension = path.extname(imagePath);
+    let base64 = '';
+    if (fs.existsSync(imagePath)) {
+      base64 = Buffer.from(fs.readFileSync(imagePath)).toString('base64');
+    }
+    html = html.replace(imagePath, `data:image/${extension};base64,${base64}`);
+  }
+  return html;
 }

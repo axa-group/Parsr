@@ -70,6 +70,7 @@ export class ProcessManager {
     }
 
     const args: string[] = [
+      '--max-old-space-size=4096',
       `../../dist/bin/index.js`,
       '--input-file',
       path.resolve(doc),
