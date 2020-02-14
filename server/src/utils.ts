@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  exec,
-  spawn as spawnChildProcess,
-  spawnSync as spawnSyncChildProcess,
-} from 'child_process';
+import { exec } from 'child_process';
 import * as concaveman from 'concaveman';
 import HTMLToPDF from 'convert-html-to-pdf';
 import * as crypto from 'crypto';
@@ -44,120 +40,9 @@ import {
 } from './types/DocumentRepresentation';
 import logger from './utils/Logger';
 
+import * as CommandExecuter from './utils/CommandExecuter';
+
 let mutoolExtractionFolder: string = '';
-
-export class CommandExecuter {
-  public static COMMANDS = {
-    MUTOOL: 'mutool',
-    PDF2TXT: ['pdf2txt.py', 'pdf2txt'],
-    IDENTIFY: ['magick identify', 'identify'],
-    CONVERT: ['magick convert', 'convert'],
-    PANDOC: 'pandoc',
-    DUMPPDF: ['dumppdf.py', 'dumppdf'],
-    PYTHON: ['python3', 'python'],
-    QPDF: 'qpdf',
-  };
-
-  public static async run(cmd: string | string[], args: string[], options?: any): Promise<string> {
-    if (this.COMMANDS.PDF2TXT === cmd || this.COMMANDS.DUMPPDF === cmd) {
-      // Last PdfMiner requires to be ran --> python /path_to_pdf2txt/pdf2txt.py
-      return this.runPythonCommand(cmd, args, options);
-    } else {
-      return this.runCommand(cmd, args, options);
-    }
-  }
-
-  private static runPythonCommand(
-    cmd: string | string[],
-    args: string[],
-    options?: any,
-  ): Promise<string> {
-    const pdf2txtPath = getCommandLocationOnSystem(cmd[0], cmd[1]);
-    if (!pdf2txtPath) {
-      return new Promise((_resolve, reject) => {
-        return reject({
-          found: false,
-          error: `${cmd.toString()} was not found on the system. Are you sure it is installed and added to PATH?`,
-        });
-      });
-    }
-    const newArgs = [pdf2txtPath].concat(args);
-    return this.runCommand(this.COMMANDS.PYTHON, newArgs, options);
-  }
-
-  private static runCommand(
-    cmd: string | string[],
-    args: string[],
-    options?: any,
-  ): Promise<string> {
-    return new Promise((resolve, reject) => {
-      let command = '';
-      if (Array.isArray(cmd)) {
-        command = getCommandLocationOnSystem(cmd[0], cmd[1] || '', cmd[2] || '');
-      } else {
-        command = getCommandLocationOnSystem(cmd);
-      }
-      if (!command) {
-        return reject({
-          found: false,
-          error: `${cmd.toString()} was not found on the system. Are you sure it is installed and added to PATH?`,
-        });
-      }
-      logger.debug(`executing command: ${command} ${args.join(' ')}`);
-      const { stderr, stdout, status } = spawnSync(command, args, options);
-      if (status === 0) {
-        return resolve((stdout || '').toString());
-      }
-      return reject({ found: true, error: (stderr || '').toString() });
-    });
-  }
-}
-
-/**
- * Repair a pdf using the external qpdf and mutool utilities.
- * Use qpdf to decrcrypt the pdf to avoid errors due to DRMs.
- * @param filePath The absolute filename and path of the pdf file to be repaired.
- */
-export async function repairPdf(filePath: string) {
-  let qpdfOutputFile = getTemporaryFile('.pdf');
-  try {
-    await CommandExecuter.run(CommandExecuter.COMMANDS.QPDF, [
-      '--decrypt',
-      '--no-warn',
-      filePath,
-      qpdfOutputFile,
-    ]);
-    logger.info(
-      `qpdf repair successfully performed on file ${filePath}. New file at: ${qpdfOutputFile}`,
-    );
-  } catch ({ found, error }) {
-    logger.warn(error);
-    if (!found) {
-      logger.warn(`qpdf not found on the system. Not repairing the PDF...`);
-    }
-    qpdfOutputFile = filePath;
-  }
-
-  return new Promise<string>(resolve => {
-    const mupdfOutputFile = getTemporaryFile('.pdf');
-    CommandExecuter.run(CommandExecuter.COMMANDS.MUTOOL, ['clean', qpdfOutputFile, mupdfOutputFile])
-      .then(() => {
-        // Check that the file is correctly written on the file system
-        fs.fsyncSync(fs.openSync(mupdfOutputFile, 'r+'));
-        logger.info(
-          `mupdf cleaning successfully performed on file ${qpdfOutputFile}. Resulting file: ${mupdfOutputFile}`,
-        );
-        resolve(mupdfOutputFile);
-      })
-      .catch(({ found, error }) => {
-        logger.warn(error);
-        if (!found) {
-          logger.warn('MuPDF not installed !! Skip clean PDF.');
-        }
-        resolve(qpdfOutputFile);
-      });
-  });
-}
 
 export function replaceObject<T extends Element, U extends T>(
   doc: Document,
@@ -203,28 +88,6 @@ export function replaceObject<T extends Element, U extends T>(
   }
 }
 
-/**
- * Prepares a command, syncSpawns a child process and returns the object
- */
-export function spawnSync(cmd: string, args: string[], options: any = {}): any {
-  const cmdComponents: string[] = cmd.split(' ');
-  if (cmdComponents.length > 1) {
-    args.unshift(...cmdComponents.splice(1, cmdComponents.length));
-  }
-  return spawnSyncChildProcess(cmdComponents.join(' '), args, options);
-}
-
-/**
- * Prepares a command, spawns a child process and returns the object
- */
-export function spawn(cmd: string, args: string[], options: any = {}): any {
-  const cmdComponents: string[] = cmd.split(' ');
-  if (cmdComponents.length > 1) {
-    args.unshift(...cmdComponents.splice(1, cmdComponents.length));
-  }
-  return spawnChildProcess(cmdComponents.join(' '), args, options);
-}
-
 export function getMutoolExtractionFolder(): string {
   if (!mutoolExtractionFolder) {
     mutoolExtractionFolder = getTemporaryDirectory();
@@ -241,49 +104,6 @@ export function getTemporaryDirectory(): string {
 export function getTemporaryFile(extension: string): string {
   const randFilename = `${os.tmpdir()}/${crypto.randomBytes(15).toString('hex') + extension}`;
   return path.resolve(`${randFilename}`);
-}
-
-export function pdfToImages(pdfPath: string): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    const folder = path.dirname(pdfPath).concat('/samples');
-    logger.info('Images folder --> ' + folder);
-    try {
-      if (!fs.existsSync(folder)) {
-        fs.mkdirSync(folder);
-      }
-    } catch (e) {
-      throw e;
-    }
-    const outPutFilePath = folder + '/Sample_%03d.jpeg';
-    CommandExecuter.run(CommandExecuter.COMMANDS.CONVERT, [
-      '-colorspace',
-      'RGB',
-      '-density',
-      '300x300',
-      '-compress',
-      'lzw',
-      '-alpha',
-      'remove',
-      '-background',
-      'white',
-      pdfPath,
-      outPutFilePath,
-    ])
-      .then(() => {
-        const files = fs.readdirSync(folder).map(file => path.join(folder, file));
-        logger.debug(`Sample files: ${files.join('\n')}`);
-        resolve(files);
-      })
-      .catch(({ found, error }) => {
-        logger.error(error);
-        if (!found) {
-          logger.warn(
-            'ImageMagick failure: impossible to convert pdf to images (is ImageMagick installed?)',
-          );
-        }
-        reject(error);
-      });
-  });
 }
 
 /**
@@ -816,37 +636,6 @@ export function findMostCommonFont(fonts: Font[]): Font | undefined {
 }
 
 /**
- * returns the location of the executable locator command on the current system.
- * on linux/unix machines, this is 'which', on windows machines, it is 'where'.
- */
-function getExecLocationCommandOnSystem(): string {
-  return os.platform() === 'win32' ? 'where' : 'which';
-}
-
-/**
- * returns the location of a command on a system.
- * @param firstChoice the first choice name of the executable to be located
- * @param secondChoice the second choice name of the executable to be located
- * @param thirdChoice the third choice name of the executable to be located
- */
-export function getCommandLocationOnSystem(
-  firstChoice: string,
-  secondChoice: string = '',
-  thirdChoice: string = '',
-): string {
-  const cmdComponents: string[] = firstChoice.split(' ');
-  const info = spawnSync(getExecLocationCommandOnSystem(), [cmdComponents[0]]);
-  const result = info.status === 0 ? info.stdout.toString().split(os.EOL)[0] : null;
-  if (result === null && secondChoice !== '') {
-    return getCommandLocationOnSystem(secondChoice, thirdChoice);
-  }
-  if (result === null) {
-    return null;
-  }
-  return result;
-}
-
-/**
  * Returns the grouping of consecutive numbers in an array
  * @param theArray The input array of numbers
  */
@@ -915,8 +704,7 @@ export function getPdfExtractor(config: Config): Extractor {
 */
 export function mergePDFs(files: string[], output: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const command = getCommandLocationOnSystem('gs');
-    if (!command) {
+    if (!CommandExecuter.isCommandAvailable('gs')) {
       reject({
         found: false,
         error: `GhostScript was not found on the system. Are you sure it is installed and added to PATH?`,
