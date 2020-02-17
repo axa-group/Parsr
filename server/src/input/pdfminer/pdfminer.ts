@@ -116,8 +116,12 @@ export function xmlParser(xmlPath: string): Promise<any> {
       textLines = [];
     });
 
-    xml.on('startElement: figure', figFigure => {
+    xml.on('startElement: page > figure', figFigure => {
       pushElement(figFigure.$.name, recursiveFigures.ids);
+    });
+
+    xml.on('startElement: page > figure figure', figFigure => {
+      pushElement(recursiveFigures.currentFigure() + '-' + figFigure.$.name, recursiveFigures.ids);
     });
 
     xml.on('startElement: image', figImage => {
@@ -142,12 +146,15 @@ export function xmlParser(xmlPath: string): Promise<any> {
     });
 
     xml.on('endElement: page > figure', figure => {
-      pushElement({
-        _attr: figure.$,
-        image: recursiveFigures.images[figure.$.name],
-        text: recursiveFigures.texts[figure.$.name],
-        figure: recursiveFigures.figures[figure.$.name],
-      }, figures);
+      pushElement(
+        {
+          _attr: figure.$,
+          image: recursiveFigures.images[figure.$.name],
+          text: recursiveFigures.texts[figure.$.name],
+          figure: recursiveFigures.figures[figure.$.name],
+        },
+        figures,
+      );
     });
 
     xml.on('updateElement: page', pageElement => {
