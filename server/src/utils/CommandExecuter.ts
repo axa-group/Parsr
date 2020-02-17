@@ -236,7 +236,10 @@ export async function magickPdfToImages(filePath: string): Promise<string[]> {
   } catch (e) {
     Promise.reject(e);
   }
-  const outPutFilePath = folder + '/Sample_%03d.jpeg';
+  const fileName = 'Sample_' + path.basename(filePath, '.pdf');
+  const extension = 'jpeg';
+  const outPutFilePath = folder + '/' + fileName + '_%03d.' + extension;
+  const regExp = new RegExp(fileName + '_(\\d{3}).' + extension);
   const args = [
     '-colorspace',
     'RGB',
@@ -254,7 +257,10 @@ export async function magickPdfToImages(filePath: string): Promise<string[]> {
 
   return run(COMMANDS.CONVERT, magickRetroCompatibility(COMMANDS.CONVERT, args)).then(() => {
     logger.info(`Magick convert Pdf to image succeed --> ${folder}`);
-    return fs.readdirSync(folder).map(file => path.join(folder, file));
+    return fs
+      .readdirSync(folder)
+      .map(file => path.join(folder, file))
+      .filter(file => regExp.test(file));
   });
 }
 
