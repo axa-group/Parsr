@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import * as path from 'path';
 import { Document } from '../../types/DocumentRepresentation';
-import * as utils from '../../utils';
-import { CommandExecuter } from '../../utils';
+import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 import { extractImagesAndFonts } from '../extractImagesFonts';
 import { Extractor } from '../Extractor';
@@ -31,7 +29,7 @@ import * as pdfminer from './pdfminer';
  */
 export class PdfminerExtractor extends Extractor {
   public async run(inputFile: string): Promise<Document> {
-    return utils.repairPdf(inputFile).then((repairedPdf: string) => {
+    return CommandExecuter.repairPdf(inputFile).then((repairedPdf: string) => {
       return this.pageNumber(repairedPdf).then(totalPages => {
         let loggerMsg = "Extracting contents with pdfminer's pdf2txt.py tool...";
         if (totalPages != null) {
@@ -59,14 +57,14 @@ export class PdfminerExtractor extends Extractor {
   }
 
   private async pageNumber(inputFile: string): Promise<number> {
-    const args: string[] = [path.join(__dirname, '../../../assets/PdfPageNumber.py'), inputFile];
-    try {
-      const data = await CommandExecuter.run(CommandExecuter.COMMANDS.PYTHON, args);
-      return parseInt(data, 10);
-    } catch ({ error }) {
-      logger.error(`Error reading pdf total page number... ${error}`);
-    }
-    return null;
+    return CommandExecuter.pdfPagesNumber(inputFile)
+      .then(pages => {
+        return parseInt(pages, 10);
+      })
+      .catch(({ error }) => {
+        logger.error(`Error reading pdf total page number... ${error}`);
+        return null;
+      });
   }
 
   private async extractFile(

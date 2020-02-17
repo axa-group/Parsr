@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import { Config } from '../../types/Config';
 import { BoundingBox, Document, Font, Page, Word } from '../../types/DocumentRepresentation';
 import { TsvElement } from '../../types/TsvElement';
 import * as utils from '../../utils';
+import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 
 /**
@@ -41,7 +42,7 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
       configLanguages = [];
     }
 
-    const langChecker = utils.spawnSync('tesseract', ['--list-langs'], {
+    const langChecker = CommandExecuter.spawnSync('tesseract', ['--list-langs'], {
       cwd: process.cwd(),
       encoding: 'utf-8',
       env: process.env,
@@ -77,7 +78,7 @@ export function execute(imageInputFile: string, config: Config): Promise<Documen
      * Multiple languages may be specified, separated by plus characters.
      * Tesseract uses 3-character ISO 639-2 language codes.
      */
-    const tesseract = utils.spawn('tesseract', [
+    const tesseract = CommandExecuter.spawn('tesseract', [
       '-l',
       tesseractLanguages,
       imageInputFile,

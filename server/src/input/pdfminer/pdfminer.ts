@@ -29,7 +29,7 @@ import { Color } from '../../types/DocumentRepresentation/Color';
 import { PdfminerFigure } from '../../types/PdfminerFigure';
 import { PdfminerPage } from '../../types/PdfminerPage';
 import { PdfminerText } from '../../types/PdfminerText';
-import * as utils from '../../utils';
+import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 
 /**
@@ -43,47 +43,18 @@ import logger from '../../utils/Logger';
 
 export function extractPages(pdfInputFile: string, pages: string): Promise<string> {
   return new Promise<string>((resolveXml, rejectXml) => {
-    const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-    let pdf2txtArguments: string[] = [
-      '-c',
-      'utf-8',
-      '-t',
-      'xml',
-      '-o',
-      xmlOutputFile,
-      pdfInputFile,
-    ];
-
-    if (pages != null) {
-      pdf2txtArguments = ['-p', pages].concat(pdf2txtArguments);
-      const from = pages.split(',').shift();
-      const to = pages.split(',').pop();
-      logger.info(
-        'Extracting contents (pages ' + from + ' to ' + to + ") with pdfminer's pdf2txt.py tool...",
-      );
-    }
-
-    if (!fs.existsSync(xmlOutputFile)) {
-      fs.appendFileSync(xmlOutputFile, '');
-    }
-
     const startTime: number = Date.now();
-    utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.PDF2TXT, pdf2txtArguments)
-      .then(() => {
+    CommandExecuter.pdfMinerExtract(pdfInputFile, pages)
+      .then(xmlOutputPath => {
+        logger.info(`PdfMiner xml: ${(Date.now() - startTime) / 1000}s`);
         try {
-          logger.info(`PdfMiner xml: ${(Date.now() - startTime) / 1000}s`);
-          resolveXml(xmlOutputFile);
+          resolveXml(xmlOutputPath);
         } catch (err) {
-          rejectXml(`parseXml failed: ${err}`);
+          rejectXml(`PdfMiner xml parser failed: ${err}`);
         }
       })
-      .catch(({ error, found }) => {
-        logger.error(error);
-        if (!found) {
-          rejectXml(`Could not find the necessary libraries..`);
-        } else {
-          rejectXml(`pdf2txt error: ${error}`);
-        }
+      .catch(({ error }) => {
+        rejectXml(`PdfMiner pdf2txt.py error: ${error}`);
       });
   });
 }
