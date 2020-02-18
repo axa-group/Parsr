@@ -54,7 +54,6 @@ export default {
   box-sizing: border-box;
 }
 .Thumb img {
-  max-width: 80%;
   max-height: 100%;
   box-shadow: 0 0 2px 1px #ebebf1;
   margin: 10px;

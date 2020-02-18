@@ -233,7 +233,7 @@ export default {
     },
   },
   updated: function() {
-    this.container.style.height = '100%'; // parseFloat(this.containerSize.height) * this.zoom + 'px';
+    this.container.style.height = parseFloat(this.containerSize.height) * this.zoom + 'px';
     this.container.style.width = parseFloat(this.containerSize.width) * this.zoom + 'px';
   },
   mounted: function() {
