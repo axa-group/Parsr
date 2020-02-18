@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import { Document } from '../../types/DocumentRepresentation';
+import * as limit from 'limit-async';
+import { Character, Document, Page } from '../../types/DocumentRepresentation';
 import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 import { extractImagesAndFonts } from '../extractImagesFonts';
@@ -46,7 +46,7 @@ export class PdfminerExtractor extends Extractor {
             const totalSeconds = (Date.now() - startTime) / 1000;
             logger.info(
               `Total PdfMiner ${
-                totalPages != null ? '(' + totalPages.toString() + ')' : ''
+              totalPages != null ? '(' + totalPages.toString() + ')' : ''
               } time: ${totalSeconds} sec - ${totalSeconds / 60} min`,
             );
             return doc;
@@ -78,8 +78,9 @@ export class PdfminerExtractor extends Extractor {
     const extractPages = this.pagesToExtract(pageIndex, maxPages, totalPages);
     return pdfminer
       .extractPages(inputFile, totalPages != null ? extractPages : null)
-      .then((xmlOutputFile: string) => pdfminer.xmlParser(xmlOutputFile))
-      .then((json: any) => pdfminer.jsParser(json))
+      .then(pdfminer.xmlParser)
+      .then(pdfminer.jsParser)
+      .then(this.detectAndFixPageRotation(inputFile))
       .then((doc: Document) => {
         document.pages = document.pages.concat(doc.pages);
         document.pages.forEach((page, index) => (page.pageNumber = index + 1));
@@ -89,6 +90,64 @@ export class PdfminerExtractor extends Extractor {
           return document;
         }
       });
+  }
+
+  private async rotatePages(doc: Document, pages: number[], rotation: number): Promise<Document> {
+    logger.info(`pages ${pages.join(', ')} will be reprocessed with a rotation angle of ${rotation} degrees`);
+
+    const fixedDoc: Document = await pdfminer
+      .extractPages(doc.inputFile, pages.join(','), rotation)
+      .then(pdfminer.xmlParser)
+      .then(pdfminer.jsParser);
+
+    pages.forEach(pageNumber => {
+      doc.pages[pageNumber - 1] = fixedDoc.pages[pages.indexOf(pageNumber)];
+    });
+    return doc;
+  }
+
+  private detectAndFixPageRotation(inputFile: string): (doc: Document) => Promise<Document> {
+    const limiter = limit(1);
+    return async (doc: Document): Promise<Document> => {
+      doc.inputFile = inputFile;
+      const startTime: number = Date.now();
+      const pageRotations = doc.pages.map(this.getPageRotation).reduce(this.groupByRotation, {});
+      const promises = Object.keys(pageRotations)
+        .filter(r => r !== '0')
+        .map(rotation => limiter(this.rotatePages)(doc, pageRotations[rotation], rotation));
+
+      await Promise.all(promises);
+      logger.info(`Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000}s`);
+      return doc;
+    };
+  }
+
+  private getPageRotation(page: Page): number {
+    const rotations = page.elements.map((word) => {
+      if (Array.isArray(word.content) && word.content.length > 1) {
+        const { left: x1, bottom: y1 } = word.content[0] as Character;
+        const { left: x2, bottom: y2 } = word.content[word.content.length - 1] as Character;
+        const arcTan = Math.round(Math.atan((y1 - y2) / (x1 - x2)) * 180 / Math.PI);
+        return arcTan === 0 ? (x1 < x2 ? 0 : 180) : arcTan;
+      }
+      return 0;
+    });
+
+    const elementsPerRotation = rotations.reduce((acc, value) => {
+      acc[value] = acc[value] || 0;
+      acc[value] += 1;
+      return acc;
+    }, {});
+
+    const highestValue: number = Math.max(...(Object.values(elementsPerRotation) as number[]));
+    const mainRotation = Object.keys(elementsPerRotation).find(k => elementsPerRotation[k] === highestValue);
+    return parseInt(mainRotation, 10);
+  }
+
+  private groupByRotation(acc, value, index): any {
+    acc[value] = acc[value] || [];
+    acc[value].push(index + 1);
+    return acc;
   }
 
   private pagesToExtract(pageIndex: number, maxPages: number, totalPages: number) {
