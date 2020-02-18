@@ -99,9 +99,18 @@ export class PdfminerExtractor extends Extractor {
       .extractPages(doc.inputFile, pages.join(','), rotation)
       .then(pdfminer.xmlParser)
       .then(pdfminer.jsParser);
-
     pages.forEach(pageNumber => {
       doc.pages[pageNumber - 1] = fixedDoc.pages[pages.indexOf(pageNumber)];
+      doc.pages[pageNumber - 1].pageRotation = {
+        fileName: doc.inputFile,
+        degrees: -rotation,
+        translation: { x: 0, y: 0 },
+        origin: {
+          x: doc.pages[pageNumber - 1].width / 2,
+          y: doc.pages[pageNumber - 1].height / 2,
+        },
+      };
+
     });
     return doc;
   }
