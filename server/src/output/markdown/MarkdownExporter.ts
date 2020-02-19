@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import {
   Paragraph,
   Table,
 } from '../../types/DocumentRepresentation';
+import { TableOfContents } from '../../types/DocumentRepresentation/TableOfContents';
 import logger from '../../utils/Logger';
 import { Exporter } from '../Exporter';
 
@@ -57,6 +58,8 @@ export class MarkdownExporter extends Exporter {
         } else if (element instanceof List) {
           output += element.toMarkdown();
         } else if (element instanceof Table) {
+          output += element.toMarkdown();
+        } else if (element instanceof TableOfContents) {
           output += element.toMarkdown();
         } else if (element instanceof Image) {
           output += element.toMarkdownImage(this.docName);

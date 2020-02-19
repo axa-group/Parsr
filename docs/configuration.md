@@ -1,6 +1,7 @@
 # Parsr Configuration
 
 - [Parsr Configuration](#parsr-configuration)
+
   - [1. Structure](#1-structure)
   - [2. Extractor Config](#2-extractor-config)
     - [2.1. Extractor Tools](#21-extractor-tools)
@@ -11,7 +12,7 @@
     - [4.2. Granularity](#42-granularity)
     - [4.3. Include Marginals](#43-include-marginals)
   - [5. Exempli gratia](#5-exempli-gratia)
-  
+
 To configure the pipeline and choose what modules will be called and with what parameters, you have to provide a JSON file.
 There is only a few required keys:
 
@@ -31,11 +32,15 @@ The cleaner array may appear unconventionnal but is really easy to use. Every it
 
 ```js
 {
-    "version": 0.5,               // Version number of the configuration file format
+    "version": 0.9,               // Version number of the configuration file format
     "extractor": {                // Extraction options (See section 2.)
         "pdf": "extractor-tool",  // Select the tool to extract PDF files
-        "img": "extractor-tool",  // Select the tool to extract image files (JPG, PNG, TIFF, etc.)
-        "language": "lang"        // Select the default language of your document. This is used to increase the accuracy of OCR tools (See section 2.2)
+        // "img": "extractor-tool", Deprecated since 0.9 version
+        "ocr": "extractor-tool",  // Select the tool to extract image files (JPG, PNG, TIFF, etc.)
+        "language": "lang",       // Select the defaut language of your document. This is used to increase the accuracy of OCR tools (See section 2.2)
+        "credentials": {          // Extractors running online services may require credentials to work. (see section 2.3)
+          "API_KEY": "..."
+        }
     },
     // The cleaner pipeline consists of a list of modules that will run on given file (See section 3.)
     "cleaner": [
@@ -79,13 +84,45 @@ Different extractors are available for each input file format.
 - **Images:** five OCR extractors are supported for images:
   - `tesseract` which is an Open Source OCR software,
   - `abbyy`, that relies on ABBYY Finereader, a paid solution for OCR on documents and images,
-  - `google-vision`, which uses the [Google Vision](https://cloud.google.com/vision/) API to detect the contents of an image (see the [google vision documentation for more](google-vision.md)),
+  - `google-vision`, which uses the [Google Vision](https://cloud.google.com/vision/) API to detect the contents of an image (see the [google vision documentation for more](../server/src/input/google-vision/README.md)),
   - `ms-cognitive-services`, that uses [Microsoft Cognitive Services](https://azure.microsoft.com/es-es/services/cognitive-services/) OCR to detect and process text inside an image.
   - `amazon-textract`, that uses [Amazon Textract](https://us-east-2.console.aws.amazon.com/textract/home) service to detect and process text inside an image.
 
 ### 2.2. Language
 
 The language parameter is an option that will be pass to Tesseract when using it. It must be in the [Tesseract language format](https://github.com/tesseract-ocr/tesseract/blob/master/doc/tesseract.1.asc#languages), which is an equivalent of [ISO 639-2/T](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes).
+
+### 2.3 Credentials
+
+Each input module may require some credentials to work properly.
+For example, `ms-cognitive-services` extractor requires two values:
+
+```json
+{
+  "OCP_APIM_SUBSCRIPTION_KEY": "<SUBSCRIPTION_KEY>",
+  "OCP_APIM_ENDPOINT": "https://westeurope.api.cognitive.microsoft.com/"
+}
+```
+
+`OCP_APIM_SUBSCRIPTION_KEY` has to be obtained through Azure web console.
+`OCP_APIM_ENDPOINT` is required, but has a default value set.
+
+Default credential values for each module can be found in each `credentials.json` file.
+
+The recommended way to set credentials is to add them to the extractor config:
+
+```json
+  "extractor": {
+    "pdf": "pdfminer",
+    "ocr": "ms-cognitive-services",
+    "credentials": {
+      "OCP_APIM_SUBSCRIPTION_KEY": "<API_KEY>",
+      "OCP_APIM_ENDPOINT": "<API_ENDPOINT>" //as OCP_APIM_ENDPOINT is already defined in credentials.json, this key can be omitted.
+    }
+  },
+```
+
+For more information about input modules and their required credentials, you can check the [Input Modules Documentation](../server/src/input/README.md).
 
 ## 3. Cleaner Config
 
@@ -145,10 +182,10 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 
 ```json
 {
-  "version": 0.5,
+  "version": 0.9,
   "extractor": {
     "pdf": "pdfminer",
-    "img": "tesseract",
+    "ocr": "tesseract",
     "language": ["eng", "fra"]
   },
   "cleaner": [

@@ -145,8 +145,8 @@ def main():
         sys.exit(0)
 
     except Exception as e:
-        print(e)
-        sys.stdout.flush()
+        sys.stderr.write(str(e))
+        sys.stderr.flush()
         sys.exit(1)
 
 if __name__ == '__main__':

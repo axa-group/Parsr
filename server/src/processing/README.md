@@ -48,11 +48,11 @@ You can copy the [template module file](TemplateModule/README.md) to help you ha
 
 ### 2.2. Add to Register
 
-To add your newly created module to the register, simply open the [Cleaner file](../../server/src/Cleaner.ts) `/server/src/Cleaner.ts` and add your module class to the `Cleaner.cleaningToolRegister` attribute.
+To add your newly created module to the register, simply open the [Cleaner file](../Cleaner.ts) `/server/src/Cleaner.ts` and add your module class to the `Cleaner.cleaningToolRegister` attribute.
 
 ### 2.3. Add it to the Configuration
 
-If you want your module to run you need to enable it in your [configuration](../../docs/configuration.md#3-Cleaner-Config).
+If you want your module to run you need to enable it in your [configuration](../../../docs/configuration.md#3-Cleaner-Config).
 
 Simply add a line in the `cleaner` array with the name of your module, and potential options.
 

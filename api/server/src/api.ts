@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import archiver from 'archiver';
 import { exec, spawnSync } from 'child_process';
 import * as crypto from 'crypto';
 import express from 'express';
@@ -48,7 +49,8 @@ export class ApiServer {
   });
 
   private allowedMimetypes: string[] = [
-    'message/rfc822', // need to check if there can be more than one "message/xxxx"
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+    'message/rfc822', // .eml
     'application/pdf',
     'application/xml',
     'text/xml',
@@ -77,7 +79,6 @@ export class ApiServer {
     const uploadsConf: multer.Field[] = [
       { name: 'file', maxCount: 1 },
       { name: 'config', maxCount: 1 },
-      { name: 'gvCredentials', maxCount: 1 },
     ];
 
     v1_0.post('/document', this.upload.fields(uploadsConf), this.handlePostDoc.bind(this));
@@ -334,25 +335,8 @@ export class ApiServer {
       return;
     }
 
-    const credentials = {
-      googleVision: 'gvCredentials' in req.files && req.files.gvCredentials[0].path,
-      msCognitiveServices: {
-        apiKey: 'msApiKey' in req.body && req.body.msApiKey,
-        endpoint: 'msEndpoint' in req.body && req.body.msEndpoint,
-      },
-      amazonTextract: {
-        accessKeyId: 'awsAccessKeyId' in req.body && req.body.awsAccessKeyId,
-        secretAccessKey: 'awsSecretAccessKey' in req.body && req.body.awsSecretAccessKey,
-      },
-      abbyy: {
-        serverUrl: 'abbyyServerUrl' in req.body && req.body.abbyyServerUrl,
-        serverVer: 'abbyyServerVer' in req.body && req.body.abbyyServerVer,
-        serverWorkflow: 'abbyyServerWorkflow' in req.body && req.body.abbyyServerWorkflow,
-      },
-    };
-
     this.fileManager.newBinder(docId, doc.path, config.path, outputPath, docName);
-    this.processManager.start(doc.path, docId, config.path, docName, outputPath, credentials);
+    this.processManager.start(doc.path, docId, config.path, docName, outputPath);
 
     res
       .status(202)
@@ -386,20 +370,47 @@ export class ApiServer {
     }
   }
 
-  private handleGetCsvList(req: Request, res: Response) {
+  private async handleGetCsvList(req: Request, res: Response) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     const docId: string = req.params.id;
     try {
+      const fileName = this.fileManager.getBinder(docId).name;
       const folder: string = this.fileManager.getFilePath(docId, 'csvs');
-      const paths: string[] = fs.readdirSync(folder).map(filename => {
-        const match = filename.match(/-(\d+)-(\d+)\.csv$/);
-        return `${req.baseUrl}/csv/${docId}/${match[1]}/${match[2]}`;
-      });
-
-      res.json(paths);
+      const filesInFolder = fs.readdirSync(folder);
+      let paths: string[] = [];
+      if (req.query.download) {
+        paths = filesInFolder.map(this.fileToLocalPath(docId)).filter(fs.existsSync);
+        if (paths.length > 0) {
+          const zipFile = await this.compress(paths, fileName.concat('.csv'));
+          res.download(zipFile);
+        } else {
+          res.end();
+        }
+      } else {
+         paths = filesInFolder.map(this.fileToDownloadURI(docId, req.baseUrl));
+         res.json(paths);
+      }
     } catch (err) {
       res.status(404).send(err.stack);
     }
+  }
+
+  private fileToLocalPath(docId: string): (file: string) => string {
+    return (file: string) => {
+      const match = file.match(/-(\d+)-(\d+)\.csv$/);
+      return this.fileManager.getCsvFilePath(
+        docId,
+        parseInt(match[1], 10),
+        parseInt(match[2], 10),
+      );
+    };
+  }
+
+  private fileToDownloadURI(docId: string, baseUrl: string): (file: string) => string {
+    return (file: string) => {
+      const match = file.match(/-(\d+)-(\d+)\.csv$/);
+      return `${baseUrl}/csv/${docId}/${match[1]}/${match[2]}`;
+    };
   }
 
   private handleGetMarkdown(req: Request, res: Response) {
@@ -410,15 +421,55 @@ export class ApiServer {
     this.handleGetFile(req, res, 'xml');
   }
 
-  private handleGetFile(req: Request, res: Response, type: SingleFileType): void {
+  private async handleGetFile(req: Request, res: Response, type: SingleFileType): Promise<void> {
     res.setHeader('Access-Control-Allow-Origin', '*');
 
     try {
-      const file: string = this.fileManager.getFilePath(req.params.id, type);
-      res.sendFile(file);
+      let file: string = this.fileManager.getFilePath(req.params.id, type);
+      if (req.query.download && type === 'markdown') {
+        const fileName = this.fileManager.getBinder(req.params.id).name;
+        const assetsFolder = path.join(path.dirname(file), `assets_${fileName}`);
+        const filesToCompress = [file, assetsFolder].filter(fs.existsSync);
+        if (filesToCompress.length > 1) {
+          file = await this.compress(filesToCompress, fileName.concat('.md'));
+        }
+      }
+      req.query.download ? res.download(file) : res.sendFile(file);
     } catch (err) {
       res.status(404).send(err.stack);
     }
+  }
+
+  /**
+   * puts all files and folders in files array into a compressed zip file and returns it's path
+   * @param files array of paths with files and folders to compress.
+   *  The path to the first file on this array will be used as the .zip output path
+   * @param zipFileName name of the compressed zip file to generate
+   * @return path to the compressed zip file
+   */
+  private compress(files: string[], zipFileName: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      try {
+        const zipPath = zipFileName.concat('.zip');
+        const outputZip = fs.createWriteStream(zipPath);
+        outputZip.on('close', () => {
+          resolve(zipPath);
+        });
+        const archive = archiver('zip', { zlib: { level: 0 } });
+        archive.pipe(outputZip);
+        files.forEach(f => {
+          const stats = fs.statSync(f);
+          if (stats.isFile()) {
+            archive.file(f, { name: path.basename(f) });
+          } else {
+            archive.directory(f, f.split(path.sep).pop());
+          }
+        });
+        archive.finalize();
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 
   private handleRoot(req: Request, res: Response): void {
@@ -471,9 +522,11 @@ export class ApiServer {
 
     // if its an .eml, we have to change the binder extension to match the generated PDF
     // in Email Extractor and get the thumbnails of that PDF file
-    if (binder.input.endsWith('.eml')) {
-      binder.input = binder.input.replace('.eml', '-tmp.pdf');
-    }
+    ['.eml', '.docx'].forEach(ext => {
+      if (binder.input.endsWith(ext)) {
+        binder.input = binder.input.replace(ext, '-tmp.pdf');
+      }
+    });
 
     const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(binder.input));
 

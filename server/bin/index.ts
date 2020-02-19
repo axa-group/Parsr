@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import { Cleaner } from '../src/Cleaner';
 import { AbbyyTools } from '../src/input/abbyy/AbbyyTools';
 import { AbbyyToolsXml } from '../src/input/abbyy/AbbyyToolsXml';
 import { AmazonTextractExtractor } from '../src/input/amazon-textract/AmazonTextractExtractor';
+import { DocxExtractor } from '../src/input/doc/DocxExtractor';
 import { EmailExtractor } from '../src/input/email/EmailExtractor';
 import { GoogleVisionExtractor } from '../src/input/google-vision/GoogleVisionExtractor';
 import { JsonExtractor } from '../src/input/json/JsonExtractor';
@@ -36,6 +37,7 @@ import { TextExporter } from '../src/output/text/TextExporter';
 import { Config } from '../src/types/Config';
 import { Document, Image } from '../src/types/DocumentRepresentation/';
 import * as utils from '../src/utils';
+import * as CommandExecuter from '../src/utils/CommandExecuter';
 import logger from '../src/utils/Logger';
 
 /**
@@ -103,11 +105,13 @@ function main(): void {
   } else if (fileType.ext === 'pdf') {
     orchestrator = new Orchestrator(utils.getPdfExtractor(config), cleaner);
   } else if (fileType.mime.slice(0, 5) === 'image') {
-    orchestrator = getImgExtractor();
+    orchestrator = getOcrExtractor();
   } else if (fileType.ext === 'json') {
     orchestrator = getJsonExtractor();
   } else if (fileType.ext === 'eml') {
     orchestrator = getEmlExtractor();
+  } else if (fileType.ext === 'docx') {
+    orchestrator = getDocxExtractor();
   } else {
     throw new Error('Input file format is unsupported');
   }
@@ -131,7 +135,7 @@ function main(): void {
           logger.info(
             `Since the input file is a PDF with only images, trying to run an OCR on all pages...`,
           );
-          return getImgExtractor().run(filePath);
+          return getOcrExtractor().run(filePath);
         }
         return doc;
       })
@@ -213,7 +217,10 @@ function main(): void {
         return Promise.all(promises);
       })
       .catch(err => {
-        logger.error(`There was an error running the orchestrator: ${err}`);
+        if (err && err.stack) {
+          logger.error(`There was an error running the orchestrator: ${err.stack}`);
+        }
+        logger.error(JSON.stringify(err));
       });
   }
 
@@ -268,6 +275,14 @@ function main(): void {
   }
 
   /**
+   * Returns the docx extraction orchestrator.
+   * @returns The Orchestrator instance
+   */
+  function getDocxExtractor(): Orchestrator {
+    return new Orchestrator(new DocxExtractor(config), cleaner);
+  }
+
+  /**
    * Returns the json extraction orchestrator depending on the extractor selection made in the configuration.
    *
    * @returns The Orchestrator instance
@@ -277,12 +292,12 @@ function main(): void {
   }
 
   /**
-   * Returns the img extraction orchestrator depending on the extractor selection made in the configuration.
+   * Returns the ocr extraction orchestrator depending on the extractor selection made in the configuration.
    *
    * @returns The Orchestrator instance
    */
-  function getImgExtractor(): Orchestrator {
-    switch (config.extractor.img) {
+  function getOcrExtractor(): Orchestrator {
+    switch (config.extractor.ocr) {
       case 'tesseract': return new Orchestrator(new TesseractExtractor(config), cleaner);
       case 'google-vision': return new Orchestrator(new GoogleVisionExtractor(config), cleaner);
       case 'ms-cognitive-services': return new Orchestrator(new MicrosoftCognitiveExtractor(config), cleaner);
@@ -299,12 +314,11 @@ function main(): void {
  */
 function printVersion() {
   try {
-    const message = utils
-      .spawnSync(
-        'git',
-        ['--no-pager', 'show', '-s', '--no-color', '--format=[%h] %d - %s - (%cd, %cn <%ce>)'],
-        { encoding: 'utf-8' },
-      )
+    const message = CommandExecuter.spawnSync(
+      'git',
+      ['--no-pager', 'show', '-s', '--no-color', '--format=[%h] %d - %s - (%cd, %cn <%ce>)'],
+      { encoding: 'utf-8' },
+    )
       .output.join('')
       .trim();
     logger.info('Current version: ' + message);

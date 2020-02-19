@@ -69,31 +69,11 @@ export default {
   getDocumentCsv(url) {
     return apiClient.get(url.replace('/api/v1', ''));
   },
-  postDocument(file, configuration, credentials) {
+  postDocument(file, configuration) {
     const formData = new FormData();
     formData.append('file', file, file.name);
     formData.append('config', configuration);
 
-    if (credentials.googleVision) {
-      formData.append('gvCredentials', credentials.googleVision);
-    }
-    if (credentials.msApiKey) {
-      formData.append('msApiKey', credentials.msApiKey);
-      formData.append('msEndpoint', credentials.msEndpoint);
-    }
-    if (credentials.awsAccessKeyId && credentials.awsSecretAccessKey) {
-      formData.append('awsAccessKeyId', credentials.awsAccessKeyId);
-      formData.append('awsSecretAccessKey', credentials.awsSecretAccessKey);
-    }
-    if (
-      credentials.abbyyServerUrl &&
-      credentials.abbyyServerVer &&
-      credentials.abbyyServerWorkflow
-    ) {
-      formData.append('abbyyServerUrl', credentials.abbyyServerUrl);
-      formData.append('abbyyServerVer', credentials.abbyyServerVer);
-      formData.append('abbyyServerWorkflow', credentials.abbyyServerWorkflow);
-    }
     return apiClient.post('/document', formData);
   },
   getDocumentStatus(docID) {
@@ -104,5 +84,13 @@ export default {
   },
   getAPIURL() {
     return baseURL;
+  },
+  downloadLinks(docID) {
+    return {
+      json: `${baseURL}/json/${docID}?download=1`,
+      markdown: `${baseURL}/markdown/${docID}?download=1`,
+      text: `${baseURL}/text/${docID}?download=1`,
+      csv: `${baseURL}/csv/${docID}?download=1`,
+    };
   },
 };

@@ -1,0 +1,16 @@
+{
+  "name": "table-of-contents-detection",
+  "description": "Detects and parses Tables of Contents inside a document",
+  "specs": {
+    "keywords": {
+      "value": [
+        "contents"
+      ]
+    },
+    "pageKeywords": {
+      "value": [
+        "pag"
+      ]
+    }
+  }
+}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 
 import { Document } from '../../types/DocumentRepresentation';
-import * as utils from '../../utils';
 import { getTemporaryFile } from '../../utils';
+import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 import { Exporter } from '../Exporter';
 import { MarkdownExporter } from '../markdown/MarkdownExporter';
@@ -30,37 +30,16 @@ export class PdfExporter extends Exporter {
   }
 
   public export(outputPath: string): Promise<any> {
+    logger.info('Exporting PDF...');
     const markdownFilename: string = getTemporaryFile('.md');
     const markdownExporter = new MarkdownExporter(this.doc, this.includeHeaderFooter);
     return markdownExporter.export(markdownFilename).then(() => {
-      return utils.CommandExecuter.run(
-        utils.CommandExecuter.COMMANDS.PANDOC,
-        [
-          '-f',
-          'markdown_github+all_symbols_escapable',
-          '--pdf-engine=xelatex',
-          '--quiet',
-          '-s',
-          markdownFilename,
-          '-o',
-          outputPath,
-        ],
-        {
-          cwd: process.cwd(),
-          env: process.env,
-        },
-      ).then(() => {
-        logger.info(`Writing file: ${outputPath}`);
-        return Promise.resolve();
-      })
-        .catch(({ error, found }) => {
-          logger.error(`Error writing PDF file ${outputPath}`);
-          logger.error(error);
-          if (!found) {
-            logger.warn('Pandoc not installed !! Skip PDF export.');
-          }
-          return Promise.reject();
-        });
+      return CommandExecuter.pandocMdToPdf(markdownFilename, outputPath)
+        .then(pdfPath => {
+          logger.info(`Writing file: ${pdfPath}`);
+          return Promise.resolve();
+        })
+        .catch(Promise.reject);
     });
   }
 }

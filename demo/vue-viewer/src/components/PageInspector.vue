@@ -58,6 +58,14 @@
               @change="swapFilters()"
             ></v-switch>
             <v-switch
+              v-model="tocFilter"
+              label="Table of Contents"
+              class="switch"
+              color="indigo darken-3"
+              :hide-details="true"
+              @change="swapFilters()"
+            ></v-switch>
+            <v-switch
               v-model="marginsFilter"
               label="Page Margins"
               class="switch"
@@ -77,6 +85,7 @@ import { mapGetters, mapMutations } from 'vuex';
 export default {
   data() {
     return {
+      tocFilter: this.filters.TOC,
       wordsFilter: this.filters.words,
       linesFilter: this.filters.lines,
       paragraphsFilter: this.filters.paragraphs,
@@ -107,6 +116,7 @@ export default {
     ...mapMutations(['switchExpansionPanel']),
     swapFilters() {
       const newFilters = {
+        TOC: this.tocFilter,
         words: this.wordsFilter,
         lines: this.linesFilter,
         paragraphs: this.paragraphsFilter,

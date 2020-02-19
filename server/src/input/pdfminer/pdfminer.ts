@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import * as fs from 'fs';
+import * as XmlStream from 'xml-stream';
 import {
   BoundingBox,
   Character,
@@ -29,7 +29,7 @@ import { Color } from '../../types/DocumentRepresentation/Color';
 import { PdfminerFigure } from '../../types/PdfminerFigure';
 import { PdfminerPage } from '../../types/PdfminerPage';
 import { PdfminerText } from '../../types/PdfminerText';
-import * as utils from '../../utils';
+import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 
 /**
@@ -40,48 +40,150 @@ import logger from '../../utils/Logger';
  * @param pdfInputFile The path including the name of the pdf file for input.
  * @returns The promise of a valid document (in the format DocumentRepresentation).
  */
-export function execute(pdfInputFile: string): Promise<Document> {
-  return new Promise<Document>((resolveDocument, rejectDocument) => {
-    const xmlOutputFile: string = utils.getTemporaryFile('.xml');
-    logger.info(`Extracting file contents with pdfminer's pdf2txt.py tool...`);
 
-    const pdf2txtArguments: string[] = [
-      '-c',
-      'utf-8',
-      '-t',
-      'xml',
-      '-o',
-      xmlOutputFile,
-      pdfInputFile,
-    ];
-
-    if (!fs.existsSync(xmlOutputFile)) {
-      fs.appendFileSync(xmlOutputFile, '');
-    }
-
-    utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.PDF2TXT, pdf2txtArguments)
-      .then(() => {
-        const xml: string = fs.readFileSync(xmlOutputFile, 'utf8');
+export function extractPages(pdfInputFile: string, pages: string): Promise<string> {
+  return new Promise<string>((resolveXml, rejectXml) => {
+    const startTime: number = Date.now();
+    CommandExecuter.pdfMinerExtract(pdfInputFile, pages)
+      .then(xmlOutputPath => {
+        logger.info(`PdfMiner xml: ${(Date.now() - startTime) / 1000}s`);
         try {
-          logger.debug(`Converting pdfminer's XML output to JS object..`);
-          utils.parseXmlToObject(xml, { attrkey: '_attr' }).then((obj: any) => {
-            const pages: Page[] = [];
-            obj.pages.page.forEach(pageObj => pages.push(getPage(pageObj)));
-            resolveDocument(new Document(pages, pdfInputFile));
-          });
+          resolveXml(xmlOutputPath);
         } catch (err) {
-          rejectDocument(`parseXml failed: ${err}`);
+          rejectXml(`PdfMiner xml parser failed: ${err}`);
         }
       })
-      .catch(({ error, found }) => {
-        logger.error(error);
-        if (!found) {
-          rejectDocument(`Could not find the necessary libraries..`);
-        } else {
-          rejectDocument(`pdf2txt error: ${error}`);
-        }
+      .catch(({ error }) => {
+        rejectXml(`PdfMiner pdf2txt.py error: ${error}`);
       });
   });
+}
+
+export function xmlParser(xmlPath: string): Promise<any> {
+  const startTime: number = Date.now();
+
+  return new Promise<any>((resolve, _reject) => {
+    const fileStream = fs.createReadStream(xmlPath);
+    const xml = new XmlStream(fileStream);
+
+    const allPages: any[] = [];
+    let textBoxes: any[] = [];
+    let textLines: any[] = [];
+    let texts: any[] = [];
+    let figures: any[] = [];
+
+    const recursiveFigures = {
+      ids: [],
+      images: [],
+      texts: [],
+      figures: [],
+      currentFigure: () => {
+        return recursiveFigures.ids[recursiveFigures.ids.length - 1].toString();
+      },
+    };
+
+    const pushWord = (word, array, index = null) => {
+      let element = {};
+      if (word.$text != null && word.$ != null) {
+        element = { _: word.$text.toString(), _attr: word.$ };
+      } else if (word.$ != null) {
+        element = { _attr: word.$ };
+      }
+      pushElement(element, array, index);
+    };
+
+    const pushElement = (element, array, index = null) => {
+      if (index != null) {
+        array[index] = array[index] || [];
+        array[index].push(element);
+      } else {
+        array = array || [];
+        array.push(element);
+      }
+    };
+
+    xml.on('endElement: page > textbox > textline > text', word => {
+      pushWord(word, texts);
+    });
+
+    xml.on('endElement: page > textbox > textline', line => {
+      pushElement({ _attr: line.$, text: texts }, textLines);
+      texts = [];
+    });
+
+    xml.on('endElement: page > textbox', line => {
+      pushElement({ _attr: line.$, textline: textLines }, textBoxes);
+      textLines = [];
+    });
+
+    xml.on('startElement: page > figure', figFigure => {
+      pushElement(figFigure.$.name, recursiveFigures.ids);
+    });
+
+    xml.on('startElement: page > figure figure', figFigure => {
+      pushElement(recursiveFigures.currentFigure() + '-' + figFigure.$.name, recursiveFigures.ids);
+    });
+
+    xml.on('startElement: image', figImage => {
+      pushElement({ _attr: figImage.$ }, recursiveFigures.images, recursiveFigures.currentFigure());
+    });
+
+    xml.on('endElement: figure text', figText => {
+      const index = recursiveFigures.currentFigure();
+      pushWord(figText, recursiveFigures.texts, index);
+    });
+
+    xml.on('endElement: page > figure figure', figure => {
+      const current: string = recursiveFigures.currentFigure();
+      const recursiveFigure = {
+        _attr: figure.$,
+        image: recursiveFigures.images[current],
+        text: recursiveFigures.texts[current],
+        figure: recursiveFigures.figures[current],
+      };
+      recursiveFigures.ids.pop();
+      pushElement(recursiveFigure, recursiveFigures.figures, recursiveFigures.currentFigure());
+    });
+
+    xml.on('endElement: page > figure', figure => {
+      pushElement(
+        {
+          _attr: figure.$,
+          image: recursiveFigures.images[figure.$.name],
+          text: recursiveFigures.texts[figure.$.name],
+          figure: recursiveFigures.figures[figure.$.name],
+        },
+        figures,
+      );
+    });
+
+    xml.on('updateElement: page', pageElement => {
+      pushElement({ _attr: pageElement.$, textbox: textBoxes, figure: figures }, allPages);
+      textBoxes = [];
+      figures = [];
+    });
+
+    xml.on('end', () => {
+      logger.info(`Xml to Js: ${(Date.now() - startTime) / 1000}s`);
+      resolve({ pages: { page: allPages } });
+    });
+  });
+}
+export function jsParser(json: any): Document {
+  const startTime: number = Date.now();
+  const doc: Document = new Document(getPages(json));
+  logger.info(`Js to Document: ${(Date.now() - startTime) / 1000}s`);
+  return doc;
+}
+
+function getPages(jsonObj: any): Page[] {
+  const docPages: Page[] = [];
+  if (Array.isArray(jsonObj.pages.page)) {
+    jsonObj.pages.page.forEach(pageObj => docPages.push(getPage(new PdfminerPage(pageObj))));
+  } else if (jsonObj.pages != null) {
+    docPages.push(getPage(new PdfminerPage(jsonObj.pages.page)));
+  }
+  return docPages;
 }
 
 function getPage(pageObj: PdfminerPage): Page {

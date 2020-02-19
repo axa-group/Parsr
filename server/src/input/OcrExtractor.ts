@@ -1,8 +1,23 @@
+/**
+ * Copyright 2020 AXA Group Operations S.A.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import * as filetype from 'file-type';
 import * as fs from 'fs';
-import * as path from 'path';
 import { Document } from '../types/DocumentRepresentation/Document';
-import { CommandExecuter, pdfToImages } from '../utils';
+import * as CommandExecuter from '../utils/CommandExecuter';
 import logger from '../utils/Logger';
 import { Extractor } from './Extractor';
 import { setPageDimensions } from './set-page-dimensions';
@@ -48,23 +63,23 @@ export abstract class OcrExtractorFactory extends OcrExtractor {
       translation: { x: 0, y: 0 },
     };
 
-    const args: string[] = [path.join(__dirname, '../../assets/ImageCorrection.py'), srcImg];
-    try {
-      const data = await CommandExecuter.run(CommandExecuter.COMMANDS.PYTHON, args);
-      const rotationData = JSON.parse(data);
-      correctionInfo.fileName = rotationData.filename;
-      correctionInfo.degrees = rotationData.degrees;
-      correctionInfo.origin = rotationData.origin;
-      correctionInfo.translation = rotationData.translation;
-    } catch ({ error }) {
-      logger.error(error);
-      logger.warn(`Error running image rotation calculation.. using the original image.`);
-    }
-    return correctionInfo;
+    return CommandExecuter.imageCorrection(srcImg)
+      .then(data => {
+        const rotationData = JSON.parse(data);
+        correctionInfo.fileName = rotationData.filename;
+        correctionInfo.degrees = rotationData.degrees;
+        correctionInfo.origin = rotationData.origin;
+        correctionInfo.translation = rotationData.translation;
+        return correctionInfo;
+      })
+      .catch(() => {
+        logger.warn(`Error running image optimisation.. using the original image.`);
+        return correctionInfo;
+      });
   }
+
   private async ocrPDF(inputFile: string, fixRotation: boolean) {
-    logger.info('Converting Pdf to images');
-    const imagePaths = await pdfToImages(inputFile);
+    const imagePaths = await CommandExecuter.magickPdfToImages(inputFile);
     return this.ocrImages(imagePaths, fixRotation).then((doc: Document) => {
       doc.inputFile = inputFile;
       return doc;

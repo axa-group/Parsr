@@ -31,7 +31,7 @@ Parsr takes as input an image (.JPG, .PNG, .TIFF, ...) or a PDF generates the fo
 - JSON
 - Markdown
 - Text
-- CSV (for tables), or Pandas Dataframes (see [here](demo/jupyter-notebook/parsr_api.py))
+- CSV (for tables), or Pandas Dataframes (see [here](demo/jupyter-notebook/parsr_client.py))
 - PDF
 
 ## Table of Contents
@@ -85,7 +85,7 @@ Consult the documentation on the [usage of the API](docs/api-guide.md).
 
 Refer to the [Configuration documentation](docs/configuration.md) to interpret the configurable options in the GUI viewer.
 
-The [API based usage](docs/usage.md#13-api) and the [command line usage](docs/usage.md#123-command-line-usage) are documented in the [advanced usage](docs/usage.md) guide.
+The [API based usage](docs/usage.md#3-api) and the [command line usage](docs/usage.md#23-command-line-usage) are documented in the [advanced usage](docs/usage.md) guide.
 
 ## Documentation
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,7 @@
  */
 
 import * as fs from 'fs';
-import * as utils from '../utils';
-import logger from '../utils/Logger';
+import * as CommandExecuter from '../utils/CommandExecuter';
 
 // TODO Handle more than just TrueType (.ttf) files
 /**
@@ -25,28 +24,22 @@ import logger from '../utils/Logger';
  */
 export function extractImagesAndFonts(pdfInputFile: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
-    const folder = utils.getMutoolExtractionFolder();
-    logger.info(`Extracting images and fonts to ${folder}`);
-    utils.CommandExecuter.run(utils.CommandExecuter.COMMANDS.MUTOOL, ['extract', pdfInputFile], {
-      cwd: folder,
-    })
-      .then(() => {
+    CommandExecuter.mutoolExtract(pdfInputFile)
+      .then(assetsFolder => {
         const ttfRegExp = /^[A-Z]{6}\+(.*)\-[0-9]+\.ttf$/;
-        fs.readdirSync(folder).forEach(file => {
+        fs.readdirSync(assetsFolder).forEach(file => {
           const match = file.match(ttfRegExp);
           if (match) {
-            fs.renameSync(`${folder}/${file}`, `${folder}/${match[1]}` + '.ttf');
+            fs.renameSync(`${assetsFolder}/${file}`, `${assetsFolder}/${match[1]}` + '.ttf');
           }
         });
-        resolve(folder);
+        resolve(assetsFolder);
       })
       .catch(({ found, error }) => {
-        logger.warn(error);
-        if (!found) {
-          logger.warn('MuPDF not installed. Will not treats images inside documents...');
-          resolve();
-        } else {
+        if (found) {
           reject(error);
+        } else {
+          resolve();
         }
       });
   });

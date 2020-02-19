@@ -1,4 +1,6 @@
 import * as vision from '@google-cloud/vision';
+import { writeFileSync } from 'fs';
+import { Config } from '../../types/Config';
 import {
   BoundingBox,
   Character,
@@ -10,7 +12,9 @@ import {
   Paragraph,
   Word,
 } from '../../types/DocumentRepresentation';
+import { getTemporaryFile } from '../../utils';
 import { OcrExtractorFactory } from '../OcrExtractor';
+import * as credentials from './credentials.json';
 
 type GoogleVisionResponse = Array<{
   fullTextAnnotation: FullTextAnnotation;
@@ -105,6 +109,27 @@ type TextAnnotation = {
  * An extractor class to extract content from images using Google Vision
  */
 export class GoogleVisionExtractor extends OcrExtractorFactory {
+
+  constructor(config: Config) {
+    super(config, credentials);
+    this.checkCredentials([
+      "auth_provider_x509_cert_url",
+      "auth_uri",
+      "client_email",
+      "client_id",
+      "client_x509_cert_url",
+      "private_key",
+      "private_key_id",
+      "project_id",
+      "token_uri",
+      "type",
+    ]);
+
+    const filePath = getTemporaryFile('.json');
+    writeFileSync(filePath, JSON.stringify(this.config.extractor.credentials));
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = filePath;
+  }
+
   public async scanImage(inputFile: string) {
     const client = new vision.ImageAnnotatorClient();
     const result: GoogleVisionResponse = await client.documentTextDetection(inputFile);

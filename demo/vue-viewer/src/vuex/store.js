@@ -269,6 +269,9 @@ export default new Vuex.Store({
     },
   },
   getters: {
+    downloadLinks({ uuid }) {
+      return DocumentService.downloadLinks(uuid);
+    },
     baseAPIUrl() {
       return DocumentService.getAPIURL();
     },
