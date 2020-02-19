@@ -33,7 +33,7 @@ describe('PDFMiner - page orientations', () => {
 
   it('each page should have the correct rotation info', () => {
     expect(document.pages[0].getMainRotationAngle()).to.equal(0);
-    expect(document.pages[1].getMainRotationAngle()).to.equal(91);
+    expect(document.pages[1].getMainRotationAngle()).to.equal(90);
     expect(document.pages[2].getMainRotationAngle()).to.equal(180);
     expect(document.pages[3].getMainRotationAngle()).to.equal(-90);
     expect(document.pages[4].getMainRotationAngle()).to.equal(0);
