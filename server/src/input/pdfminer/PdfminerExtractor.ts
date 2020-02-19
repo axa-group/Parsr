@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as limit from 'limit-async';
-import { Character, Document, Page } from '../../types/DocumentRepresentation';
+import { Document } from '../../types/DocumentRepresentation';
 import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 import { extractImagesAndFonts } from '../extractImagesFonts';
@@ -120,7 +120,7 @@ export class PdfminerExtractor extends Extractor {
     return async (doc: Document): Promise<Document> => {
       doc.inputFile = inputFile;
       const startTime: number = Date.now();
-      const pageRotations = doc.pages.map(this.getPageRotation).reduce(this.groupByRotation, {});
+      const pageRotations = doc.pages.map(p => p.getMainRotationAngle()).reduce(this.groupByRotation, {});
       const promises = Object.keys(pageRotations)
         .filter(r => r !== '0')
         .map(rotation => limiter(this.rotatePages)(doc, pageRotations[rotation], rotation));
@@ -129,28 +129,6 @@ export class PdfminerExtractor extends Extractor {
       logger.info(`Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000}s`);
       return doc;
     };
-  }
-
-  private getPageRotation(page: Page): number {
-    const rotations = page.elements.map((word) => {
-      if (Array.isArray(word.content) && word.content.length > 1) {
-        const { left: x1, bottom: y1 } = word.content[0] as Character;
-        const { left: x2, bottom: y2 } = word.content[word.content.length - 1] as Character;
-        const arcTan = Math.round(Math.atan((y1 - y2) / (x1 - x2)) * 180 / Math.PI);
-        return arcTan === 0 ? (x1 < x2 ? 0 : 180) : arcTan;
-      }
-      return 0;
-    });
-
-    const elementsPerRotation = rotations.reduce((acc, value) => {
-      acc[value] = acc[value] || 0;
-      acc[value] += 1;
-      return acc;
-    }, {});
-
-    const highestValue: number = Math.max(...(Object.values(elementsPerRotation) as number[]));
-    const mainRotation = Object.keys(elementsPerRotation).find(k => elementsPerRotation[k] === highestValue);
-    return parseInt(mainRotation, 10);
   }
 
   private groupByRotation(acc, value, index): any {

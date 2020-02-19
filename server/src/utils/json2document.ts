@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -185,7 +185,7 @@ function propertiesFromJson(propertiesObj: JsonProperties): Properties {
   if (propertiesObj.hasOwnProperty('order')) {
     prop.order = propertiesObj.order;
   } else {
-    logger.info(
+    logger.debug(
       `the properties obj inputted does not have the order key: ${prettifyObject(propertiesObj)}`,
     );
   }
@@ -325,88 +325,127 @@ function barcodeFromJson(barcodeObj: JsonElement): Barcode {
 }
 
 function textFromJson(textObj: JsonElement, fonts: Font[]): Text {
+  switch (textObj.type) {
+    case 'paragraph':
+      return buildParagraph(textObj, fonts);
+    case 'heading':
+      return buildHeading(textObj, fonts);
+    case 'line':
+      return buildLine(textObj, fonts);
+    case 'word':
+      return buildWord(textObj, fonts);
+    case 'character':
+      return buildCharacter(textObj, fonts);
+    default:
+      logger.error('[JsonExtractor] Cannot extract from object of type', textObj.type);
+      throw new Error(`Illegal Json: Unknown text block ${textObj.type}`);
+  }
+}
+
+function buildParagraph(textObj: JsonElement, fonts: Font[]): Paragraph {
   let linesDS: Line[] = [];
-
-  if (textObj.type === 'paragraph' || textObj.type === 'heading') {
-    if (Array.isArray(textObj.content)) {
-      linesDS = textObj.content.map(contentObj => {
-        const obj: Text = textFromJson(contentObj, fonts);
-        if (obj instanceof Line) {
-          return obj;
-        } else {
-          throw new Error('Illegal Json: paragraphs should only contain lines.');
-        }
-      });
-    }
+  if (Array.isArray(textObj.content)) {
+    linesDS = textObj.content.map(contentObj => {
+      const obj: Text = textFromJson(contentObj, fonts);
+      if (obj instanceof Line) {
+        return obj;
+      } else {
+        throw new Error('Illegal Json: paragraphs should only contain lines.');
+      }
+    });
   }
 
-  if (textObj.type === 'paragraph') {
-    const newParagraph = new Paragraph(
-      new BoundingBox(textObj.box.l, textObj.box.t, textObj.box.w, textObj.box.h),
-      linesDS,
-    );
+  const newParagraph = new Paragraph(
+    new BoundingBox(textObj.box.l, textObj.box.t, textObj.box.w, textObj.box.h),
+    linesDS,
+  );
 
-    newParagraph.id = textObj.id;
-    newParagraph.properties = propertiesFromJson(textObj.properties);
-    return newParagraph;
-  } else if (textObj.type === 'heading') {
-    const newHeading: Heading = new Heading(
+  newParagraph.id = textObj.id;
+  newParagraph.properties = propertiesFromJson(textObj.properties);
+  return newParagraph;
+}
+
+function buildHeading(textObj: JsonElement, fonts: Font[]): Heading {
+  let linesDS: Line[] = [];
+  if (Array.isArray(textObj.content)) {
+    linesDS = textObj.content.map(contentObj => {
+      const obj: Text = textFromJson(contentObj, fonts);
+      if (obj instanceof Line) {
+        return obj;
+      } else {
+        throw new Error('Illegal Json: headings should only contain lines.');
+      }
+    });
+  }
+
+  const newHeading: Heading = new Heading(
+    new BoundingBox(textObj.box.l, textObj.box.t, textObj.box.w, textObj.box.h),
+    linesDS,
+    textObj.level,
+  );
+  newHeading.id = textObj.id;
+  newHeading.properties = propertiesFromJson(textObj.properties);
+  return newHeading;
+}
+
+function buildLine(textObj: JsonElement, fonts: Font[]): Line {
+  let wordsDS: Word[] = [];
+  if (Array.isArray(textObj.content)) {
+    wordsDS = textObj.content.map(contentObj => {
+      const obj: Text = textFromJson(contentObj, fonts);
+      if (obj instanceof Word) {
+        return obj;
+      } else {
+        throw new Error('Illegal Json: lines should only contain words.');
+      }
+    });
+  }
+  const newLine: Line = new Line(
+    new BoundingBox(textObj.box.l, textObj.box.t, textObj.box.w, textObj.box.h),
+    wordsDS,
+  );
+  newLine.id = textObj.id;
+  newLine.properties = propertiesFromJson(textObj.properties);
+  return newLine;
+}
+
+function buildWord(textObj: JsonElement, fonts: Font[]): Word {
+  if (typeof textObj.content === 'object') {
+    const charsDS: Character[] = textObj.content.map(contentObj => {
+      const obj: Text = textFromJson(contentObj, fonts);
+      if (obj instanceof Character) {
+        return obj;
+      } else {
+        throw new Error('Illegal Json: words should only contain characters.');
+      }
+    });
+    const newWord: Word = new Word(
       new BoundingBox(textObj.box.l, textObj.box.t, textObj.box.w, textObj.box.h),
-      linesDS,
-      textObj.level,
+      charsDS,
+      fonts[textObj.font],
     );
-    newHeading.id = textObj.id;
-    newHeading.properties = propertiesFromJson(textObj.properties);
-    return newHeading;
-  } else if (textObj.type === 'line') {
-    let wordsDS: Word[] = [];
-    if (Array.isArray(textObj.content)) {
-      wordsDS = textObj.content.map(contentObj => {
-        const obj: Text = textFromJson(contentObj, fonts);
-        if (obj instanceof Word) {
-          return obj;
-        } else {
-          throw new Error('Illegal Json: lines should only contain words.');
-        }
-      });
-    }
-    const newLine: Line = new Line(
-      new BoundingBox(textObj.box.l, textObj.box.t, textObj.box.w, textObj.box.h),
-      wordsDS,
-    );
-    newLine.id = textObj.id;
-    newLine.properties = propertiesFromJson(textObj.properties);
-    return newLine;
-  } else if (textObj.type === 'word') {
-    if (typeof textObj.content === 'object') {
-      const charsDS: Character[] = textObj.content.map(contentObj => {
-        const obj: Text = textFromJson(contentObj, fonts);
-        if (obj instanceof Character) {
-          return obj;
-        } else {
-          throw new Error('Illegal Json: words should only contain characters.');
-        }
-      });
-      const newWord: Word = new Word(
-        new BoundingBox(textObj.box.l, textObj.box.t, textObj.box.w, textObj.box.h),
-        charsDS,
-        fonts[textObj.font],
-      );
-      newWord.id = textObj.id;
-      newWord.properties = propertiesFromJson(textObj.properties);
-      return newWord;
-    } else {
-      const newWord: Word = new Word(
-        new BoundingBox(textObj.box.l, textObj.box.t, textObj.box.w, textObj.box.h),
-        textObj.content,
-        fonts[textObj.font],
-      );
-      newWord.id = textObj.id;
-      newWord.properties = propertiesFromJson(textObj.properties);
-      return newWord;
-    }
+    newWord.id = textObj.id;
+    newWord.properties = propertiesFromJson(textObj.properties);
+    return newWord;
   } else {
-    logger.error('[JsonExtractor] Cannot extract from object of type', textObj.type);
-    throw new Error(`Illegal Json: Unknown text block ${textObj.type}`);
+    const newWord: Word = new Word(
+      new BoundingBox(textObj.box.l, textObj.box.t, textObj.box.w, textObj.box.h),
+      textObj.content,
+      fonts[textObj.font],
+    );
+    newWord.id = textObj.id;
+    newWord.properties = propertiesFromJson(textObj.properties);
+    return newWord;
   }
+}
+
+function buildCharacter(textObj: JsonElement, fonts: Font[]): Character {
+  const newChar: Character = new Character(
+    new BoundingBox(textObj.box.l, textObj.box.t, textObj.box.w, textObj.box.h),
+    textObj.content.toString(),
+    fonts[textObj.font],
+  );
+  newChar.id = textObj.id;
+  newChar.properties = propertiesFromJson(textObj.properties);
+  return newChar;
 }

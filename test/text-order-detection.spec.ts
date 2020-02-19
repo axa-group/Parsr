@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,16 @@
  */
 
 import { expect } from 'chai';
+import {readFileSync} from 'fs';
 import 'mocha';
+import { resolve } from 'path';
 import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
+import { Document } from '../server/src/types/DocumentRepresentation';
 import { Element } from '../server/src/types/DocumentRepresentation/Element';
-import { getPdf, runModules } from './helpers';
+import { json2document } from './../server/src/utils/json2document';
+import { runModules } from './helpers';
 
-const pdfName = 'text-order-detection.pdf';
+const documentName = 'text-order-detection.json';
 
 describe('Text order detection function', () => {
   let first: Element;
@@ -29,9 +33,11 @@ describe('Text order detection function', () => {
   let fourth: Element;
 
   before(done => {
-    getPdf(d => runModules(d, [new ReadingOrderDetectionModule()]), pdfName).then(
-      ([_, pdfAfter]) => {
-        pdfAfter.pages[0].elements.forEach(elt => {
+    const json = readFileSync(resolve(__dirname, 'assets', documentName), 'utf8');
+    const document: Document = json2document(JSON.parse(json));
+    runModules(document, [new ReadingOrderDetectionModule()])
+    .then((docAfter) => {
+      docAfter.pages[0].elements.forEach(elt => {
           switch (elt.toString()) {
             case 'FIRST':
               first = elt;
@@ -47,7 +53,7 @@ describe('Text order detection function', () => {
               break;
           }
         });
-        done();
+      done();
       },
     );
   });
