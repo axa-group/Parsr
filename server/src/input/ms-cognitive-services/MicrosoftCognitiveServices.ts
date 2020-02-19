@@ -19,6 +19,7 @@ import { readFileSync } from 'fs';
 import { Config } from '../../types/Config';
 import { BoundingBox, Document, Font, Line, Page, Word } from '../../types/DocumentRepresentation';
 import { OcrExtractorFactory } from '../OcrExtractor';
+import * as credentials from './credentials.json';
 
 type MSCognitiveServicesResponse = {
   status: 'NotStarted' | 'Running' | 'Failed' | 'Succeeded';
@@ -43,18 +44,19 @@ export class MicrosoftCognitiveExtractor extends OcrExtractorFactory {
   private apiClient: AxiosInstance = null;
 
   constructor(config: Config) {
-    super(config);
-    if (!process.env.OCP_APIM_SUBSCRIPTION_KEY) {
-      throw new Error(
-        `Required environment variable OCP_APIM_SUBSCRIPTION_KEY not found. Make sure you set it as 'OCP_APIM_SUBSCRIPTION_KEY=<API_KEY>' before running the tool.`,
-      );
-    }
+    super(config, credentials);
+    this.checkCredentials([
+      'OCP_APIM_SUBSCRIPTION_KEY',
+      'OCP_APIM_ENDPOINT',
+    ]);
+
+    this.checkCredentialAsURL('OCP_APIM_ENDPOINT');
 
     this.apiClient = axios.create({
-      baseURL: process.env.OCP_APIM_ENDPOINT || 'https://westeurope.api.cognitive.microsoft.com/',
+      baseURL: this.config.extractor.credentials.OCP_APIM_ENDPOINT,
       headers: {
         'Content-Type': 'application/octet-stream',
-        'Ocp-Apim-Subscription-Key': process.env.OCP_APIM_SUBSCRIPTION_KEY,
+        'Ocp-Apim-Subscription-Key': this.config.extractor.credentials.OCP_APIM_SUBSCRIPTION_KEY,
       },
       timeout: 20000,
     });

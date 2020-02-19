@@ -16,6 +16,7 @@
 
 import { parseString } from 'xml2js';
 import { ListDetectionModule } from '../../processing/ListDetectionModule/ListDetectionModule';
+import { Config } from '../../types/Config';
 import {
   Barcode,
   BoundingBox,
@@ -40,6 +41,7 @@ import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Extractor } from '../Extractor';
 import { AbbyyClient } from './AbbyyClient';
+import * as credentials from './credentials.json';
 
 export class AbbyyTools extends Extractor {
   /**
@@ -59,6 +61,17 @@ export class AbbyyTools extends Extractor {
   }
   private _fonts: Font[] = [];
 
+  constructor(config: Config) {
+    super(config, credentials);
+    this.checkCredentials([
+      'ABBYY_SERVER_URL',
+      'ABBYY_SERVER_VER',
+      'ABBYY_WORKFLOW',
+    ]);
+
+    this.checkCredentialAsURL('ABBYY_SERVER_URL');
+  }
+
   public abbyyXMLToObject(xml: string): Promise<object> {
     const promise = new Promise<object>((resolve, reject) => {
       parseString(xml, (err, dataObject) => {
@@ -72,9 +85,9 @@ export class AbbyyTools extends Extractor {
   }
 
   public run(inputFile: string): Promise<Document> {
-    const host: string = process.env.ABBYY_SERVER_URL; // 172.23.132.137
-    const serverVersion: string = process.env.ABBYY_SERVER_VER; // 14
-    const workflowName: string = process.env.ABBYY_WORKFLOW; // workflow-hotfolder-d_drive
+    const host: string = this.config.extractor.credentials.ABBYY_SERVER_URL;
+    const serverVersion: string = this.config.extractor.credentials.ABBYY_SERVER_VER;
+    const workflowName: string = this.config.extractor.credentials.ABBYY_WORKFLOW;
     const serverTimeout: number = 50000;
     const jobPollingInterval: number = 1000;
 

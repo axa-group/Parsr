@@ -47,7 +47,7 @@ describe('PDF.js input module', () => {
                     "version": 0.5,
                     "extractor": {
                         "pdf": "pdfjs",
-                        "img": "tesseract",
+                        "ocr": "tesseract",
                         "language": ["eng", "fra"],
                     },
                     "cleaner": [],
@@ -100,7 +100,7 @@ describe('EML input module', () => {
                     "version": 0.5,
                     "extractor": {
                         "pdf": "pdfjs",
-                        "img": "tesseract",
+                        "ocr": "tesseract",
                         "language": ["eng", "fra"],
                     },
                     "cleaner": [],
@@ -161,7 +161,7 @@ describe('MS Word input module', () => {
                     "version": 0.5,
                     "extractor": {
                         "pdf": "pdfjs",
-                        "img": "tesseract",
+                        "ocr": "tesseract",
                         "language": ["eng", "fra"],
                     },
                     "cleaner": [],
