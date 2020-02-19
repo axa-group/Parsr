@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,16 @@ export class Config {
   constructor(config: any) {
     this.version = config.version;
     this.cleaner = config.cleaner;
-    this.extractor = config.extractor;
+    if (config.version <= 0.8) {
+      const deprecatedConfig: ExtractorConfig = {
+        pdf: config.extractor.pdf,
+        ocr: config.extractor.img,
+        language: config.extractor.language,
+      };
+      this.extractor = deprecatedConfig;
+    } else {
+      this.extractor = config.extractor;
+    }
     this.output = config.output;
 
     if (typeof this.extractor.pdf === 'undefined') {
