@@ -17,12 +17,13 @@
 import * as stringify from 'csv-stringify/lib/sync';
 import * as fs from 'fs';
 import * as path from 'path';
-
 import { Page, Table } from '../../types/DocumentRepresentation';
+import logger from '../../utils/Logger';
 import { Exporter } from '../Exporter';
 
 export class CsvExporter extends Exporter {
   public export(outputPath: string): Promise<any> {
+    logger.info('Exporting CSV...');
     const promises: Array<Promise<any>> = [];
     const ext = '.csv';
 

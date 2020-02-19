@@ -37,6 +37,7 @@ import { TextExporter } from '../src/output/text/TextExporter';
 import { Config } from '../src/types/Config';
 import { Document, Image } from '../src/types/DocumentRepresentation/';
 import * as utils from '../src/utils';
+import * as CommandExecuter from '../src/utils/CommandExecuter';
 import logger from '../src/utils/Logger';
 
 /**
@@ -216,7 +217,10 @@ function main(): void {
         return Promise.all(promises);
       })
       .catch(err => {
-        logger.error(`There was an error running the orchestrator: ${JSON.stringify(err)}`);
+        if (err && err.stack) {
+          logger.error(`There was an error running the orchestrator: ${err.stack}`);
+        }
+        logger.error(JSON.stringify(err));
       });
   }
 
@@ -310,12 +314,11 @@ function main(): void {
  */
 function printVersion() {
   try {
-    const message = utils
-      .spawnSync(
-        'git',
-        ['--no-pager', 'show', '-s', '--no-color', '--format=[%h] %d - %s - (%cd, %cn <%ce>)'],
-        { encoding: 'utf-8' },
-      )
+    const message = CommandExecuter.spawnSync(
+      'git',
+      ['--no-pager', 'show', '-s', '--no-color', '--format=[%h] %d - %s - (%cd, %cn <%ce>)'],
+      { encoding: 'utf-8' },
+    )
       .output.join('')
       .trim();
     logger.info('Current version: ' + message);
