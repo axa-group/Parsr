@@ -84,10 +84,12 @@ export class ServerManager {
     Object.keys(customConfig).forEach(key => {
       specs[key].value = customConfig[key];
 
-      if (Array.isArray(specs[key].value)
-        && typeof specs[key].value[0] === 'object'
-        && specs[key].value[0].hasOwnProperty('pages')
-        && specs[key].value[0].hasOwnProperty('flavor')) {
+      if (
+        Array.isArray(specs[key].value) &&
+        typeof specs[key].value[0] === 'object' &&
+        specs[key].value[0].hasOwnProperty('pages') &&
+        specs[key].value[0].hasOwnProperty('flavor')
+      ) {
         specs[key].value = specs[key].value.map((v: any) => ({
           ...v,
           table_areas: v.table_areas || [],
@@ -101,7 +103,7 @@ export class ServerManager {
     return mergedResult.length === 2 ? mergedResult : mergedResult[0];
   }
 
-  private fillExtractorConfig(extractor: ConfigFile["extractor"]): ConfigFile["extractor"] {
+  private fillExtractorConfig(extractor: ConfigFile['extractor']): ConfigFile['extractor'] {
     const pdfConfig = this.getExtractorConfig(extractor.pdf);
     const ocrConfig = this.getExtractorConfig(extractor.ocr);
     if (!extractor.credentials) {
@@ -116,15 +118,9 @@ export class ServerManager {
   }
 
   private getExtractorConfig(name: string): any {
-    const path = this.defaultExtractorsFolder
-    + '/' + name + '/credentials.json';
+    const path = this.defaultExtractorsFolder + '/' + name + '/credentials.json';
     if (existsSync(path)) {
-      return JSON.parse(
-        readFileSync(
-          path,
-          'utf-8',
-        ),
-      );
+      return JSON.parse(readFileSync(path, 'utf-8'));
     } else {
       return {};
     }
