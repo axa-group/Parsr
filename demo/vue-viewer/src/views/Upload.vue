@@ -229,6 +229,14 @@ export default {
         }
         return mod;
       });
+
+      if (config.extractor.credentials.GOOGLE_APPLICATION_CREDENTIALS) {
+        config.extractor.credentials = {
+          ...config.extractor.credentials,
+          ...config.extractor.credentials.GOOGLE_APPLICATION_CREDENTIALS,
+        };
+        delete config.extractor.credentials.GOOGLE_APPLICATION_CREDENTIALS;
+      }
       return config;
     },
     configAsBinary() {
