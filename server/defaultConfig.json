@@ -1,12 +1,9 @@
 {
-  "version": 0.8,
+  "version": 0.9,
   "extractor": {
     "pdf": "pdfminer",
     "ocr": "tesseract",
-    "language": [
-      "eng",
-      "fra"
-    ]
+    "language": ["eng", "fra"]
   },
   "cleaner": [
     "out-of-page-removal",
@@ -81,11 +78,7 @@
           "índice",
           "tabla de contenidos"
         ],
-        "pageKeywords": [
-          "pagina",
-          "page",
-          "pag"
-        ]
+        "pageKeywords": ["pagina", "page", "pag"]
       }
     ],
     [
