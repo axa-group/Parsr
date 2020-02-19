@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,24 @@ export class Config {
   constructor(config: any) {
     this.version = config.version;
     this.cleaner = config.cleaner;
-    this.extractor = config.extractor;
+    if (config.version <= 0.8) {
+      const deprecatedConfig: ExtractorConfig = {
+        pdf: config.extractor.pdf,
+        ocr: config.extractor.img,
+        language: config.extractor.language,
+      };
+      this.extractor = deprecatedConfig;
+    } else {
+      this.extractor = config.extractor;
+    }
     this.output = config.output;
 
     if (typeof this.extractor.pdf === 'undefined') {
       this.extractor.pdf = 'pdfminer';
     }
 
-    if (typeof this.extractor.img === 'undefined') {
-      this.extractor.img = 'tesseract';
+    if (typeof this.extractor.ocr === 'undefined') {
+      this.extractor.ocr = 'tesseract';
     }
 
     if (typeof this.output.granularity === 'undefined') {
@@ -59,7 +68,31 @@ export type CleanerConfig = Array<string | [string, object]>;
 
 export interface ExtractorConfig {
   pdf: 'pdfminer' | 'tesseract' | 'abbyy' | 'pdfjs';
-  img: 'tesseract' | 'abbyy' | 'google-vision' | 'ms-cognitive-services' | 'amazon-textract';
+  ocr: 'tesseract' | 'abbyy' | 'google-vision' | 'ms-cognitive-services' | 'amazon-textract';
+  credentials?: {
+    ABBYY_SERVER_URL?: string; // ABBYY
+    ABBYY_SERVER_VER?: string; // ABBYY
+    ABBYY_WORKFLOW?: string; // ABBYY
+    AWS_ACCESS_KEY_ID?: string; // AWS TEXTRACT
+    AWS_SECRET_ACCESS_KEY?: string; // AWS TEXTRACT
+
+    // GOOGLE VISION
+    auth_provider_x509_cert_url?: string;
+    auth_uri?: string;
+    client_email?: string;
+    client_id?: string;
+    client_x509_cert_url?: string;
+    private_key?: string;
+    private_key_id?: string;
+    project_id?: string;
+    token_uri?: string;
+    type?: string;
+
+    // MS COGNITIVE SERVICES
+    OCP_APIM_SUBSCRIPTION_KEY?: string;
+    OCP_APIM_ENDPOINT?: string;
+  };
+
   language: TesseractLanguage | TesseractLanguage[];
 }
 
