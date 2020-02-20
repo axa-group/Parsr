@@ -52,14 +52,16 @@ export class ImageDetectionModule extends Module {
   }
 
   private linkXObjectWithExtensions(images: Image[], assets: string[]) {
-    images.forEach(img => {
-      const asset = assets.filter(filename => {
-        return filename.startsWith('img-' + img.xObjId.padStart(4, '0'));
+    images
+      .filter(img => !!img.xObjId)
+      .forEach(img => {
+        const asset = assets.filter(filename => {
+          return filename.startsWith('img-' + img.xObjId.padStart(4, '0'));
+        });
+        if (asset.length === 1) {
+          img.xObjExt = asset[0].split('.').pop();
+        }
       });
-      if (asset.length === 1) {
-        img.xObjExt = asset[0].split('.').pop();
-      }
-    });
   }
 
   private linkXObjectToImages(images: Image[], xObjectData: string) {
