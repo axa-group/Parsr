@@ -174,7 +174,13 @@ export default {
       return document.getElementById('PageContainer_' + this.page.pageNumber);
     },
     isPageLandscape() {
-      return this.page.box.w > this.page.box.h;
+      return this.pageSize.width > this.pageSize.height;
+    },
+    pageSize() {
+      if (Math.abs(this.page.rotation.degrees) == 90) {
+        return { width: this.page.box.h, height: this.page.box.w };
+      }
+      return { width: this.page.box.w, height: this.page.box.h };
     },
     componentFor() {
       /*return element => {
@@ -200,7 +206,7 @@ export default {
       };
     },
   },
-  methods: {
+  methods: {    
     elementSelected(element) {
       // if a Word is clicked, I make sure to remove all remaining highlighted elements instead of just the last clicked element
       const highlightedWords = document.getElementsByClassName('highlighted');
@@ -223,13 +229,21 @@ export default {
       this.$store.commit('setElementSelected', element);
     },
     fitPageToScreen() {
+      var maxWidth = parseFloat(window.getComputedStyle(this.scroll).width) - 40;
+      var maxHeight = parseFloat(window.getComputedStyle(this.scroll).height) - 40;
+        
+      var newZoom = maxWidth / this.pageSize.width;
       if (this.isPageLandscape) {
-        var maxWidth = parseFloat(window.getComputedStyle(this.scroll).width) - 40;
-        this.zoomToFitPage = maxWidth / this.page.box.w;
+        if (newZoom * this.pageSize.height > maxHeight) {
+          newZoom = maxHeight / this.pageSize.height;
+        }        
       } else {
-        var maxHeight = parseFloat(window.getComputedStyle(this.scroll).height) - 40;
-        this.zoomToFitPage = maxHeight / this.page.box.h;
+        newZoom =  maxHeight / this.pageSize.height;
+        if (newZoom * this.pageSize.width > maxWidth) {
+          newZoom = maxWidth / this.pageSize.width;
+        }  
       }
+      this.zoomToFitPage = newZoom;
     },
   },
   updated: function() {
