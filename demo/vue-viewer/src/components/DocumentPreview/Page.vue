@@ -5,14 +5,7 @@
       :id="'SVG_' + page.pageNumber"
       :style="{
         zoom: zoom * zoomToFitPage,
-        transform:
-          'translateX(' +
-          page.rotation.translation.x +
-          'px) translateY(' +
-          page.rotation.translation.y +
-          'px) rotate(' +
-          page.rotation.degrees +
-          'deg)',
+        transform: pageTransformation,
         transformOrigin: page.rotation.origin.x + 'px ' + page.rotation.origin.y + 'px',
       }"
       :width="page.box.w"
@@ -181,6 +174,12 @@ export default {
         return { width: this.page.box.h, height: this.page.box.w };
       }
       return { width: this.page.box.w, height: this.page.box.h };
+    },
+    pageTransformation() {
+      if (this.page.rotation.degrees % 90 != 0) {
+        return 'none'
+      }
+      return 'translateX(' + this.page.rotation.translation.x + 'px) translateY(' + this.page.rotation.translation.y + 'px) rotate(' + this.page.rotation.degrees + 'deg)';
     },
     componentFor() {
       /*return element => {
