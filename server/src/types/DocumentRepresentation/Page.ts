@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@ import { RotationCorrection } from '../../input/OcrExtractor';
 import { findMostCommonFont, isInBox } from '../../utils';
 import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
+import { Character } from './Character';
 import { Element } from './Element';
 import { Font } from './Font';
 import { Paragraph } from './Paragraph';
 import { Text } from './Text';
+import { Word } from './Word';
 
 export type directionType = 'horizontal' | 'vertical';
 /**
@@ -69,6 +71,29 @@ export class Page {
     this.verticalOccupancy = [];
     this.pageRotation = null;
     this.computePageOccupancy();
+  }
+
+  public getMainRotationAngle(): number {
+    const rotations = this.getElementsOfType<Word>(Word, true)
+      .map((word) => {
+        if (Array.isArray(word.content) && word.content.length > 1) {
+          const { left: x1, bottom: y1 } = word.content[0] as Character;
+          const { left: x2, bottom: y2 } = word.content[word.content.length - 1] as Character;
+          const arcTan = Math.round(Math.atan((y1 - y2) / (x1 - x2)) * 180 / Math.PI);
+          return arcTan === 0 ? (x1 < x2 ? 0 : 180) : arcTan;
+        }
+        return 0;
+      });
+
+    const elementsPerRotation = rotations.reduce((acc, value) => {
+      acc[value] = acc[value] || 0;
+      acc[value] += 1;
+      return acc;
+    }, {});
+
+    const highestValue: number = Math.max(...(Object.values(elementsPerRotation) as number[]));
+    const mainRotation = Object.keys(elementsPerRotation).find(k => elementsPerRotation[k] === highestValue);
+    return parseInt(mainRotation, 10);
   }
 
   /**

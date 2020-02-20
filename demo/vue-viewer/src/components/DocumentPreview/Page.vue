@@ -3,7 +3,18 @@
     <svg
       class="Page"
       :id="'SVG_' + page.pageNumber"
-      :style="{ zoom: zoom * zoomToFitPage }"
+      :style="{
+        zoom: zoom * zoomToFitPage,
+        transform:
+          'translateX(' +
+          page.rotation.translation.x +
+          'px) translateY(' +
+          page.rotation.translation.y +
+          'px) rotate(' +
+          page.rotation.degrees +
+          'deg)',
+        transformOrigin: page.rotation.origin.x + 'px ' + page.rotation.origin.y + 'px',
+      }"
       :width="page.box.w"
       :height="page.box.h"
     >
@@ -41,19 +52,7 @@
           style="stroke: #aeaeae"
         />
       </svg>
-      <g
-        :style="{
-          transform:
-            'translateX(' +
-            page.rotation.translation.x +
-            'px) translateY(' +
-            page.rotation.translation.y +
-            'px) rotate(' +
-            page.rotation.degrees +
-            'deg)',
-          transformOrigin: page.rotation.origin.x + 'px ' + page.rotation.origin.y + 'px',
-        }"
-      >
+      <g>
         <imageData
           v-for="element in images"
           :key="element.id"
@@ -267,16 +266,14 @@ export default {
 <style lang="scss">
 .PageContainer {
   margin: 0 auto;
+  display: flex;
+  align-items: center;
 }
 .Page {
   background-color: white;
   border: 1px solid rgb(204, 204, 231);
   margin: 0 auto;
   position: relative;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
 }
 
 .Page text {

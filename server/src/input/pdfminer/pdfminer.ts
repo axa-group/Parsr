@@ -41,10 +41,10 @@ import logger from '../../utils/Logger';
  * @returns The promise of a valid document (in the format DocumentRepresentation).
  */
 
-export function extractPages(pdfInputFile: string, pages: string): Promise<string> {
+export function extractPages(pdfInputFile: string, pages: string, rotationDegrees: number = 0): Promise<string> {
   return new Promise<string>((resolveXml, rejectXml) => {
     const startTime: number = Date.now();
-    CommandExecuter.pdfMinerExtract(pdfInputFile, pages)
+    CommandExecuter.pdfMinerExtract(pdfInputFile, pages, rotationDegrees)
       .then(xmlOutputPath => {
         logger.info(`PdfMiner xml: ${(Date.now() - startTime) / 1000}s`);
         try {

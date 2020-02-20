@@ -137,6 +137,7 @@ export default {
   top: 38px;
   left: 0;
   right: 0;
+  zoom: 0.9;
 }
 
 .Thumb:last-of-type {

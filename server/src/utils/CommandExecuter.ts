@@ -180,9 +180,16 @@ export async function detectTables(
   });
 }
 
-export async function pdfMinerExtract(filePath: string, pages: string): Promise<string> {
+export async function pdfMinerExtract(filePath: string, pages: string, rotationDegrees: number = 0): Promise<string> {
   const xmlOutputFile: string = getTemporaryFile('.xml');
-  let pdf2txtArguments: string[] = ['-c', 'utf-8', '-t', 'xml', '-o', xmlOutputFile, filePath];
+  let pdf2txtArguments: string[] = [
+    '--detect-vertical',
+    '-R', rotationDegrees.toString(),
+    '-c', 'utf-8',
+    '-t', 'xml',
+    '-o', xmlOutputFile,
+    filePath,
+  ];
 
   if (pages != null) {
     pdf2txtArguments = ['-p', pages].concat(pdf2txtArguments);
