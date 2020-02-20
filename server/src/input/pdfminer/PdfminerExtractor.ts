@@ -123,7 +123,7 @@ export class PdfminerExtractor extends Extractor {
       const pageRotations = doc.pages.map(p => p.getMainRotationAngle()).reduce(this.groupByRotation, {});
       const promises = Object.keys(pageRotations)
         .filter(r => r !== '0')
-        .map(rotation => limiter(this.rotatePages)(doc, pageRotations[rotation], rotation));
+        .map(rotation => limiter(this.rotatePages)(doc, pageRotations[rotation], parseInt(rotation, 10)));
 
       await Promise.all(promises);
       logger.info(`Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000}s`);
