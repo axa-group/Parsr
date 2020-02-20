@@ -85,6 +85,10 @@ export class Page {
         return 0;
       });
 
+    if (rotations.length === 0) {
+      return 0;
+    }
+
     const elementsPerRotation = rotations.reduce((acc, value) => {
       acc[value] = acc[value] || 0;
       acc[value] += 1;
