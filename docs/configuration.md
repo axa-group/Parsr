@@ -19,7 +19,7 @@ There is only a few required keys:
 - `version` `[Number]` is the version number of the API.
 - `extractor` `[Object]` is a bunch of parameters about the extraction.
 - `cleaner` `[Array]` is a list of every cleaning tools that will be called.
-- `output` `[Object]` contains the list of fromats to export and some other details.
+- `output` `[Object]` contains the list of formats to export and some other details.
 
 Cleaning tools have default parameters that work pretty well, but you can override the parameters by providing the in the config.
 
@@ -81,7 +81,7 @@ Different extractors are available for each input file format.
 - **PDF files:** two extractors are currently available for PDF files:
   - `pdfminer`, which is an advanced python based extractor capable of extracting low and high level textual structures (from characters to paragraphs),
   - `pdfjs`, Mozilla's free solution for parsing documents. This is the recommended extractor to parse large documents (200+ pages).
-- **Images:** four OCR extractors are supported for images:
+- **Images:** five OCR extractors are supported for images:
   - `tesseract` which is an Open Source OCR software,
   - `abbyy`, that relies on ABBYY Finereader, a paid solution for OCR on documents and images,
   - `google-vision`, which uses the [Google Vision](https://cloud.google.com/vision/) API to detect the contents of an image (see the [google vision documentation for more](../server/src/input/google-vision/README.md)),
@@ -182,7 +182,7 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
 
 ```json
 {
-  "version": 0.5,
+  "version": 0.9,
   "extractor": {
     "pdf": "pdfminer",
     "ocr": "tesseract",

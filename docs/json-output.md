@@ -157,7 +157,7 @@ The text element type is of multiple levels of subtypes:
 
 #### 1.2.2. Table type
 
-The following strucutre defines a table with a single row, single column containing a single cell with a paragraph of text as the cell content.
+The following structure defines a table with a single row, single column containing a single cell with a paragraph of text as the cell content.
 
 ```js
 {
