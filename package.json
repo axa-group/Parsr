@@ -18,7 +18,7 @@
   },
   "scripts": {
     "test": "mocha -t 15000 -r ts-node/register test/**/**/*.spec.ts",
-    "copyAssets": "copyfiles -u 2 \"./server/assets/*\" \"./dist/assets/\"",
+    "copyAssets": "copyfiles -u 2 \"./server/assets/*\" \"./dist/assets/\" && copyfiles -u 2 \"./server/assets/pdf.worker.js\" \"./node_modules/pdfjs-dist/build/\"",
     "build:ts": "npm run copyAssets && tsc --outDir ./dist",
     "build:ts:watch": "npm run copyAssets && tsc -w --outDir ./dist",
     "install:api": "npm install --prefix  api/server",
@@ -29,7 +29,6 @@
     "start:api": "npm run build:ts && npm run install:api && npm run --prefix api/server start",
     "start:api:background": "npm run start:api&",
     "format": "prettier --write --list-different \"{,!(dist)/**/}*.{js,md,ts,css,scss}\"",
-    "postinstall": "cp ./server/assets/pdf.worker.js ./node_modules/pdfjs-dist/build/",
     "remark": "remark -fqu 'remark-lint-no-dead-urls=\"skipLocalhost\": true, \"skipOffline\": true' -u remark-validate-links -i .remark-ignore ."
   },
   "husky": {
