@@ -32,7 +32,7 @@ Under a **Debian** based distribution:
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
 sudo apt-get install nodejs npm qpdf imagemagick graphicsmagick tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
-pip install camelot-py
+pip install camelot-py[cv]
 pip install numpy pillow scikit-image
 pip install pdfminer.six
 ```
@@ -41,7 +41,7 @@ Under **Arch** Linux :
 
 ```sh
 pacman -S nodejs npm qpdf imagemagick graphicsmagick pdfminer tesseract python-pip
-pip install camelot-py
+pip install camelot-py[cv]
 pip install numpy pillow scikit-image
 ```
 
@@ -71,7 +71,7 @@ and then the dependencies:
 
 ```sh
 pip install pdfminer.six
-pip install camelot-py
+pip install camelot-py[cv]
 pip install numpy pillow scikit-image
 ```
 
