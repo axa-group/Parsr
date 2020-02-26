@@ -5,14 +5,7 @@
       :id="'SVG_' + page.pageNumber"
       :style="{
         zoom: zoom * zoomToFitPage,
-        transform:
-          'translateX(' +
-          page.rotation.translation.x +
-          'px) translateY(' +
-          page.rotation.translation.y +
-          'px) rotate(' +
-          page.rotation.degrees +
-          'deg)',
+        transform: pageTransformation,
         transformOrigin: page.rotation.origin.x + 'px ' + page.rotation.origin.y + 'px',
       }"
       :width="page.box.w"
@@ -52,7 +45,12 @@
           style="stroke: #aeaeae"
         />
       </svg>
-      <g>
+      <g
+        :style="{
+          transform: contentTransformation,
+          transformOrigin: page.rotation.origin.x + 'px ' + page.rotation.origin.y + 'px',
+        }"
+      >
         <imageData
           v-for="element in images"
           :key="element.id"
@@ -174,7 +172,41 @@ export default {
       return document.getElementById('PageContainer_' + this.page.pageNumber);
     },
     isPageLandscape() {
-      return this.page.box.w > this.page.box.h;
+      return this.pageSize.width > this.pageSize.height;
+    },
+    pageSize() {
+      if (Math.abs(this.page.rotation.degrees) == 90) {
+        return { width: this.page.box.h, height: this.page.box.w };
+      }
+      return { width: this.page.box.w, height: this.page.box.h };
+    },
+    pageTransformation() {
+      if (this.page.rotation.degrees % 90 != 0) {
+        return 'none';
+      }
+      return (
+        'translateX(' +
+        this.page.rotation.translation.x +
+        'px) translateY(' +
+        this.page.rotation.translation.y +
+        'px) rotate(' +
+        this.page.rotation.degrees +
+        'deg)'
+      );
+    },
+    contentTransformation() {
+      if (this.page.rotation.degrees % 90 != 0) {
+        return (
+          'translateX(' +
+          this.page.rotation.translation.x +
+          'px) translateY(' +
+          this.page.rotation.translation.y +
+          'px) rotate(-' +
+          this.page.rotation.degrees +
+          'deg)'
+        );
+      }
+      return 'none';
     },
     componentFor() {
       /*return element => {
@@ -223,13 +255,21 @@ export default {
       this.$store.commit('setElementSelected', element);
     },
     fitPageToScreen() {
+      var maxWidth = parseFloat(window.getComputedStyle(this.scroll).width) - 40;
+      var maxHeight = parseFloat(window.getComputedStyle(this.scroll).height) - 40;
+
+      var newZoom = maxWidth / this.pageSize.width;
       if (this.isPageLandscape) {
-        var maxWidth = parseFloat(window.getComputedStyle(this.scroll).width) - 40;
-        this.zoomToFitPage = maxWidth / this.page.box.w;
+        if (newZoom * this.pageSize.height > maxHeight) {
+          newZoom = maxHeight / this.pageSize.height;
+        }
       } else {
-        var maxHeight = parseFloat(window.getComputedStyle(this.scroll).height) - 40;
-        this.zoomToFitPage = maxHeight / this.page.box.h;
+        newZoom = maxHeight / this.pageSize.height;
+        if (newZoom * this.pageSize.width > maxWidth) {
+          newZoom = maxWidth / this.pageSize.width;
+        }
       }
+      this.zoomToFitPage = newZoom;
     },
   },
   updated: function() {
