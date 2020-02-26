@@ -45,7 +45,12 @@
           style="stroke: #aeaeae"
         />
       </svg>
-      <g>
+      <g
+        :style="{
+          transform: contentTransformation,
+          transformOrigin: page.rotation.origin.x + 'px ' + page.rotation.origin.y + 'px',
+        }"
+      >
         <imageData
           v-for="element in images"
           :key="element.id"
@@ -177,9 +182,31 @@ export default {
     },
     pageTransformation() {
       if (this.page.rotation.degrees % 90 != 0) {
-        return 'none'
+        return 'none';
       }
-      return 'translateX(' + this.page.rotation.translation.x + 'px) translateY(' + this.page.rotation.translation.y + 'px) rotate(' + this.page.rotation.degrees + 'deg)';
+      return (
+        'translateX(' +
+        this.page.rotation.translation.x +
+        'px) translateY(' +
+        this.page.rotation.translation.y +
+        'px) rotate(' +
+        this.page.rotation.degrees +
+        'deg)'
+      );
+    },
+    contentTransformation() {
+      if (this.page.rotation.degrees % 90 != 0) {
+        return (
+          'translateX(' +
+          this.page.rotation.translation.x +
+          'px) translateY(' +
+          this.page.rotation.translation.y +
+          'px) rotate(-' +
+          this.page.rotation.degrees +
+          'deg)'
+        );
+      }
+      return 'none';
     },
     componentFor() {
       /*return element => {
@@ -205,7 +232,7 @@ export default {
       };
     },
   },
-  methods: {    
+  methods: {
     elementSelected(element) {
       // if a Word is clicked, I make sure to remove all remaining highlighted elements instead of just the last clicked element
       const highlightedWords = document.getElementsByClassName('highlighted');
@@ -230,17 +257,17 @@ export default {
     fitPageToScreen() {
       var maxWidth = parseFloat(window.getComputedStyle(this.scroll).width) - 40;
       var maxHeight = parseFloat(window.getComputedStyle(this.scroll).height) - 40;
-        
+
       var newZoom = maxWidth / this.pageSize.width;
       if (this.isPageLandscape) {
         if (newZoom * this.pageSize.height > maxHeight) {
           newZoom = maxHeight / this.pageSize.height;
-        }        
+        }
       } else {
-        newZoom =  maxHeight / this.pageSize.height;
+        newZoom = maxHeight / this.pageSize.height;
         if (newZoom * this.pageSize.width > maxWidth) {
           newZoom = maxWidth / this.pageSize.width;
-        }  
+        }
       }
       this.zoomToFitPage = newZoom;
     },
