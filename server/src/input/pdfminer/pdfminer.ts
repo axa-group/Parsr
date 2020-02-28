@@ -41,7 +41,11 @@ import logger from '../../utils/Logger';
  * @returns The promise of a valid document (in the format DocumentRepresentation).
  */
 
-export function extractPages(pdfInputFile: string, pages: string, rotationDegrees: number = 0): Promise<string> {
+export function extractPages(
+  pdfInputFile: string,
+  pages: string,
+  rotationDegrees: number = 0,
+): Promise<string> {
   return new Promise<string>((resolveXml, rejectXml) => {
     const startTime: number = Date.now();
     CommandExecuter.pdfMinerExtract(pdfInputFile, pages, rotationDegrees)
@@ -152,6 +156,7 @@ export function xmlParser(xmlPath: string): Promise<any> {
     });
   });
 }
+
 export function jsParser(json: any): Document {
   const startTime: number = Date.now();
   const doc: Document = new Document(getPages(json));
@@ -192,11 +197,10 @@ function getPage(pageObj: PdfminerPage): Page {
   // treat figures
   if (pageObj.figure !== undefined) {
     pageObj.figure.forEach(fig => {
-      const allFiguresWithImages = getFiguresWithImages(fig);
-      if (allFiguresWithImages.length > 0) {
-        elements = [...elements, ...interpretImages(allFiguresWithImages, pageBBox.height)];
+      if (hasImages(fig)) {
+        elements = [...elements, ...interpretImages(fig, pageBBox.height)];
       }
-      if (fig.text !== undefined) {
+      if (hasTexts(fig)) {
         elements = [...elements, ...breakLineIntoWords(fig.text, ',', pageBBox.height)];
       }
     });
@@ -205,22 +209,23 @@ function getPage(pageObj: PdfminerPage): Page {
   return new Page(parseFloat(pageObj._attr.id), elements, pageBBox);
 }
 
-function getFiguresWithImages(figure: PdfminerFigure): PdfminerFigure[] {
-  if (figure.image !== undefined) {
-    return [figure];
+function hasTexts(figure: PdfminerFigure): boolean {
+  if (figure.text !== undefined) {
+    return true;
   }
-
   if (figure.figure !== undefined) {
-    return figure.figure
-      .map(fig => {
-        if (fig !== undefined) {
-          return getFiguresWithImages(fig);
-        }
-        return [];
-      })
-      .reduce((a, b) => a.concat(b), []);
+    return figure.figure.map(fig => hasTexts(fig)).reduce((a, b) => a || b);
   }
-  return [];
+  return false;
+}
+function hasImages(figure: PdfminerFigure): boolean {
+  if (figure.image !== undefined) {
+    return true;
+  }
+  if (figure.figure !== undefined) {
+    return figure.figure.map(fig => hasImages(fig)).reduce((a, b) => a || b);
+  }
+  return false;
 }
 
 // Pdfminer's bboxes are of the format: x0, y0, x1, y1. Our BoundingBox dims are as: left, top, width, height
@@ -281,18 +286,29 @@ function getValidCharacter(character: string): string {
 }
 
 function interpretImages(
-  figures: PdfminerFigure[],
+  figure: PdfminerFigure,
   pageHeight: number,
   scalingFactor: number = 1,
+  parentFigure: string = '',
 ): Image[] {
-  return figures.map(
-    fig =>
-      new Image(
-        getBoundingBox(fig._attr.bbox, ',', pageHeight, scalingFactor),
+  if (figure.figure) {
+    return figure.figure
+      .map(fig =>
+        interpretImages(fig, pageHeight, scalingFactor, parentFigure + figure._attr.name + '.'),
+      )
+      .reduce((a, b) => a.concat(b));
+  }
+
+  if (figure.image) {
+    return figure.image.map(_img => {
+      return new Image(
+        getBoundingBox(figure._attr.bbox, ',', pageHeight, scalingFactor),
         '', // TODO: to be filled with the location of the image once resolved
-        fig._attr.name,
-      ),
-  );
+        parentFigure + figure._attr.name,
+      );
+    });
+  }
+  return [];
 }
 
 function breakLineIntoWords(
