@@ -296,7 +296,7 @@ function qpdfDecrypt(filePath: string): Promise<string> {
 
 async function mutoolClean(filePath: string): Promise<string> {
   const outputFilePath = getTemporaryFile('.pdf');
-  return run(COMMANDS.MUTOOL, ['clean', filePath, outputFilePath]).then(() => {
+  return run(COMMANDS.MUTOOL, ['clean', '-g', filePath, outputFilePath]).then(() => {
     logger.info(`Mutool clean succeed --> ${outputFilePath}`);
     return outputFilePath;
   });
