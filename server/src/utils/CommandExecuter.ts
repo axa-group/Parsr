@@ -29,8 +29,8 @@ export interface Dimensions {
 const COMMANDS = {
   MUTOOL: 'mutool',
   PDF2TXT: ['pdf2txt.py', 'pdf2txt'],
-  IDENTIFY: ['magickk', 'identify'],
-  CONVERT: ['magickk', 'convert'],
+  IDENTIFY: ['magick', 'identify'],
+  CONVERT: ['magick', 'convert'],
   PANDOC: 'pandoc',
   DUMPPDF: ['dumppdf.py', 'dumppdf'],
   PYTHON: ['python3', 'python'],
