@@ -29,21 +29,19 @@ MuPDF: `mutool extract` is used to extract all image files from a PDF.
 <key>XObject</key>
 <value><dict size="1">
 <key>Image17</key>
-<value><ref id="17" /></value> // '17' will be used to match a image file named 'Img-17' extracted by MuPDF
+<value><ref id="17" /></value> // '17' will be used to match a image file named 'img-0017' extracted by MuPDF
 </dict></value>
 ```
 
 ## Accuracy
 
-Depends on the way PDF was built, if PDF is build using good practices the accuracy is **good**. 
+Almost **perfect**.
 
 ## Limitations
 
-- The module could not detect correct image if PDF was built using same image name (figure name) for all images.
+- Images will not be reconstructed if an image detected by extractor (pdfMiner) is not extracted by Muttol extract command then
 - Some PDF can use more than one image file (one alpha image with one background image) to generate one visual image in PDF, in that case the module will detect both images.
 
 ##TODO
 
 - Add image detection for other extractors (Abby, Pdf.js...)
-- Improve image detection for PDF's using same figure name for more than one image.
-- Allow API /markdown end point to download a Zip when md contains images.
