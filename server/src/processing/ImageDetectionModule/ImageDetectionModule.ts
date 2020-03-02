@@ -138,7 +138,8 @@ export class ImageDetectionModule extends Module {
         }
         refId = this.getImageRefId(figuresId[index + 1], childNode, data);
       } else if (refId == null) {
-        // There are cases where no node ref exists like <key>figId</key> bec
+        // There are cases where no node ref exists like <key>figId</key> because
+        // ref id is contained inside XObject node
         const xObjectId = this.getXObjectId(nodeData);
         if (xObjectId) {
           refId = this.getImageRefId(figuresId[index], this.getNode(xObjectId, data), data);
