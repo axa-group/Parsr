@@ -42,6 +42,7 @@ export class ImageDetectionModule extends Module {
       logger.warn('MuPDF not installed !! Skip image detection.');
       return doc;
     }
+
     this.extractorDetectedImages = this.totalDocumentImages(doc);
     if (this.extractorDetectedImages === 0) {
       logger.info('No images detected !! Skip image detection.');
@@ -60,15 +61,13 @@ export class ImageDetectionModule extends Module {
           this.linkXObjectWithExtensions(images, assets, index, pageIds[index]);
         }
       });
+
       logger.info(
-        'Images Detected ' +
-          this.extractorDetectedImages +
-          ' Reconstructed ' +
-          (this.linkedDumpPdfImages - this.mutoolMissedImages - this.missedDumpPdfImages) +
-          ' Mutool missed ' +
-          this.mutoolMissedImages +
-          ' DumpPDF missed ' +
-          this.missedDumpPdfImages,
+        `Images Detected ${this.extractorDetectedImages} Reconstructed ${this.linkedDumpPdfImages -
+          this.mutoolMissedImages -
+          this.missedDumpPdfImages} Mutool missed ${this.mutoolMissedImages} DumpPDF missed ${
+          this.missedDumpPdfImages
+        }`,
       );
     }
 
@@ -92,14 +91,9 @@ export class ImageDetectionModule extends Module {
         } else {
           this.mutoolMissedImages++;
           logger.warn(
-            'Page ' +
-              (pageIndex + 1).toString() +
-              ' (nodeId ' +
-              pageNodeId +
-              ') image ' +
-              img.refId +
-              ' no extension found for file ' +
-              img.xObjId,
+            `Page ${pageIndex + 1} \(nodeId ${pageNodeId}\) image ${
+              img.refId
+            } no extension found for file ${img.xObjId}`,
           );
         }
       });
@@ -119,9 +113,7 @@ export class ImageDetectionModule extends Module {
         this.linkedDumpPdfImages = this.linkedDumpPdfImages + 1;
       } else {
         this.missedDumpPdfImages = this.missedDumpPdfImages + 1;
-        logger.warn(
-          'Page ' + (pageIndex + 1).toString() + ' Xml node missed for image Id ' + img.refId,
-        );
+        logger.warn(`Page ${pageIndex + 1} Xml node missed for image Id ${img.refId}`);
       }
     });
   }
@@ -175,12 +167,11 @@ export class ImageDetectionModule extends Module {
     const nodeList = nodeData.match(new RegExp(listRegepx, 's'))[1];
     if (parseInt(count, 10) === this.getElementIds(nodeList).length) {
       return nodeList;
-    } else {
-      return this.getElementIds(nodeList)
-        .map(nodeId => this.getNode(nodeId, data))
-        .map(node => this.getPageNodes(node, data))
-        .join('');
     }
+    return this.getElementIds(nodeList)
+      .map(nodeId => this.getNode(nodeId, data))
+      .map(node => this.getPageNodes(node, data))
+      .join('');
   }
 
   private getElementIds(data: string): string[] {
