@@ -41,7 +41,11 @@ import logger from '../../utils/Logger';
  * @returns The promise of a valid document (in the format DocumentRepresentation).
  */
 
-export function extractPages(pdfInputFile: string, pages: string, rotationDegrees: number = 0): Promise<string> {
+export function extractPages(
+  pdfInputFile: string,
+  pages: string,
+  rotationDegrees: number = 0,
+): Promise<string> {
   return new Promise<string>((resolveXml, rejectXml) => {
     const startTime: number = Date.now();
     CommandExecuter.pdfMinerExtract(pdfInputFile, pages, rotationDegrees)
@@ -70,17 +74,17 @@ export function xmlParser(xmlPath: string): Promise<any> {
     let textBoxes: any[] = [];
     let textLines: any[] = [];
     let texts: any[] = [];
-    let figures: any[] = [];
+    let figures: Figure[] = [];
 
-    const recursiveFigures = {
-      ids: [],
-      images: [],
-      texts: [],
-      figures: [],
-      currentFigure: () => {
-        return recursiveFigures.ids[recursiveFigures.ids.length - 1].toString();
-      },
+    type Figure = {
+      _attr: {};
+      image: any[];
+      text: any[];
+      figure: Figure[];
     };
+
+    let currentFigure: Figure = null;
+    const figuresStack: Figure[] = [];
 
     const pushWord = (word, array, index = null) => {
       let element = {};
@@ -116,45 +120,28 @@ export function xmlParser(xmlPath: string): Promise<any> {
       textLines = [];
     });
 
-    xml.on('startElement: page > figure', figFigure => {
-      pushElement(figFigure.$.name, recursiveFigures.ids);
-    });
-
-    xml.on('startElement: page > figure figure', figFigure => {
-      pushElement(recursiveFigures.currentFigure() + '-' + figFigure.$.name, recursiveFigures.ids);
+    xml.on('startElement: figure', figFigure => {
+      const f: Figure = { _attr: figFigure.$, figure: [], image: [], text: [] };
+      if (figuresStack.length === 0) {
+        figures.push(f);
+      } else {
+        currentFigure.figure.push(f);
+      }
+      figuresStack.push(f);
+      currentFigure = f;
     });
 
     xml.on('startElement: image', figImage => {
-      pushElement({ _attr: figImage.$ }, recursiveFigures.images, recursiveFigures.currentFigure());
+      currentFigure.image.push({ _attr: figImage.$ });
     });
 
     xml.on('endElement: figure text', figText => {
-      const index = recursiveFigures.currentFigure();
-      pushWord(figText, recursiveFigures.texts, index);
+      pushWord(figText, currentFigure.text);
     });
 
-    xml.on('endElement: page > figure figure', figure => {
-      const current: string = recursiveFigures.currentFigure();
-      const recursiveFigure = {
-        _attr: figure.$,
-        image: recursiveFigures.images[current],
-        text: recursiveFigures.texts[current],
-        figure: recursiveFigures.figures[current],
-      };
-      recursiveFigures.ids.pop();
-      pushElement(recursiveFigure, recursiveFigures.figures, recursiveFigures.currentFigure());
-    });
-
-    xml.on('endElement: page > figure', figure => {
-      pushElement(
-        {
-          _attr: figure.$,
-          image: recursiveFigures.images[figure.$.name],
-          text: recursiveFigures.texts[figure.$.name],
-          figure: recursiveFigures.figures[figure.$.name],
-        },
-        figures,
-      );
+    xml.on('endElement: figure', _figure => {
+      figuresStack.pop();
+      currentFigure = figuresStack[figuresStack.length - 1];
     });
 
     xml.on('updateElement: page', pageElement => {
@@ -169,6 +156,7 @@ export function xmlParser(xmlPath: string): Promise<any> {
     });
   });
 }
+
 export function jsParser(json: any): Document {
   const startTime: number = Date.now();
   const doc: Document = new Document(getPages(json));
@@ -209,11 +197,10 @@ function getPage(pageObj: PdfminerPage): Page {
   // treat figures
   if (pageObj.figure !== undefined) {
     pageObj.figure.forEach(fig => {
-      const allFiguresWithImages = getFiguresWithImages(fig);
-      if (allFiguresWithImages.length > 0) {
-        elements = [...elements, ...interpretImages(allFiguresWithImages, pageBBox.height)];
+      if (hasImages(fig)) {
+        elements = [...elements, ...interpretImages(fig, pageBBox.height)];
       }
-      if (fig.text !== undefined) {
+      if (hasTexts(fig)) {
         elements = [...elements, ...breakLineIntoWords(fig.text, ',', pageBBox.height)];
       }
     });
@@ -222,22 +209,23 @@ function getPage(pageObj: PdfminerPage): Page {
   return new Page(parseFloat(pageObj._attr.id), elements, pageBBox);
 }
 
-function getFiguresWithImages(figure: PdfminerFigure): PdfminerFigure[] {
-  if (figure.image !== undefined) {
-    return [figure];
+function hasTexts(figure: PdfminerFigure): boolean {
+  if (figure.text !== undefined) {
+    return true;
   }
-
   if (figure.figure !== undefined) {
-    return figure.figure
-      .map(fig => {
-        if (fig !== undefined) {
-          return getFiguresWithImages(fig);
-        }
-        return [];
-      })
-      .reduce((a, b) => a.concat(b), []);
+    return figure.figure.map(fig => hasTexts(fig)).reduce((a, b) => a || b);
   }
-  return [];
+  return false;
+}
+function hasImages(figure: PdfminerFigure): boolean {
+  if (figure.image !== undefined) {
+    return true;
+  }
+  if (figure.figure !== undefined) {
+    return figure.figure.map(fig => hasImages(fig)).reduce((a, b) => a || b);
+  }
+  return false;
 }
 
 // Pdfminer's bboxes are of the format: x0, y0, x1, y1. Our BoundingBox dims are as: left, top, width, height
@@ -298,18 +286,29 @@ function getValidCharacter(character: string): string {
 }
 
 function interpretImages(
-  figures: PdfminerFigure[],
+  figure: PdfminerFigure,
   pageHeight: number,
   scalingFactor: number = 1,
+  parentFigure: string = '',
 ): Image[] {
-  return figures.map(
-    fig =>
-      new Image(
-        getBoundingBox(fig._attr.bbox, ',', pageHeight, scalingFactor),
+  if (figure.figure) {
+    return figure.figure
+      .map(fig =>
+        interpretImages(fig, pageHeight, scalingFactor, parentFigure + figure._attr.name + '.'),
+      )
+      .reduce((a, b) => a.concat(b));
+  }
+
+  if (figure.image) {
+    return figure.image.map(_img => {
+      return new Image(
+        getBoundingBox(figure._attr.bbox, ',', pageHeight, scalingFactor),
         '', // TODO: to be filled with the location of the image once resolved
-        fig._attr.name,
-      ),
-  );
+        parentFigure + figure._attr.name,
+      );
+    });
+  }
+  return [];
 }
 
 function breakLineIntoWords(
