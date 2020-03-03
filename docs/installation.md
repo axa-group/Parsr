@@ -31,7 +31,7 @@ Under a **Debian** based distribution:
 ```sh
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
-sudo apt-get install nodejs npm qpdf imagemagick graphicsmagick tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
+sudo apt-get install nodejs npm qpdf imagemagick tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
 pip install camelot-py[cv]
 pip install numpy pillow scikit-image
 pip install pdfminer.six
@@ -40,7 +40,7 @@ pip install pdfminer.six
 Under **Arch** Linux :
 
 ```sh
-pacman -S nodejs npm qpdf imagemagick graphicsmagick pdfminer tesseract python-pip
+pacman -S nodejs npm qpdf imagemagick pdfminer tesseract python-pip
 pip install camelot-py[cv]
 pip install numpy pillow scikit-image
 ```
@@ -57,7 +57,7 @@ To install it, launch the following in a terminal
 Next, install the required dependencies:
 
 ```sh
-brew install node qpdf imagemagick graphicsmagick tesseract tesseract-lang tcl-tk ghostscript
+brew install node qpdf imagemagick tesseract tesseract-lang tcl-tk ghostscript
 ```
 
 To install the python based dependencies (pdfminer and camelot), install, first install `pip`:
@@ -95,9 +95,7 @@ Then,
    choco install qpdf imagemagick
    ```
 
-5. Install [**graphicsmagick**](http://www.graphicsmagick.org/).
-
-6. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install-deps.html#for-windows).
+5. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install-deps.html#for-windows).
 
 #### 2.3.1. Tesseract
 
