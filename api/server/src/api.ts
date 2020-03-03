@@ -387,8 +387,8 @@ export class ApiServer {
           res.end();
         }
       } else {
-         paths = filesInFolder.map(this.fileToDownloadURI(docId, req.baseUrl));
-         res.json(paths);
+        paths = filesInFolder.map(this.fileToDownloadURI(docId, req.baseUrl));
+        res.json(paths);
       }
     } catch (err) {
       res.status(404).send(err.stack);
@@ -552,53 +552,39 @@ export class ApiServer {
       return;
     }
     let convert;
-
-    if (fileType.mime.startsWith('image')) {
-      const command = this.getCommandLocationOnSystem('magick convert', 'convert');
-      if (command) {
-        convert = new Promise((resolve, reject) => {
-          exec([command, '-resize', '200x200\\>', binder.input, filePath].join(' '), err => {
-            if (err) {
-              return reject(err);
-            }
-            return resolve();
-          });
+    const command = this.getCommandLocationOnSystem('magick convert', 'convert');
+    if (command) {
+      const inputFile = fileType.ext === 'pdf' ? binder.input.concat(`[${page - 1}]`) : binder.input;
+      convert = new Promise((resolve, reject) => {
+        exec([command, '-resize', '200x200\\>', inputFile, filePath].join(' '), err => {
+          if (err) {
+            return reject(err);
+          }
+          return resolve();
         });
-      } else {
-        convert = Promise.reject(
-          'Cannot find ImageMagick convert tool. Are you sure it is installed?',
-        );
-      }
-    } else if (fileType.ext === 'pdf') {
-      const pdf2Pic = require('pdf2pic');
-      const pdf2picConfig = new pdf2Pic({
-        density: 72, // output pixels per inch
-        savename: docId, // output file name
-        savedir: thumbFolder, // output file location
-        format: 'png', // output file format
-        size: '200x200', // output size in pixels
       });
-      convert = pdf2picConfig.convertBulk(binder.input, [page]);
+    } else {
+      convert = Promise.reject(
+        'Cannot find ImageMagick convert tool. Are you sure it is installed?',
+      );
+    }
+    try {
+      convert
+        .then(() => {
+          logger.info('Generated Thumbnail at path ' + filePath);
+          res.sendFile(filePath, {
+            headers: {
+              responseType: 'blob',
+            },
+          });
+        })
+        .catch((error: string) => {
+          res.status(500).send(error);
+        });
+    } catch (error) {
+      res.status(500).send(error);
     }
 
-    if (convert) {
-      try {
-        convert
-          .then(() => {
-            logger.info('Generated Thumbnail at path ' + filePath);
-            res.sendFile(filePath, {
-              headers: {
-                responseType: 'blob',
-              },
-            });
-          })
-          .catch((error: string) => {
-            res.status(500).send(error);
-          });
-      } catch (error) {
-        res.status(500).send(error);
-      }
-    }
   }
 
   private isValidDocument(doc: Express.Multer.File): boolean {
