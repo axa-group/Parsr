@@ -54,7 +54,7 @@ export class Orchestrator {
     return this.extractor.run(filename).then((doc: Document) => {
       if (this.cleaner) {
         logger.info('Running cleaner...');
-        return this.cleaner.run(doc);
+        return this.cleaner.run(doc, this.extractor.config);
       } else {
         logger.info(`Skipping cleaning process for ${this.extractor.constructor.name}.`);
         return doc;

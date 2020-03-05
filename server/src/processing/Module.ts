@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { Config } from '../types/Config';
 import { Document } from '../types/DocumentRepresentation';
 import logger from '../utils/Logger';
 
@@ -41,11 +42,11 @@ export class Module<T = undefined> {
     this._extraOptions = extraOptions;
   }
 
-  public run(document: Document): Promise<Document> {
-    return Promise.resolve(this.main(document));
+  public run(document: Document, config: Config): Promise<Document> {
+    return Promise.resolve(this.main(document, config));
   }
 
-  public bypass(document: Document): Promise<Document> {
+  public bypass(document: Document, _config: Config): Promise<Document> {
     return Promise.resolve(document);
   }
 
@@ -81,8 +82,8 @@ export class Module<T = undefined> {
     this._extraOptions = value;
   }
 
-  protected main(document: Document): Document | Promise<Document> {
+  protected main(document: Document, config: Config): Document | Promise<Document> {
     logger.warn('Module main should not be called.');
-    return this.bypass(document);
+    return this.bypass(document, config);
   }
 }
