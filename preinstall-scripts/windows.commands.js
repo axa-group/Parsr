@@ -1,5 +1,3 @@
-const refreshPath =
-  "[System.Environment]::SetEnvironmentVariable('Path', [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')); refreshenv";
 
 const commands = [
   'Set-ExecutionPolicy Bypass -Scope Process -Force',
@@ -9,10 +7,10 @@ const commands = [
   'choco install nodejs-lts python ghostscript qpdf pandoc mupdf -y',
   'choco install tesseract --pre -y',
   'curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py',
-  refreshPath,
+  "[System.Environment]::SetEnvironmentVariable('Path', [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')); refreshenv",
   'python get-pip.py',
   'pip install pdfminer.six camelot-py[cv]',
-  refreshPath,
+  'npm i --global windows-build-tools'
 ];
 
 module.exports = [
