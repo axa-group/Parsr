@@ -23,7 +23,10 @@ function install() {
     const [cmd, ...args] = commands[osPlatform];
     if (cmd) {
       return promisifySpawn(cmd, args)
-        .then(code => code)
+        .then(code => {
+          console.log('Finished process with code', code);
+          console.log('Please close this window in order to refresh the PATH variable.');
+        })
         .catch(console.error);
     }
   } else {
