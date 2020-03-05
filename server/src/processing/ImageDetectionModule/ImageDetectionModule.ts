@@ -17,9 +17,9 @@ import * as filetype from 'file-type';
 import * as fs from 'fs';
 import { Document, Image } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
-import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
+import * as DumpPdf from './DumpPdfParsr';
 
 export class ImageDetectionModule extends Module {
   public static moduleName = 'image-detection';
@@ -52,7 +52,7 @@ export class ImageDetectionModule extends Module {
     const dumpPdfData = await this.getFileMetadata(doc.inputFile);
     if (dumpPdfData != null) {
       const assets: string[] = fs.readdirSync(doc.assetsFolder);
-      const pageIds = this.extractPageNodeIds(dumpPdfData);
+      const pageIds = DumpPdf.extractPageNodeIds(dumpPdfData);
       doc.pages.forEach((page, index) => {
         const images = page.getElementsOfType(Image, true);
         images.forEach(img => (img.enabled = true));
@@ -100,14 +100,14 @@ export class ImageDetectionModule extends Module {
   }
 
   private linkImages(images: Image[], pageNodeId: string, data: string, pageIndex: number) {
-    let rootNode = this.getNode(pageNodeId, data);
-    const resourcesNodeId = this.getResourceId(rootNode);
+    let rootNode = DumpPdf.getNode(pageNodeId, data);
+    const resourcesNodeId = DumpPdf.getResourceId(rootNode);
     if (resourcesNodeId != null) {
       pageNodeId = resourcesNodeId;
-      rootNode = this.getNode(resourcesNodeId, data);
+      rootNode = DumpPdf.getNode(resourcesNodeId, data);
     }
     images.forEach(img => {
-      const imgRefId = this.getImageRefId(img.refId, rootNode, data);
+      const imgRefId = DumpPdf.getImageRefId(img.refId, rootNode, data);
       if (imgRefId != null) {
         img.xObjId = imgRefId;
         this.linkedDumpPdfImages = this.linkedDumpPdfImages + 1;
@@ -115,94 +115,6 @@ export class ImageDetectionModule extends Module {
         this.missedDumpPdfImages = this.missedDumpPdfImages + 1;
         logger.warn(`Page ${pageIndex + 1} Xml node missed for image Id ${img.refId}`);
       }
-    });
-  }
-
-  private getImageRefId(imageRefId: string, nodeData: string, data: string): string {
-    const figuresId = imageRefId.split('.');
-    let refId = null;
-    figuresId.forEach((figId, index) => {
-      const regepx = '<key>' + figId + '</key>\n<value><ref id="(\\d+)" /></value>';
-      const imgObj = nodeData.match(new RegExp(regepx, 'g'));
-      if (refId == null && imgObj != null && imgObj.length === 1) {
-        refId = imgObj[0].match(new RegExp(regepx))[1];
-      }
-      if (index + 1 < figuresId.length) {
-        // imageRefId can be like --> Fig1.Fig2.Fig2.Im0
-        // then we need to find resource id of node with id = refId (if it exists)
-        // and recursively call again this method
-        let childNode = this.getNode(refId, data);
-        const resourceNodeId = this.getResourceId(childNode);
-        if (resourceNodeId) {
-          childNode = this.getNode(resourceNodeId, data);
-        }
-        refId = this.getImageRefId(figuresId[index + 1], childNode, data);
-      } else if (refId == null) {
-        // There are cases where no node ref exists like <key>figId</key> because
-        // ref id is contained inside XObject node
-        const xObjectId = this.getXObjectId(nodeData);
-        if (xObjectId) {
-          refId = this.getImageRefId(figuresId[index], this.getNode(xObjectId, data), data);
-        }
-      }
-    });
-    return refId;
-  }
-
-  private extractPageNodeIds(data: string) {
-    const rootPageObjId = data.match('<key>Pages</key>\n<value><ref id="(\\d+)" /></value>')[1];
-    const rootPagesNode = this.getNode(rootPageObjId, data);
-    const pageNodes = this.getPageNodes(rootPagesNode, data);
-    return this.getElementIds(pageNodes);
-  }
-
-  private getNode(id: string, data: string): string {
-    const regepx = '<object id="' + id + '">(.*?)</object>';
-    return data.match(new RegExp(regepx, 's'))[1];
-  }
-
-  private getPageNodes(nodeData: string, data: string): string {
-    const countRegexp = '<key>Count</key>\n<value><number>(\\d+)</number></value>';
-    const count = nodeData.match(new RegExp(countRegexp, 's'))[1];
-    const listRegepx = '<key>Kids</key>\n<value><list size="\\d+">(.*?)</list></value>';
-    const nodeList = nodeData.match(new RegExp(listRegepx, 's'))[1];
-    if (parseInt(count, 10) === this.getElementIds(nodeList).length) {
-      return nodeList;
-    }
-    return this.getElementIds(nodeList)
-      .map(nodeId => this.getNode(nodeId, data))
-      .map(node => this.getPageNodes(node, data))
-      .join('');
-  }
-
-  private getElementIds(data: string): string[] {
-    const regepx = '<ref id="(\\d+)" />';
-    return data
-      .match(new RegExp(regepx, 'g'))
-      .map(matching => matching.match(new RegExp(regepx))[1]);
-  }
-
-  private getResourceId(data: string): string {
-    const regepx = '<key>Resources</key>\n<value><ref id="(\\d+)" /></value>';
-    const resource = data.match(new RegExp(regepx));
-    return resource != null ? resource[1] : null;
-  }
-
-  private getXObjectId(data: string): string {
-    const regepx = '<key>XObject</key>\n<value><ref id="(\\d+)" /></value>';
-    const resource = data.match(new RegExp(regepx));
-    return resource != null ? resource[1] : null;
-  }
-
-  private getFileMetadata(pdfFilePath: string): Promise<any> {
-    return new Promise(resolve => {
-      CommandExecuter.dumpPdf(pdfFilePath)
-        .then(xmlOutputPath => {
-          resolve(fs.readFileSync(xmlOutputPath, 'utf8'));
-        })
-        .catch(() => {
-          resolve();
-        });
     });
   }
 
