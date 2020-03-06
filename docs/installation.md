@@ -2,19 +2,19 @@
 
 - [Parsr Installation Guide](#parsr-installation-guide)
   - [1. Docker Installation](#1-docker-installation)
-  - [2. Bare-Metal Installation](#2-bare-metal-installation)
-    - [2.1. Installing Dependencies under Linux](#21-installing-dependencies-under-linux)
-    - [2.2. Installing Dependencies under MacOS](#22-installing-dependencies-under-macos)
-    - [2.3. Installing Dependencies under Windows](#23-installing-dependencies-under-windows)
-      - [2.3.1. Tesseract](#231-tesseract)
-  - [3. Optional Dependencies](#3-optional-dependencies)
-    - [3.1. MuPDF](#31-mupdf)
-    - [3.2. Pandoc](#32-pandoc)
-    - [3.3. ABBYY FineReader](#33-abbyy-finereader)
+  - [2. Automatic Installation](#2-automatic-installation)
+  - [3. Bare-Metal Installation](#3-bare-metal-installation)
+    - [3.1. Installing Dependencies under Linux](#31-installing-dependencies-under-linux)
+    - [3.2. Installing Dependencies under MacOS](#32-installing-dependencies-under-macos)
+    - [3.3. Installing Dependencies under Windows](#33-installing-dependencies-under-windows)
+  - [4. Optional Dependencies](#4-optional-dependencies)
+    - [4.1. MuPDF](#41-mupdf)
+    - [4.2. Pandoc](#42-pandoc)
+    - [4.3. ABBYY FineReader](#43-abbyy-finereader)
 
 This document will guide you through the installation process.
 
-You can install Parsr either using Docker containers, or directly on your machine. You don't need to do both!
+You can install Parsr either using [Docker containers](#1-docker-installation), or directly on your machine with an [automatic script](#2-automatic-installation) or [manually](#3-bare-metal-installation). You don't need to do everything!
 
 ## 1. Docker Installation
 
@@ -22,9 +22,21 @@ Containers are already available on [Docker Hub](https://hub.docker.com/u/axarev
 
 The documentation to build and run Docker containers is [here](docker.md).
 
-## 2. Bare-Metal Installation
+## 2. Automatic Installation
 
-### 2.1. Installing Dependencies under Linux
+You can install Parsr locally via a Node.js script:
+
+1. [Download and install **`node.js`**](https://nodejs.org/en/download)
+2. In the root of Parsr directory, open a terminal and run `npm run install:pre`.
+  This command will install every required and optional dependency.  
+
+This script requires a machine with **TLS 1.2 or newer** enabled.
+
+## 3. Bare-Metal Installation
+
+If the automatic install script is not available for your platform, you can always do a manual installation following this steps:
+
+### 3.1. Installing Dependencies under Linux
 
 Under a **Debian** based distribution:
 
@@ -45,7 +57,7 @@ pip install camelot-py[cv]
 pip install numpy pillow scikit-image
 ```
 
-### 2.2. Installing Dependencies under MacOS
+### 3.2. Installing Dependencies under MacOS
 
 The package manager we suggest using under MacOS is [homebrew](https://brew.sh/).
 To install it, launch the following in a terminal
@@ -75,7 +87,7 @@ pip install camelot-py[cv]
 pip install numpy pillow scikit-image
 ```
 
-### 2.3. Installing Dependencies under Windows
+### 3.3. Installing Dependencies under Windows
 
 The installation procedure for Parsr requires the command `where.exe` to be in the path.  
 Try typing `where` in the command prompt. If the command cannot be found, execute the following to add its location to PATH:
@@ -97,24 +109,20 @@ Then,
 
 5. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install-deps.html#for-windows).
 
-#### 2.3.1. Tesseract
-
-You can download Tesseract 4.0 64-bit for Windows or check out other available formats on [the wiki](https://github.com/UB-Mannheim/tesseract/wiki).
-
+6. For **`tesseract`** you can download and install, or check out other available formats on [the wiki](https://github.com/UB-Mannheim/tesseract/wiki).
 Then, you need to add tesseract.exe to your PATH:
 If you have install it in `C:\Program Files (x86)\Tesseract-OCR`, you can either add it [using the user interface](https://docs.alfresco.com/4.2/tasks/fot-addpath.html) execute the following command in Powershell (Run as Administrator):
+    ```sh
+    setx PATH "\$env:PATH;C:\Program Files (x86)\Tesseract-OCR" -m
+    ```
 
-```sh
-setx PATH "\$env:PATH;C:\Program Files (x86)\Tesseract-OCR" -m
-```
-
-## 3. Optional Dependencies
+## 4. Optional Dependencies
 
 The following dependencies are **completely optional**, and their exclusion does not hinder the proper functioning of the Parsr pipeline.
 
 The functions of each, as well as the installation process are are explained below:
 
-### 3.1. MuPDF
+### 4.1. MuPDF
 
 MuPDF, in the Parsr platform is Used to fix certain error-prone or corrupt PDF files on input.
 
@@ -147,7 +155,7 @@ To install MuPDF, follow the steps corresponding to your environment:
 If MuPDF is not installed, a corrupt/unreadable PDF file at input will be left untreated.
 A message of such an occurrence will be logged.
 
-### 3.2. Pandoc
+### 4.2. Pandoc
 
 Pandoc is a document format conversion program, used under Parsr to generate PDF files from an intermediate Markdown output after the cleaning operation in the pipeline.
 
@@ -180,7 +188,7 @@ To install Pandoc, follow the steps corresponding to your environment:
 If Pandoc is not installed, the user will not be able to generate PDF files on output.
 Any configuration requiring a PDF file output will be ignored.
 
-### 3.3. ABBYY FineReader
+### 4.3. ABBYY FineReader
 
 ABBYY FineReader is a proprietary high precision OCR solution for generating rich text from images.
 One can obtain the ABBYY FineReader Server from [here](https://www.abbyy.com/en-us/finereader-server/).

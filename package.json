@@ -17,6 +17,7 @@
     "test": "test"
   },
   "scripts": {
+    "install:pre": "node ./preinstall-scripts",
     "test": "mocha -t 15000 -r ts-node/register test/**/**/*.spec.ts",
     "copyAssets": "copyfiles -u 2 \"./server/assets/*\" \"./dist/assets/\" && copyfiles -u 2 \"./server/assets/pdf.worker.js\" \"./node_modules/pdfjs-dist/build/\"",
     "build:ts": "npm run copyAssets && tsc --outDir ./dist",
