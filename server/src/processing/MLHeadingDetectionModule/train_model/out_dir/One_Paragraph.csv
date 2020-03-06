@@ -1,8 +1,0 @@
-"line","is_font_bigger","is_different_style","is_font_unique","is_title_case","label"
-"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has","False","False","False","False","paragraph"
-"been the industry's standard dummy text ever since the 1500s, when an unknown printer took a","False","False","True","False","paragraph"
-"galley of type and scrambled it to make a type specimen book. It has survived not only five","False","False","True","False","paragraph"
-"centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was","False","False","True","False","paragraph"
-"popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages,","False","False","True","False","paragraph"
-"and more recently with desktop publishing software like Aldus PageMaker including versions of","False","False","True","False","paragraph"
-"Lorem Ipsum.","False","False","True","True","paragraph"
