@@ -1,0 +1,1613 @@
+{
+    "metadata": [],
+    "pages": [
+        {
+            "margins": {
+                "top": 75,
+                "left": 48,
+                "bottom": 523,
+                "right": 794
+            },
+            "box": {
+                "l": 0,
+                "t": 0,
+                "w": 842,
+                "h": 595
+            },
+            "rotation": {
+                "degrees": 0,
+                "origin": {
+                    "x": 0,
+                    "y": 0
+                },
+                "translation": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "pageNumber": 1,
+            "elements": [
+                {
+                    "id": 502,
+                    "type": "heading",
+                    "properties": {
+                        "order": 0
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 319.54,
+                        "t": 76.21,
+                        "w": 472.93,
+                        "h": 41.93
+                    },
+                    "content": [
+                        {
+                            "id": 476,
+                            "type": "line",
+                            "properties": {
+                                "order": 0
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 319.54,
+                                "t": 76.21,
+                                "w": 472.93,
+                                "h": 41.93
+                            },
+                            "content": [
+                                {
+                                    "id": 25,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 0
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 319.54,
+                                        "t": 76.21,
+                                        "w": 158.29,
+                                        "h": 41.93
+                                    },
+                                    "content": "Business",
+                                    "font": 1
+                                },
+                                {
+                                    "id": 26,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 1
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 486.22,
+                                        "t": 76.21,
+                                        "w": 110.36,
+                                        "h": 41.93
+                                    },
+                                    "content": "Travel",
+                                    "font": 1
+                                },
+                                {
+                                    "id": 27,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 2
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 604.96,
+                                        "t": 76.21,
+                                        "w": 187.52,
+                                        "h": 41.93
+                                    },
+                                    "content": "Assistance",
+                                    "font": 1
+                                }
+                            ]
+                        }
+                    ],
+                    "level": 1
+                },
+                {
+                    "id": 499,
+                    "type": "paragraph",
+                    "properties": {
+                        "order": 1
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 155.94,
+                        "t": 206.53,
+                        "w": 517.09,
+                        "h": 190.09
+                    },
+                    "content": [
+                        {
+                            "id": 477,
+                            "type": "line",
+                            "properties": {
+                                "order": 1
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 259.65,
+                                "t": 206.53,
+                                "w": 413.38,
+                                "h": 55.91
+                            },
+                            "content": [
+                                {
+                                    "id": 41,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 3
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 259.65,
+                                        "t": 206.53,
+                                        "w": 112.21,
+                                        "h": 55.91
+                                    },
+                                    "content": "24/7",
+                                    "font": 2
+                                },
+                                {
+                                    "id": 42,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 4
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 383.82,
+                                        "t": 206.53,
+                                        "w": 289.21,
+                                        "h": 55.91
+                                    },
+                                    "content": "emergency",
+                                    "font": 2
+                                }
+                            ]
+                        },
+                        {
+                            "id": 478,
+                            "type": "line",
+                            "properties": {
+                                "order": 2
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 207.79,
+                                "t": 273.62,
+                                "w": 207.42,
+                                "h": 55.91
+                            },
+                            "content": [
+                                {
+                                    "id": 62,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 5
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 207.79,
+                                        "t": 273.62,
+                                        "w": 207.42,
+                                        "h": 55.91
+                                    },
+                                    "content": "support",
+                                    "font": 2
+                                }
+                            ]
+                        },
+                        {
+                            "id": 479,
+                            "type": "line",
+                            "properties": {
+                                "order": 3
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 155.94,
+                                "t": 340.71,
+                                "w": 262.99,
+                                "h": 55.91
+                            },
+                            "content": [
+                                {
+                                    "id": 80,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 6
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 155.94,
+                                        "t": 340.71,
+                                        "w": 84.03,
+                                        "h": 55.91
+                                    },
+                                    "content": "+33",
+                                    "font": 2
+                                },
+                                {
+                                    "id": 81,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 7
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 251.93,
+                                        "t": 340.71,
+                                        "w": 96.16,
+                                        "h": 55.91
+                                    },
+                                    "content": "(0)1",
+                                    "font": 2
+                                },
+                                {
+                                    "id": 82,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 8
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 360.06,
+                                        "t": 340.71,
+                                        "w": 58.87,
+                                        "h": 55.91
+                                    },
+                                    "content": "55",
+                                    "font": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 500,
+                    "type": "paragraph",
+                    "properties": {
+                        "order": 4
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 427.18,
+                        "t": 273.62,
+                        "w": 340.09,
+                        "h": 123
+                    },
+                    "content": [
+                        {
+                            "id": 480,
+                            "type": "line",
+                            "properties": {
+                                "order": 4
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 427.18,
+                                "t": 273.62,
+                                "w": 340.09,
+                                "h": 55.91
+                            },
+                            "content": [
+                                {
+                                    "id": 63,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 9
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 427.18,
+                                        "t": 273.62,
+                                        "w": 176.84,
+                                        "h": 55.91
+                                    },
+                                    "content": "during",
+                                    "font": 2
+                                },
+                                {
+                                    "id": 64,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 10
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 615.98,
+                                        "t": 273.62,
+                                        "w": 151.29,
+                                        "h": 55.91
+                                    },
+                                    "content": "travel",
+                                    "font": 2
+                                }
+                            ]
+                        },
+                        {
+                            "id": 481,
+                            "type": "line",
+                            "properties": {
+                                "order": 5
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 430.9,
+                                "t": 340.71,
+                                "w": 204.62,
+                                "h": 55.91
+                            },
+                            "content": [
+                                {
+                                    "id": 83,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 11
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 430.9,
+                                        "t": 340.71,
+                                        "w": 62.56,
+                                        "h": 55.91
+                                    },
+                                    "content": "92",
+                                    "font": 2
+                                },
+                                {
+                                    "id": 84,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 12
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 505.42,
+                                        "t": 340.71,
+                                        "w": 52.72,
+                                        "h": 55.91
+                                    },
+                                    "content": "21",
+                                    "font": 2
+                                },
+                                {
+                                    "id": 85,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 13
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 570.11,
+                                        "t": 340.71,
+                                        "w": 65.41,
+                                        "h": 55.91
+                                    },
+                                    "content": "89",
+                                    "font": 2
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 501,
+                    "type": "heading",
+                    "properties": {
+                        "order": 6
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 435.9,
+                        "t": 459.77,
+                        "w": 355.23,
+                        "h": 61.5
+                    },
+                    "content": [
+                        {
+                            "id": 482,
+                            "type": "line",
+                            "properties": {
+                                "order": 6
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 435.9,
+                                "t": 459.77,
+                                "w": 289.38,
+                                "h": 28.18
+                            },
+                            "content": [
+                                {
+                                    "id": 106,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 14
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 435.9,
+                                        "t": 459.77,
+                                        "w": 145.58,
+                                        "h": 27.95
+                                    },
+                                    "content": "Membership",
+                                    "font": 3
+                                },
+                                {
+                                    "id": 107,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 15
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 587.07,
+                                        "t": 459.77,
+                                        "w": 24.54,
+                                        "h": 27.95
+                                    },
+                                    "content": "n°",
+                                    "font": 3
+                                },
+                                {
+                                    "id": 108,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 16
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 617.2,
+                                        "t": 459.99,
+                                        "w": 108.07,
+                                        "h": 27.95
+                                    },
+                                    "content": "080.1381",
+                                    "font": 4
+                                }
+                            ]
+                        },
+                        {
+                            "id": 483,
+                            "type": "line",
+                            "properties": {
+                                "order": 7
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 435.9,
+                                "t": 493.31,
+                                "w": 355.23,
+                                "h": 27.95
+                            },
+                            "content": [
+                                {
+                                    "id": 133,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 17
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 435.9,
+                                        "t": 493.31,
+                                        "w": 24.21,
+                                        "h": 27.95
+                                    },
+                                    "content": "to",
+                                    "font": 3
+                                },
+                                {
+                                    "id": 134,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 18
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 465.7,
+                                        "t": 493.31,
+                                        "w": 160.12,
+                                        "h": 27.95
+                                    },
+                                    "content": "communicate",
+                                    "font": 3
+                                },
+                                {
+                                    "id": 135,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 19
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 631.41,
+                                        "t": 493.31,
+                                        "w": 64.43,
+                                        "h": 27.95
+                                    },
+                                    "content": "when",
+                                    "font": 3
+                                },
+                                {
+                                    "id": 136,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 20
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 701.43,
+                                        "t": 493.31,
+                                        "w": 43.3,
+                                        "h": 27.95
+                                    },
+                                    "content": "you",
+                                    "font": 3
+                                },
+                                {
+                                    "id": 137,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 21
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 750.32,
+                                        "t": 493.31,
+                                        "w": 40.81,
+                                        "h": 27.95
+                                    },
+                                    "content": "call",
+                                    "font": 3
+                                }
+                            ]
+                        }
+                    ],
+                    "level": 3
+                }
+            ]
+        },
+        {
+            "margins": {
+                "top": 75,
+                "left": 48,
+                "bottom": 523,
+                "right": 794
+            },
+            "box": {
+                "l": 0,
+                "t": 0,
+                "w": 842,
+                "h": 595
+            },
+            "rotation": {
+                "degrees": 0,
+                "origin": {
+                    "x": 0,
+                    "y": 0
+                },
+                "translation": {
+                    "x": 0,
+                    "y": 0
+                }
+            },
+            "pageNumber": 2,
+            "elements": [
+                {
+                    "id": 506,
+                    "type": "heading",
+                    "properties": {
+                        "order": 0
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 49.61,
+                        "t": 226.99,
+                        "w": 425.56,
+                        "h": 34.94
+                    },
+                    "content": [
+                        {
+                            "id": 484,
+                            "type": "line",
+                            "properties": {
+                                "order": 0
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 49.61,
+                                "t": 226.99,
+                                "w": 425.56,
+                                "h": 34.94
+                            },
+                            "content": [
+                                {
+                                    "id": 162,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 0
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 49.61,
+                                        "t": 226.99,
+                                        "w": 148.93,
+                                        "h": 34.94
+                                    },
+                                    "content": "Employee",
+                                    "font": 5
+                                },
+                                {
+                                    "id": 163,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 1
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 205.52,
+                                        "t": 226.99,
+                                        "w": 139.38,
+                                        "h": 34.94
+                                    },
+                                    "content": "Coverage",
+                                    "font": 5
+                                },
+                                {
+                                    "id": 164,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 2
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 351.89,
+                                        "t": 226.99,
+                                        "w": 123.27,
+                                        "h": 34.94
+                                    },
+                                    "content": "Benefits",
+                                    "font": 5
+                                }
+                            ]
+                        }
+                    ],
+                    "level": 2
+                },
+                {
+                    "id": 503,
+                    "type": "paragraph",
+                    "properties": {
+                        "order": 1
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 49.61,
+                        "t": 263.2,
+                        "w": 261.13,
+                        "h": 24.46
+                    },
+                    "content": [
+                        {
+                            "id": 485,
+                            "type": "line",
+                            "properties": {
+                                "order": 1
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 49.61,
+                                "t": 263.2,
+                                "w": 261.13,
+                                "h": 24.46
+                            },
+                            "content": [
+                                {
+                                    "id": 188,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 3
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 49.61,
+                                        "t": 263.2,
+                                        "w": 81.69,
+                                        "h": 24.46
+                                    },
+                                    "content": "Services",
+                                    "font": 6
+                                },
+                                {
+                                    "id": 189,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 4
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 136.19,
+                                        "t": 263.2,
+                                        "w": 23.92,
+                                        "h": 24.46
+                                    },
+                                    "content": "by",
+                                    "font": 6
+                                },
+                                {
+                                    "id": 190,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 5
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 165,
+                                        "t": 263.2,
+                                        "w": 37.96,
+                                        "h": 24.46
+                                    },
+                                    "content": "AXA",
+                                    "font": 6
+                                },
+                                {
+                                    "id": 191,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 6
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 207.86,
+                                        "t": 263.2,
+                                        "w": 102.88,
+                                        "h": 24.46
+                                    },
+                                    "content": "Assistance",
+                                    "font": 6
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 504,
+                    "type": "paragraph",
+                    "properties": {
+                        "order": 2
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 49.61,
+                        "t": 319.23,
+                        "w": 692.15,
+                        "h": 108.32
+                    },
+                    "content": [
+                        {
+                            "id": 486,
+                            "type": "line",
+                            "properties": {
+                                "order": 2
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 49.61,
+                                "t": 319.23,
+                                "w": 455.44,
+                                "h": 24.46
+                            },
+                            "content": [
+                                {
+                                    "id": 238,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 7
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 79.33,
+                                        "t": 319.23,
+                                        "w": 45.03,
+                                        "h": 24.46
+                                    },
+                                    "content": "24/7",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 239,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 8
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 129.25,
+                                        "t": 319.23,
+                                        "w": 87.56,
+                                        "h": 24.46
+                                    },
+                                    "content": "medical,",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 240,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 9
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 221.7,
+                                        "t": 319.23,
+                                        "w": 81.03,
+                                        "h": 24.46
+                                    },
+                                    "content": "security",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 241,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 10
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 307.63,
+                                        "t": 319.23,
+                                        "w": 21.74,
+                                        "h": 24.46
+                                    },
+                                    "content": "or",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 242,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 11
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 334.27,
+                                        "t": 319.23,
+                                        "w": 61.05,
+                                        "h": 24.46
+                                    },
+                                    "content": "safety",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 243,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 12
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 400.21,
+                                        "t": 319.23,
+                                        "w": 104.83,
+                                        "h": 24.46
+                                    },
+                                    "content": "assistance",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 193,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 13
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 49.61,
+                                        "t": 327.73,
+                                        "w": 7.98,
+                                        "h": 10.48
+                                    },
+                                    "content": "■",
+                                    "font": 8
+                                }
+                            ]
+                        },
+                        {
+                            "id": 487,
+                            "type": "line",
+                            "properties": {
+                                "order": 3
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 49.61,
+                                "t": 347.19,
+                                "w": 532.19,
+                                "h": 24.46
+                            },
+                            "content": [
+                                {
+                                    "id": 288,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 14
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 79.33,
+                                        "t": 347.19,
+                                        "w": 78.98,
+                                        "h": 24.46
+                                    },
+                                    "content": "Medical",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 289,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 15
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 163.2,
+                                        "t": 347.19,
+                                        "w": 100.67,
+                                        "h": 24.46
+                                    },
+                                    "content": "expenses,",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 290,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 16
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 268.77,
+                                        "t": 347.19,
+                                        "w": 45.15,
+                                        "h": 24.46
+                                    },
+                                    "content": "with",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 291,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 17
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 318.81,
+                                        "t": 347.19,
+                                        "w": 21.75,
+                                        "h": 24.46
+                                    },
+                                    "content": "or",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 292,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 18
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 345.45,
+                                        "t": 347.19,
+                                        "w": 79.98,
+                                        "h": 24.46
+                                    },
+                                    "content": "without",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 293,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 19
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 430.32,
+                                        "t": 347.19,
+                                        "w": 151.47,
+                                        "h": 24.46
+                                    },
+                                    "content": "hospitalization",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 195,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 20
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 49.61,
+                                        "t": 355.69,
+                                        "w": 7.98,
+                                        "h": 10.48
+                                    },
+                                    "content": "■",
+                                    "font": 8
+                                }
+                            ]
+                        },
+                        {
+                            "id": 488,
+                            "type": "line",
+                            "properties": {
+                                "order": 4
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 49.61,
+                                "t": 375.14,
+                                "w": 692.15,
+                                "h": 24.46
+                            },
+                            "content": [
+                                {
+                                    "id": 354,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 21
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 79.33,
+                                        "t": 375.14,
+                                        "w": 61.91,
+                                        "h": 24.46
+                                    },
+                                    "content": "Travel",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 355,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 22
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 146.13,
+                                        "t": 375.14,
+                                        "w": 90.35,
+                                        "h": 24.46
+                                    },
+                                    "content": "incident:",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 356,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 23
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 241.37,
+                                        "t": 375.14,
+                                        "w": 72.03,
+                                        "h": 24.46
+                                    },
+                                    "content": "delays,",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 357,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 24
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 318.3,
+                                        "t": 375.14,
+                                        "w": 134.08,
+                                        "h": 24.46
+                                    },
+                                    "content": "deterioration",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 358,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 25
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 457.27,
+                                        "t": 375.14,
+                                        "w": 21.74,
+                                        "h": 24.46
+                                    },
+                                    "content": "or",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 359,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 26
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 483.91,
+                                        "t": 375.14,
+                                        "w": 39.99,
+                                        "h": 24.46
+                                    },
+                                    "content": "loss",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 360,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 27
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 528.79,
+                                        "t": 375.14,
+                                        "w": 20.4,
+                                        "h": 24.46
+                                    },
+                                    "content": "of",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 361,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 28
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 554.09,
+                                        "t": 375.14,
+                                        "w": 86.34,
+                                        "h": 24.46
+                                    },
+                                    "content": "luggage,",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 362,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 29
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 645.32,
+                                        "t": 375.14,
+                                        "w": 54.49,
+                                        "h": 24.46
+                                    },
+                                    "content": "theft,",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 363,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 30
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 704.7,
+                                        "t": 375.14,
+                                        "w": 37.06,
+                                        "h": 24.46
+                                    },
+                                    "content": "etc.",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 197,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 31
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 49.61,
+                                        "t": 383.64,
+                                        "w": 7.98,
+                                        "h": 10.48
+                                    },
+                                    "content": "■",
+                                    "font": 8
+                                }
+                            ]
+                        },
+                        {
+                            "id": 489,
+                            "type": "line",
+                            "properties": {
+                                "order": 5
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 49.61,
+                                "t": 403.1,
+                                "w": 277.72,
+                                "h": 24.46
+                            },
+                            "content": [
+                                {
+                                    "id": 387,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 32
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 79.33,
+                                        "t": 403.1,
+                                        "w": 89.23,
+                                        "h": 24.46
+                                    },
+                                    "content": "Personal",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 388,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 33
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 173.45,
+                                        "t": 403.1,
+                                        "w": 76.07,
+                                        "h": 24.46
+                                    },
+                                    "content": "liability",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 389,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 34
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 254.41,
+                                        "t": 403.1,
+                                        "w": 72.91,
+                                        "h": 24.46
+                                    },
+                                    "content": "abroad",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 199,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 35
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 49.61,
+                                        "t": 411.59,
+                                        "w": 7.98,
+                                        "h": 10.48
+                                    },
+                                    "content": "■",
+                                    "font": 8
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": 505,
+                    "type": "paragraph",
+                    "properties": {
+                        "order": 6
+                    },
+                    "metadata": [],
+                    "box": {
+                        "l": 49.61,
+                        "t": 468.45,
+                        "w": 569.76,
+                        "h": 52.24
+                    },
+                    "content": [
+                        {
+                            "id": 490,
+                            "type": "line",
+                            "properties": {
+                                "order": 6
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 49.61,
+                                "t": 468.45,
+                                "w": 569.76,
+                                "h": 24.46
+                            },
+                            "content": [
+                                {
+                                    "id": 439,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 36
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 49.61,
+                                        "t": 468.45,
+                                        "w": 33.49,
+                                        "h": 24.46
+                                    },
+                                    "content": "For",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 440,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 37
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 87.98,
+                                        "t": 468.45,
+                                        "w": 53.91,
+                                        "h": 24.46
+                                    },
+                                    "content": "more",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 441,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 38
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 146.78,
+                                        "t": 468.45,
+                                        "w": 121.22,
+                                        "h": 24.46
+                                    },
+                                    "content": "information",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 442,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 39
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 272.9,
+                                        "t": 468.45,
+                                        "w": 26.64,
+                                        "h": 24.46
+                                    },
+                                    "content": "on",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 443,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 40
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 304.42,
+                                        "t": 468.45,
+                                        "w": 61.91,
+                                        "h": 24.46
+                                    },
+                                    "content": "Travel",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 444,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 41
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 371.22,
+                                        "t": 468.45,
+                                        "w": 89.08,
+                                        "h": 24.46
+                                    },
+                                    "content": "Security,",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 445,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 42
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 465.2,
+                                        "t": 468.45,
+                                        "w": 66.31,
+                                        "h": 24.46
+                                    },
+                                    "content": "please",
+                                    "font": 7
+                                },
+                                {
+                                    "id": 446,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 43
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 536.4,
+                                        "t": 468.45,
+                                        "w": 82.97,
+                                        "h": 24.46
+                                    },
+                                    "content": "contact:",
+                                    "font": 7
+                                }
+                            ]
+                        },
+                        {
+                            "id": 491,
+                            "type": "line",
+                            "properties": {
+                                "order": 7
+                            },
+                            "metadata": [],
+                            "box": {
+                                "l": 49.61,
+                                "t": 495.87,
+                                "w": 287.23,
+                                "h": 24.83
+                            },
+                            "content": [
+                                {
+                                    "id": 472,
+                                    "type": "word",
+                                    "properties": {
+                                        "order": 44,
+                                        "targetURL": "mailto:physical.security@axa.com"
+                                    },
+                                    "metadata": [],
+                                    "box": {
+                                        "l": 49.61,
+                                        "t": 495.87,
+                                        "w": 287.23,
+                                        "h": 24.83
+                                    },
+                                    "content": "physical.security@axa.com",
+                                    "font": 9
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "fonts": [
+        {
+            "id": 1,
+            "name": "QXQVAG+SourceSansPro-Semibold",
+            "size": 41.931,
+            "weight": "bold",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#0000ff",
+            "sizeUnit": "px"
+        },
+        {
+            "id": 2,
+            "name": "SVSGOI+PublicoHeadline-Bold",
+            "size": 55.908,
+            "weight": "bold",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#0000ff",
+            "sizeUnit": "px"
+        },
+        {
+            "id": 3,
+            "name": "HVMJJI+SourceSansPro-Regular",
+            "size": 27.954,
+            "weight": "medium",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#0000ff",
+            "sizeUnit": "px"
+        },
+        {
+            "id": 4,
+            "name": "QXQVAG+SourceSansPro-Semibold",
+            "size": 27.954,
+            "weight": "bold",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#0000ff",
+            "sizeUnit": "px"
+        },
+        {
+            "id": 5,
+            "name": "QXQVAG+SourceSansPro-Semibold",
+            "size": 34.942,
+            "weight": "bold",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#0000ff",
+            "sizeUnit": "px"
+        },
+        {
+            "id": 6,
+            "name": "VYZBJG+SourceSansPro-Light",
+            "size": 24.46,
+            "weight": "medium",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#0000ff",
+            "sizeUnit": "px"
+        },
+        {
+            "id": 7,
+            "name": "LIKYBM+SourceSansPro-Regular",
+            "size": 24.46,
+            "weight": "medium",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#0000ff",
+            "sizeUnit": "px"
+        },
+        {
+            "id": 8,
+            "name": "GXNGPT+ZapfDingbats",
+            "size": 10.483,
+            "weight": "medium",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#0000ff",
+            "sizeUnit": "px"
+        },
+        {
+            "id": 9,
+            "name": "TTQSXW+SourceSansPro-Semibold",
+            "size": 24.46,
+            "weight": "bold",
+            "isItalic": false,
+            "isUnderline": false,
+            "color": "#0000ff",
+            "sizeUnit": "px"
+        }
+    ]
+}
