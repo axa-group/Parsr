@@ -30,7 +30,7 @@ You can install Parsr locally via a Node.js script:
 2. In the root of Parsr directory, open a terminal and run `npm run install:pre`.
   This command will install every required and optional dependency.  
 
-This script requires a machine with **TLS 1.2 or newer** enabled.
+For Windows platforms, this script requires **TLS 1.2 or newer** enabled.
 
 ## 3. Bare-Metal Installation
 
