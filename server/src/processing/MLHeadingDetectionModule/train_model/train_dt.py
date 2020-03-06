@@ -87,7 +87,7 @@ selector = selector.fit(X_res, y_res)
 print(selector.support_)
 print(selector.ranking_)
 
-y_pred = selector.predict(X_test)
+y_pred = selector.predict(X_test2)
 
 print('f1:', metrics.f1_score(y_pred, y_test2))
 print('IoU:', metrics.jaccard_score(y_pred, y_test2))
