@@ -1,0 +1,18 @@
+# Samples of descriptive paragraphs:
+
+Sample 1.The sample below is an opening paragraph from a student essay on the development of entertainment media. In it, she describes TV-watching in her family to make a point about how central TV was as a form of entertainment in the 60’s.
+
+*(1) As I was growing up in the 60’s, television was the only entertainment my family knew of the electronic sort. (2) The 7 o’clock nightly news was such an important part of our family that my dad knocked a wall down and built a huge cabinet in its place just to accommodate our 19-inch black and white. (3) No one was allowed to talk or make a sound when the television was on; all eyes were glued to the moving and flickering image. The box commanded absolute respect.(4) In the daytime, “the television needs its rest” my mother would say, as she patted its pseudo-wooden top and covered it with a doilie she had made herself. (5)There is no doubt that TV was as central to our lives as it was to the lives of all our friends during that period. (adapted from an essay by Angeline Chan, used with permission.)*
+
+Notice the writer’s use of action verbs *(knocked, glued)* and her use of sensory words *(19- inch, black and white, huge, talk, sound, flickering))* to paint a picture of the scene in her living room. In the final sentence, she states the main point of the paragraph: that TV was central in families’ lives during the 60’s. The appearance of a topic sentence at the end of a paragraph, rather than at the beginning is common in descriptive paragraphs, and it works well for this kind of development.
+
+Sample 2. This paragraph is a student’s response to an assignment to describe a place of personal importance or beauty:
+
+---
+
+(1) *The trail, perching precariously 500 feet above the roaring surf and then dipping effortlessly into dark lush valleys, snakes its way along the fluted coastline. (2) From a distance, it is hard to believe there would be any way to traverse the cliffs that dip like fingers into the frothing Pacific. (3)The first half of the trail is densely overgrown, and the air is dripping with the aroma of over ripe guava. Waterfalls and streams cascade unceasingly down along the trail from Mount Waialeale, the wettest spot on earth. (4) Vegetation grows thickly on the near vertical slopes above and below the trail, lending a sense of false security to the path, which at its widest measures ten feet across. (5)The landscape on the second half of the trail, the leeward side, changes dramatically from jungle to semi-arid desert. (6)Now, the cliffs are bare rock, and a three-foot wide ledge is all that protects the wary hiker from the black shoreline below.(7) Nevertheless, the white sand beach that marks the end of the trail is more than ample reward for the dangers survived.(8) The colors of this last valley, the Kalalau Valley, are a vivid red and green against a cloudless blue sky. (9)This, however, is not the end of the trip. The only trail out is the trail in. Not for the faint of heart, the Kalalua Trail on Kauai’s north shore is eleven miles of rugged adventure. (from an essay by Noreen Edgar, used with permission)*
+
+---
+
+This writer, too, makes liberal use of sense words *(roaring, dark, lush, thickly* etc.) and vivid action verbs *(snakes, traverse, cascade).* In addition, she uses a spatial arrangement that moves much in the way a hiker might, from a distant view, to a description of the first half of the trail, and then to the second half. The topic sentence, (sentence 9) as in the first sample, is found at the end instead of the beginning of the paragraph.
+

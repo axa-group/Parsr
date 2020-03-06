@@ -73,7 +73,7 @@ export class HeadingDetectionDTModule extends Module {
    * splits a paragraph into multiple ones and returns heading candidates
    * @param page Page to extract headings from each paragraph
    * @param commonFont Most used font in document
-   * @param headingFonts Array of only fonts that all headings should use
+   * @param detectedHeadings Array of detected headings
    */
   private extractHeadings(
     page: Page,

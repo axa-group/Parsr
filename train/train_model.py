@@ -3,7 +3,7 @@ import os
 
 import numpy as np
 import pandas as pd
-from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import SMOTE, RandomOverSampler
 from sklearn import metrics
 from sklearn.feature_selection import RFECV
 from sklearn.model_selection import GridSearchCV, train_test_split
@@ -19,14 +19,13 @@ args = parser.parse_args()
 
 dataset_dir = args.dataset_dir
 paths = os.listdir(dataset_dir)
-
 X = []
 y = []
 for path in paths:
     df = pd.read_csv(os.path.join(dataset_dir, path), header=0)
 
     if len(df) < 3:
-        break
+        continue
     
     df['is_bold'] = df['is_bold'].apply(lambda x: 1 if x else 0)
     df['label'] = df['label'].apply(lambda x: 0 if x == 'paragraph' else 1)
@@ -62,7 +61,7 @@ for path in paths:
     X.append([df['font_size'][len(df) - 1] / df['font_size'][len(df) - 2],
                     0,
                     df['is_bold'][len(df) - 1],
-                    int(df['line'][0].isupper()),
+                    int(df['line'][len(df) - 1].isupper()),
                     df['word_count'][len(df) - 1] / df['word_count'][len(df) - 2],
                     0,
                     int(df['title_case'][len(df) - 1]),
@@ -72,22 +71,15 @@ for path in paths:
     y = y + list(df['label'])
 
 parameters = {'min_samples_leaf':[1,2,3,4,5,6,7,8,9], 'min_samples_split':[2,3,4,5,6,7,8,9], 'criterion':['entropy']}
-clf = GridSearchCV(DecisionTreeClassifier(), parameters, cv=StratifiedKFold(5))
-clf = clf.fit(X, y)
+clf = GridSearchCV(DecisionTreeClassifier(), parameters, cv=StratifiedKFold(5)).fit(X, y)
+clf = DecisionTreeClassifier(min_samples_leaf=clf.best_params_['min_samples_leaf'], min_samples_split=clf.best_params_['min_samples_split'], criterion='entropy')
 
-print('best params: ', clf.best_params_)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, stratify=y)
 
-#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
-#clf = DecisionTreeClassifier(min_samples_leaf=3, min_samples_split=2, criterion='entropy')
-clf = clf = DecisionTreeClassifier(min_samples_leaf=clf.best_params_['min_samples_leaf'], min_samples_split=clf.best_params_['min_samples_split'], criterion='entropy')
-#clf = clf.fit(X_train, y_train)
-
-print('length of dataset before SMOTE: ', len(X))
-
+print('length of training set before SMOTE: ', len(y_train))
 smt = SMOTE()
-X_train, y_train = smt.fit_sample(X, y)
-
-print('length of dataset after SMOTE: ', len(X_train))
+X_train, y_train = smt.fit_sample(X_train, y_train)
+print('length of training set after SMOTE: ', len(y_train))
 
 selector = RFECV(clf, step=1, cv=10, scoring=metrics.make_scorer(metrics.f1_score))
 selector = selector.fit(X_train, y_train)
@@ -95,11 +87,11 @@ selector = selector.fit(X_train, y_train)
 print(selector.support_)
 print(selector.ranking_)
 
-y_pred = selector.predict(X)
+y_pred = selector.predict(X_test)
 
-print('f1:', metrics.f1_score(y_pred, y))
-print('IoU:', metrics.jaccard_score(y_pred, y))
-print('AuC:', metrics.roc_auc_score(y_pred, y))
+print('f1:', metrics.f1_score(y_pred, y_test))
+print('IoU:', metrics.jaccard_score(y_pred, y_test))
+print('AuC:', metrics.roc_auc_score(y_pred, y_test))
 
 porter = Porter(selector.estimator_, language='js')
 output = porter.export(embed_data=True)
