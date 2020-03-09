@@ -556,7 +556,7 @@ export class ApiServer {
     if (command) {
       const inputFile = fileType.ext === 'pdf' ? binder.input.concat(`[${page - 1}]`) : binder.input;
       convert = new Promise((resolve, reject) => {
-        exec([command, '-resize', '200x200\\>', inputFile, filePath].join(' '), err => {
+        exec([command, '-resize', '200x200', inputFile, filePath].join(' '), err => {
           if (err) {
             return reject(err);
           }
@@ -579,6 +579,7 @@ export class ApiServer {
           });
         })
         .catch((error: string) => {
+          logger.error(error);
           res.status(500).send(error);
         });
     } catch (error) {
