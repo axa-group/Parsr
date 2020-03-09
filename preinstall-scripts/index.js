@@ -3,6 +3,7 @@ const { platform } = require('os');
 
 const commands = {
   win32: require('./windows.commands'),
+  darwin: require('./darwin.commands'),
 };
 
 function promisifySpawn(cmd, args = []) {
@@ -13,6 +14,9 @@ function promisifySpawn(cmd, args = []) {
     });
     process.on('error', err => {
       reject(err);
+    });
+    process.on('message', m => {
+      console.log(m.toString());
     });
   });
 }
