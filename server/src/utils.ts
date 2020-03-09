@@ -23,11 +23,9 @@ import * as os from 'os';
 import * as path from 'path';
 import { inspect } from 'util';
 import { OptionsV2, parseString } from 'xml2js';
-import { AbbyyTools } from './input/abbyy/AbbyyTools';
 import { Extractor } from './input/Extractor';
 import { PDFJsExtractor } from './input/pdf.js/PDFJsExtractor';
 import { PdfminerExtractor } from './input/pdfminer/PdfminerExtractor';
-import { TesseractExtractor } from './input/tesseract/TesseractExtractor';
 import { Config } from './types/Config';
 import {
   BoundingBox,
@@ -41,6 +39,13 @@ import {
 import logger from './utils/Logger';
 
 import * as CommandExecuter from './utils/CommandExecuter';
+
+import { AbbyyTools } from './input/abbyy/AbbyyTools';
+import { AmazonTextractExtractor } from './input/amazon-textract/AmazonTextractExtractor';
+import { GoogleVisionExtractor } from './input/google-vision/GoogleVisionExtractor';
+import { MicrosoftCognitiveExtractor } from './input/ms-cognitive-services/MicrosoftCognitiveServices';
+import { OcrExtractor } from './input/OcrExtractor';
+import { TesseractExtractor } from './input/tesseract/TesseractExtractor';
 
 let mutoolExtractionFolder: string = '';
 
@@ -683,9 +688,29 @@ export function getEmphazisChars(text: string): string {
 }
 
 /**
+ * Returns the ocr extractor depending on the extractor selected in the configuration.
+ *
+ * @returns The OcrExtractor instance
+ */
+export function getOcrExtractor(config: Config): OcrExtractor {
+  switch (config.extractor.ocr) {
+    case 'tesseract':
+      return new TesseractExtractor(config);
+    case 'google-vision':
+      return new GoogleVisionExtractor(config);
+    case 'ms-cognitive-services':
+      return new MicrosoftCognitiveExtractor(config);
+    case 'amazon-textract':
+      return new AmazonTextractExtractor(config);
+    default:
+      return new AbbyyTools(config);
+  }
+}
+
+/**
  * Returns the pdf extraction orchestrator depending on the extractor selection made in the configuration.
  *
- * @returns The Orchestrator instance
+ * @returns The Extractor instance
  */
 export function getPdfExtractor(config: Config): Extractor {
   switch (config.extractor.pdf) {
