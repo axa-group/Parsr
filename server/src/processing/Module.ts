@@ -42,7 +42,7 @@ export class Module<T = undefined> {
     this._extraOptions = extraOptions;
   }
 
-  public run(document: Document, config: Config): Promise<Document> {
+  public run(document: Document, config: Config = null): Promise<Document> {
     return Promise.resolve(this.main(document, config));
   }
 
