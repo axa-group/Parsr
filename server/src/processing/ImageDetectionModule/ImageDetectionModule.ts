@@ -19,7 +19,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { OcrExtractor } from '../../input/OcrExtractor';
 import { Config } from '../../types/Config';
-import { Document, Image, Word } from '../../types/DocumentRepresentation';
+import { Document, Font, Image, Word } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
@@ -111,9 +111,17 @@ export class ImageDetectionModule extends Module<Options> {
     return ocr.run(imagesToScan[index].path).then(document => {
       const pageIndex = imagesToScan[index].pageNumber - 1;
       const resizedWords = this.scaleWordsToFitImageBox(document, imagesToScan[index].image);
+      this.removeImage(doc, imagesToScan[index]);
       doc.pages[pageIndex].elements = doc.pages[pageIndex].elements.concat(resizedWords);
       return this.scanImages(doc, imagesToScan, ocr, index + 1);
     });
+  }
+
+  private removeImage(document: Document, imageDetected: DocumentImages) {
+    const noImageElements = document.pages[imageDetected.pageNumber - 1].elements.filter(
+      element => element !== imageDetected.image,
+    );
+    document.pages[imageDetected.pageNumber - 1].elements = noImageElements;
   }
 
   private scaleWordsToFitImageBox(document: Document, image: Image): Word[] {
@@ -123,14 +131,13 @@ export class ImageDetectionModule extends Module<Options> {
       x: imageBox.width / pageBox.width,
       y: imageBox.height / pageBox.height,
     };
-    logger.info(`Scaling image contents with scale ${JSON.stringify(newScale)}`);
     return document.getElementsOfType(Word, true).map(word => {
       word.left = word.left * newScale.x + imageBox.left;
       word.width *= newScale.x;
       word.top = word.top * newScale.y + imageBox.top;
       word.height *= newScale.y;
-      if (word.font != null) {
-        logger.info(`Word font ${JSON.stringify(word.font)}`);
+      if (word.font !== Font.undefinedFont) {
+        // Abbyy OCR is able to detect fonts in words the we have to scale font size
         word.font.size = word.font.size * newScale.x;
       }
       return word;
