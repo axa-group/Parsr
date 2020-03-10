@@ -14,7 +14,7 @@ MuPDF: `mutool extract` is used to extract all image files from a PDF.
 
 ## Parameters
 
-`ocrImages`: Allows to extract data from detected images using selected OCR
+`ocrImages`: Allows to extract data from detected images using selected OCR. When settled `true` all detected images will be replaced with data extracted by OCR.
 
 ## How it works
 
