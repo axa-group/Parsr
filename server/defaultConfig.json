@@ -6,6 +6,12 @@
     "language": ["eng", "fra"]
   },
   "cleaner": [
+    [
+      "image-detection",
+      {
+        "ocrImages": false
+      }
+    ],
     "out-of-page-removal",
     [
       "whitespace-removal",
@@ -45,7 +51,6 @@
       }
     ],
     "link-detection",
-    "image-detection",
     [
       "words-to-line",
       {
