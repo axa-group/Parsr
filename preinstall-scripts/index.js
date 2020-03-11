@@ -3,16 +3,20 @@ const { platform } = require('os');
 
 const commands = {
   win32: require('./windows.commands'),
+  darwin: require('./darwin.commands'),
 };
 
 function promisifySpawn(cmd, args = []) {
   return new Promise((resolve, reject) => {
-    const process = spawn(cmd, args);
+    const process = spawn(cmd, args, { stdio: 'inherit' });
     process.on('close', code => {
       resolve(code);
     });
     process.on('error', err => {
       reject(err);
+    });
+    process.on('message', m => {
+      console.log(m.toString());
     });
   });
 }
