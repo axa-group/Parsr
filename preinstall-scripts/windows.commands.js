@@ -9,7 +9,7 @@ const commands = [
   'curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py',
   "[System.Environment]::SetEnvironmentVariable('Path', [System.Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [System.Environment]::GetEnvironmentVariable('Path','User')); refreshenv",
   'python get-pip.py',
-  'pip install pdfminer.six camelot-py[cv]',
+  'pip install pdfminer.six camelot-py[cv] PyPDF2',
   'npm i --global windows-build-tools'
 ];
 
