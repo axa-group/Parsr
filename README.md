@@ -114,5 +114,5 @@ Third Party Libraries licenses for its [dependencies](docs/dependencies.md):
 
 ## License
 
-Copyright 2019 AXA Group Operations S.A.  
+Copyright 2020 AXA Group Operations S.A.  
 Licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license (see the [LICENSE](LICENSE) file).
