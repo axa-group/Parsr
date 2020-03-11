@@ -104,7 +104,7 @@ export async function repairPdf(filePath: string): Promise<string> {
 
 export async function mutoolExtract(filePath: string): Promise<string> {
   const outputFolder = getMutoolExtractionFolder();
-  return run(COMMANDS.MUTOOL, ['extract', filePath], {
+  return run(COMMANDS.MUTOOL, ['extract', '-r', filePath], {
     cwd: outputFolder,
   }).then(() => {
     logger.info(`Mutool extract succeed --> ${outputFolder}`);
