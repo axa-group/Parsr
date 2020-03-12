@@ -45,7 +45,7 @@ sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
 sudo apt-get install nodejs npm qpdf imagemagick tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
 pip install camelot-py[cv]
-pip install numpy pillow scikit-image
+pip install numpy pillow scikit-image PyPDF2
 pip install pdfminer.six
 ```
 
@@ -54,7 +54,7 @@ Under **Arch** Linux :
 ```sh
 pacman -S nodejs npm qpdf imagemagick pdfminer tesseract python-pip
 pip install camelot-py[cv]
-pip install numpy pillow scikit-image
+pip install numpy pillow scikit-image PyPDF2
 ```
 
 ### 3.2. Installing Dependencies under MacOS
@@ -84,7 +84,7 @@ and then the dependencies:
 ```sh
 pip install pdfminer.six
 pip install camelot-py[cv]
-pip install numpy pillow scikit-image
+pip install numpy pillow scikit-image PyPDF2
 ```
 
 ### 3.3. Installing Dependencies under Windows
@@ -115,6 +115,7 @@ If you have install it in `C:\Program Files (x86)\Tesseract-OCR`, you can either
     ```sh
     setx PATH "\$env:PATH;C:\Program Files (x86)\Tesseract-OCR" -m
     ```
+7. For PDF manipulation, install [PyPDF2](https://pypi.org/project/PyPDF2). *Note: If camelot is installed, PyPDF2 will be already available.*
 
 ## 4. Optional Dependencies
 

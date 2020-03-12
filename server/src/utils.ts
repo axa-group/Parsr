@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { exec } from 'child_process';
 import * as concaveman from 'concaveman';
 import HTMLToPDF from 'convert-html-to-pdf';
 import * as crypto from 'crypto';
@@ -37,8 +36,6 @@ import {
   Text,
 } from './types/DocumentRepresentation';
 import logger from './utils/Logger';
-
-import * as CommandExecuter from './utils/CommandExecuter';
 
 import { AbbyyTools } from './input/abbyy/AbbyyTools';
 import { AmazonTextractExtractor } from './input/amazon-textract/AmazonTextractExtractor';
@@ -330,7 +327,7 @@ export function removeNull(page: Page): Page {
   if (page.elements.length - newElements.length !== 0) {
     logger.debug(
       `Null elements removed for page #${page.pageNumber}: ${page.elements.length -
-        newElements.length}`,
+      newElements.length}`,
     );
     page.elements = newElements;
   }
@@ -364,11 +361,11 @@ export function getPageRegex(): RegExp {
 
   const pageRegex = new RegExp(
     `^(?:` +
-      `(?:${pagePrefix}${pageNumber})|` +
-      `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
-      `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
-      `(?:${before}${pageNumber}${after})` +
-      `)$`,
+    `(?:${pagePrefix}${pageNumber})|` +
+    `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
+    `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
+    `(?:${before}${pageNumber}${after})` +
+    `)$`,
     'i',
   );
 
@@ -723,34 +720,6 @@ export function getPdfExtractor(config: Config): Extractor {
     default:
       return new PdfminerExtractor(config);
   }
-}
-/*
-  merges multiple PDF files into a single one and writes it in the output path
-*/
-export function mergePDFs(files: string[], output: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    if (!CommandExecuter.isCommandAvailable('gs')) {
-      reject({
-        found: false,
-        error: `GhostScript was not found on the system. Are you sure it is installed and added to PATH?`,
-      });
-    } else {
-      /*
-        the `spawn` of CommandExecuter does not work in this case, it gets stuck in GS CLI
-        TODO: Make this command work with CommandExecuter.
-      */
-      exec(
-        `gs -DNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=${output} -dBATCH ${files.join(' ')}`,
-        (err, stdout, stderr) => {
-          if (err) {
-            reject(stderr);
-          } else {
-            resolve(stdout);
-          }
-        },
-      );
-    }
-  });
 }
 
 export async function convertHTMLToPDF(html: string, outputFile?: string): Promise<string> {
