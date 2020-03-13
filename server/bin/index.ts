@@ -30,7 +30,7 @@ import { MarkdownExporter } from '../src/output/markdown/MarkdownExporter';
 import { PdfExporter } from '../src/output/pdf/PdfExporter';
 import { TextExporter } from '../src/output/text/TextExporter';
 import { Config } from '../src/types/Config';
-import { Document, Image } from '../src/types/DocumentRepresentation/';
+import { Document } from '../src/types/DocumentRepresentation/';
 import * as utils from '../src/utils';
 import * as CommandExecuter from '../src/utils/CommandExecuter';
 import logger from '../src/utils/Logger';
@@ -114,7 +114,7 @@ function main(): void {
   /**
    * Run the extraction pipeline on the file
    */
-  runOrchestrator(fileType);
+  runOrchestrator();
 
   /**
    * Run the pipeline - go through the extraction, cleaning, and enrichment modules.
@@ -122,18 +122,9 @@ function main(): void {
    * @remarks
    * This method contains the primary pipeline call itself.
    */
-  function runOrchestrator(fileTypeInfo: { ext: string; mime: string }) {
+  function runOrchestrator() {
     orchestrator
       .run(filePath)
-      .then((doc: Document) => {
-        if (fileTypeInfo.ext === 'pdf' && isDocumentImageBased(doc)) {
-          logger.info(
-            `Since the input file is a PDF with only images, trying to run an OCR on all pages...`,
-          );
-          return new Orchestrator(utils.getOcrExtractor(config), cleaner).run(filePath);
-        }
-        return doc;
-      })
       .then((doc: Document) => {
         copyAssetsToOutputFolder(doc);
         return doc;
@@ -248,16 +239,6 @@ function main(): void {
         logger.error(e);
       }
     });
-  }
-
-  /**
-   * Tests if a PDF file only contains an image on each and every one of its pages
-   * This is true for example, in the case of scanned documents as PDFs
-   */
-  function isDocumentImageBased(doc: Document): boolean {
-    return !doc.pages
-      .map(p => p.elements.length === 1 && p.elements[0] instanceof Image)
-      .includes(false);
   }
 }
 
