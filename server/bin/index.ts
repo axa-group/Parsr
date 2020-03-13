@@ -114,7 +114,7 @@ function main(): void {
   /**
    * Run the extraction pipeline on the file
    */
-  runOrchestrator(fileType);
+  runOrchestrator();
 
   /**
    * Run the pipeline - go through the extraction, cleaning, and enrichment modules.
@@ -122,18 +122,9 @@ function main(): void {
    * @remarks
    * This method contains the primary pipeline call itself.
    */
-  function runOrchestrator(fileTypeInfo: { ext: string; mime: string }) {
+  function runOrchestrator() {
     orchestrator
       .run(filePath)
-      .then((doc: Document) => {
-        if (fileTypeInfo.ext === 'pdf' && isDocumentImageBased(doc)) {
-          logger.info(
-            `Since the input file is a PDF with only images, trying to run an OCR on all pages...`,
-          );
-          return new Orchestrator(utils.getOcrExtractor(config), cleaner).run(filePath);
-        }
-        return doc;
-      })
       .then((doc: Document) => {
         copyAssetsToOutputFolder(doc);
         return doc;
