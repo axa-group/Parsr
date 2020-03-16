@@ -1,3 +1,19 @@
+/**
+ * Copyright 2020 AXA Group Operations S.A.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import * as vision from '@google-cloud/vision';
 import { writeFileSync } from 'fs';
 import { Config } from '../../types/Config';
@@ -16,94 +32,7 @@ import { getTemporaryFile } from '../../utils';
 import { OcrExtractorFactory } from '../OcrExtractor';
 import * as credentials from './credentials.json';
 
-type GoogleVisionResponse = Array<{
-  fullTextAnnotation: FullTextAnnotation;
-  textAnnotations: TextAnnotation[];
-  error: {
-    message: string;
-    code: number;
-    details: any[];
-  };
-}>;
-
-type GoogleVisionDetectedBreak = {
-  type: 'UNKNOWN' | 'SPACE' | 'SURE_SPACE' | 'EOL_SURE_SPACE' | 'HYPHEN' | 'LINE_BREAK';
-  is_prefix: boolean;
-};
-
-type GoogleVisionBoundingBox = {
-  vertices: [
-    {
-      x: number;
-      y: number;
-    },
-  ];
-  normalizedVertices: [];
-};
-
-type GoogleVisionProperty = {
-  detectedLanguages: [
-    {
-      languageCode: string;
-      confidence: number;
-    },
-  ];
-  detectedBreak: GoogleVisionDetectedBreak;
-};
-
-type FullTextAnnotation = {
-  pages: [
-    {
-      blocks: [
-        {
-          paragraphs: [
-            {
-              words: [
-                {
-                  symbols: [
-                    {
-                      text: string;
-                      property: GoogleVisionProperty;
-                      boundingBox: GoogleVisionBoundingBox;
-                      confidence: number;
-                    },
-                  ];
-                  property: GoogleVisionProperty;
-                  boundingBox: GoogleVisionBoundingBox;
-                  confidence: number;
-                },
-              ];
-              property: GoogleVisionProperty;
-              boundingBox: GoogleVisionBoundingBox;
-              confidence: number;
-            },
-          ];
-          property: GoogleVisionProperty;
-          boundingBox: GoogleVisionBoundingBox;
-          blockType: 'UNKNOWN' | 'TEXT' | 'TABLE' | 'PICTURE' | 'RULER' | 'BARCODE';
-          confidence: number;
-        },
-      ];
-      property: GoogleVisionProperty;
-      width: number;
-      height: number;
-      confidence: number;
-    },
-  ];
-  text: string;
-};
-
-type TextAnnotation = {
-  locations: [];
-  properties: [];
-  mid: string;
-  locale: string;
-  description: string;
-  score: number;
-  confidence: number;
-  topicality: number;
-  boundingPoly: GoogleVisionBoundingBox;
-};
+type GoogleVisionBoundingPoly = vision.protos.google.cloud.vision.v1.IBoundingPoly;
 
 /**
  * An extractor class to extract content from images using Google Vision
@@ -132,10 +61,10 @@ export class GoogleVisionExtractor extends OcrExtractorFactory {
 
   public async scanImage(inputFile: string) {
     const client = new vision.ImageAnnotatorClient();
-    const result: GoogleVisionResponse = await client.documentTextDetection(inputFile);
+    const [result] = await client.documentTextDetection(inputFile);
 
-    if (result[0].error) {
-      const e = result[0].error;
+    if (result.error) {
+      const e = result.error;
       let details = '';
 
       if (e.details.length > 0) {
@@ -148,7 +77,7 @@ export class GoogleVisionExtractor extends OcrExtractorFactory {
     let pageNumber = 1;
     let order = 1;
 
-    result[0].fullTextAnnotation.pages.forEach(gPage => {
+    result.fullTextAnnotation.pages.forEach(gPage => {
       const elements: Element[] = [];
       gPage.blocks.forEach(gBlock => {
         const paragraphs = [];
@@ -214,7 +143,7 @@ export class GoogleVisionExtractor extends OcrExtractorFactory {
     return new Document(pages, inputFile);
   }
 
-  private googleBoxToParsrBox(box: GoogleVisionBoundingBox): BoundingBox {
+  private googleBoxToParsrBox(box: GoogleVisionBoundingPoly): BoundingBox {
     const left = Math.min(...box.vertices.map(v => v.x));
     const right = Math.max(...box.vertices.map(v => v.x));
     const top = Math.min(...box.vertices.map(v => v.y));

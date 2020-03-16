@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ export function execute(pdfInputFile: string): Promise<Document> {
       } catch (e) {
         return rejectDocument(e);
       }
-    });
+    }).catch(rejectDocument);
   });
 }
 
@@ -99,7 +99,7 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
       const font = new Font([f.fontName, f.fontFamily].join(','), transform[0], {
         isItalic: f.italic,
         weight: f.bold ? 'bold' : 'normal',
-        color: rgbToHex(item.color[0], item.color[1], item.color[2]),
+        color: item.color && item.color.length > 2 ? rgbToHex(item.color[0], item.color[1], item.color[2]) : '#000',
       });
       const words = text.split(' ');
       let wordLeft = transform[4];
@@ -121,13 +121,13 @@ async function loadPage(document: any, pageNum: number): Promise<Page> {
           pageElements[pageElements.length - 1] &&
           pageElements[pageElements.length - 1].content.toString().trim().length > 0 &&
           pageElements[pageElements.length - 1].left +
-            pageElements[pageElements.length - 1].width +
-            1 >
-            wordBB.left &&
+          pageElements[pageElements.length - 1].width +
+          1 >
+          wordBB.left &&
           pageElements[pageElements.length - 1].left +
-            pageElements[pageElements.length - 1].width -
-            1 <
-            wordBB.left
+          pageElements[pageElements.length - 1].width -
+          1 <
+          wordBB.left
         ) {
           pageElements[pageElements.length - 1].width += wordBB.width;
           pageElements[pageElements.length - 1].content = pageElements[
