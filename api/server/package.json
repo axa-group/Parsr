@@ -23,9 +23,9 @@
 		"pino-pretty": "^2.6.0"
 	},
 	"devDependencies": {
-		"@types/express": "^4.16.1",
+		"@types/express": "^4.17.3",
 		"@types/file-type": "^10.9.1",
 		"@types/node": "^11.11.1",
-		"@types/pino": "^5.8.6"
+		"@types/pino": "^5.17.0"
 	}
 }
