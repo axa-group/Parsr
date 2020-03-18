@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Document, Heading, Paragraph, TableOfContents } from '../../types/DocumentRepresentation';
+import { Document, Paragraph, TableOfContents } from '../../types/DocumentRepresentation';
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
@@ -43,17 +43,13 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         .filter(e => !e.properties.isFooter && !e.properties.isHeader);
 
       const tocItemParagraphs = allParagraphs.filter(p => detection.TOCDetected(p, this.options.pageKeywords));
-      /*
-        - if the page doesn't have any 'TOC' keywords, the detection threshold is increased to avoid false positives.
-        - the detection threshold is increased a little if the previous page didn't have a TOC.
-      */
-      const headings = allParagraphs.filter(p => p instanceof Heading);
+
+      // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
         tocItemParagraphs.length > 0 &&
         tocItemParagraphs.length >=
         Math.floor(allParagraphs.length
           * detection.threshold
-          * (detection.hasKeyword(headings, this.options.keywords || []) ? 1 : 1.25)
           * Math.pow(1.05, pagesSinceLastTOC))
       ) {
         foundTOC = true;

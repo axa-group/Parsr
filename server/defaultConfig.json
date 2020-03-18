@@ -66,26 +66,17 @@
         "tolerance": 0.25
       }
     ],
+    [
+      "table-of-contents-detection",
+      {
+        "pageKeywords": ["pagina", "page", "pag"]
+      }
+    ],
     "heading-detection",
     "heading-detection-dt",
     "list-detection",
     "page-number-detection",
     "hierarchy-detection",
-    [
-      "table-of-contents-detection",
-      {
-        "keywords": [
-          "contents",
-          "index",
-          "table of contents",
-          "contenidos",
-          "indice",
-          "índice",
-          "tabla de contenidos"
-        ],
-        "pageKeywords": ["pagina", "page", "pag"]
-      }
-    ],
     [
       "regex-matcher",
       {
