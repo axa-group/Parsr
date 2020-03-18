@@ -148,3 +148,44 @@ steps:
     event:
       exclude:
       - pull_request
+
+---
+kind: pipeline
+name: Sonarqube
+
+platform:
+  os: linux
+  arch: amd64
+
+trigger:
+  branch:
+  - master
+  event:
+    exclude:
+    - pull_request
+
+steps:
+- name: Code analysis
+  image: aosapps/drone-sonar-plugin
+  detach: false
+  failure: ignore
+  settings:
+    sonar_host:
+      from_secret: sonar_host
+    sonar_token:
+      from_secret: sonar_token
+    level: INFO
+    sources: .
+    exclusions: dist
+    usingProperties: true
+
+#- name: Slack
+#  image: alpine:latest
+#  environment:
+#    SLACK_WEBHOOK:
+#      from_secret: slack_webhook
+#    SONAR_HOST:
+#      from_secret: sonar_host
+#  commands:
+#    - apk add -U curl
+# #   - sh -c "curl -X POST -H 'Content-type: application/json' --data '\{\"text\": \"New Sonarqube report available here ${SLACK_WEBHOOK}\""
