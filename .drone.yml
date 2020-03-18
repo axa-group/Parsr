@@ -179,13 +179,12 @@ steps:
     exclusions: dist
     usingProperties: true
 
-#- name: Slack
-#  image: alpine:latest
-#  environment:
-#    SLACK_WEBHOOK:
-#      from_secret: slack_webhook
-#    SONAR_HOST:
-#      from_secret: sonar_host
-#  commands:
-#    - apk add -U curl
-# #   - sh -c "curl -X POST -H 'Content-type: application/json' --data '\{\"text\": \"New Sonarqube report available here ${SLACK_WEBHOOK}\""
+- name: Slack
+  image: slallemand/slack-webhook:latest
+  environment:
+    SLACK_WEBHOOK:
+      from_secret: slack_webhook
+    SONAR_HOST:
+      from_secret: sonar_host
+  commands:
+    - SLACK_TEXT="New sonarqube report available on $SONAR_HOST/parsr" /src/slack.py
