@@ -43,10 +43,6 @@ export class Word extends Text {
     return this;
   }
 
-  public equals(word: Word): boolean {
-    return JSON.stringify(this) === JSON.stringify(word);
-  }
-
   public toMarkDown(): string {
     let mdString: string;
 
