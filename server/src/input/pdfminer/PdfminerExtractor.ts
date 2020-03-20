@@ -78,6 +78,7 @@ export class PdfminerExtractor extends Extractor {
     const extractPages = this.pagesToExtract(pageIndex, maxPages, totalPages);
     return pdfminer
       .extractPages(inputFile, totalPages != null ? extractPages : null)
+      .then(pdfminer.sanitizeXML)
       .then(pdfminer.xmlParser)
       .then(pdfminer.jsParser)
       .then(this.detectAndFixPageRotation(inputFile))
