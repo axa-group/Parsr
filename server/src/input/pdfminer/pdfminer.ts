@@ -29,6 +29,7 @@ import { Color } from '../../types/DocumentRepresentation/Color';
 import { PdfminerFigure } from '../../types/PdfminerFigure';
 import { PdfminerPage } from '../../types/PdfminerPage';
 import { PdfminerText } from '../../types/PdfminerText';
+import * as utils from '../../utils';
 import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 
@@ -60,6 +61,24 @@ export function extractPages(
       .catch(({ error }) => {
         rejectXml(`PdfMiner pdf2txt.py error: ${error}`);
       });
+  });
+}
+export function sanitizeXML(xmlPath: string): Promise<string> {
+  const startTime: number = Date.now();
+  return new Promise<any>((resolve, _reject) => {
+    try {
+      // repplace with empty char everything forbidden by XML 1.0 specifications,
+      // plus the unicode replacement character U+FFFD
+      const regex = /((?:[\0-\x08\x0B\f\x0E-\x1F\uFFFD\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))/g;
+      const xml: string = fs.readFileSync(xmlPath, 'utf-8');
+      const outputFilePath = utils.getTemporaryFile('.xml');
+      fs.writeFileSync(outputFilePath, xml.replace(new RegExp(regex), ' '));
+      logger.info(`Sanitize XML: ${(Date.now() - startTime) / 1000}s`);
+      resolve(outputFilePath);
+    } catch (error) {
+      logger.warn(`Error sanitizing XML ${error}`);
+      resolve(xmlPath);
+    }
   });
 }
 
@@ -154,6 +173,10 @@ export function xmlParser(xmlPath: string): Promise<any> {
       logger.info(`Xml to Js: ${(Date.now() - startTime) / 1000}s`);
       resolve({ pages: { page: allPages } });
     });
+
+    xml.on('error', message => {
+      logger.info(`XML Parsing error: ${message}`);
+    });
   });
 }
 
@@ -189,7 +212,10 @@ function getPage(pageObj: PdfminerPage): Page {
   if (pageObj.textbox !== undefined) {
     pageObj.textbox.forEach(para => {
       para.textline.map(line => {
-        elements = [...elements, ...breakLineIntoWords(line.text, ',', pageBBox.height, 1, para._attr.wmode)];
+        elements = [
+          ...elements,
+          ...breakLineIntoWords(line.text, ',', pageBBox.height, 1, para._attr.wmode),
+        ];
       });
     });
   }
@@ -416,11 +442,12 @@ function breakLineIntoWords(
     }
   }
 
-  return wMode ?
-    words.map(w => {
-      w.properties.writeMode = wMode;
-      return w;
-    }) : words;
+  return wMode
+    ? words.map(w => {
+        w.properties.writeMode = wMode;
+        return w;
+      })
+    : words;
 }
 
 function thereAreFakeSpaces(texts: PdfminerText[]): boolean {

@@ -46,7 +46,7 @@ export class PdfminerExtractor extends Extractor {
             const totalSeconds = (Date.now() - startTime) / 1000;
             logger.info(
               `Total PdfMiner ${
-              totalPages != null ? '(' + totalPages.toString() + ')' : ''
+                totalPages != null ? '(' + totalPages.toString() + ')' : ''
               } time: ${totalSeconds} sec - ${totalSeconds / 60} min`,
             );
             return doc;
@@ -78,6 +78,7 @@ export class PdfminerExtractor extends Extractor {
     const extractPages = this.pagesToExtract(pageIndex, maxPages, totalPages);
     return pdfminer
       .extractPages(inputFile, totalPages != null ? extractPages : null)
+      .then(pdfminer.sanitizeXML)
       .then(pdfminer.xmlParser)
       .then(pdfminer.jsParser)
       .then(this.detectAndFixPageRotation(inputFile))
@@ -94,12 +95,15 @@ export class PdfminerExtractor extends Extractor {
   }
 
   private async rotatePages(doc: Document, pages: number[], rotation: number): Promise<Document> {
-    logger.info(`pages ${pages.join(', ')} will be reprocessed with a rotation angle of ${rotation} degrees`);
+    logger.info(
+      `pages ${pages.join(', ')} will be reprocessed with a rotation angle of ${rotation} degrees`,
+    );
 
     const fixedDoc: Document = await pdfminer
       .extractPages(doc.inputFile, pages.join(','), rotation)
       .then(pdfminer.xmlParser)
       .then(pdfminer.jsParser);
+
     pages.forEach(pageNumber => {
       doc.pages[pageNumber - 1] = fixedDoc.pages[pages.indexOf(pageNumber)];
       doc.pages[pageNumber - 1].pageRotation = {
@@ -111,7 +115,6 @@ export class PdfminerExtractor extends Extractor {
           y: doc.pages[pageNumber - 1].height / 2,
         },
       };
-
     });
     return doc;
   }
@@ -127,12 +130,12 @@ export class PdfminerExtractor extends Extractor {
       const pageWords = page.getElementsOfType<Word>(Word, false);
       const vWords = pageWords.filter(w => w.properties.writeMode === 'vertical');
       vWords.forEach(vw => {
-        const nextWord: Word =
-          pageWords.find(w =>
+        const nextWord: Word = pageWords.find(
+          w =>
             w.box.height === vw.box.height &&
             w.box.top === vw.box.top &&
             Math.floor(w.box.left) === Math.floor(vw.box.left + vw.box.width),
-          );
+        );
         if (nextWord) {
           count += 1;
           page.elements.push(vw.join(nextWord));
@@ -151,13 +154,19 @@ export class PdfminerExtractor extends Extractor {
     return async (doc: Document): Promise<Document> => {
       doc.inputFile = inputFile;
       const startTime: number = Date.now();
-      const pageRotations = doc.pages.map(p => p.getMainRotationAngle()).reduce(this.groupByRotation, {});
+      const pageRotations = doc.pages
+        .map(p => p.getMainRotationAngle())
+        .reduce(this.groupByRotation, {});
       const promises = Object.keys(pageRotations)
         .filter(r => r !== '0')
-        .map(rotation => limiter(this.rotatePages)(doc, pageRotations[rotation], parseInt(rotation, 10)));
+        .map(rotation =>
+          limiter(this.rotatePages)(doc, pageRotations[rotation], parseInt(rotation, 10)),
+        );
 
       await Promise.all(promises);
-      logger.info(`Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000}s`);
+      logger.info(
+        `Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000}s`,
+      );
       return doc;
     };
   }
