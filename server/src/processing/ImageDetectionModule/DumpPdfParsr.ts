@@ -28,7 +28,7 @@ export function getFileMetadata(pdfFilePath: string): Promise<any> {
   });
 }
 export function extractPageNodeIds(data: string) {
-  const rootPageObjId = data.match('<key>Pages</key>\n<value><ref id="(\\d+)" /></value>')[1];
+  const rootPageObjId = data.match('<key>Pages</key>\r?\n<value><ref id="(\\d+)" /></value>')[1];
   const rootPagesNode = getNode(rootPageObjId, data);
   const pageNodes = getPageNodes(rootPagesNode, data);
   return getElementIds(pageNodes);
@@ -38,7 +38,7 @@ export function getImageRefId(imageRefId: string, nodeData: string, data: string
   const figuresId = imageRefId.split('.');
   let refId = null;
   figuresId.forEach((figId, index) => {
-    const regepx = '<key>' + figId + '</key>\n<value><ref id="(\\d+)" /></value>';
+    const regepx = '<key>' + figId + '</key>\r?\n<value><ref id="(\\d+)" /></value>';
     const imgObj = nodeData.match(new RegExp(regepx, 'g'));
     if (refId == null && imgObj != null && imgObj.length === 1) {
       refId = imgObj[0].match(new RegExp(regepx))[1];
@@ -71,9 +71,9 @@ export function getNode(id: string, data: string): string {
 }
 
 export function getPageNodes(nodeData: string, data: string): string {
-  const countRegexp = '<key>Count</key>\n<value><number>(\\d+)</number></value>';
+  const countRegexp = '<key>Count</key>\r?\n<value><number>(\\d+)</number></value>';
   const count = nodeData.match(new RegExp(countRegexp, 's'))[1];
-  const listRegepx = '<key>Kids</key>\n<value><list size="\\d+">(.*?)</list></value>';
+  const listRegepx = '<key>Kids</key>\r?\n<value><list size="\\d+">(.*?)</list></value>';
   const nodeList = nodeData.match(new RegExp(listRegepx, 's'))[1];
   if (parseInt(count, 10) === getElementIds(nodeList).length) {
     return nodeList;
@@ -90,13 +90,13 @@ export function getElementIds(data: string): string[] {
 }
 
 export function getResourceId(data: string): string {
-  const regepx = '<key>Resources</key>\n<value><ref id="(\\d+)" /></value>';
+  const regepx = '<key>Resources</key>\r?\n<value><ref id="(\\d+)" /></value>';
   const resource = data.match(new RegExp(regepx));
   return resource != null ? resource[1] : null;
 }
 
 export function getXObjectId(data: string): string {
-  const regepx = '<key>XObject</key>\n<value><ref id="(\\d+)" /></value>';
+  const regepx = '<key>XObject</key>\r?\n<value><ref id="(\\d+)" /></value>';
   const resource = data.match(new RegExp(regepx));
   return resource != null ? resource[1] : null;
 }
