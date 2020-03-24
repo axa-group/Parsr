@@ -63,7 +63,7 @@
     "shelljs": "^0.8.3",
     "string-similarity": "^1.2.1",
     "svgson": "^3.1.0",
-    "tslint": "git+https://github.com/palantir/tslint.git#ead6583da98a8a6d3eba4e27793bef02e4c30a99",
+    "tslint": "^5.19.0",
     "xml-stream": "^0.4.5",
     "xml2js": "^0.4.23",
     "xmldom": "^0.1.31"
