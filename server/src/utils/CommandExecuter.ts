@@ -19,6 +19,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { getMutoolExtractionFolder, getTemporaryFile } from '../utils';
+import Cache from './CacheLayer';
 import logger from './Logger';
 
 export interface Dimensions {
@@ -206,8 +207,13 @@ export async function pdfMinerExtract(filePath: string, pages: string, rotationD
 export async function dumpPdf(filePath: string): Promise<string> {
   const xmlOutputFile: string = getTemporaryFile('.xml');
   const dumpAarguments = ['-a', '-o', xmlOutputFile, filePath];
+  const key = `dumppdf -a -o <outfile> ${filePath}`;
+  if (Cache.has(key)) {
+    return Cache.get(key);
+  }
   return run(COMMANDS.DUMPPDF, dumpAarguments).then(() => {
     logger.info(`PdfMiner dumppdf.py succeed --> ${xmlOutputFile}`);
+    Cache.set(key, xmlOutputFile);
     return xmlOutputFile;
   });
 }
