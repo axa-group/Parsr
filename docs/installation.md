@@ -34,6 +34,8 @@ For Windows platforms, this script requires **TLS 1.2 or newer** enabled.
 
 ## 3. Bare-Metal Installation
 
+*Note: Currently, table detection requires Python 3.7 and below, as a vital dependency, `camelot-py` has not been ported yet to Python 3.8.*
+
 If the automatic install script is not available for your platform, you can always do a manual installation following this steps:
 
 ### 3.1. Installing Dependencies under Linux
@@ -53,8 +55,7 @@ Under **Arch** Linux :
 
 ```sh
 pacman -S nodejs npm qpdf imagemagick pdfminer tesseract python-pip
-pip install camelot-py[cv]
-pip install numpy pillow scikit-image PyPDF2
+pip install camelot-py[cv] pdfminer.six numpy pillow scikit-image PyPDF2
 ```
 
 ### 3.2. Installing Dependencies under MacOS
