@@ -188,6 +188,7 @@ export async function pdfMinerExtract(filePath: string, pages: string, rotationD
     '-R', rotationDegrees.toString(),
     '-c', 'utf-8',
     '-t', 'xml',
+    '--word-margin', '0.2',
     '-o', xmlOutputFile,
     filePath,
   ];
