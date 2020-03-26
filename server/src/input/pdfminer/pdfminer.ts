@@ -227,7 +227,10 @@ function getPage(pageObj: PdfminerPage): Page {
         elements = [...elements, ...interpretImages(fig, pageBBox.height)];
       }
       if (hasTexts(fig)) {
-        elements = [...elements, ...breakLineIntoWords(fig.text, ',', pageBBox.height)];
+        elements = [
+          ...elements,
+          ...breakLineIntoWords(allTextsInFigure(fig), ',', pageBBox.height),
+        ];
       }
     });
   }
@@ -309,6 +312,17 @@ function getMostCommonFont(theFonts: Font[]): Font {
  */
 function getValidCharacter(character: string): string {
   return RegExp(/\(cid:/gm).test(character) ? '?' : character;
+}
+
+function allTextsInFigure(figure: PdfminerFigure): PdfminerText[] {
+  if (figure.figure) {
+    return figure.figure.map(allTextsInFigure).reduce((a, b) => a.concat(b));
+  }
+
+  if (figure.text) {
+    return figure.text;
+  }
+  return [];
 }
 
 function interpretImages(
