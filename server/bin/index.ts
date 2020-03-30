@@ -49,6 +49,7 @@ function main(): void {
     .option(
       '-c, --config <filename>',
       "The file's path from which the application's parameters will be loaded",
+      `${__dirname}/defaultConfig.json`,
     )
     .option(
       '-l, --log-level <verbosity>',
