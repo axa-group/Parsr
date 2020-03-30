@@ -21,7 +21,6 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { inspect } from 'util';
-import { OptionsV2, parseString } from 'xml2js';
 import { Extractor } from './input/Extractor';
 import { PDFJsExtractor } from './input/pdf.js/PDFJsExtractor';
 import { PdfminerExtractor } from './input/pdfminer/PdfminerExtractor';
@@ -654,18 +653,6 @@ export function groupConsecutiveNumbersInArray(theArray: number[]): number[][] {
       return r;
     }, []);
   return result;
-}
-
-export function parseXmlToObject(xml: string, options: OptionsV2 = null): Promise<object> {
-  const promise = new Promise<object>((resolveObject, rejectObject) => {
-    parseString(xml, options, (error, dataObject) => {
-      if (error) {
-        rejectObject(error);
-      }
-      resolveObject(dataObject);
-    });
-  });
-  return promise;
 }
 
 export function getEmphazisChars(text: string): string {
