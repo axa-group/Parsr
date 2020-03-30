@@ -768,3 +768,22 @@ function embedImagesInHTML(html: string): string {
   }
   return html;
 }
+
+export function sanitizeXML(xmlPath: string): Promise<string> {
+  const startTime: number = Date.now();
+  return new Promise<any>((resolve, _reject) => {
+    try {
+      // repplace with empty char everything forbidden by XML 1.0 specifications,
+      // plus the unicode replacement character U+FFFD
+      const regex = /((?:[\0-\x08\x0B\f\x0E-\x1F\uFFFD\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]|(?:&#\d*;)))/g;
+      const xml: string = fs.readFileSync(xmlPath, 'utf-8');
+      const outputFilePath = getTemporaryFile('.xml');
+      fs.writeFileSync(outputFilePath, xml.replace(new RegExp(regex), ' '));
+      logger.info(`Sanitize XML: ${(Date.now() - startTime) / 1000}s`);
+      resolve(outputFilePath);
+    } catch (error) {
+      logger.warn(`Error sanitizing XML ${error}`);
+      resolve(xmlPath);
+    }
+  });
+}
