@@ -19,6 +19,7 @@ import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 import { extractImagesAndFonts } from '../extractImagesFonts';
 import { Extractor } from '../Extractor';
+import * as utils from './../../utils';
 import * as pdfminer from './pdfminer';
 
 /**
@@ -78,7 +79,7 @@ export class PdfminerExtractor extends Extractor {
     const extractPages = this.pagesToExtract(pageIndex, maxPages, totalPages);
     return pdfminer
       .extractPages(inputFile, totalPages != null ? extractPages : null)
-      .then(pdfminer.sanitizeXML)
+      .then(utils.sanitizeXML)
       .then(pdfminer.xmlParser)
       .then(pdfminer.jsParser)
       .then(this.detectAndFixPageRotation(inputFile))

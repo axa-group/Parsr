@@ -2,20 +2,20 @@
 
 ## Purpose
 
-The Link detection module detects URLs, GoTo links, as well as actionLaunch, actionNamed, actionMovie based links in a PDF document, when used on a pdf2json output.
+The Link detection module detects URLs, GoTo and mailto links inside PDF metadata and it's text contents.
 
 ## What it does
 
-It appends a the link found on a word (extracted by pdfminer) to the word's content itself, by transforming the content to an html `<a>` link.
+It adds the property `targetURL` to the matching Words.
 
 ## Dependencies
 
-None
+None.
 
 ## How it works
 
-1. It compares each word to three Regex patterns, one looking for URI based link contents, one looking for GoTo links as well as any other Action links.
-2. For each case, a suitable representation, like `<a>` for URIs, is attached with the content of the word itself.
+1. It uses pdfminer's `dumppdf` utility and `xml-stream` library to process document metadata as XML and find links with their bounding boxes and page number.
+2. Also for each word on document it uses two RegExp to match URL's or emails as strings and also set their `targetURL`
 
 ## Accuracy
 
@@ -23,5 +23,4 @@ All correctly detected links from the extractor are well preserved, and the accu
 
 ## Limitations
 
-- As long as the pdf2json extractor is used, links are preserved, as it is the only currently present extractor with link detection and preservation capacity.
-- Links are included in the body of the concerned word, instead of an actual Link element. This is a TODO.
+- Any 'Action' type link inside metadata is ignored for now. (Can't match their respective bounding boxes).
