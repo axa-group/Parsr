@@ -78,12 +78,6 @@ class ParserClient():
 			print('>> Job done!')
 			return {'file': file, 'config': config, 'status_code': r.status_code, 'server_response': r.text}
 
-	def get_versions(self, document_name:str) -> list:
-		if document_name in self.version_history:
-			return self.version_history[document_name]
-		else:
-			return []
-
 	def send_documents_folder(self, folder:str, config:str, server:str="") -> list:
 		if server == "":
 			if self.server == "":
@@ -195,6 +189,12 @@ class ParserClient():
 				return {'request_id': request_id, 'server_response': r.text}
 		else:
 			return {'request_id': request_id, 'server_response': r.text}
+
+	def get_versions(self, document_name:str) -> list:
+		if document_name in self.version_history:
+			return self.version_history[document_name]
+		else:
+			return []
 
 	def compare_versions(self, request_ids:list, pretty_html:bool = False):
 		diffs = []
