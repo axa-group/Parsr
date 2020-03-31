@@ -141,13 +141,13 @@ export function extractLinks(xmlPath: string): Promise<DumpPdfLinksResponse[]> {
 }
 
 /*
-  this looks that a particular nested structure defined in @param keys exists on @param o.
+  this looks that a particular nested structure defined in @param keys exists on @param node.
   ex:
-    hasNestedKeys({ foo: { bar: { baz: 10 } } }, ['foo', 'bar', 'baz']) === true, structure "o.foo.bar.baz" is valid
-    hasNestedKeys({ foo: { bar: { baz: 10 } } }, ['foo', 'baz']) === false, structure "o.foo.baz" is not valid
+    hasNestedKeys({ foo: { bar: { baz: 10 } } }, ['foo', 'bar', 'baz']) === true, structure "node.foo.bar.baz" is valid
+    hasNestedKeys({ foo: { bar: { baz: 10 } } }, ['foo', 'baz']) === false, structure "node.foo.baz" is not valid
 */
-function hasNestedKeys(o: any, keys: string[]): boolean {
-  let search = Object.assign({}, o);
+function hasNestedKeys(node: any, keys: string[]): boolean {
+  let search = Object.assign({}, node);
   return keys.every(k => {
     if (search.hasOwnProperty(k)) {
       search = search[k];
@@ -174,11 +174,11 @@ function xmlNodeToLink(node: any): DumpPdfLink {
   }
   const [x1, y1, x2, y2] = node.dict.value[node.dict.key.findIndex(k => k === 'Rect')].list.number
     .map(x => parseInt(x, 10));
-  const A = node.dict.value[node.dict.key.findIndex(k => k === 'A')];
-  if (A) {
-    if (hasNestedKeys(A, ['dict', 'key']) && hasNestedKeys(A, ['dict', 'value'])) {
-      const type = A.dict.value[A.dict.key.findIndex(k => k === 'S')].literal;
-      const target = A.dict.value[A.dict.key.findIndex(k => k === (type === 'URI' ? 'URI' : 'D'))];
+  const annotInfo = node.dict.value[node.dict.key.findIndex(k => k === 'A')];
+  if (annotInfo) {
+    if (hasNestedKeys(annotInfo, ['dict', 'key']) && hasNestedKeys(annotInfo, ['dict', 'value'])) {
+      const type = annotInfo.dict.value[annotInfo.dict.key.findIndex(k => k === 'S')].literal;
+      const target = annotInfo.dict.value[annotInfo.dict.key.findIndex(k => k === (type === 'URI' ? 'URI' : 'D'))];
       if (!target || !hasNestedKeys(target, ['string', '$text'])) {
         return null;
       }
