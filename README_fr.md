@@ -32,7 +32,7 @@ Parsr prend en entrée une image (.jpg, .png, .tiff, ...) ou un pdf et génère 
 - JSON
 - Markdown
 - Texte
-- CSV (pour les tableaux) ou Pandas Dataframes (voir [ici](demo/jupyter-notebook/parsr_client.py))
+- CSV (pour les tableaux) ou Pandas Dataframes (voir [ici](demo/python-client/jupyter/parsr_client.py))
 - PDF
 
 ## Table des matières
@@ -78,7 +78,7 @@ docker run -p 3001:3001 axarev/parsr
 qui le lancera sur [http://localhost:3001](http://localhost:3001).
 Consultez la documentation sur [l'utilisation de l'API](docs/api-guide.md).
 
-1. Pour utiliser le **Jupyter Notebook** et l'interface **python** de l'API Parsr, [cliquez ici](demo/jupyter-notebook).
+1. Pour utiliser le **Jupyter Notebook** et l'interface **python** de l'API Parsr, [cliquez ici](demo/python-client/jupyter).
 2. Pour utiliser l'outil GUI (l'API doit déjà être en cours d'exécution), lancez:
     ```sh
     docker run -t -p 8080:80 axarev/parsr-ui-localhost:latest

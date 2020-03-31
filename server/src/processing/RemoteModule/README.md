@@ -9,7 +9,7 @@ It exports the document as [JSON](../../../../docs/json-output.md), call an API 
 ## How to use it
 
 First of all, you need to have a small web server that will handle the API call.
-You can use our [Python example](../../../../demo/python-module/README.md) as a start.
+You can use our [example of a remove module in python](../../../../demo/echo-module-py/README.md) as a start.
 
 Your server needs to handle a HTTP `POST` request on the given URL, respond with the modified JSON.
 
