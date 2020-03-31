@@ -17,6 +17,7 @@
     "test": "test"
   },
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "install:pre": "node ./scripts/preinstall",
     "test": "mocha -t 15000 -r ts-node/register test/**/**/*.spec.ts",
     "copyAssets": "node ./scripts/copyFiles",
@@ -41,6 +42,9 @@
   "lint-staged": {
     "!(dist|-viewer/public)/**/*.ts": "tslint"
   },
+  "resolutions": {
+    "minimist": "1.2.5"
+  },
   "dependencies": {
     "@google-cloud/vision": "1.11.0",
     "an-array-of-english-words": "^1.3.1",
@@ -56,6 +60,7 @@
     "html-entities": "^1.2.1",
     "limit-async": "^1.3.0",
     "mailparser": "^2.7.7",
+    "npm-force-resolutions": "0.0.3",
     "pdfjs-dist": "2.3.200",
     "pdfmerge": "^1.0.2",
     "pino": "^5.17.0",
