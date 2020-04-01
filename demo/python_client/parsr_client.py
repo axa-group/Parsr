@@ -20,6 +20,7 @@ import os
 import sys
 import json
 import time
+import ast
 
 from sxsdiff import DiffCalculator
 from sxsdiff.generators.github import GitHubStyledGenerator
@@ -46,7 +47,7 @@ class ParserClient():
 	def set_current_request_id(self, request_id:str):
 		self.request_id = request_id
 
-	def send_document(self, file:str, config:str, server:str="", document_name:str=None, wait_till_finished:bool=False, save_request_id:bool=False) -> dict:
+	def send_document(self, file:str, config:str, server:str="", document_name:str=None, wait_till_finished:bool=False, refresh_period=2, save_request_id:bool=False) -> dict:
 		if server == "":
 			if self.server == "":
 				raise Exception('No server address provided')
@@ -73,7 +74,7 @@ class ParserClient():
 			server_status_response = self.get_status(jobId)['server_response']
 			while ('progress-percentage' in server_status_response):
 				print('>> Progress percentage: {}'.format(server_status_response['progress-percentage']))
-				time.sleep(2)
+				time.sleep(refresh_period)
 				server_status_response = self.get_status(jobId)['server_response']
 			print('>> Job done!')
 			return {'file': file, 'config': config, 'status_code': r.status_code, 'server_response': r.text}
@@ -164,7 +165,10 @@ class ParserClient():
 		else:
 			return {'request_id': request_id, 'server_response': r.text}
 
-	def get_table(self, request_id:str="", page=None, table=None, seperator=";", server:str=""):
+	def get_tables_info(self):
+		return [(table.rsplit('/')[-2], table.rsplit('/')[-1]) for table in ast.literal_eval(self.get_table().columns[0])]
+
+	def get_table(self, request_id:str="", page=None, table=None, seperator=";", server:str="", column_names:list=None):
 		if server == "":
 			if self.server == "":
 				raise Exception('No server address provided')
@@ -181,7 +185,7 @@ class ParserClient():
 			r = requests.get('http://{}/api/v1/csv/{}/{}/{}'.format(server, request_id, page, table))
 		if r.text != "":
 			try:
-				df = pd.read_csv(StringIO(r.text), sep=seperator)
+				df = pd.read_csv(StringIO(r.text), sep=seperator, names=column_names)
 				df.loc[:, ~df.columns.str.match('Unnamed')]
 				df = df.where((pd.notnull(df)), " ")
 				return df
