@@ -106,7 +106,8 @@
       "text": true,
       "csv": true,
       "markdown": true,
-      "pdf": false
+      "pdf": false,
+      "simpleJson" : true
     }
   }
 }

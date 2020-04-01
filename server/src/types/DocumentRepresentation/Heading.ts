@@ -62,4 +62,15 @@ export class Heading extends Paragraph {
     }
     return '#'.repeat(this.level) + ' ' + this.toString();
   }
+
+  public toSimpleJSON(): any {
+    if (this.level === 0) {
+      return super.toSimpleJSON();
+    }
+    return {
+      type : 'heading',
+      level : this.level,
+      content : this.toString(),
+    };
+  }
 }
