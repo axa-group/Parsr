@@ -21,7 +21,6 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { inspect } from 'util';
-import { OptionsV2, parseString } from 'xml2js';
 import { Extractor } from './input/Extractor';
 import { PDFJsExtractor } from './input/pdf.js/PDFJsExtractor';
 import { PdfminerExtractor } from './input/pdfminer/PdfminerExtractor';
@@ -656,18 +655,6 @@ export function groupConsecutiveNumbersInArray(theArray: number[]): number[][] {
   return result;
 }
 
-export function parseXmlToObject(xml: string, options: OptionsV2 = null): Promise<object> {
-  const promise = new Promise<object>((resolveObject, rejectObject) => {
-    parseString(xml, options, (error, dataObject) => {
-      if (error) {
-        rejectObject(error);
-      }
-      resolveObject(dataObject);
-    });
-  });
-  return promise;
-}
-
 export function getEmphazisChars(text: string): string {
   const boldRegexp = new RegExp(/^\*\*.+\*\*$/);
   const italicRegexp = new RegExp(/^\*.+\*$/);
@@ -767,4 +754,23 @@ function embedImagesInHTML(html: string): string {
     html = html.replace(imagePath, `data:image/${extension};base64,${base64}`);
   }
   return html;
+}
+
+export function sanitizeXML(xmlPath: string): Promise<string> {
+  const startTime: number = Date.now();
+  return new Promise<any>((resolve, _reject) => {
+    try {
+      // repplace with empty char everything forbidden by XML 1.0 specifications,
+      // plus the unicode replacement character U+FFFD
+      const regex = /((?:[\0-\x08\x0B\f\x0E-\x1F\uFFFD\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]|(?:&#\d*;)))/g;
+      const xml: string = fs.readFileSync(xmlPath, 'utf-8');
+      const outputFilePath = getTemporaryFile('.xml');
+      fs.writeFileSync(outputFilePath, xml.replace(new RegExp(regex), ' '));
+      logger.info(`Sanitize XML: ${(Date.now() - startTime) / 1000}s`);
+      resolve(outputFilePath);
+    } catch (error) {
+      logger.warn(`Error sanitizing XML ${error}`);
+      resolve(xmlPath);
+    }
+  });
 }
