@@ -180,6 +180,21 @@ export async function detectTables(
   });
 }
 
+export async function detectTables2(
+  filePath: string,
+  pages: string,
+): Promise<string> {
+  const args: string[] = [
+    path.join(__dirname, '../../assets/TableDetection2Script.py'),
+    filePath,
+    pages,
+  ];
+  return run(COMMANDS.PYTHON, args).then(tableData => {
+    logger.info(`Table detection succeed`);
+    return tableData;
+  });
+}
+
 export async function pdfMinerExtract(filePath: string, pages: string, rotationDegrees: number = 0): Promise<string> {
   const xmlOutputFile: string = getTemporaryFile('.xml');
   let pdf2txtArguments: string[] = [
@@ -187,6 +202,7 @@ export async function pdfMinerExtract(filePath: string, pages: string, rotationD
     '-R', rotationDegrees.toString(),
     '-c', 'utf-8',
     '-t', 'xml',
+    '--word-margin', '0.2',
     '-o', xmlOutputFile,
     filePath,
   ];

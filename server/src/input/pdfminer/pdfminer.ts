@@ -189,7 +189,7 @@ function getPage(pageObj: PdfminerPage): Page {
   if (pageObj.textbox !== undefined) {
     pageObj.textbox.forEach(para => {
       para.textline.map(line => {
-        elements = [...elements, ...breakLineIntoWords(line.text, ',', pageBBox.height)];
+        elements = [...elements, ...breakLineIntoWords(line.text, ',', pageBBox.height, 1, para._attr.wmode)];
       });
     });
   }
@@ -316,6 +316,7 @@ function breakLineIntoWords(
   wordSeparator: string = ' ',
   pageHeight: number,
   scalingFactor: number = 1,
+  wMode: string = null,
 ): Word[] {
   const notAllowedChars = ['\u200B']; // &#8203 Zero Width Space
   const words: Word[] = [];
@@ -414,7 +415,12 @@ function breakLineIntoWords(
       }
     }
   }
-  return words;
+
+  return wMode ?
+    words.map(w => {
+      w.properties.writeMode = wMode;
+      return w;
+    }) : words;
 }
 
 function thereAreFakeSpaces(texts: PdfminerText[]): boolean {

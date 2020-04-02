@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ export interface Properties {
     capitalCase: number;
     titleCase: number;
   };
-
+  writeMode?: string;
   isRedundant?: boolean;
   isHeader?: boolean;
   isFooter?: boolean;

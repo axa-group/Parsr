@@ -3,8 +3,12 @@ import csv
 import json as json
 import os
 import re
+import spacy
 from collections import Counter
 from utils import mostCommonFont, markdown_to_text
+
+# Load English tokenizer, tagger, parser, NER and word vectors
+nlp = spacy.load("en_core_web_sm")
 
 
 def extract_lines(file):
@@ -26,8 +30,24 @@ def extract_lines(file):
             line_font = file['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]  # font ids start at 1
             is_bold = all(file['fonts'][font_id - 1]['weight'] == 'bold' for font_id in fonts_ids)
 
-            acc.append([line.strip(), line_font['size'] > commonFont['size'], is_bold ^ (commonFont['weight'] == 'bold'),
-                        len(set(fonts_ids)) == 1, is_title_case, 'paragraph'])
+            if line.islower():
+                text_case = 0
+            elif line.isupper():
+                text_case = 1
+            elif is_title_case:
+                text_case = 2
+            else:
+                text_case = 3
+
+            doc = nlp(line)
+            nb_verbs = len([token.lemma_ for token in doc if token.pos_=="VERB"])
+            nb_nouns = len([chunk.text for chunk in doc.noun_chunks])
+            nb_cardinal = len([entity.text for entity in doc.ents if entity.label_=="CARDINAL"])
+                
+            acc.append([line.strip(), is_bold^(commonFont['weight'] == 'bold'), line_font['size']>commonFont['size'],
+                        line_font['color']!=commonFont['color'], len(set(fonts_ids))==1, text_case, len(node['content']),
+                        nb_verbs, nb_nouns, nb_cardinal, 'paragraph'
+                       ])
 
         elif node['type'] == 'paragraph' or node['type'] == 'heading' or node['type'] == 'list':
             for line in node['content']:
@@ -49,7 +69,6 @@ args = parser.parse_args()
 
 paths = os.listdir(args.json_dir)
 
-contracts = []
 for path in paths:
     if path.endswith('.json') and not path.endswith('.stats.json'):
         print(path)
@@ -68,14 +87,15 @@ for path in paths:
                     if line[0] == text_line:
                         contract[i][-1] = 'heading'
                     elif line[0] in text_line:
-                        if line[1] or (line[2] and line[3]) or (line[4] and len(line[0].split()) > 1):
+                        if (line[1] and line[4]) or line[2] or line[3] or (line[5]==2 and line[6]>1):
                             contract[i][-1] = 'heading'
 
-        col_names = ['line', 'is_font_bigger', 'is_different_style', 'is_font_unique', 'is_title_case', 'label']
+        col_names = ['line', 'is_different_style', 'is_font_bigger', 
+                     'different_color', 'is_font_unique', 'text_case', 'word_count',
+                     'nb_of_verbs', 'nb_of_nouns', 'nb_of_cardinal_numbers', 'label']
 
         with open(os.path.join(args.out_dir, path.replace('.pdf.json', '.csv')), newline='\n',  mode='w+', encoding='utf8') as f:
             writer = csv.writer(f, quoting=csv.QUOTE_ALL)
             writer.writerow(col_names)
             writer.writerows(contract)
 
-        contracts.append(contract)

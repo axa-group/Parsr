@@ -21,77 +21,53 @@ X = []
 y = []
 
 for path in paths:
-    df = pd.read_csv(os.path.join(dataset_dir, path), header=0).drop('line', axis=1)
+    df = pd.read_csv(os.path.join(dataset_dir, path), header=0)
 
     if len(df) < 3:
         continue
     
-    df['is_font_bigger'] = df['is_font_bigger'].apply(lambda x: 1 if x else 0)
     df['is_different_style'] = df['is_different_style'].apply(lambda x: 1 if x else 0)
+    df['is_font_bigger'] = df['is_font_bigger'].apply(lambda x: 1 if x else 0)
     df['is_font_unique'] = df['is_font_unique'].apply(lambda x: 1 if x else 0)
-    df['is_title_case'] = df['is_title_case'].apply(lambda x: 1 if x else 0)
+    df['different_color'] = df['different_color'].apply(lambda x: 1 if x else 0)
     df['label'] = df['label'].apply(lambda x: 1 if x == 'heading' else 0)
 
-    print(df.head())
-    print(path)
-
-    # convert dataframe to numpy array
-    df_array = df.to_numpy()
-
-    for arr in df_array:
-        X.append(arr[:-1])
-        y.append(arr[-1])
-
-    # if path=="9thcircuit.csv":
-    #     X_circuit = []
-    #     for arr in df_array:
-    #         X_circuit.append(arr[:-1])
+    for i in range(len(df)):
+        X.append([df['is_different_style'][i], df['is_font_bigger'][i],
+                  df['is_font_unique'][i]
+                 ])
+            
+    y = y + list(df['label'])
 
 
 # Splitting dataset into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-# RandomOverSampler --- Resampling training set (to balance classes)
 print('Original training set shape %s' % Counter(y_train))
-X_train_res, y_train_res = RandomOverSampler(random_state=42).fit_resample(X_train, y_train)
+X_train_res, y_train_res = SMOTE(random_state=42).fit_resample(X_train, y_train)
 print('Resampled training set shape %s' % Counter(y_train_res))
 
-# SMOTE --- Resampling training set (to balance classes)
-# print('Original training set shape %s' % Counter(y_train))
-# X_train_res, y_train_res = SMOTE(random_state=42).fit_resample(X_train, y_train)
-# print('Resampled training set shape %s' % Counter(y_train_res))
-
-# ADASYN --- Resampling training set (to balance classes)
-# print('Original training set shape %s' % Counter(y_train))
-# X_train_res, y_train_res = ADASYN(random_state=42).fit_resample(X_train, y_train)
-# print('Resampled training set shape %s' % Counter(y_train_res))
-
-
 # fitting
-# parameters = {'min_samples_leaf':[1,2,3,4], 'min_samples_split':[2,3,4], 'criterion':['entropy']}
-# clf_cv = GridSearchCV(DecisionTreeClassifier(), parameters).fit(X_train_res, y_train_res)
-# clf = DecisionTreeClassifier(min_samples_leaf=clf_cv.best_params_['min_samples_leaf'], min_samples_split=clf_cv.best_params_['min_samples_split'], criterion='entropy')
-# selector = RFECV(clf, step=1, cv=8, scoring=metrics.make_scorer(metrics.f1_score))
-# selector = selector.fit(X_train_res, y_train_res)
-
+parameters = {'min_samples_leaf':[1,2,3], 'min_samples_split':[2,3], 'criterion':['entropy','gini']}
+clf_cv = GridSearchCV(DecisionTreeClassifier(), parameters).fit(X_train_res, y_train_res)
+clf = DecisionTreeClassifier(min_samples_leaf=clf_cv.best_params_['min_samples_leaf'], min_samples_split=clf_cv.best_params_['min_samples_split'], criterion=clf_cv.best_params_['criterion'], splitter='best')
+selector = RFECV(clf, step=1, cv=10, scoring=metrics.make_scorer(metrics.f1_score))
+selector = selector.fit(X_train_res, y_train_res)
 
 # overfitting
-X_res, y_res = RandomOverSampler(random_state=42).fit_resample(X, y)
+X_res, y_res = SMOTE(random_state=42).fit_resample(X, y)
 X_train2, X_test2, y_train2, y_test2 = train_test_split(X_res, y_res, test_size=0.2)
-parameters = {'min_samples_leaf':[1,2,3,4], 'min_samples_split':[2,3,4], 'criterion':['entropy']}
+parameters = {'min_samples_leaf':[1,2,3], 'min_samples_split':[2,3], 'criterion':['entropy','gini']}
 clf_cv = GridSearchCV(DecisionTreeClassifier(), parameters).fit(X_res, y_res)
-clf = DecisionTreeClassifier(min_samples_leaf=clf_cv.best_params_['min_samples_leaf'], min_samples_split=clf_cv.best_params_['min_samples_split'], criterion='entropy')
-selector = RFECV(clf, step=1, cv=8, scoring=metrics.make_scorer(metrics.f1_score))
+clf = DecisionTreeClassifier(min_samples_leaf=clf_cv.best_params_['min_samples_leaf'], min_samples_split=clf_cv.best_params_['min_samples_split'], criterion=clf_cv.best_params_['criterion'], splitter='best')
+selector = RFECV(clf, step=1, cv=10, scoring=metrics.make_scorer(metrics.f1_score))
 selector = selector.fit(X_res, y_res)
-
-print(selector.support_)
-print(selector.ranking_)
 
 y_pred = selector.predict(X_test2)
 
-print('f1:', metrics.f1_score(y_pred, y_test2))
-print('IoU:', metrics.jaccard_score(y_pred, y_test2))
-print('AuC:', metrics.roc_auc_score(y_pred, y_test2))
+print('precision:', metrics.precision_score(y_test2, y_pred))
+print('recall:', metrics.recall_score(y_test2, y_pred))
+print('f1:', metrics.f1_score(y_test2, y_pred))
 
 porter = Porter(selector.estimator_, language='js')
 output = porter.export(embed_data=True)

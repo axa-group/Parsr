@@ -49,9 +49,6 @@ export class MLHeadingDetectionModule extends Module {
     // get all the fonts to use for heading
     const headingFonts = this.headingFonts(doc);
 
-    // const headingLines = doc.getElementsOfType<Line>(Line, true)
-    //   .filter((line, i, lines) => this.isHeadingCandidate(line, lines[i - 1], lines[i + 1]));
-
     doc.pages.forEach((page: Page) => {
       const newContents = this.extractHeadings(
         page,
@@ -125,53 +122,49 @@ export class MLHeadingDetectionModule extends Module {
     const headingLines: Line[][] = [];
 
     paragraphs.map(paragraph => paragraph.content)
-              .forEach(linesInParagraph => {
-                let initiatedHeading = false;
-                if (commonFont instanceof Font) {
-                  const headingIdx: number[] = linesInParagraph.map((line: Line, pos: number) => {
-                    if ((pos==0 || initiatedHeading) && this.isHeadingCandidate(line, commonFont, headingFonts)) {
-                      initiatedHeading = true;
-                      return pos;
-                    } else {
-                      initiatedHeading = false;
-                      return undefined;
-                    }
-                  }).filter((i: number) => i !== undefined);
-                  if (headingIdx.length > 0) {
-                    const lineIdx: number[] = [...Array(linesInParagraph.length).keys()].filter(x => !headingIdx.includes(x));
-                    utils.groupConsecutiveNumbersInArray(lineIdx).forEach((group: number[]) => {
-                      const newLines: Line[] = [];
-                      group.forEach((id: number) => {
-                        newLines.push(linesInParagraph[id]);
-                      });
-                      if (newLines.length > 0) {
-                        paragraphLines.push(newLines);
-                      }
-                    });
-                    this.groupHeadingsByFont(headingIdx, linesInParagraph).forEach(headingGroup => {
-                      utils.groupConsecutiveNumbersInArray(headingGroup).forEach((group: number[]) => {
-                        const newHeadings: Line[] = [];
-                        group.forEach((id: number) => {
-                          newHeadings.push(linesInParagraph[id]);
-                        });
-                        if (newHeadings.length > 0) {
-                          headingLines.push(newHeadings);
-                        }
-                      });
-                    });
-                  } else {
-                    paragraphLines.push(linesInParagraph);
-                  }
-                } else {
-                  logger.warn("can't account for headings while para merge - no font info available");
-                }
+      .forEach(linesInParagraph => {
+        // let initiatedHeading = false;
+        if (commonFont instanceof Font) {
+          const headingIdx: number[] = linesInParagraph.map((line: Line, pos: number) => {
+            // const prevLine: Line = linesInParagraph[pos-1];
+            // const nextLine: Line = linesInParagraph[pos+1];
+            if (this.isHeadingCandidate(line, commonFont, headingFonts)) {
+              return pos;
+            } else {
+              return undefined;
+            }
+          }).filter((i: number) => i !== undefined);
+          if (headingIdx.length > 0) {
+            const lineIdx: number[] = [...Array(linesInParagraph.length).keys()].filter(
+              x => !headingIdx.includes(x),
+            );
+            utils.groupConsecutiveNumbersInArray(lineIdx).forEach((group: number[]) => {
+              const newLines: Line[] = [];
+              group.forEach((id: number) => {
+                newLines.push(linesInParagraph[id]);
               });
-
-              if (headingLines.length > 0) {
-                return {headingLines, paragraphLines};
+              if (newLines.length > 0) {
+                paragraphLines.push(newLines);
               }
+            });
 
-              return {headingLines: [], paragraphLines: paragraphs.map(paragraph => paragraph.content)};
+            headingIdx.forEach((x: number) => {
+              headingLines.push(Array(linesInParagraph[x]));
+            });
+
+          } else {
+            paragraphLines.push(linesInParagraph);
+          }
+        } else {
+          logger.warn("can't account for headings while para merge - no font info available");
+        }
+      });
+
+    if (headingLines.length > 0) {
+      return { headingLines, paragraphLines };
+    }
+
+    return { headingLines: [], paragraphLines: paragraphs.map(paragraph => paragraph.content) };
   }
 
   private isHeadingCandidate(line: Line, mostCommonFont: Font, headingFonts: Font[]): boolean {
@@ -184,50 +177,42 @@ export class MLHeadingDetectionModule extends Module {
     return this.isHeadingLine(line, mostCommonFont);
   }
 
-  private isHeadingLine(line: Line, commonFont: Font) : boolean {
+  private isHeadingLine(line: Line, commonFont: Font): boolean {
+    // const word_count = line.content.length;
     const isFontBigger = line.getMainFont().size > commonFont.size;
     const isDifferentStyle = line.getMainFont().weight !== commonFont.weight;
     const isFontUnique = line.isUniqueFont();
-    const titleCase = this.isTitleCase(line) ? 1 : 0;
+    // const different_color = line.getMainFont().color !== commonFont.color;
 
-    const features = [isFontBigger, isDifferentStyle, isFontUnique, titleCase];
+    // const is_title_case = this.titleCase(line);
+    // const is_lower_case = line.toString().toLowerCase() === line.toString();
+    // const is_upper_case = line.toString().toUpperCase() === line.toString();
+    // let text_case = 3;
+    // if (is_title_case) {
+    //   text_case = 2;
+    // } else if (is_lower_case) {
+    //   text_case = 0;
+    // } else if (is_upper_case) {
+    //   text_case = 1;
+    // }
+
+    const features = [isDifferentStyle, isFontBigger, isFontUnique];
     const clf = new DecisionTreeClassifier();
 
     return clf.predict(features) === 1;
   }
 
-  private isTitleCase(line: Line) {
-    return line.content.map((word) => {
-      const lengthThreshold = 4;
-      const text = word.toString();
-      if (text.length > lengthThreshold) {
-        return (/^[A-Z]\w+/.test(text) || /^(?:\W*\d+\W*)+\w+/.test(text));
-      } else {
-        return true;
-      }
-    }).reduce((acc, curr) => acc && curr);
-  }
-
-  private groupHeadingsByFont(headingIndexes: number[], lines: Line[]): number[][] {
-    // Skip join heading lines if they doesn't have same font
-    const fontGroupedHeadings: number[][] = [];
-    let joinedHeadings: number[] = [];
-    headingIndexes.forEach((pos, i) => {
-      const currentHeadingLineFont = lines[pos].getMainFont();
-      const prevHeadingLineFont = i > 0 ? lines[i - 1].getMainFont() : null;
-      if (!prevHeadingLineFont || currentHeadingLineFont.isEqual(prevHeadingLineFont)) {
-        joinedHeadings.push(pos);
-      } else {
-        fontGroupedHeadings.push(joinedHeadings);
-        joinedHeadings = [pos];
-      }
-    });
-    if (joinedHeadings.length > 0) {
-      fontGroupedHeadings.push(joinedHeadings);
-    }
-
-    return fontGroupedHeadings;
-  }
+  // private titleCase(line: Line) {
+  //   return line.content.map((word) => {
+  //     const lengthThreshold = 4;
+  //     const text = word.toString();
+  //     if (text.length > lengthThreshold) {
+  //       return (/^[A-Z]\w+/.test(text) || /^(?:\W*\d+\W*)+\w+/.test(text));
+  //     } else {
+  //       return true;
+  //     }
+  //   }).reduce((acc, curr) => acc && curr);
+  // }
 
   private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
     return joinedLines.map((group: Line[]) => {
@@ -314,31 +299,14 @@ export class MLHeadingDetectionModule extends Module {
    */
   private headingFonts(doc: Document): Font[] {
     const allWords = doc.getElementsOfType<Word>(Word, true);
-    // console.log('Total Words ' + allWords.length.toString());
-    // const allLines = doc.getElementsOfType<Line>(Line, true).filter(line => line.isUniqueFont());
-    // const allFonts = allLines.map(line => this.noColouredFont(line.getMainFont()));
     const allFonts = [...allWords.map(w => this.noColourFont(w.font)).filter(f => f !== undefined)];
 
-    let uniqueFonts: Font[] = [];
+    const uniqueFonts: Font[] = [];
     allFonts.forEach(font => {
       if (uniqueFonts.filter(f => f.isEqual(font)).length === 0) {
         uniqueFonts.push(font);
       }
     });
-
-    // console.log('Total Fonts ' + uniqueFonts.length.toString());
-    uniqueFonts = uniqueFonts.filter(font => {
-      const avg = allWords.filter(w => this.noColourFont(w.font).isEqual(font)).length;
-      // Only fonts that are used less than 10% of
-      // all words will be used to exctract headings
-      // TODO: Add a module param to change this value
-      return avg / allWords.length < 0.15;
-    });
-
-    // console.log('Heading Fonts');
-    // console.log(uniqueFonts);
-    // console.log('Heading Fonts ' + uniqueFonts.length.toString());
-    // .map(font => this.noColouredFont(font)); // Skip fonts that only have diferent color
 
     return uniqueFonts;
   }

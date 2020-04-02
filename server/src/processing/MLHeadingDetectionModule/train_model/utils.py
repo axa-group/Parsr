@@ -42,3 +42,22 @@ def markdown_to_text(markdown_string):
     text = ''.join(soup.findAll(text=True))
 
     return text
+
+
+def text_case(line):
+    """Return the text case (lower case, upper case, title case or none of them)"""
+    is_title_case = True
+    for word in line.split():
+        if len(word) > 4 and not word.startswith('(') and not word.startswith('['):
+            is_title_case = is_title_case and (bool(re.match(r'^[A-Z]\w+', word)) or bool(re.match(r'^(?:\W*\d+\W*)+\w+', word)))
+
+    if line.islower():
+        text_case = 0
+    elif line.isupper():
+        text_case = 1
+    elif is_title_case:
+        text_case = 2
+    else:
+        text_case = 3
+
+    return text_case
