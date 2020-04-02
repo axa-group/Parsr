@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-import { Document } from '../../types/DocumentRepresentation';
+import * as limit from 'limit-async';
+import { getDocument } from 'pdfjs-dist';
+import { Document, Page } from '../../types/DocumentRepresentation';
+import logger from '../../utils/Logger';
 import { Extractor } from '../Extractor';
-import * as pdfjs from './pdfjs';
+import { repairPdf } from './../../utils/CommandExecuter';
+import { loadPage } from './pdfjs';
 
 /**
  * The extractor is responsible to extract every possible information
@@ -25,7 +29,32 @@ import * as pdfjs from './pdfjs';
  * information in a clever way.
  */
 export class PDFJsExtractor extends Extractor {
-    public run(inputFile: string): Promise<Document> {
-        return pdfjs.execute(inputFile);
-    }
+  public run(inputFile: string): Promise<Document> {
+    logger.info('Running extractor PDF.js');
+    const startTime: number = Date.now();
+
+    // this is for limiting page fetching to 10 at the same time and avoid memory overflows
+    const limiter = limit(10);
+
+    return new Promise<Document>((resolveDocument, rejectDocument) => {
+      return repairPdf(inputFile).then((repairedPdf: string) => {
+        const pages: Array<Promise<Page>> = [];
+        try {
+          return (getDocument(repairedPdf) as any).promise.then(doc => {
+            const numPages = doc.numPages;
+            for (let i = 0; i < numPages; i += 1) {
+              pages.push(limiter(loadPage)(doc, i + 1));
+            }
+            return Promise.all(pages).then((p: Page[]) => {
+              const endTime: number = (Date.now() - startTime) / 1000;
+              logger.info(`Elapsed time: ${endTime}s`);
+              resolveDocument(new Document(p, repairedPdf));
+            });
+          });
+        } catch (e) {
+          return rejectDocument(e);
+        }
+      }).catch(rejectDocument);
+    });
+  }
 }
