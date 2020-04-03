@@ -1,0 +1,13 @@
+{
+  "name": "table-detection-2",
+  "description": "Table extraction from the PDF file",
+  "specs": {
+    "runConfig": {
+      "value": [
+        {
+          "pages": []
+        }
+      ]
+    }
+  }
+}
