@@ -20,16 +20,16 @@
       }
     ],
     [
-      "table-detection-2",
+      "table-detection",
       {
         "runConfig": [
           {
-            "pages": []
+            "pages": [],
+            "flavor": "lattice"
           }
         ]
       }
     ],
-
     [
       "header-footer-detection",
       {

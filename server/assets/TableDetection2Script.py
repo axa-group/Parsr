@@ -2,119 +2,8 @@ import sys
 import camelot
 import tabula
 import json
-from PyPDF2 import PdfFileReader
 import numpy as np
 
-
-# def getTableData(table):
-#     data = []
-#     for row in table['data']:
-#         data.append([elem['text'] for elem in row])
-
-#     return data
-
-# def getCellFrame(cell):
-#     cellData = dict()
-#     cellData['location'] = {'x': cell['left'], 'y': cell['top']}
-#     cellData['size'] = {'width': cell['width'], 'height': cell['height']}
-#     cellData['colSpan'] = 1
-#     cellData['rowSpan'] = 1
-#     return cellData
-
-# def updateCellColSpan(cell, row, index, cellInfo):
-#     emptyCells = 1
-#     width = cell['width']
-#     for index, cell in enumerate(row, index + 1):
-#         if cell['text'] == '':
-#             emptyCells += 1
-#             width += cell['width']
-
-#     cellInfo['colSpan'] = emptyCells
-#     cellInfo['size']['width'] = width
-#     return cellInfo
-
-# def updateCellRowSpan(cell, allRows, index, cellInfo):
-#     emptyCells = 1
-#     height = cell['height']
-#     for row in allRows:
-#         if row[index]['text'] == '':
-#             emptyCells += 1
-#             height += row[index]['height']
-
-#     cellInfo['rowSpan'] = emptyCells
-#     cellInfo['size']['height'] = height
-#     return cellInfo
-
-# def hspan(cell):
-#     return False # temporary
-
-# def vspan(cell):
-#     return False # temporary
-
-# def extractRowData(row, allRows):
-#     cellsData = []
-#     cellHSpan = 0
-#     for index, cell in enumerate(row):
-#         cellInfo = getCellFrame(cell)
-#         if cell['text'] != '':      
-#             if hspan(cell):
-#                 cellInfo = updateCellColSpan(cell, row, index, cellInfo)                
-            
-#             if vspan(cell):
-#                 cellInfo = updateCellRowSpan(cell, allRows, index, cellInfo)
-
-#         cellHSpan += cellInfo['colSpan']
-#         if cell['text'] != '' or (index + 1 >= cellHSpan and cell['text'] == '' and len(cellsData) > 0):
-#             cellsData.append(cellInfo)        
-        
-#     return cellsData
-
-# def extractRowsData(table):
-#     rowsData = [extractRowData(row, table['data']) for row in table['data']]
-#     noEmptyRowsData = list(filter(lambda x: len(x) > 0, rowsData))
-#     if len(noEmptyRowsData) == 0:
-#         return None
-    
-#     return noEmptyRowsData
-
-# def extractTableData(table):    
-#     tableData = dict()
-#     tableData['size'] = {'width': table['width'], 'height': table['height']}
-#     tableData['location'] = {'x': table['left'], 'y': table['bottom']}
-#     tableData['content'] = getTableData(table)
-#     cellsData = extractRowsData(table)
-#     if cellsData != None:
-#         tableData['cells'] = cellsData
-#         return tableData
-    
-#     return None
-
-# def createPageData(pageIndex, tables):
-#     pageData = dict()
-#     pageData['page'] = pageIndex
-#     pageData['tables'] = tables
-#     return pageData
-
-# def main():
-#     pdfFile = str(sys.argv[1])
-#     infile = PdfFileReader(pdfFile, strict=False)
-#     nb_pages = infile.getNumPages()
-
-#     output = []
-#     for i in range(nb_pages):
-#         tables = tabula.read_pdf(pdfFile, stream=True, pages=i+1, output_format="json")
-#         if len(tables) == 0:
-#             continue
-#         tablesData = list(map(lambda x: extractTableData(x), tables))
-#         tablesData = list(filter(lambda x: x != None, tablesData))
-#         output.append(createPageData(i+1, tablesData))
-
-#     print(json.dumps(output))
-#     sys.exit(0)
-
-
-# if __name__ == "__main__":
-#     main()
 
 def getTableHeight(table):
     allY = []
@@ -245,19 +134,6 @@ def createPageData(pageIndex, tables):
     pageData['tables'] = tables
     return pageData
 
-# def getTabulaTableData(table):
-#     data = []
-#     for row in table['data']:
-#         data.append([elem['text'] for elem in row])
-#     return np.ravel(data)
-
-# def getCamelotTableData(table):
-#     data = []
-#     for text in np.ravel(table.data):
-#         data.append(text.splitlines())        
-    
-#     return [line.strip() for sublist in data for line in sublist]
-
 def getTabulaTableData(table):
     data = []
     for row in table['data']:
@@ -297,7 +173,7 @@ def main():
     pdfFile = str(sys.argv[1])
 
     # tables = camelot.read_pdf(pdfFile,  pages='all', flavor='lattice', line_scale=70, process_background=True)
-    tables = camelot.read_pdf(pdfFile,  pages='all', flavor='lattice', line_scale=70, process_background=True)
+    tables = camelot.read_pdf(pdfFile,  pages='all', flavor='lattice', line_scale=70)
     tables2 = tabula.read_pdf(pdfFile, stream=True, pages='all', output_format="json")
 
     if len(tables) == 0 and len(tables2) != 0:
