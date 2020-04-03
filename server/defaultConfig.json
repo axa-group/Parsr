@@ -61,7 +61,7 @@
         "tolerance": 0.25
       }
     ],
-    "ml-heading-detection",
+    "heading-detection",
     "list-detection",
     "page-number-detection",
     "hierarchy-detection",
