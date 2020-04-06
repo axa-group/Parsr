@@ -150,36 +150,6 @@ export class PdfminerExtractor extends Extractor {
     return doc;
   }
 
-  /*
-    the --detect-vertical argument on pdf2txt.py sometimes splits words into two.
-    This algo finds every 'vertical' word (data given by pdf2txt)  and tries to find
-    and join the rest of the content based on the BBox positions
-  */
-  private async detectAndFixFalseVerticalWords(doc: Document): Promise<Document> {
-    let count = 0;
-    doc.pages.forEach(page => {
-      const pageWords = page.getElementsOfType<Word>(Word, false);
-      const vWords = pageWords.filter(w => w.properties.writeMode === 'vertical');
-      vWords.forEach(vw => {
-        const nextWord: Word =
-          pageWords.find(w =>
-            w.box.height === vw.box.height &&
-            w.box.top === vw.box.top &&
-            Math.floor(w.box.left) === Math.floor(vw.box.left + vw.box.width),
-          );
-        if (nextWord) {
-          count += 1;
-          page.elements.push(vw.join(nextWord));
-          page.elements = page.elements.filter(e => e.id !== nextWord.id);
-        }
-      });
-    });
-    if (count > 0) {
-      logger.info(`Joined ${count} splitted words.`);
-    }
-    return doc;
-  }
-
   private detectAndFixPageRotation(inputFile: string): (doc: Document) => Promise<Document> {
     const limiter = limit(1);
     return async (doc: Document): Promise<Document> => {
