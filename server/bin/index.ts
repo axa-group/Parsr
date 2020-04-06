@@ -19,15 +19,10 @@ import * as filetype from 'file-type';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Cleaner } from '../src/Cleaner';
-import { AbbyyTools } from '../src/input/abbyy/AbbyyTools';
 import { AbbyyToolsXml } from '../src/input/abbyy/AbbyyToolsXml';
-import { AmazonTextractExtractor } from '../src/input/amazon-textract/AmazonTextractExtractor';
 import { DocxExtractor } from '../src/input/doc/DocxExtractor';
 import { EmailExtractor } from '../src/input/email/EmailExtractor';
-import { GoogleVisionExtractor } from '../src/input/google-vision/GoogleVisionExtractor';
 import { JsonExtractor } from '../src/input/json/JsonExtractor';
-import { MicrosoftCognitiveExtractor } from '../src/input/ms-cognitive-services/MicrosoftCognitiveServices';
-import { TesseractExtractor } from '../src/input/tesseract/TesseractExtractor';
 import { Orchestrator } from '../src/Orchestrator';
 import { CsvExporter } from '../src/output/csv/CsvExporter';
 import { JsonExporter } from '../src/output/json/JsonExporter';
@@ -35,7 +30,7 @@ import { MarkdownExporter } from '../src/output/markdown/MarkdownExporter';
 import { PdfExporter } from '../src/output/pdf/PdfExporter';
 import { TextExporter } from '../src/output/text/TextExporter';
 import { Config } from '../src/types/Config';
-import { Document, Image } from '../src/types/DocumentRepresentation/';
+import { Document } from '../src/types/DocumentRepresentation/';
 import * as utils from '../src/utils';
 import * as CommandExecuter from '../src/utils/CommandExecuter';
 import logger from '../src/utils/Logger';
@@ -54,6 +49,7 @@ function main(): void {
     .option(
       '-c, --config <filename>',
       "The file's path from which the application's parameters will be loaded",
+      `${__dirname}/defaultConfig.json`,
     )
     .option(
       '-l, --log-level <verbosity>',
@@ -105,13 +101,13 @@ function main(): void {
   } else if (fileType.ext === 'pdf') {
     orchestrator = new Orchestrator(utils.getPdfExtractor(config), cleaner);
   } else if (fileType.mime.slice(0, 5) === 'image') {
-    orchestrator = getOcrExtractor();
+    orchestrator = new Orchestrator(utils.getOcrExtractor(config), cleaner);
   } else if (fileType.ext === 'json') {
-    orchestrator = getJsonExtractor();
+    orchestrator = new Orchestrator(new JsonExtractor(config), cleaner);
   } else if (fileType.ext === 'eml') {
-    orchestrator = getEmlExtractor();
+    orchestrator = new Orchestrator(new EmailExtractor(config), cleaner);
   } else if (fileType.ext === 'docx') {
-    orchestrator = getDocxExtractor();
+    orchestrator = new Orchestrator(new DocxExtractor(config), cleaner);
   } else {
     throw new Error('Input file format is unsupported');
   }
@@ -119,7 +115,7 @@ function main(): void {
   /**
    * Run the extraction pipeline on the file
    */
-  runOrchestrator(fileType);
+  runOrchestrator();
 
   /**
    * Run the pipeline - go through the extraction, cleaning, and enrichment modules.
@@ -127,18 +123,9 @@ function main(): void {
    * @remarks
    * This method contains the primary pipeline call itself.
    */
-  function runOrchestrator(fileTypeInfo: { ext: string; mime: string }) {
+  function runOrchestrator() {
     orchestrator
       .run(filePath)
-      .then((doc: Document) => {
-        if (fileTypeInfo.ext === 'pdf' && isDocumentImageBased(doc)) {
-          logger.info(
-            `Since the input file is a PDF with only images, trying to run an OCR on all pages...`,
-          );
-          return getOcrExtractor().run(filePath);
-        }
-        return doc;
-      })
       .then((doc: Document) => {
         copyAssetsToOutputFolder(doc);
         return doc;
@@ -253,57 +240,6 @@ function main(): void {
         logger.error(e);
       }
     });
-  }
-
-  /**
-   * Tests if a PDF file only contains an image on each and every one of its pages
-   * This is true for example, in the case of scanned documents as PDFs
-   */
-  function isDocumentImageBased(doc: Document): boolean {
-    return !doc.pages
-      .map(p => p.elements.length === 1 && p.elements[0] instanceof Image)
-      .includes(false);
-  }
-
-  /**
-   * Returns the email extraction orchestrator.
-   * This extractor has no need of a configuration file or a cleaner
-   * @returns The Orchestrator instance
-   */
-  function getEmlExtractor(): Orchestrator {
-    return new Orchestrator(new EmailExtractor(config), cleaner);
-  }
-
-  /**
-   * Returns the docx extraction orchestrator.
-   * @returns The Orchestrator instance
-   */
-  function getDocxExtractor(): Orchestrator {
-    return new Orchestrator(new DocxExtractor(config), cleaner);
-  }
-
-  /**
-   * Returns the json extraction orchestrator depending on the extractor selection made in the configuration.
-   *
-   * @returns The Orchestrator instance
-   */
-  function getJsonExtractor(): Orchestrator {
-    return new Orchestrator(new JsonExtractor(config), cleaner);
-  }
-
-  /**
-   * Returns the ocr extraction orchestrator depending on the extractor selection made in the configuration.
-   *
-   * @returns The Orchestrator instance
-   */
-  function getOcrExtractor(): Orchestrator {
-    switch (config.extractor.ocr) {
-      case 'tesseract': return new Orchestrator(new TesseractExtractor(config), cleaner);
-      case 'google-vision': return new Orchestrator(new GoogleVisionExtractor(config), cleaner);
-      case 'ms-cognitive-services': return new Orchestrator(new MicrosoftCognitiveExtractor(config), cleaner);
-      case 'amazon-textract': return new Orchestrator(new AmazonTextractExtractor(config), cleaner);
-      default: return new Orchestrator(new AbbyyTools(config), cleaner);
-    }
   }
 }
 

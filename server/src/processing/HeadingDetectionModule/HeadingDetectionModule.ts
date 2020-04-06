@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import {
   Line,
   Page,
   Paragraph,
+  TableOfContents,
   Word,
 } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
@@ -60,7 +61,8 @@ export class HeadingDetectionModule extends Module {
       );
       const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
       const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
-      page.elements = newContents.rootElements.concat([...headings, ...paras]);
+      const toc: TableOfContents[] = page.getElementsOfType<TableOfContents>(TableOfContents, false);
+      page.elements = newContents.rootElements.concat([...headings, ...paras, ...toc]);
     });
 
     if (this.headingsDetected(doc)) {
@@ -333,7 +335,7 @@ export class HeadingDetectionModule extends Module {
   }*/
 
   private pageOtherElements(page: Page): Element[] {
-    return page.elements.filter(element => !(element instanceof Paragraph));
+    return page.elements.filter(element => !(element instanceof Paragraph) && !(element instanceof TableOfContents));
   }
 
   private getElementsWithParagraphs(elements: Element[], withParagraphs: Element[]): Element[] {

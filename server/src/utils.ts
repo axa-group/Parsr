@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { exec } from 'child_process';
 import * as concaveman from 'concaveman';
 import HTMLToPDF from 'convert-html-to-pdf';
 import * as crypto from 'crypto';
@@ -22,12 +21,9 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { inspect } from 'util';
-import { OptionsV2, parseString } from 'xml2js';
-import { AbbyyTools } from './input/abbyy/AbbyyTools';
 import { Extractor } from './input/Extractor';
 import { PDFJsExtractor } from './input/pdf.js/PDFJsExtractor';
 import { PdfminerExtractor } from './input/pdfminer/PdfminerExtractor';
-import { TesseractExtractor } from './input/tesseract/TesseractExtractor';
 import { Config } from './types/Config';
 import {
   BoundingBox,
@@ -40,7 +36,12 @@ import {
 } from './types/DocumentRepresentation';
 import logger from './utils/Logger';
 
-import * as CommandExecuter from './utils/CommandExecuter';
+import { AbbyyTools } from './input/abbyy/AbbyyTools';
+import { AmazonTextractExtractor } from './input/amazon-textract/AmazonTextractExtractor';
+import { GoogleVisionExtractor } from './input/google-vision/GoogleVisionExtractor';
+import { MicrosoftCognitiveExtractor } from './input/ms-cognitive-services/MicrosoftCognitiveServices';
+import { OcrExtractor } from './input/OcrExtractor';
+import { TesseractExtractor } from './input/tesseract/TesseractExtractor';
 
 let mutoolExtractionFolder: string = '';
 
@@ -325,7 +326,7 @@ export function removeNull(page: Page): Page {
   if (page.elements.length - newElements.length !== 0) {
     logger.debug(
       `Null elements removed for page #${page.pageNumber}: ${page.elements.length -
-        newElements.length}`,
+      newElements.length}`,
     );
     page.elements = newElements;
   }
@@ -359,11 +360,11 @@ export function getPageRegex(): RegExp {
 
   const pageRegex = new RegExp(
     `^(?:` +
-      `(?:${pagePrefix}${pageNumber})|` +
-      `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
-      `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
-      `(?:${before}${pageNumber}${after})` +
-      `)$`,
+    `(?:${pagePrefix}${pageNumber})|` +
+    `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
+    `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
+    `(?:${before}${pageNumber}${after})` +
+    `)$`,
     'i',
   );
 
@@ -654,18 +655,6 @@ export function groupConsecutiveNumbersInArray(theArray: number[]): number[][] {
   return result;
 }
 
-export function parseXmlToObject(xml: string, options: OptionsV2 = null): Promise<object> {
-  const promise = new Promise<object>((resolveObject, rejectObject) => {
-    parseString(xml, options, (error, dataObject) => {
-      if (error) {
-        rejectObject(error);
-      }
-      resolveObject(dataObject);
-    });
-  });
-  return promise;
-}
-
 export function getEmphazisChars(text: string): string {
   const boldRegexp = new RegExp(/^\*\*.+\*\*$/);
   const italicRegexp = new RegExp(/^\*.+\*$/);
@@ -683,9 +672,29 @@ export function getEmphazisChars(text: string): string {
 }
 
 /**
+ * Returns the ocr extractor depending on the extractor selected in the configuration.
+ *
+ * @returns The OcrExtractor instance
+ */
+export function getOcrExtractor(config: Config): OcrExtractor {
+  switch (config.extractor.ocr) {
+    case 'tesseract':
+      return new TesseractExtractor(config);
+    case 'google-vision':
+      return new GoogleVisionExtractor(config);
+    case 'ms-cognitive-services':
+      return new MicrosoftCognitiveExtractor(config);
+    case 'amazon-textract':
+      return new AmazonTextractExtractor(config);
+    default:
+      return new AbbyyTools(config);
+  }
+}
+
+/**
  * Returns the pdf extraction orchestrator depending on the extractor selection made in the configuration.
  *
- * @returns The Orchestrator instance
+ * @returns The Extractor instance
  */
 export function getPdfExtractor(config: Config): Extractor {
   switch (config.extractor.pdf) {
@@ -698,34 +707,6 @@ export function getPdfExtractor(config: Config): Extractor {
     default:
       return new PdfminerExtractor(config);
   }
-}
-/*
-  merges multiple PDF files into a single one and writes it in the output path
-*/
-export function mergePDFs(files: string[], output: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    if (!CommandExecuter.isCommandAvailable('gs')) {
-      reject({
-        found: false,
-        error: `GhostScript was not found on the system. Are you sure it is installed and added to PATH?`,
-      });
-    } else {
-      /*
-        the `spawn` of CommandExecuter does not work in this case, it gets stuck in GS CLI
-        TODO: Make this command work with CommandExecuter.
-      */
-      exec(
-        `gs -DNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=${output} -dBATCH ${files.join(' ')}`,
-        (err, stdout, stderr) => {
-          if (err) {
-            reject(stderr);
-          } else {
-            resolve(stdout);
-          }
-        },
-      );
-    }
-  });
 }
 
 export async function convertHTMLToPDF(html: string, outputFile?: string): Promise<string> {
@@ -773,4 +754,23 @@ function embedImagesInHTML(html: string): string {
     html = html.replace(imagePath, `data:image/${extension};base64,${base64}`);
   }
   return html;
+}
+
+export function sanitizeXML(xmlPath: string): Promise<string> {
+  const startTime: number = Date.now();
+  return new Promise<any>((resolve, _reject) => {
+    try {
+      // repplace with empty char everything forbidden by XML 1.0 specifications,
+      // plus the unicode replacement character U+FFFD
+      const regex = /((?:[\0-\x08\x0B\f\x0E-\x1F\uFFFD\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]|(?:&#\d*;)))/g;
+      const xml: string = fs.readFileSync(xmlPath, 'utf-8');
+      const outputFilePath = getTemporaryFile('.xml');
+      fs.writeFileSync(outputFilePath, xml.replace(new RegExp(regex), ' '));
+      logger.info(`Sanitize XML: ${(Date.now() - startTime) / 1000}s`);
+      resolve(outputFilePath);
+    } catch (error) {
+      logger.warn(`Error sanitizing XML ${error}`);
+      resolve(xmlPath);
+    }
+  });
 }

@@ -8,16 +8,17 @@
 
 [Français](README_fr.md) | [中文](README_zh-cn.md)
 
-**Parsr**, is a minimal-footprint document (image, pdf) cleaning, parsing and extraction toolchain which generates readily available, organized and usable data for data scientists and developers.
+**Parsr**, is a minimal-footprint document (image, pdf, docx, eml) cleaning, parsing and extraction toolchain which generates readily available, organized and usable data for data scientists and developers.
 
 It provides users with clean structured and label-enriched information set for ready-to-use applications ranging from data entry and document analysis automation, archival, and many others.
 
 Currently, Parsr can perform:
 
-- Document Hierarchy Regeneration - Words, Lines and Paragraphs
+- Document Hierarchy Regeneration - Words, Lines, Paragraphs
 - Headings Detection
 - Table Detection and Reconstruction
 - Lists Detection
+- Table of Contents Detection
 - Text Order Detection
 - Named Entity Recognition (Dates, Percentages, etc)
 - Key-Value Pair Detection (for the extraction of specific form-based entries)
@@ -26,7 +27,7 @@ Currently, Parsr can perform:
 - Link Detection
 - Whitespace Removal
 
-Parsr takes as input an image (.JPG, .PNG, .TIFF, ...) or a PDF generates the following output formats:
+Parsr takes as input an image (.JPG, .PNG, .TIFF, ...), email (.EML), Word (.DOCX) or a PDF file and generates the following output formats:
 
 - JSON
 - Markdown
@@ -35,6 +36,7 @@ Parsr takes as input an image (.JPG, .PNG, .TIFF, ...) or a PDF generates the fo
 - PDF
 
 ## Table of Contents
+
 - [Turn your documents into data!](#turn-your-documents-into-data)
   - [Table of Contents](#table-of-contents)
   - [Getting Started](#getting-started)
@@ -49,7 +51,7 @@ Parsr takes as input an image (.JPG, .PNG, .TIFF, ...) or a PDF generates the fo
 
 ### Installation
 
-*-- The advanced installation guide is available [here](docs/installation.md) --*
+_-- The advanced installation guide is available [here](docs/installation.md) --_
 
 The quickest way to install and run the Parsr API is through the [docker image](https://hub.docker.com/r/axarev/parsr):
 
@@ -58,6 +60,7 @@ docker pull axarev/parsr
 ```
 
 If you also wish to install the GUI for sending documents and visualising results:
+
 ```sh
 docker pull axarev/parsr-ui-localhost
 ```
@@ -66,22 +69,23 @@ Note: Parsr can also be installed bare-metal (not via Docker containers), the pr
 
 ### Usage
 
-*-- The advanced usage guide is available [here](docs/usage.md) --*
+_-- The advanced usage guide is available [here](docs/usage.md) --_
 
 To run the [API](docs/api-guide.md), issue:
+
 ```sh
 docker run -p 3001:3001 axarev/parsr
 ```
+
 which will launch it on [http://localhost:3001](http://localhost:3001).  
 Consult the documentation on the [usage of the API](docs/api-guide.md).
 
 1. To use the **Jupyter Notebook** and the **python** interface to the Parsr API, [follow here](demo/jupyter-notebook).
 2. To use the GUI tool (the API needs to already be running), issue:
-    ```sh
-    docker run -t -p 8080:80 axarev/parsr-ui-localhost:latest
-    ```
-    Then, access it through [http://localhost:8080](http://localhost:8080).
-
+   ```sh
+   docker run -t -p 8080:80 axarev/parsr-ui-localhost:latest
+   ```
+   Then, access it through [http://localhost:8080](http://localhost:8080).
 
 Refer to the [Configuration documentation](docs/configuration.md) to interpret the configurable options in the GUI viewer.
 
@@ -110,5 +114,5 @@ Third Party Libraries licenses for its [dependencies](docs/dependencies.md):
 
 ## License
 
-Copyright 2019 AXA Group Operations S.A.  
+Copyright 2020 AXA Group Operations S.A.  
 Licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license (see the [LICENSE](LICENSE) file).

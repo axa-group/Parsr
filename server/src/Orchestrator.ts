@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ export class Orchestrator {
     return this.extractor.run(filename).then((doc: Document) => {
       if (this.cleaner) {
         logger.info('Running cleaner...');
-        return this.cleaner.run(doc);
+        return this.cleaner.run(doc, this.extractor.config);
       } else {
         logger.info(`Skipping cleaning process for ${this.extractor.constructor.name}.`);
         return doc;

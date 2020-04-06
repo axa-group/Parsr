@@ -16,10 +16,11 @@
 
 import { readFileSync, writeFileSync } from 'fs';
 import { simpleParser } from 'mailparser';
+import * as mergePDFs from 'pdfmerge';
 import { Document } from '../../types/DocumentRepresentation';
 import * as CommandExecuter from '../../utils/CommandExecuter';
 import { Extractor } from '../Extractor';
-import { convertHTMLToPDF, getPdfExtractor, getTemporaryFile, mergePDFs } from './../../utils';
+import { convertHTMLToPDF, getPdfExtractor, getTemporaryFile } from './../../utils';
 
 interface MailAttachmentData {
   type: string;
@@ -69,7 +70,7 @@ export class EmailExtractor extends Extractor {
         ...(raw.attachments || []).map(this.attachmentToPDF.bind(this)(raw.html)),
       ].filter(f => !!f);
 
-      const files = await Promise.all(pdfFilesToJoin);
+      const files = (await Promise.all(pdfFilesToJoin)).filter(f => !!f);
       const fullPDF = inputFile.replace('.eml', '-tmp.pdf');
       await mergePDFs(files, fullPDF);
       return fullPDF;

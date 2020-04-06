@@ -121,9 +121,9 @@ export class Cleaner {
    * @remarks Goes through all the modules one by one and executes them, noting
    * the execution time for each one, then logging it.
    */
-  public run(document: Document): Promise<Document> {
+  public run(document: Document, config: Config): Promise<Document> {
     const startTime: number = Date.now();
-    return this.runNextModule(document, 0).then(newDocument => {
+    return this.runNextModule(document, 0, config).then(newDocument => {
       const endTime: number = (Date.now() - startTime) / 1000;
       logger.info(`Total elapsed time: ${endTime}s`);
       return newDocument;
@@ -181,7 +181,7 @@ export class Cleaner {
    * @remarks Sets up the cleaner module with the configuration passed, along with checking of the dependencies.
    */
 
-  private runNextModule(document: Document, i: number): Promise<Document> {
+  private runNextModule(document: Document, i: number, config: Config): Promise<Document> {
     if (i < this.modules.length) {
       logger.info(
         `Running module: ${this.modules[i].constructor.name}, Options: ${JSON.stringify(
@@ -190,10 +190,10 @@ export class Cleaner {
       );
 
       const startTime: number = Date.now();
-      return this.modules[i].run(document).then((doc: Document) => {
+      return this.modules[i].run(document, config).then((doc: Document) => {
         const endTime: number = (Date.now() - startTime) / 1000;
         logger.info(`  Elapsed time: ${endTime}s`);
-        return this.runNextModule(doc, i + 1);
+        return this.runNextModule(doc, i + 1, config);
       });
     } else {
       return Promise.resolve(document);

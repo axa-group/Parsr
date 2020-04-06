@@ -139,8 +139,8 @@
     </form>
 
     <v-overlay :absolute="false" opacity="0.5" :value="shouldDisplayOverlay" :dark="false">
-      <div class="processTracker">
-        <p v-for="status in processStatus" :key="status">
+      <div class="processTracker" ref="processTracker">
+        <p v-for="(status, i) in processStatus" :key="`${status}${i}`">
           <span v-html="status" />
           <img :src="checkIcon" />
         </p>
@@ -253,6 +253,13 @@ export default {
     this.customConfig = { ...this.defaultConfig };
   },
   watch: {
+    'processStatus.length': {
+      handler() {
+        this.$nextTick(() => {
+          this.$refs.processTracker.scrollTop = this.$refs.processTracker.scrollHeight;
+        });
+      },
+    },
     loadingConfig(newVal, oldVal) {
       if (oldVal && !newVal) {
         //finished loading
@@ -438,6 +445,9 @@ label span {
   max-width: 50%;
   margin: 0 auto;
   padding: 10px 0px;
+  overflow: scroll;
+  max-height: 90vh;
+  word-break: break-all;
 }
 .processTracker p {
   margin: 0;

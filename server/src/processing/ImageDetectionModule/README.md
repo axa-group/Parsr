@@ -12,6 +12,10 @@ It matches every image detected by PdfMiner to the correct image file and append
 
 MuPDF: `mutool extract` is used to extract all image files from a PDF.
 
+## Parameters
+
+`ocrImages`: Allows to extract data from detected images using selected OCR. When `true`, all detected images will be replaced with data extracted by OCR.
+
 ## How it works
 
 1. It uses the name of every image (figure name) detected by PdfMiner and tries to match with a single image identifier extracted by 'dumppdf'.

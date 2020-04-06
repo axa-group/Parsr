@@ -59,6 +59,16 @@ curl -X POST \
   -F 'config=@/path/to/config.json;type=application/json'
 ```
 
+**Windows tip:** Use double quotes `"` instead of single quote `'`
+
+```sh
+curl -X POST \
+  http://localhost:3001/api/v1/document \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@/path/to/file.pdf;type=application/pdf" \
+  -F "config=@/path/to/config.json;type=application/json"
+```
+
 ### Status: 202 - Accepted
 
 ```
@@ -221,6 +231,7 @@ This error means that the result file doesn't exist. Maybe `{page}` and `{table}
 ### 3.4. Download Results
 
 You can download any of the available output formats:
+
 - JSON: `GET /json/{id}?download=1`
 - Markdown: `GET /markdown/{id}?download=1`
 - Raw text: `GET /text/{id}?download=1`

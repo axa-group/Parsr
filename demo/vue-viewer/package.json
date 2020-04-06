@@ -8,33 +8,32 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.19.2",
     "core-js": "^2.6.5",
-    "sass": "^1.23.1",
+    "sass": "^1.26.3",
     "sass-loader": "^7.1.0",
-    "vue": "^2.6.10",
+    "vue": "^2.6.11",
     "vue-markdown": "^2.2.4",
     "vue-observe-visibility": "^0.4.6",
-    "vue-router": "^3.0.3",
-    "vuetify": "^2.0.5",
-    "vuex": "^3.0.1"
+    "vue-router": "^3.1.6",
+    "vuetify": "^2.2.17",
+    "vuex": "^3.1.3"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.10.2",
-    "@mdi/font": "^4.3.95",
-    "@mdi/js": "^4.3.95",
-    "@vue/cli-plugin-babel": "^4.1.1",
-    "@vue/cli-plugin-eslint": "^4.1.1",
-    "@vue/cli-service": "^4.1.1",
+    "@fortawesome/fontawesome-free": "^5.12.1",
+    "@mdi/font": "^4.9.95",
+    "@mdi/js": "^4.9.95",
+    "@vue/cli-plugin-eslint": "^4.2.3",
+    "@vue/cli-service": "^4.2.3",
     "@vue/eslint-config-prettier": "^4.0.1",
     "babel-core": "^6.0.0",
-    "babel-eslint": "^10.0.1",
+    "babel-eslint": "^10.1.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "material-design-icons-iconfont": "^5.0.1",
-    "serialize-javascript": ">=2.1.1",
+    "serialize-javascript": "^3.0.0",
     "vue-cli-plugin-vuetify": "^0.6.3",
-    "vue-template-compiler": "^2.6.10",
+    "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.2.2"
   }
 }

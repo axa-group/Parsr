@@ -154,6 +154,10 @@ export function xmlParser(xmlPath: string): Promise<any> {
       logger.info(`Xml to Js: ${(Date.now() - startTime) / 1000}s`);
       resolve({ pages: { page: allPages } });
     });
+
+    xml.on('error', message => {
+      logger.info(`XML Parsing error: ${message}`);
+    });
   });
 }
 
@@ -189,7 +193,10 @@ function getPage(pageObj: PdfminerPage): Page {
   if (pageObj.textbox !== undefined) {
     pageObj.textbox.forEach(para => {
       para.textline.map(line => {
-        elements = [...elements, ...breakLineIntoWords(line.text, ',', pageBBox.height, 1, para._attr.wmode)];
+        elements = [
+          ...elements,
+          ...breakLineIntoWords(line.text, ',', pageBBox.height, 1, para._attr.wmode),
+        ];
       });
     });
   }
@@ -201,7 +208,10 @@ function getPage(pageObj: PdfminerPage): Page {
         elements = [...elements, ...interpretImages(fig, pageBBox.height)];
       }
       if (hasTexts(fig)) {
-        elements = [...elements, ...breakLineIntoWords(fig.text, ',', pageBBox.height)];
+        elements = [
+          ...elements,
+          ...breakLineIntoWords(allTextsInFigure(fig), ',', pageBBox.height),
+        ];
       }
     });
   }
@@ -283,6 +293,17 @@ function getMostCommonFont(theFonts: Font[]): Font {
  */
 function getValidCharacter(character: string): string {
   return RegExp(/\(cid:/gm).test(character) ? '?' : character;
+}
+
+function allTextsInFigure(figure: PdfminerFigure): PdfminerText[] {
+  if (figure.figure) {
+    return figure.figure.map(allTextsInFigure).reduce((a, b) => a.concat(b));
+  }
+
+  if (figure.text) {
+    return figure.text;
+  }
+  return [];
 }
 
 function interpretImages(
@@ -416,11 +437,12 @@ function breakLineIntoWords(
     }
   }
 
-  return wMode ?
-    words.map(w => {
-      w.properties.writeMode = wMode;
-      return w;
-    }) : words;
+  return wMode
+    ? words.map(w => {
+        w.properties.writeMode = wMode;
+        return w;
+      })
+    : words;
 }
 
 function thereAreFakeSpaces(texts: PdfminerText[]): boolean {

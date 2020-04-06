@@ -39,11 +39,11 @@ import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import { SvgShape } from '../../types/DocumentRepresentation/SvgShape';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
-import { Extractor } from '../Extractor';
+import { OcrExtractorFactory } from '../OcrExtractor';
 import { AbbyyClient } from './AbbyyClient';
 import * as credentials from './credentials.json';
 
-export class AbbyyTools extends Extractor {
+export class AbbyyTools extends OcrExtractorFactory {
   /**
    * Getter fonts
    * @return {Font[] }
@@ -63,11 +63,7 @@ export class AbbyyTools extends Extractor {
 
   constructor(config: Config) {
     super(config, credentials);
-    this.checkCredentials([
-      'ABBYY_SERVER_URL',
-      'ABBYY_SERVER_VER',
-      'ABBYY_WORKFLOW',
-    ]);
+    this.checkCredentials(['ABBYY_SERVER_URL', 'ABBYY_SERVER_VER', 'ABBYY_WORKFLOW']);
 
     this.checkCredentialAsURL('ABBYY_SERVER_URL');
   }
@@ -84,7 +80,7 @@ export class AbbyyTools extends Extractor {
     return promise;
   }
 
-  public run(inputFile: string): Promise<Document> {
+  public scanImage(inputFile: string): Promise<Document> {
     const host: string = this.config.extractor.credentials.ABBYY_SERVER_URL;
     const serverVersion: string = this.config.extractor.credentials.ABBYY_SERVER_VER;
     const workflowName: string = this.config.extractor.credentials.ABBYY_WORKFLOW;
