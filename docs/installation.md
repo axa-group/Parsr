@@ -54,7 +54,7 @@ pip install pdfminer.six
 Under **Arch** Linux :
 
 ```sh
-pacman -S nodejs npm qpdf imagemagick pdfminer tesseract python-pip
+pacman -S nodejs npm qpdf imagemagick python-pdfminer tesseract python-pip
 pip install camelot-py[cv] numpy pillow scikit-image PyPDF2
 ```
 
