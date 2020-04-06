@@ -7,5 +7,6 @@ brew install qpdf imagemagick tesseract tesseract-lang tcl-tk ghostscript mupdf-
 brew upgrade python &&
 curl https://bootstrap.pypa.io/get-pip.py -o $tmp_dir/get-pip.py &&
 python3 $tmp_dir/get-pip.py &&
-pip install pdfminer.six camelot-py[cv] PyPDF2 &&
+pip3 install pdfminer.six camelot-py[cv] &&
+python2.7 -m pip install PyPDF2 &&
 rm -rf $tmp_dir
