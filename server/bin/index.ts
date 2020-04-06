@@ -26,6 +26,7 @@ import { JsonExtractor } from '../src/input/json/JsonExtractor';
 import { Orchestrator } from '../src/Orchestrator';
 import { CsvExporter } from '../src/output/csv/CsvExporter';
 import { JsonExporter } from '../src/output/json/JsonExporter';
+import { SimpleJsonExporter } from '../src/output/simpleJson/SimpleJsonExporter';
 import { MarkdownExporter } from '../src/output/markdown/MarkdownExporter';
 import { PdfExporter } from '../src/output/pdf/PdfExporter';
 import { TextExporter } from '../src/output/text/TextExporter';
@@ -139,6 +140,15 @@ function main(): void {
             ),
           );
         }
+        if (config.output.formats.simpleJson) {
+          promises.push(
+            new SimpleJsonExporter(doc, false).export(
+              `${outputFolder}/${omitFilenameExtension(documentName)}.simple.json`,
+            ),
+          );
+        }
+
+
 
         // if (config.output.formats['json-compact']) {
         // 	promises.push(

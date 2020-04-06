@@ -323,6 +323,22 @@ export class Table extends Element {
     return this.exportAsMD();
   }
 
+  public toSimpleJSON(): any {
+    const tableArray = this.toArray();
+    const output: any = [];
+    tableArray.forEach((row) => {
+      const r = [];
+      row.forEach(cellMDCode => {
+        r.push(cellMDCode);
+      });
+      output.push(r);
+    });
+    return {
+      type : 'table',
+      content : output,
+    };
+  }
+
   public exportAsHtml(): string {
     let output: string = '<table>  \n';
     this.content.forEach(row => {

@@ -57,6 +57,14 @@ export class TableOfContents extends Element {
   public toMarkdown() {
     return this.items.map(c => c.toMarkdown()).join('  \n');
   }
+
+  public toSimpleJSON(): any {
+    return {
+      type : 'tableOfContent',
+      content : this.items.map(c => c.toString()),
+    };
+  }
+
   public toString() {
     return this.items.map(c => c.toString()).join('\n');
   }
