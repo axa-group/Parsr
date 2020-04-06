@@ -73,19 +73,26 @@ Next, install the required dependencies:
 brew install node qpdf imagemagick tesseract tesseract-lang tcl-tk ghostscript
 ```
 
+Next, upgrade python:
+
+```sh
+brew upgrade python
+```
+
 To install the python based dependencies (pdfminer and camelot), install, first install `pip`:
 
 ```sh
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python get-pip.py
+python3 get-pip.py
 ```
 
 and then the dependencies:
 
 ```sh
-pip install pdfminer.six
-pip install camelot-py[cv]
-pip install numpy pillow scikit-image PyPDF2
+pip3 install pdfminer.six
+pip3 install camelot-py[cv]
+pip3 install numpy pillow scikit-image
+python2.7 -m pip install PyPDF2
 ```
 
 ### 3.3. Installing Dependencies under Windows
