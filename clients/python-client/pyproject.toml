@@ -1,8 +1,11 @@
 [tool.poetry]
 name = "parsr-client"
-version = "0.1.0"
+version = "1.1.0"
 description = "Python client for Parsr - Transforms PDF, Documents and Images into Enriched Structured Data"
 authors = ["AXA Group Operations S.A."]
+readme = 'README.rst'
+homepage = 'http://par.sr'
+repository = 'https://github.com/axa-group/Parsr/tree/master/clients/python-client'
 
 [tool.poetry.dependencies]
 python = "^3.8"
