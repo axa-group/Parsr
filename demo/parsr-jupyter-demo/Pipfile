@@ -6,7 +6,7 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-parsr-client = "*"
+parsr-client = ">=1.1.1*"
 jupyterlab = "*"
 ipython = "==7.9.0"
 Pygments = "==2.4.2"
