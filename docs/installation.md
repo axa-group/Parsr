@@ -1,16 +1,16 @@
 # Parsr Installation Guide
 
 - [Parsr Installation Guide](#parsr-installation-guide)
-  - [1. Docker Installation](#1-docker-installation)
-  - [2. Automatic Installation](#2-automatic-installation)
-  - [3. Bare-Metal Installation](#3-bare-metal-installation)
-    - [3.1. Installing Dependencies under Linux](#31-installing-dependencies-under-linux)
-    - [3.2. Installing Dependencies under MacOS](#32-installing-dependencies-under-macos)
-    - [3.3. Installing Dependencies under Windows](#33-installing-dependencies-under-windows)
-  - [4. Optional Dependencies](#4-optional-dependencies)
-    - [4.1. MuPDF](#41-mupdf)
-    - [4.2. Pandoc](#42-pandoc)
-    - [4.3. ABBYY FineReader](#43-abbyy-finereader)
+	- [1. Docker Installation](#1-docker-installation)
+	- [2. Automatic Installation](#2-automatic-installation)
+	- [3. Bare-Metal Installation](#3-bare-metal-installation)
+		- [3.1. Installing Dependencies under Linux](#31-installing-dependencies-under-linux)
+		- [3.2. Installing Dependencies under MacOS](#32-installing-dependencies-under-macos)
+		- [3.3. Installing Dependencies under Windows](#33-installing-dependencies-under-windows)
+	- [4. Optional Dependencies](#4-optional-dependencies)
+		- [4.1. MuPDF](#41-mupdf)
+		- [4.2. Pandoc](#42-pandoc)
+		- [4.3. ABBYY FineReader](#43-abbyy-finereader)
 
 This document will guide you through the installation process.
 
@@ -55,8 +55,10 @@ Under **Arch** Linux :
 
 ```sh
 pacman -S nodejs npm qpdf imagemagick pdfminer tesseract python-pip
-pip install camelot-py[cv] pdfminer.six numpy pillow scikit-image PyPDF2
+pip install camelot-py[cv] numpy pillow scikit-image PyPDF2
 ```
+
+Note: if camelot-py[cv] generates an error in console, you might want to try replacing it with camelot-py\[cv\].
 
 ### 3.2. Installing Dependencies under MacOS
 
