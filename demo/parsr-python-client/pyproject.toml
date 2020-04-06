@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "parsr-client"
+version = "0.1.0"
+description = "Python client for Parsr - Transforms PDF, Documents and Images into Enriched Structured Data"
+authors = ["AXA Group Operations S.A."]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+requests = "^2.23.0"
+pandas = "^1.0.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

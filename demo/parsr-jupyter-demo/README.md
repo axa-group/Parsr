@@ -1,6 +1,6 @@
 # Parsr - Jupyter Notebook
 
-This folder includes a [jupyter notebook](./parsr-jupyter-notebook.ipynb), which shows how a user can access the API using a python interface, showing the following functions:
+This folder includes a [jupyter notebook](./notebook.ipynb), which shows how a user can access the API using a python interface, showing the following functions:
 
 1. Connecting to the Parsr API.
 2. Sending a document (or a folder) to the Parsr API.
@@ -10,7 +10,7 @@ This folder includes a [jupyter notebook](./parsr-jupyter-notebook.ipynb), which
 
 ## Installation
 
-Install [pipenv](https://pipenv.readthedocs.io/en/latest/install/#installing-pipenv), then issue the following inside this folder (`demo/jupyter-notebook`):
+Install [pipenv](https://pipenv.readthedocs.io/en/latest/install/#installing-pipenv), then issue the following inside this folder (`demo/parsr-jupyter-demo`):
 
 ```sh
 pipenv install
@@ -21,5 +21,5 @@ pipenv install
 To start the jupyter notebook, issue:
 
 ```sh
-pipenv run jupyter lab parsr-jupyter-notebook.ipynb
+pipenv run jupyter lab notebook.ipynb
 ```
