@@ -20,11 +20,12 @@
       }
     ],
     [
-      "table-detection-2",
+      "table-detection",
       {
         "runConfig": [
           {
-            "pages": []
+            "pages": [],
+            "flavor": "lattice"
           }
         ]
       }
@@ -60,6 +61,8 @@
         "tolerance": 0.25
       }
     ],
+    "heading-detection",
+    "heading-detection-dt",
     "ml-heading-detection",
     "list-detection",
     "page-number-detection",
