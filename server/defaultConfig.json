@@ -26,22 +26,22 @@
       }
     ],
     [
-      "table-detection-2",
-      {
-        "runConfig": [
-          {
-            "pages": []
-          }
-        ]
-      }
-    ],
-    [
       "table-detection",
       {
         "runConfig": [
           {
             "pages": [],
             "flavor": "lattice"
+          }
+        ]
+      }
+    ],
+    [
+      "table-detection-2",
+      {
+        "runConfig": [
+          {
+            "pages": []
           }
         ]
       }
