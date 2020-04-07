@@ -13,39 +13,19 @@ export var DecisionTreeClassifier = function() {
             
         if (features[1] <= 0.5) {
             if (features[0] <= 0.5) {
-                if (features[2] <= 0.5) {
-                    classes[0] = 2866; 
-                    classes[1] = 116; 
-                } else {
-                    classes[0] = 10696; 
-                    classes[1] = 1290; 
-                }
+                classes[0] = 21561; 
+                classes[1] = 1889; 
             } else {
-                if (features[2] <= 0.5) {
-                    classes[0] = 5; 
-                    classes[1] = 0; 
-                } else {
-                    classes[0] = 334; 
-                    classes[1] = 2953; 
-                }
+                classes[0] = 430; 
+                classes[1] = 6425; 
             }
         } else {
-            if (features[2] <= 0.5) {
-                if (features[0] <= 0.5) {
-                    classes[0] = 126; 
-                    classes[1] = 76; 
-                } else {
-                    classes[0] = 14; 
-                    classes[1] = 68; 
-                }
+            if (features[0] <= 0.5) {
+                classes[0] = 311; 
+                classes[1] = 7635; 
             } else {
-                if (features[0] <= 0.5) {
-                    classes[0] = 243; 
-                    classes[1] = 5004; 
-                } else {
-                    classes[0] = 105; 
-                    classes[1] = 4882; 
-                }
+                classes[0] = 133; 
+                classes[1] = 6486; 
             }
         }
     
@@ -55,7 +35,7 @@ export var DecisionTreeClassifier = function() {
 };
 
 if (typeof process !== 'undefined' && typeof process.argv !== 'undefined') {
-    if (process.argv.length - 2 === 3) {
+    if (process.argv.length - 2 === 2) {
 
         // Features:
         var features = process.argv.slice(2);
