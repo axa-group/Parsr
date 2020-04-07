@@ -147,11 +147,17 @@ export class MLHeadingDetectionModule extends Module {
                 paragraphLines.push(newLines);
               }
             });
-
-            headingIdx.forEach((x: number) => {
-              headingLines.push(Array(linesInParagraph[x]));
+            this.groupHeadingsByFont(headingIdx, linesInParagraph).forEach(headingGroup => {
+              utils.groupConsecutiveNumbersInArray(headingGroup).forEach((group: number[]) => {
+                const newHeadings: Line[] = [];
+                group.forEach((id: number) => {
+                  newHeadings.push(linesInParagraph[id]);
+                });
+                if (newHeadings.length > 0) {
+                  headingLines.push(newHeadings);
+                }
+              });
             });
-
           } else {
             paragraphLines.push(linesInParagraph);
           }
@@ -213,6 +219,27 @@ export class MLHeadingDetectionModule extends Module {
   //     }
   //   }).reduce((acc, curr) => acc && curr);
   // }
+
+  private groupHeadingsByFont(headingIndexes: number[], lines: Line[]): number[][] {
+    // Skip join heading lines if they doesn't have same font
+    const fontGroupedHeadings: number[][] = [];
+    let joinedHeadings: number[] = [];
+    headingIndexes.forEach((pos, index) => {
+      const currentHeadingLineFont = lines[pos].getMainFont();
+      const prevHeadingLineFont = index > 0 ? lines[index - 1].getMainFont() : null;
+      if (!prevHeadingLineFont || currentHeadingLineFont.isEqual(prevHeadingLineFont)) {
+        joinedHeadings.push(pos);
+      } else {
+        fontGroupedHeadings.push(joinedHeadings);
+        joinedHeadings = [pos];
+      }
+    });
+    if (joinedHeadings.length > 0) {
+      fontGroupedHeadings.push(joinedHeadings);
+    }
+
+    return fontGroupedHeadings;
+  }
 
   private mergeLinesIntoParagraphs(joinedLines: Line[][]): Paragraph[] {
     return joinedLines.map((group: Line[]) => {
