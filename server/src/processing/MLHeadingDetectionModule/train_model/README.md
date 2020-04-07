@@ -1,3 +1,11 @@
+## Required dependencies
+`python3 -m pip install spacy`
+`python3 -m pip install markdown`
+`python3 -m pip install imblearn`
+`python3 -m pip install sklearn_porter`
+`python3 -m pip install scikit-learn==0.22.2`
+`python3 -m spacy download en_core_web_sm`
+
 ## Building the Dataset
 
 To build the dataset used to train the model run `python3 build_dataset.py <markdown folder> <json folder> <output folder>`.
