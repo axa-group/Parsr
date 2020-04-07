@@ -26,6 +26,16 @@
       }
     ],
     [
+      "table-detection-2",
+      {
+        "runConfig": [
+          {
+            "pages": []
+          }
+        ]
+      }
+    ],
+    [
       "table-detection",
       {
         "runConfig": [
@@ -72,8 +82,8 @@
         "pageKeywords": ["pagina", "page", "pag"]
       }
     ],
-    "heading-detection",
     "ml-heading-detection",
+    "heading-detection",
     "list-detection",
     "page-number-detection",
     "hierarchy-detection",
