@@ -54,6 +54,7 @@ export interface OutputConfig {
   includeMarginals: boolean;
   formats: {
     json?: boolean;
+    simpleJson?: boolean;
     // 'json-compact'?: boolean;
     text?: boolean;
     markdown?: boolean;

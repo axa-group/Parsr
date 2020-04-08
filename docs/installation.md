@@ -56,9 +56,11 @@ pip install pdfminer.six
 Under **Arch** Linux :
 
 ```sh
-pacman -S nodejs npm qpdf imagemagick pdfminer tesseract python-pip
-pip install camelot-py[cv] pdfminer.six numpy pillow scikit-image PyPDF2
+pacman -S nodejs npm qpdf imagemagick python-pdfminer tesseract python-pip
+pip install camelot-py[cv] numpy pillow scikit-image PyPDF2
 ```
+
+Note: if camelot-py[cv] generates an error in console, you might want to try replacing it with camelot-py\[cv\].
 
 ### 3.2. Installing Dependencies under MacOS
 

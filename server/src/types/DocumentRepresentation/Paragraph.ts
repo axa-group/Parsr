@@ -70,6 +70,13 @@ export class Paragraph extends Text {
     return this.export('md');
   }
 
+  public toSimpleJSON(): any {
+    return {
+      type : 'paragraph',
+      content : this.export('simple'),
+    };
+  }
+
   /**
    * Converts the entire element into a html code string (needed by MD table generation).
    */
@@ -369,6 +376,19 @@ export class Paragraph extends Text {
       .trim();
   }
 
+  public lineToSimple(line: Line) {
+    const words: Word[] = line.content;
+    // prepare the result
+    const result: string[] = words.map(w => w.toMarkDown());
+
+    return result
+      .filter(w => !!w)
+      .map(w => w.trim())
+      .join(' ')
+      .replace(/^([\d]+)([.)] )/gm, '$1\\$2') // escape dots and closing parentheses only for ordered list bullets
+      .replace(/^([+-] )/gm, '\\$1'); // escape dashes and plus signs only for unordered list bullets
+  }
+
   public getLinesInfo(): LineInfo[] {
     return this.content.map((l, index) => {
       return {
@@ -478,13 +498,15 @@ export class Paragraph extends Text {
       let lineOutput = this.lineToMarkDown(line.line);
       if (format === 'html') {
         lineOutput = this.lineToHTML(line.line);
+      } else if (format === 'simple') {
+        lineOutput = this.lineToSimple(line.line);
       }
       const mergedStyles = { paragraphOutput: output, lineOutput };
       this.mergeStyleLines(prevLine, line, mergedStyles, format);
       output = mergedStyles.paragraphOutput;
       output += mergedStyles.lineOutput;
       if (line.lineBreak) {
-        output += format === 'md' ? '  \n' : '<br/>';
+        output += format === 'md' || 'simple' ? '  \n' : '<br/>';
       } else if (index + 1 < lines.length) {
         output += ' ';
       }
