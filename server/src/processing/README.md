@@ -1,12 +1,12 @@
 # Processing Modules
 
 - [Processing Modules](#processing-modules)
-  - [1. Current Processing Modules](#1-current-processing-modules)
-  - [2. Create your own Processing Module](#2-create-your-own-processing-module)
-    - [2.1. Create a New Typescript Module](#21-create-a-new-typescript-module)
-    - [2.2. Add to Register](#22-add-to-register)
-    - [2.3. Add it to the Configuration](#23-add-it-to-the-configuration)
-    - [2.4. Run it!](#24-run-it)
+	- [1. Current Processing Modules](#1-current-processing-modules)
+	- [2. Create your own Processing Module](#2-create-your-own-processing-module)
+		- [2.1. Creating and Naming your Typescript Module](#21-creating-and-naming-your-typescript-module)
+		- [2.2. Add to Register](#22-add-to-register)
+		- [2.3. Add it to the Configuration](#23-add-it-to-the-configuration)
+		- [2.4. Run it!](#24-run-it)
 
 The processing modules in Parsr perform a central role of cleaning and enriching the extracted raw output.
 Each module performs a particular operation on a document representation, generates a new valid Document, and then passes it on to the next module for the next treatment.
@@ -35,16 +35,18 @@ Each module contains a set of configurable parameters, which can be consulted in
 
 Creating a custom module can be very useful to add some treatment on the document.
 
-You have two way to do it:
+You have two ways to do it:
 
 1. Use the [Remote Module](RemoteModule/README.md) that will send the JSON by HTTP and expect the modified JSON as an answer
 2. Create a Typescript Module and add it to the pipeline
 
-### 2.1. Create a New Typescript Module
+### 2.1. Creating and Naming your Typescript Module
 
-Create a new file in `/server/src/modules/` and name it accordingly.
+The [template module folder](TemplateModule) shows how a module tree needs to be structured.
+The folder name, the module's filename and the [class's name](https://github.com/axa-group/Parsr/blob/a92a254f7860bbfe51ec1f24171ef8d44c54ccac/server/src/processing/TemplateModule/TemplateModule.ts#L35) need to follow the [PascalCase naming convention](https://github.com/basarat/typescript-book/blob/master/docs/styleguide/styleguide.md#class).
 
-You can copy the [template module file](TemplateModule/README.md) to help you having a boilerplate. It also contains some handy comments.
+You can copy the entire folder to help you having a boilerplate.
+The template code also contains some handy comments to help you get started.
 
 ### 2.2. Add to Register
 
