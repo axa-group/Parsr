@@ -21,40 +21,49 @@ check_python3() {
     which python3
     if [[ $? != 0 ]] ; then
         while true; do
-            read -p "Python 3 is not installed. Do you want to install it via homebrew (y/n)? " yn
+            read -n1 -p "Python 3 is not installed. Do you want to install it via homebrew (y/n)? " yn
             case $yn in
-                [Yy]* ) brew install python; break;;
-                [Nn]* ) echo -e "${ERROR}Please install python3 and run the script again${NO_COLOR}"; exit 1;;
-                * ) echo "Please answer yes or no.";;
+                [Yy]* ) echo -e "\nInstalling..."; brew install python; break;;
+                [Nn]* ) echo -e "\n${ERROR}Please install python3 and run the script again${NO_COLOR}"; exit 1;;
+                * ) echo " Please answer yes or no.";;
             esac
         done
     fi
 }
 
-check_pip3() {
-    echo -e "\n${INFO}=> Checking pip3 installation...${NO_COLOR}"
+check_pip() {
+    echo -e "\n${INFO}=> Checking pip installation...${NO_COLOR}"
+
+    tmp=$(mktemp -d -t pip-install) 
+    curl https://bootstrap.pypa.io/get-pip.py -o $tmp/get-pip.py
+
+    which pip
+    if [[ $? != 0 ]] ; then
+        echo -e "Pip2 is not installed. Installing..."
+        python $tmp/get-pip.py
+    fi
+    
     which pip3
     if [[ $? != 0 ]] ; then
         echo -e "Pip 3 is not installed. Installing..."
-        tmp=$(mktemp -d -t pip-install) 
-        curl https://bootstrap.pypa.io/get-pip.py -o $tmp/get-pip.py
         python3 $tmp/get-pip.py
-        rm -rf $tmp
     fi
+
+    rm -rf $tmp
 }
 
-# Check that brew, python3 and pip3 are installed
+# Check that brew, python3 and pip are installed
 check_brew
 check_python3
-check_pip3
+check_pip
 
 # Install brew dependencies
 echo -e "\n${INFO}=> Installing dependencies via brew...${NO_COLOR}"
-brew install qpdf imagemagick tesseract tesseract-lang tcl-tk ghostscript pandoc
+brew install qpdf imagemagick tesseract tesseract-lang tcl-tk ghostscript mupdf-tools pandoc
 
 # Install python3 dependencies
 echo -e "\n${INFO}=> Installing python3 dependencies...${NO_COLOR}"
-pip3 install numpy pillow scikit-image
+pip3 install pillow
 pip3 install pdfminer.six
 pip3 install camelot-py[cv]
 
