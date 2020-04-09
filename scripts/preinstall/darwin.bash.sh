@@ -28,9 +28,6 @@ check_python3() {
                 * ) echo "Please answer yes or no.";;
             esac
         done
-    else
-        echo "Python 3 is installed. Updating..."
-        brew upgrade python
     fi
 }
 
@@ -39,7 +36,10 @@ check_pip3() {
     which pip3
     if [[ $? != 0 ]] ; then
         echo -e "Pip 3 is not installed. Installing..."
-        python3 get-pip.py    
+        tmp=$(mktemp -d -t pip-install) 
+        curl https://bootstrap.pypa.io/get-pip.py -o $tmp/get-pip.py
+        python3 $tmp/get-pip.py
+        rm -rf $tmp
     fi
 }
 
@@ -50,7 +50,7 @@ check_pip3
 
 # Install brew dependencies
 echo -e "\n${INFO}=> Installing dependencies via brew...${NO_COLOR}"
-brew install node qpdf imagemagick tesseract tesseract-lang tcl-tk ghostscript pandoc
+brew install qpdf imagemagick tesseract tesseract-lang tcl-tk ghostscript pandoc
 
 # Install python3 dependencies
 echo -e "\n${INFO}=> Installing python3 dependencies...${NO_COLOR}"
