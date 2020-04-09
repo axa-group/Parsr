@@ -11,6 +11,8 @@
     - [4.1. MuPDF](#41-mupdf)
     - [4.2. Pandoc](#42-pandoc)
     - [4.3. ABBYY FineReader](#43-abbyy-finereader)
+  - [5. Node.js Dependencies](#5-nodejs-dependencies) 
+  - [6. Checking Installation](#6-checking-installation) 
 
 This document will guide you through the installation process.
 
@@ -54,9 +56,11 @@ pip install pdfminer.six
 Under **Arch** Linux :
 
 ```sh
-pacman -S nodejs npm qpdf imagemagick pdfminer tesseract python-pip
-pip install camelot-py[cv] pdfminer.six numpy pillow scikit-image PyPDF2
+pacman -S nodejs npm qpdf imagemagick python-pdfminer tesseract python-pip
+pip install camelot-py[cv] numpy pillow scikit-image PyPDF2
 ```
+
+Note: if camelot-py[cv] generates an error in console, you might want to try replacing it with camelot-py\[cv\].
 
 ### 3.2. Installing Dependencies under MacOS
 
@@ -64,16 +68,38 @@ The package manager we suggest using under MacOS is [homebrew](https://brew.sh/)
 To install it, launch the following in a terminal
 
 ```sh
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 ```
 
 Next, install the required dependencies:
 
 ```sh
-brew install node qpdf imagemagick tesseract tesseract-lang tcl-tk ghostscript
+brew install node python qpdf imagemagick tesseract tesseract-lang tcl-tk ghostscript
 ```
 
-To install the python based dependencies (pdfminer and camelot), install, first install `pip`:
+Next, upgrade python:
+
+```sh
+brew upgrade python
+```
+
+To install the python3 based dependencies (pdfminer and camelot), install, first install `pip3`:
+
+```sh
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py
+```
+
+and then the dependencies:
+
+```sh
+pip3 install pdfminer.six
+pip3 install camelot-py[cv]
+pip3 install numpy pillow scikit-image
+python2.7 -m pip install PyPDF2
+```
+
+To install the python2 based dependencies (pdfminer and camelot), install, first install `pip`:
 
 ```sh
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
@@ -83,9 +109,7 @@ python get-pip.py
 and then the dependencies:
 
 ```sh
-pip install pdfminer.six
-pip install camelot-py[cv]
-pip install numpy pillow scikit-image PyPDF2
+python2.7 -m pip install PyPDF2
 ```
 
 ### 3.3. Installing Dependencies under Windows
@@ -196,3 +220,32 @@ ABBYY FineReader is a proprietary high precision OCR solution for generating ric
 One can obtain the ABBYY FineReader Server from [here](https://www.abbyy.com/en-us/finereader-server/).
 
 ABBYY FineReader is an **optional dependency**, and it's absence should in no way hinder the everyday usage of Parsr's default OCR solution, tesseract.
+
+## 5. Node.js Dependencies
+
+To install every Node dependency, just open a terminal at the root directory of Parsr and type:
+
+```sh
+npm install
+```
+
+## 6. Checking Installation
+
+To verify that you have everything correctly installed, you can follow this steps:
+
+- Run the test suite:
+  ```sh
+  npm run test
+  ```
+
+- Start the API:
+  ```sh
+  npm run start:api
+  ```
+
+- Open the following URL on your browser:
+  
+  http://127.0.0.1:3001/api/check-installation
+
+  
+If all test passed and every required dependency is found, then you're good to go!

@@ -23,6 +23,7 @@ import { KeyValueDetectionModule } from './processing/KeyValueDetectionModule/Ke
 import { LinesToParagraphModule } from './processing/LinesToParagraphModule/LinesToParagraphModule';
 import { LinkDetectionModule } from './processing/LinkDetectionModule/LinkDetectionModule';
 import { ListDetectionModule } from './processing/ListDetectionModule/ListDetectionModule';
+import { MlHeadingDetectionModule } from './processing/MlHeadingDetectionModule/MlHeadingDetectionModule';
 import { Module } from './processing/Module';
 import { NumberCorrectionModule } from './processing/NumberCorrectionModule/NumberCorrectionModule';
 import { OutOfPageRemovalModule } from './processing/OutOfPageRemovalModule/OutOfPageRemovalModule';
@@ -32,6 +33,7 @@ import { RedundancyDetectionModule } from './processing/RedundancyDetectionModul
 import { RegexMatcherModule } from './processing/RegexMatcherModule/RegexMatcherModule';
 import { RemoteModule } from './processing/RemoteModule/RemoteModule';
 import { SeparateWordsModule } from './processing/SeparateWordsModule/SeparateWordsModule';
+import { TableDetection2Module } from './processing/TableDetection2Module/TableDetection2Module';
 import { TableDetectionModule } from './processing/TableDetectionModule/TableDetectionModule';
 import { TableOfContentsDetectionModule } from './processing/TableOfContentsDetectionModule/TableOfContentsDetectionModule';
 import { WhitespaceRemovalModule } from './processing/WhitespaceRemovalModule/WhitespaceRemovalModule';
@@ -56,6 +58,7 @@ export class Cleaner {
     WordsToLineModule,
     KeyValueDetectionModule,
     LinesToParagraphModule,
+    MlHeadingDetectionModule,
     HeadingDetectionDTModule,
     HeadingDetectionModule,
     HierarchyDetectionModule,
@@ -66,6 +69,7 @@ export class Cleaner {
     NumberCorrectionModule,
     RedundancyDetectionModule,
     WhitespaceRemovalModule,
+    TableDetection2Module,
     TableDetectionModule,
     ImageDetectionModule,
     RegexMatcherModule,

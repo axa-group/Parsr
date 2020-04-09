@@ -2,7 +2,12 @@
   "defaultSeverity": "error",
   "extends": "tslint:recommended",
   "linterOptions": {
-    "exclude": ["dist", "api/dist", "server/src/processing/HeadingDetectionDTModule/model.js"]
+    "exclude": [
+      "dist",
+      "api/dist",
+      "server/src/processing/HeadingDetectionDTModule/model.js",
+      "server/src/processing/MLHeadingDetectionModule/train_model/model.js"
+    ]
   },
   "jsRules": {},
   "rules": {
