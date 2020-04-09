@@ -23,7 +23,7 @@ import { KeyValueDetectionModule } from './processing/KeyValueDetectionModule/Ke
 import { LinesToParagraphModule } from './processing/LinesToParagraphModule/LinesToParagraphModule';
 import { LinkDetectionModule } from './processing/LinkDetectionModule/LinkDetectionModule';
 import { ListDetectionModule } from './processing/ListDetectionModule/ListDetectionModule';
-import { MLHeadingDetectionModule } from './processing/MLHeadingDetectionModule/MLHeadingDetectionModule';
+import { MLHeadingDetectionModule } from './processing/MlHeadingDetectionModule/MlHeadingDetectionModule';
 import { Module } from './processing/Module';
 import { NumberCorrectionModule } from './processing/NumberCorrectionModule/NumberCorrectionModule';
 import { OutOfPageRemovalModule } from './processing/OutOfPageRemovalModule/OutOfPageRemovalModule';
