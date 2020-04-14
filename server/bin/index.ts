@@ -28,6 +28,7 @@ import { CsvExporter } from '../src/output/csv/CsvExporter';
 import { JsonExporter } from '../src/output/json/JsonExporter';
 import { MarkdownExporter } from '../src/output/markdown/MarkdownExporter';
 import { PdfExporter } from '../src/output/pdf/PdfExporter';
+import { SimpleJsonExporter } from '../src/output/simpleJson/SimpleJsonExporter';
 import { TextExporter } from '../src/output/text/TextExporter';
 import { Config } from '../src/types/Config';
 import { Document } from '../src/types/DocumentRepresentation/';
@@ -136,6 +137,13 @@ function main(): void {
           promises.push(
             new JsonExporter(doc, config.output.granularity).export(
               `${outputFolder}/${omitFilenameExtension(documentName)}.json`,
+            ),
+          );
+        }
+        if (config.output.formats.simpleJson) {
+          promises.push(
+            new SimpleJsonExporter(doc, false).export(
+              `${outputFolder}/${omitFilenameExtension(documentName)}.simple.json`,
             ),
           );
         }

@@ -37,6 +37,16 @@
       }
     ],
     [
+      "table-detection-2",
+      {
+        "runConfig": [
+          {
+            "pages": []
+          }
+        ]
+      }
+    ],
+    [
       "header-footer-detection",
       {
         "ignorePages": [],
@@ -72,6 +82,7 @@
         "pageKeywords": ["pagina", "page", "pag"]
       }
     ],
+    "ml-heading-detection",
     "heading-detection",
     "list-detection",
     "page-number-detection",
@@ -106,7 +117,8 @@
       "text": true,
       "csv": true,
       "markdown": true,
-      "pdf": false
+      "pdf": false,
+      "simpleJson" : true
     }
   }
 }

@@ -17,6 +17,7 @@
 export * from './Exporter';
 export * from './json/JsonExporter';
 export * from './json/JsonCompactExporter';
+export * from './simpleJson/SimpleJsonExporter';
 export * from './markdown/MarkdownExporter';
 export * from './text/TextExporter';
 export * from './xml/XmlExporter';

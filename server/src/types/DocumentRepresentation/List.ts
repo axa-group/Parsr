@@ -118,12 +118,21 @@ export class List extends Element {
     return this.export('md');
   }
 
+  public toSimpleJSON(): any {
+    return {
+      type : 'list',
+      content : this.export('simple'),
+    };
+  }
+
   private export(type: string): string {
     let output: string = '';
     this.content.forEach((para, index) => {
       let paraText: string = '';
       if (type === 'md') {
         paraText = para.toMarkdown();
+      } else if (type === 'simple') {
+        paraText = para.toSimpleJSON().content;
       } else {
         paraText = para.toString();
       }
