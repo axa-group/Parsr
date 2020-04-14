@@ -1,5 +1,6 @@
 <p align='center'>
-  <img src="logo.png" width="275">
+  <img src="assets/logo.png" width="275">
+  <img src="assets/demo_screen.gif" width="320">
 </p>
 
 [![Build Status](https://cloud.drone.io/api/badges/axa-group/Parsr/status.svg)](https://cloud.drone.io/axa-group/Parsr)
