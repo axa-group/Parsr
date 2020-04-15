@@ -15,8 +15,10 @@
  */
 
 import { expect } from 'chai';
+import * as fs from 'fs';
 import { withData } from 'leche';
 import 'mocha';
+import { resolve } from 'path';
 import { NumberCorrectionModule } from '../server/src/processing/NumberCorrectionModule/NumberCorrectionModule';
 import {
   BoundingBox,
@@ -30,19 +32,18 @@ import {
   TableRow,
   Word,
 } from '../server/src/types/DocumentRepresentation';
-import { getPdf, runModules } from './helpers';
+import { json2document } from '../server/src/utils/json2document';
+import { runModules } from './helpers';
 
 describe('Number correction from pdf', () => {
-  const pdfName = 'number-correction-1.pdf';
-  let pdfAfter: Document;
+  const jsonName = 'number-correction-1.pdf.new.json';
+  let docAfter: Document;
 
   before(done => {
-    function transform(doc: Document) {
-      return runModules(doc, [new NumberCorrectionModule()]);
-    }
-
-    getPdf(transform, pdfName).then(([, pdfA]) => {
-      pdfAfter = pdfA;
+    const json = fs.readFileSync(resolve(__dirname, 'assets', jsonName), 'utf8');
+    const document: Document = json2document(JSON.parse(json));
+    runModules(document, [new NumberCorrectionModule()]).then(after => {
+      docAfter = after;
       done();
     });
   });
@@ -51,7 +52,7 @@ describe('Number correction from pdf', () => {
   const testIds: number[] = Array.from(Array(11).keys());
   testIds.forEach(i => {
     it(`should fix number misrecognition looking like 0.00`, () => {
-      const expected = pdfAfter.pages[0].elements[i].content;
+      const expected = docAfter.pages[0].elements[i].content;
       expect(expected).to.be.equal('0.00');
     });
   });
@@ -153,7 +154,12 @@ describe('Single string number correction', () => {
   withData(['ISS'], test => {
     it(`should not change whitelisted word "${test}" looking like "155"`, () => {
       expect(
-        testableSuggest(numberCorrectionModule, test, accountingFormat, new Set<string>(['ISS'])),
+        testableSuggest(
+          numberCorrectionModule,
+          test,
+          accountingFormat,
+          new Set<string>(['ISS']),
+        ),
       ).to.be.equal(test);
     });
   });

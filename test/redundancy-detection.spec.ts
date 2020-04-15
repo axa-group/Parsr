@@ -15,26 +15,31 @@
  */
 
 import { expect } from 'chai';
+import * as fs from 'fs';
 import 'mocha';
+import { resolve } from 'path';
 import { RedundancyDetectionModule } from '../server/src/processing/RedundancyDetectionModule/RedundancyDetectionModule';
 import { Word } from '../server/src/types/DocumentRepresentation';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
-import { getPdf, runModules } from './helpers';
+import { json2document } from '../server/src/utils/json2document';
+import { runModules } from './helpers';
 
-const pdfName = 'redundancy-detection.pdf';
+const jsonName = 'redundancy-detection.pdf.new.json';
 
 describe('Paragraph merge function', () => {
-  let doc: Document;
+  let docAfter: Document;
 
   before(done => {
-    getPdf(d => runModules(d, [new RedundancyDetectionModule()]), pdfName).then(([, docAfter]) => {
-      doc = docAfter;
+    const json = JSON.parse(fs.readFileSync(resolve(__dirname, 'assets', jsonName), 'utf8'));
+    const document: Document = json2document(json);
+    runModules(document, [new RedundancyDetectionModule()]).then(after => {
+      docAfter = after;
       done();
     });
   });
 
   it('should remove duplicates', () => {
-    const words: Word[] = doc.pages[0].getElementsOfType<Word>(Word);
+    const words: Word[] = docAfter.pages[0].getElementsOfType<Word>(Word);
     expect(words)
       .to.be.an('array')
       .and.to.be.of.length(2);
