@@ -1,13 +1,21 @@
 <p align='center'>
-  <img src="assets/logo.png" width="275">
-  <img src="assets/demo_screen.gif" width="320">
+  <img src="assets/logo.png" width="275"><br />
 </p>
 
-[![Build Status](https://cloud.drone.io/api/badges/axa-group/Parsr/status.svg)](https://cloud.drone.io/axa-group/Parsr)
+<h1 align="center"><i>Turn your documents into data!</i></h1>
 
-# Turn your documents into data!
+<p align="center">
+	<a href="https://cloud.drone.io/axa-group/Parsr"><img src="https://cloud.drone.io/api/badges/axa-group/Parsr/status.svg"></a>
+</p>
 
-[Français](README_fr.md) | [中文](README_zh-cn.md)
+<p align="center">
+	<a href="README_fr.md">Français</a> |
+	<a href="README_zh-cn.md">中文</a>
+</p>
+
+<p align='center'>
+  <img src="assets/demo_screen.gif">
+</p>
 
 **Parsr**, is a minimal-footprint document (image, pdf, docx, eml) cleaning, parsing and extraction toolchain which generates readily available, organized and usable data for data scientists and developers.
 
@@ -36,21 +44,20 @@ Parsr takes as input an image (.JPG, .PNG, .TIFF, ...), email (.EML), Word (.DOC
 - CSV (for tables), or Pandas Dataframes (see [here](demo/parsr-jupyter-demo))
 - PDF
 
-## Table of Contents
+# Table of Contents
 
-- [Turn your documents into data!](#turn-your-documents-into-data)
-	- [Table of Contents](#table-of-contents)
-	- [Getting Started](#getting-started)
-		- [Installation](#installation)
-		- [Usage](#usage)
-	- [Documentation](#documentation)
-	- [Contribute](#contribute)
-	- [Third Party Licenses](#third-party-licenses)
-	- [License](#license)
+- [Table of Contents](#table-of-contents)
+- [Getting Started](#getting-started)
+	- [Installation](#installation)
+	- [Usage](#usage)
+- [Documentation](#documentation)
+- [Contribute](#contribute)
+- [Third Party Licenses](#third-party-licenses)
+- [License](#license)
 
-## Getting Started
+# Getting Started
 
-### Installation
+## Installation
 
 _-- The advanced installation guide is available [here](docs/installation.md) --_
 
@@ -68,7 +75,7 @@ docker pull axarev/parsr-ui-localhost
 
 Note: Parsr can also be installed bare-metal (not via Docker containers), the procedure for which is documented in the [installation guide](docs/installation.md).
 
-### Usage
+## Usage
 
 _-- The advanced usage guide is available [here](docs/usage.md) --_
 
@@ -97,15 +104,15 @@ Refer to the [Configuration documentation](docs/configuration.md) to interpret t
 
 The [API based usage](docs/usage.md#3-api) and the [command line usage](docs/usage.md#23-command-line-usage) are documented in the [advanced usage](docs/usage.md) guide.
 
-## Documentation
+# Documentation
 
 All documentation files can be found [here](docs/README.md).
 
-## Contribute
+# Contribute
 
 Please refer to the [contribution guidelines](CONTRIBUTING.md).
 
-## Third Party Licenses
+# Third Party Licenses
 
 Third Party Libraries licenses for its [dependencies](docs/dependencies.md):
 
@@ -118,7 +125,7 @@ Third Party Libraries licenses for its [dependencies](docs/dependencies.md):
 7. **MuPDF** (Optional dependency): AGPL [https://mupdf.com/license.html](https://mupdf.com/license.html)
 8. **Pandoc** (Optional dependency): GPL [https://github.com/jgm/pandoc](https://github.com/jgm/pandoc)
 
-## License
+# License
 
 Copyright 2020 AXA Group Operations S.A.  
 Licensed under the [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0) license (see the [LICENSE](LICENSE) file).
