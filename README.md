@@ -17,32 +17,11 @@
   <img src="assets/demo_screen.gif">
 </p>
 
-**Parsr**, is a minimal-footprint document (image, pdf, docx, eml) cleaning, parsing and extraction toolchain which generates readily available, organized and usable data for data scientists and developers.
+- **Parsr**, is a minimal-footprint document (**image, pdf, docx, eml**) cleaning, parsing and extraction toolchain which generates readily available, organized and usable data in **JSON, Markdown (MD), CSV/Pandas DF** or **TXT** formats.
 
-It provides users with clean structured and label-enriched information set for ready-to-use applications ranging from data entry and document analysis automation, archival, and many others.
+- It provides analysis, data scientists and developers with clean structured and label-enriched information set for ready-to-use applications ranging from data entry and document analysis automation, archival, and many others.
 
-Currently, Parsr can perform:
-
-- Document Hierarchy Regeneration - Words, Lines, Paragraphs
-- Headings Detection
-- Table Detection and Reconstruction
-- Lists Detection
-- Table of Contents Detection
-- Text Order Detection
-- Named Entity Recognition (Dates, Percentages, etc)
-- Key-Value Pair Detection (for the extraction of specific form-based entries)
-- Page Number Detection
-- Header-Footer Detection
-- Link Detection
-- Whitespace Removal
-
-Parsr takes as input an image (.JPG, .PNG, .TIFF, ...), email (.EML), Word (.DOCX) or a PDF file and generates the following output formats:
-
-- JSON
-- Markdown
-- Text
-- CSV (for tables), or Pandas Dataframes (see [here](demo/parsr-jupyter-demo))
-- PDF
+- Currently, Parsr can perform document cleaning, *hierarchy regeneration* (words, lines, paragraphs), detection of *headings, tables, lists, ToCs, page numbers, headers/footers, links*, and others. Check out [all the features](server/src/processing/README.md#1-current-processing-modules).
 
 # Table of Contents
 
