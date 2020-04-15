@@ -2,7 +2,7 @@
   <img src="assets/logo.png" width="275"><br />
 </p>
 
-<h1 align="center"><i>Turn your documents into data!</i></h1>
+<h2 align="center"><i>Turn your documents into data!</i></h2>
 
 <p align="center">
 	<a href="https://cloud.drone.io/axa-group/Parsr"><img src="https://cloud.drone.io/api/badges/axa-group/Parsr/status.svg"></a>
