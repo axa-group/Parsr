@@ -1,0 +1,134 @@
+{
+  "metadata": [],
+  "pages": [
+    {
+      "margins": { "top": -1, "left": -1, "bottom": -1, "right": -1 },
+      "box": { "l": 0, "t": 0, "w": 595.28, "h": 841.89 },
+      "rotation": { "degrees": 0, "origin": { "x": 0, "y": 0 }, "translation": { "x": 0, "y": 0 } },
+      "pageNumber": 1,
+      "elements": [
+        {
+          "id": 4,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 54.25, "t": 63.65, "w": 21.05, "h": 14.04 },
+          "content": "ooo",
+          "font": 1
+        },
+        {
+          "id": 8,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 54.25, "t": 92.69, "w": 32.75, "h": 14.04 },
+          "content": "OOO",
+          "font": 1
+        },
+        {
+          "id": 12,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 54.25, "t": 121.72, "w": 21.05, "h": 14.04 },
+          "content": "o0o",
+          "font": 1
+        },
+        {
+          "id": 16,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 54.25, "t": 150.76, "w": 21.05, "h": 14.04 },
+          "content": "o00",
+          "font": 1
+        },
+        {
+          "id": 20,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 54.25, "t": 179.8, "w": 21.05, "h": 14.04 },
+          "content": "0oo",
+          "font": 1
+        },
+        {
+          "id": 25,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 54.25, "t": 208.84, "w": 36.25, "h": 14.04 },
+          "content": "O.OO",
+          "font": 1
+        },
+        {
+          "id": 30,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 54.25, "t": 237.87, "w": 24.55, "h": 14.04 },
+          "content": "o.oo",
+          "font": 1
+        },
+        {
+          "id": 35,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 54.25, "t": 266.91, "w": 24.55, "h": 14.04 },
+          "content": "0.oo",
+          "font": 1
+        },
+        {
+          "id": 40,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 54.25, "t": 295.95, "w": 24.55, "h": 14.04 },
+          "content": "o.0o",
+          "font": 1
+        },
+        {
+          "id": 45,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 54.25, "t": 324.99, "w": 28.45, "h": 14.04 },
+          "content": "o.oO",
+          "font": 1
+        },
+        {
+          "id": 50,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 54.25, "t": 354.02, "w": 24.55, "h": 14.04 },
+          "content": "o,0o",
+          "font": 2
+        }
+      ]
+    }
+  ],
+  "fonts": [
+    {
+      "id": 1,
+      "name": "KYVLGE+Times-Bold",
+      "size": 14.038,
+      "weight": "bold",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    },
+    {
+      "id": 2,
+      "name": "KYVLGE+Times-Bold",
+      "size": 14.037,
+      "weight": "bold",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    }
+  ]
+}

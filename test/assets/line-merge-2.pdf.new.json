@@ -1,0 +1,97 @@
+{
+  "metadata": [],
+  "pages": [
+    {
+      "margins": { "top": -1, "left": -1, "bottom": -1, "right": -1 },
+      "box": { "l": 0, "t": 0, "w": 595.28, "h": 841.89 },
+      "rotation": { "degrees": 0, "origin": { "x": 0, "y": 0 }, "translation": { "x": 0, "y": 0 } },
+      "pageNumber": 1,
+      "elements": [
+        {
+          "id": 46,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 173.75, "t": 40.35, "w": 33.74, "h": 12 },
+          "content": "Lorem",
+          "font": 1
+        },
+        {
+          "id": 47,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 214.6, "t": 40.35, "w": 34.74, "h": 12 },
+          "content": "ipsum,",
+          "font": 1
+        },
+        {
+          "id": 48,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 256.55, "t": 40.35, "w": 37.63, "h": 12 },
+          "content": "sagittis",
+          "font": 1
+        },
+        {
+          "id": 49,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 300.8, "t": 40.35, "w": 8.05, "h": 12 },
+          "content": "a,",
+          "font": 1
+        },
+        {
+          "id": 50,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 316.07, "t": 40.35, "w": 30.35, "h": 12 },
+          "content": "dolor.",
+          "font": 1
+        },
+        {
+          "id": 51,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 353.33, "t": 40.35, "w": 37.64, "h": 12 },
+          "content": "Nullam",
+          "font": 1
+        },
+        {
+          "id": 52,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 398.08, "t": 40.35, "w": 30.16, "h": 12 },
+          "content": "turpis",
+          "font": 1
+        },
+        {
+          "id": 53,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 434.85, "t": 40.35, "w": 30.49, "h": 12 },
+          "content": "lacus.",
+          "font": 1
+        }
+      ]
+    }
+  ],
+  "fonts": [
+    {
+      "id": 1,
+      "name": "unknown",
+      "size": 12,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#161414",
+      "sizeUnit": "px"
+    }
+  ]
+}
