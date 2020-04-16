@@ -16,6 +16,7 @@
 
 import * as clone from 'clone';
 import { readFileSync } from 'fs';
+import { resolve } from 'path';
 import { PdfminerExtractor } from '../server/src/input/pdfminer/PdfminerExtractor';
 import { TesseractExtractor } from '../server/src/input/tesseract/TesseractExtractor';
 import { Module } from '../server/src/processing/Module';
@@ -26,6 +27,7 @@ import {
 } from '../server/src/processing/TableDetectionModule/TableDetectionModule';
 import { Config } from '../server/src/types/Config';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
+import { json2document } from '../server/src/utils/json2document';
 
 export class TableExtractorStub implements TableExtractor {
   private status: number;
@@ -68,6 +70,38 @@ export function getPdf(
       return [docBefore, docAfter] as [Document, Document]; // required because TS doesn't handle tuples correctly
     });
 }
+
+export function getDocFromJson(
+  func: (doc: Document) => Promise<Document>,
+  filename: string,
+): Promise<Document> {
+  // const config: Config = JSON.parse(
+  //   readFileSync(`${__dirname}/../server/defaultConfig.json`, 'utf8'),
+  // );
+
+  let docBefore: Document;
+  const json = JSON.parse(readFileSync(resolve(__dirname, 'assets', filename), 'utf8'));
+  docBefore = json2document(json);
+  docBefore.inputFile = `${__dirname}/assets/${filename}`;
+  const docAfterPromise: Promise<Document> = func(json);
+  return docAfterPromise;
+}
+// })
+
+// return docBefore;
+
+// return;
+// return new PdfminerExtractor(config)
+//   .run(`${__dirname}/assets/${filename}`)
+//   .then((doc: Document) => {
+//     docBefore = clone(doc);
+//     const docAfterPromise: Promise<Document> = func(doc);
+//     return docAfterPromise;
+//   })
+//   .then(docAfter => {
+//     return [docBefore, docAfter] as [Document, Document]; // required because TS doesn't handle tuples correctly
+//   });
+// }
 
 export async function getImage(
   func: (doc: Document) => Promise<Document>,
