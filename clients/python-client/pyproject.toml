@@ -5,7 +5,7 @@ description = "Python client for Parsr - Transforms PDF, Documents and Images in
 authors = ["AXA Group Operations S.A."]
 readme = 'README.rst'
 homepage = 'http://par.sr'
-repository = 'https://github.com/axa-group/Parsr/tree/master/clients/python-client'
+repository = 'https://github.com/axa-group/Parsr/tree/develop/clients/python-client'
 
 [tool.poetry.dependencies]
 python = "^3.8"
