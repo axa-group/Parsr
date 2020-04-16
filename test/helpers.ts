@@ -16,7 +16,6 @@
 
 import * as clone from 'clone';
 import { readFileSync } from 'fs';
-import { resolve } from 'path';
 import { PdfminerExtractor } from '../server/src/input/pdfminer/PdfminerExtractor';
 import { TesseractExtractor } from '../server/src/input/tesseract/TesseractExtractor';
 import { Module } from '../server/src/processing/Module';
@@ -78,13 +77,10 @@ export function getDocFromJson(
   // const config: Config = JSON.parse(
   //   readFileSync(`${__dirname}/../server/defaultConfig.json`, 'utf8'),
   // );
-
-  let docBefore: Document;
-  const json = JSON.parse(readFileSync(resolve(__dirname, 'assets', filename), 'utf8'));
-  docBefore = json2document(json);
-  docBefore.inputFile = `${__dirname}/assets/${filename}`;
-  const docAfterPromise: Promise<Document> = func(json);
-  return docAfterPromise;
+  const inputFile = `${__dirname}/assets/${filename}`;
+  const document = json2document(JSON.parse(readFileSync(inputFile, 'utf8')));
+  document.inputFile = inputFile;
+  return func(document);
 }
 // })
 
