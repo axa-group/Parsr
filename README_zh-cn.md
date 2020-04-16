@@ -2,7 +2,7 @@
 
 # Parsr: 从文档到数据，一步到位!
 
-[English](README.md) | [Français](README_fr.md)
+[English](README.md) | [Français](README_fr.md) | [Spanish](README_sp.md)
 
 **Parsr** 是一个小巧实用的文档（图像，pdf）清理，解析和提取的工具，可为数据科学家和开发者生成随时可用且整理完成的数据。
 
