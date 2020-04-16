@@ -21,15 +21,17 @@ import sys
 import json
 import time
 import ast
+from enum import Enum
+
+import semver
 
 import pandas as pd
 import requests
 from io import StringIO
 
-
 class ParsrClient():
 	def __init__(self, server):
-		self.version_history = {}
+		self.revision_history = {}
 		self.set_server(server)
 		self.set_current_request_id("")
 
@@ -42,7 +44,7 @@ class ParsrClient():
 	def set_current_request_id(self, request_id:str):
 		self.request_id = request_id
 
-	def send_document(self, file:str, config:str, server:str="", document_name:str=None, wait_till_finished:bool=False, refresh_period=2, save_request_id:bool=False, silent:bool=True) -> dict:
+	def send_document(self, file:str, config:str, server:str="", document_name:str=None, revision:str='major', wait_till_finished:bool=False, refresh_period=2, save_request_id:bool=False, silent:bool=True) -> dict:
 		if server == "":
 			if self.server == "":
 				raise Exception('No server address provided')
@@ -56,10 +58,15 @@ class ParsrClient():
 		jobId = r.text
 		if not document_name:
 			document_name = os.path.splitext(os.path.basename(file))[0]
-		if document_name not in self.version_history:
-			self.version_history[document_name] = [jobId]
+		if document_name not in self.revision_history:
+			self.revision_history[document_name] = [str(semver.VersionInfo.parse('1.0.0'))]
 		else:
-			self.version_history[document_name].append(jobId)
+			latest_revision = max(semver.VersionInfo.parse(i) for i in self.revision_history[document_name])
+			if revision == 'major':
+				new_revision = latest_revision.bump_major()
+			elif revision == 'minor':
+				new_revision = latest_revision.bump_minor()
+			self.revision_history[document_name].append(str(new_revision))
 		if save_request_id:
 			self.set_current_request_id(jobId)
 		if not wait_till_finished:
@@ -75,9 +82,9 @@ class ParsrClient():
 			print('>> Job done!')
 			return {'file': file, 'config': config, 'status_code': r.status_code, 'server_response': r.text}
 
-	def get_versions(self, document_name:str) -> list:
-		if document_name in self.version_history:
-			return self.version_history[document_name]
+	def get_revisions(self, document_name:str) -> list:
+		if document_name in self.revision_history:
+			return self.revision_history[document_name]
 		else:
 			return []
 
@@ -196,8 +203,8 @@ class ParsrClient():
 		else:
 			return r.text
 
-	def get_versions(self, document_name:str) -> list:
-		if document_name in self.version_history:
-			return self.version_history[document_name]
+	def get_revisions(self, document_name:str) -> list:
+		if document_name in self.revision_history:
+			return self.revision_history[document_name]
 		else:
 			return []
