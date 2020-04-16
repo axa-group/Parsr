@@ -6,7 +6,7 @@
 
 # Transformez vos documents en données!
 
-[English](README.md) | [中文](README_zh-cn.md)
+[English](README.md) | [Spanish](README_sp.md) | [中文](README_zh-cn.md)
 
 **Parsr** est une chaîne d'outils de nettoyage, d'analyse et d'extraction de documents (image, pdf) qui génère des données facilement disponibles, organisées et utilisables pour les développeurs et les scientifiques de données (data scientists).
 
