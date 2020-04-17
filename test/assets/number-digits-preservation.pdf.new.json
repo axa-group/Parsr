@@ -1,0 +1,89 @@
+{
+  "inputFile": "",
+  "metadata": [],
+  "pages": [
+    {
+      "margins": { "top": -1, "left": -1, "bottom": -1, "right": -1 },
+      "box": { "l": 0, "t": 0, "w": 595.32, "h": 841.92 },
+      "rotation": { "degrees": 0, "origin": { "x": 0, "y": 0 }, "translation": { "x": 0, "y": 0 } },
+      "pageNumber": 1,
+      "elements": [
+        {
+          "id": 28,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 85.08, "t": 72.29, "w": 26.93, "h": 11.04 },
+          "content": "FR76",
+          "font": 1
+        },
+        {
+          "id": 29,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 115.01, "t": 72.29, "w": 24.56, "h": 11.04 },
+          "content": "1234",
+          "font": 1
+        },
+        {
+          "id": 30,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 142.64, "t": 72.29, "w": 24.49, "h": 11.04 },
+          "content": "5678",
+          "font": 1
+        },
+        {
+          "id": 31,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 170.13, "t": 72.29, "w": 24.49, "h": 11.04 },
+          "content": "0004",
+          "font": 1
+        },
+        {
+          "id": 32,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 197.69, "t": 72.29, "w": 24.42, "h": 11.04 },
+          "content": "0066",
+          "font": 1
+        },
+        {
+          "id": 33,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 225.18, "t": 72.29, "w": 24.56, "h": 11.04 },
+          "content": "9012",
+          "font": 1
+        },
+        {
+          "id": 34,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 252.88, "t": 72.29, "w": 18.35, "h": 11.04 },
+          "content": "345",
+          "font": 1
+        }
+      ]
+    }
+  ],
+  "fonts": [
+    {
+      "id": 1,
+      "name": "CIDFont+F1",
+      "size": 11.04,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    }
+  ]
+}
