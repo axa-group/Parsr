@@ -777,7 +777,6 @@ export function sanitizeXML(xmlPath: string): Promise<string> {
 
 // each value should be a number between 0 and 255
 export function rgbToHex(r: number, g: number, b: number) {
-  logger.info(r.toString(), g, b);
   return '#' +
     [r, g, b]
       .map(x => {

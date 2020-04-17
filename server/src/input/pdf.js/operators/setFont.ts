@@ -14,11 +14,47 @@
  * limitations under the License.
  */
 
-import { OperationState } from './../OperationState';
+import logger from '../../../utils/Logger';
+import { OperationState } from '../OperationState';
+import { FONT_IDENTITY_MATRIX, pf } from './helper';
 
 export default {
   key: 'setFont',
-  value: (fontName: string, fontSize: number) => {
-    OperationState.setFont(fontName, fontSize);
+  value: (fontRefName: string, size: number) => {
+    logger.debug(`==> setFont(${fontRefName}, ${size})`);
+    const { current } = OperationState.state;
+
+    const fontObj = OperationState.state.loadedFonts[fontRefName];
+    if (fontObj) {
+      OperationState.state.current.font = fontObj;
+      OperationState.state.current.fontMatrix = fontObj.fontMatrix ? fontObj.fontMatrix : FONT_IDENTITY_MATRIX;
+
+      if (size < 0) {
+        size = -size;
+        current.fontDirection = -1;
+      } else {
+        current.fontDirection = 1;
+      }
+      const bold =
+        fontObj.bold ?
+          'bold' :
+          ['bold', 'demi']
+            .some(key => fontObj.name.toLowerCase().includes(key)) ?
+            'bold' :
+            'normal';
+      const italic = fontObj.italic ? 'italic' : fontObj.name.toLowerCase().includes('italic') ? 'italic' : 'normal';
+
+      OperationState.state.current.fontSize = size;
+      OperationState.state.current.fontFamily = fontObj.loadedName;
+      OperationState.state.current.fontWeight = bold;
+      OperationState.state.current.fontStyle = italic;
+      OperationState.state.current.tspan = {
+        textContent: '',
+        y: pf(-current.y),
+      };
+      OperationState.state.current.xcoords = [];
+    } else {
+      logger.debug(`WARN => Font ${fontRefName} was not previously loaded. Skipping...`);
+    }
   },
 };

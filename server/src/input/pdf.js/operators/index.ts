@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2020 AXA Group Operations S.A.
  *
@@ -14,13 +15,46 @@
  * limitations under the License.
  */
 
+import beginText from './beginText';
+import constructPath from './constructPath';
+import dependency from './dependency';
+import endText from './endText';
+import moveText from './moveText';
+import nextLine from './nextLine';
+import restore from './restore';
+import save from './save';
+import setCharSpacing from './setCharSpacing';
+import setFillRGBColor from './setFillRGBColor';
 import setFont from './setFont';
-
-const ignoredOps = [];
+import setHScale from './setHScale';
+import setLeading from './setLeading';
+import setLeadingMoveText from './setLeadingMoveText';
+import setTextMatrix from './setTextMatrix';
+import setTextRise from './setTextRise';
+import setWordSpacing from './setWordSpacing';
+import showText from './showText';
+import transform from './transform';
 
 const availableOperators = [
+  beginText,
+  constructPath,
+  dependency,
+  endText,
+  moveText,
+  nextLine,
+  restore,
+  save,
+  setCharSpacing,
+  setFillRGBColor,
   setFont,
-  ...ignoredOps.map(key => ({ key, value: (_args) => null })),
+  setHScale,
+  setLeading,
+  setLeadingMoveText,
+  setTextMatrix,
+  setTextRise,
+  setWordSpacing,
+  showText,
+  transform,
 ];
 
 export function isAvailable(operatorName: string): boolean {

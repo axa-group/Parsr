@@ -14,18 +14,52 @@
  * limitations under the License.
  */
 
-import logger from './../../utils/Logger';
+import { FONT_IDENTITY_MATRIX, IDENTITY_MATRIX } from './operators/helper';
 
 export class OperationState {
-  public static setFont(fontName, fontSize) {
-    this.fontName = fontName;
-    this.fontSize = fontSize;
-  }
+  public static state = {
+    current: {
+      font: null,
+      fontWeight: 'normal',
+      fontStyle: 'normal',
+      fontMatrix: FONT_IDENTITY_MATRIX,
+      fontDirection: 1,
+      fillColor: '#000000',
+      x: 0,
+      y: 0,
+      lineX: 0,
+      lineY: 0,
+      xcoords: [],
+      tspan: null,
+      fontFamily: undefined,
+      fontSize: 0,
+      charSpacing: 0,
+      wordSpacing: 0,
+      textMatrix: IDENTITY_MATRIX,
+      textMatrixScale: 1,
+      textHScale: 1,
+      textRise: 0,
+      leading: 0,
+    },
 
-  public static read() {
-    logger.info(this.fontName, this.fontSize);
-  }
+    loadedFonts: {},
+    fontMatrix: FONT_IDENTITY_MATRIX,
+    transformMatrix: IDENTITY_MATRIX,
+    transformStack: [],
+    extraStack: [],
+  };
 
-  private static fontName;
-  private static fontSize;
+  public static newState() {
+    this.state.current.textMatrix = IDENTITY_MATRIX;
+    this.state.current.textMatrixScale = 1;
+    this.state.current.fontMatrix = FONT_IDENTITY_MATRIX;
+    this.state.current.leading = 0;
+    this.state.current.x = 0;
+    this.state.current.y = 0;
+    this.state.current.charSpacing = 0;
+    this.state.current.wordSpacing = 0;
+    this.state.current.textHScale = 1;
+    this.state.current.textRise = 0;
+    this.state.current.fillColor = '#000000';
+  }
 }
