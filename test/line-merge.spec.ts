@@ -15,14 +15,11 @@
  */
 
 import { expect } from 'chai';
-// import * as fs from 'fs';
 import { withData } from 'leche';
 import 'mocha';
-// import { resolve } from 'path';
 import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
 import { Document, Element } from '../server/src/types/DocumentRepresentation';
-// import { json2document } from './../server/src/utils/json2document';
 import { getDocFromJson, runModules } from './helpers';
 
 describe('Line merge function', () => {
@@ -46,16 +43,6 @@ describe('Line merge function', () => {
           docAfter = after;
           done();
         });
-        // });
-
-        // const json = JSON.parse(fs.readFileSync(resolve(__dirname, 'assets', jsonName), 'utf8'));
-        // const document: Document = json2document(json);
-        // runModules(document, [new ReadingOrderDetectionModule(), new WordsToLineModule()]).then(
-        //   after => {
-        //     docAfter = after;
-        //     done();
-        //   },
-        // );
       });
 
       it('should merge side-by-side words into a single block', () => {

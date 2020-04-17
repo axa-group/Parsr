@@ -15,10 +15,8 @@
  */
 
 import { expect } from 'chai';
-import * as fs from 'fs';
 import { withData } from 'leche';
 import 'mocha';
-import { resolve } from 'path';
 import { NumberCorrectionModule } from '../server/src/processing/NumberCorrectionModule/NumberCorrectionModule';
 import {
   BoundingBox,
@@ -32,17 +30,18 @@ import {
   TableRow,
   Word,
 } from '../server/src/types/DocumentRepresentation';
-import { json2document } from '../server/src/utils/json2document';
-import { runModules } from './helpers';
+import { getDocFromJson, runModules } from './helpers';
 
 describe('Number correction from pdf', () => {
   const jsonName = 'number-correction-1.pdf.new.json';
   let docAfter: Document;
 
   before(done => {
-    const json = fs.readFileSync(resolve(__dirname, 'assets', jsonName), 'utf8');
-    const document: Document = json2document(JSON.parse(json));
-    runModules(document, [new NumberCorrectionModule()]).then(after => {
+    function transform(json: Document) {
+      return runModules(json, [new NumberCorrectionModule()]);
+    }
+
+    getDocFromJson(transform, jsonName).then(after => {
       docAfter = after;
       done();
     });

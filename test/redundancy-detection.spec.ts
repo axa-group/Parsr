@@ -15,24 +15,23 @@
  */
 
 import { expect } from 'chai';
-import * as fs from 'fs';
 import 'mocha';
-import { resolve } from 'path';
 import { RedundancyDetectionModule } from '../server/src/processing/RedundancyDetectionModule/RedundancyDetectionModule';
 import { Word } from '../server/src/types/DocumentRepresentation';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
-import { json2document } from '../server/src/utils/json2document';
-import { runModules } from './helpers';
+import { getDocFromJson, runModules } from './helpers';
 
 const jsonName = 'redundancy-detection.pdf.new.json';
 
-describe('Paragraph merge function', () => {
+describe('Redundancy detection function', () => {
   let docAfter: Document;
 
   before(done => {
-    const json = JSON.parse(fs.readFileSync(resolve(__dirname, 'assets', jsonName), 'utf8'));
-    const document: Document = json2document(json);
-    runModules(document, [new RedundancyDetectionModule()]).then(after => {
+    function transform(json: Document) {
+      return runModules(json, [new RedundancyDetectionModule()]);
+    }
+
+    getDocFromJson(transform, jsonName).then(after => {
       docAfter = after;
       done();
     });

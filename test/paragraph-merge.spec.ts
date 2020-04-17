@@ -29,23 +29,17 @@ import * as fs from 'fs';
 import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
 import { Paragraph } from '../server/src/types/DocumentRepresentation';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
-import { getPdf, runModules, TableExtractorStub } from './helpers';
+import { getDocFromJson, runModules, TableExtractorStub } from './helpers';
 
-// let docBefore: Document;
 let docAfter: Document;
 
-function executePipeLine(pdfName: string, done, tableExtractor?: TableExtractor) {
+function executePipeLine(jsonName: string, done, tableExtractor?: TableExtractor) {
   function cleaner(doc: Document) {
     if (!tableExtractor) {
       tableExtractor = new TableExtractorStub(0, '', '[]');
-      console.log('No Table extractyor');
-    } else {
-      console.log('We have table extractor');
     }
-
     const tableDetectionModule = new TableDetectionModule();
     tableDetectionModule.setExtractor(tableExtractor);
-
     return runModules(doc, [
       new OutOfPageRemovalModule(),
       new WhitespaceRemovalModule(),
@@ -55,16 +49,16 @@ function executePipeLine(pdfName: string, done, tableExtractor?: TableExtractor)
       new LinesToParagraphModule(),
     ]);
   }
+  const pdfName = 'paragraph-merge.pdf';
 
-  getPdf(cleaner, pdfName).then(([/*docB*/ _, docA]) => {
-    // docBefore = docB;
-    docAfter = docA;
+  getDocFromJson(cleaner, jsonName, pdfName).then(after => {
+    docAfter = after;
     done();
   });
 }
 describe('Paragraph merge function', () => {
   before(done => {
-    executePipeLine('paragraph-merge.pdf', done);
+    executePipeLine('paragraph-merge.pdf.new.json', done);
   });
 
   it('should merge side-by-side lines into paragraphs', () => {
@@ -93,7 +87,7 @@ describe('Paragraph merge function', () => {
 
 describe('Paragraph merge function with irregular line spaces', () => {
   before(done => {
-    executePipeLine('paragraph-merge-2.pdf', done);
+    executePipeLine('paragraph-merge-2.pdf.new.json', done);
   });
 
   it('should merge side-by-side lines into paragraphs', () => {
@@ -105,7 +99,7 @@ describe('Paragraph merge function with irregular line spaces', () => {
 
 describe('Paragraph merge function with more irregular line spaces', () => {
   before(done => {
-    executePipeLine('paragraph-merge-3.pdf', done);
+    executePipeLine('paragraph-merge-3.pdf.new.json', done);
   });
 
   it('should merge side-by-side lines into paragraphs', () => {
@@ -127,7 +121,7 @@ describe('Paragraph merge function with tables ans more', () => {
   const tableExtractor = new TableExtractorStub(0, '', extractorOutput);
 
   before(done => {
-    executePipeLine('paragraph-merge-5.pdf', done, tableExtractor);
+    executePipeLine('paragraph-merge-5.pdf.new.json', done, tableExtractor);
   });
 
   it('should merge side-by-side lines into paragraphs', () => {

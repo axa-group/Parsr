@@ -17,10 +17,10 @@
 import { expect } from 'chai';
 import 'mocha';
 import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
-import { getImage, getPdf, runModules } from './helpers';
+import { getDocFromJson, getImage, runModules } from './helpers';
 
 const imageName = 'number-digits-preservation.jpg';
-const pdfName = 'number-digits-preservation.pdf';
+const jsonName = 'number-digits-preservation.pdf.new.json';
 const expectedWords = ['FR76', '1234', '5678', '0004', '0066', '9012', '345'];
 
 describe('Number parsing on images', () => {
@@ -46,12 +46,12 @@ describe('Number parsing on PDFs', () => {
   let words: string[];
 
   before(async () => {
-    const [, pdfAfter] = await getPdf(
+    const docAfter = await getDocFromJson(
       d => runModules(d, [new ReadingOrderDetectionModule()]),
-      pdfName,
+      jsonName,
     );
 
-    words = pdfAfter.pages[0].elements
+    words = docAfter.pages[0].elements
       .sort((a, b) => a.properties.order - b.properties.order)
       .map(elem => elem.toString());
   });
