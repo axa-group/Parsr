@@ -31,7 +31,7 @@ import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagra
 import { Module } from '../Module';
 import { DecisionTreeClassifier } from './train_model/model';
 
-export class MLHeadingDetectionModule extends Module {
+export class MlHeadingDetectionModule extends Module {
   public static moduleName = 'ml-heading-detection';
   public static dependencies = [LinesToParagraphModule];
 

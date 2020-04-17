@@ -39,18 +39,19 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     for (let i = 0; i <= doc.pages.length - 1 && (!foundTOC || pagesSinceLastTOC < 5); i++) {
       const page = doc.pages[i];
 
-      const allParagraphs = page.getElementsOfType<Paragraph>(Paragraph, false)
-        .filter(e => !e.properties.isFooter && !e.properties.isHeader);
+      const allParagraphs = page
+        .getElementsOfType<Paragraph>(Paragraph, false)
+        .filter(this.isNotHeaderFooter);
 
-      const tocItemParagraphs = allParagraphs.filter(p => detection.TOCDetected(p, this.options.pageKeywords));
+      const tocItemParagraphs = allParagraphs.filter(p =>
+        detection.TOCDetected(p, this.options.pageKeywords),
+      );
 
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
         tocItemParagraphs.length > 0 &&
         tocItemParagraphs.length >=
-        Math.floor(allParagraphs.length
-          * detection.threshold
-          * Math.pow(1.05, pagesSinceLastTOC))
+          Math.floor(allParagraphs.length * detection.threshold * Math.pow(1.05, pagesSinceLastTOC))
       ) {
         foundTOC = true;
         const toc = new TableOfContents();
@@ -65,5 +66,12 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     }
 
     return doc;
+  }
+
+  private isNotHeaderFooter(paragraph: Paragraph): boolean {
+    const allWords = paragraph.content.map(line => line.content).reduce((a, b) => a.concat(b), []);
+    return (
+      allWords.filter(word => !word.properties.isFooter && !word.properties.isHeader).length > 0
+    );
   }
 }
