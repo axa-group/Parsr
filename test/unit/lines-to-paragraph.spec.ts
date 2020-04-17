@@ -15,14 +15,21 @@
  */
 
 import { expect } from 'chai';
-import * as fs from 'fs';
 import { withData } from 'leche';
 import 'mocha';
 import { LinesToParagraphModule } from '../../server/src/processing/LinesToParagraphModule/LinesToParagraphModule';
 import { Document, Heading, Line } from '../../server/src/types/DocumentRepresentation';
-import { json2document } from '../../server/src/utils/json2document';
 
-import { runModules } from './../helpers';
+import { getDocFromJson, runModules } from './../helpers';
+
+let docAfter: Document;
+
+function executePipeLine(fileName, done) {
+  getDocFromJson(doc => runModules(doc, [new LinesToParagraphModule()]), fileName).then(after => {
+    docAfter = after;
+    done();
+  });
+}
 
 describe('Lines to Paragraph Module', () => {
   withData(
@@ -33,20 +40,8 @@ describe('Lines to Paragraph Module', () => {
       'full content page': ['paragraph-merge-5.json', 9 + 1], // There is one table
     },
     (fileName, paragraphCount) => {
-      let docBefore: Document;
-      let docAfter: Document;
-
       before(done => {
-        const json = JSON.parse(
-          fs.readFileSync(__dirname + '/assets/' + fileName, { encoding: 'utf8' }),
-        );
-
-        docBefore = json2document(json);
-
-        runModules(docBefore, [new LinesToParagraphModule()]).then(after => {
-          docAfter = after;
-          done();
-        });
+        executePipeLine(fileName, done);
       });
 
       it('should have the expected amount of paragraphs', () => {
@@ -65,8 +60,6 @@ describe('Lines to Paragraph Module', () => {
 });
 
 describe('Heading Detection', () => {
-  let docAfter: Document;
-  let docBefore: Document;
   /*  TODO: Create Headings test cases using correct
       module instead of lines to paragraph
     {
@@ -81,15 +74,7 @@ describe('Heading Detection', () => {
     },
     (fileName, headingCount) => {
       before(done => {
-        const json = JSON.parse(
-          fs.readFileSync(__dirname + '/assets/' + fileName, { encoding: 'utf8' }),
-        );
-
-        docBefore = json2document(json);
-        runModules(docBefore, [new LinesToParagraphModule()]).then(after => {
-          docAfter = after;
-          done();
-        });
+        executePipeLine(fileName, done);
       });
 
       it('should have the correct number of headings', () => {

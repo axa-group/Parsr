@@ -15,41 +15,32 @@
  */
 
 import { expect } from 'chai';
-import * as fs from 'fs';
 import { withData } from 'leche';
 import 'mocha';
 import { TableOfContentsDetectionModule } from '../../server/src/processing/TableOfContentsDetectionModule/TableOfContentsDetectionModule';
-import { Document, TableOfContents } from '../../server/src/types/DocumentRepresentation';
-import { json2document } from '../../server/src/utils/json2document';
-import { runModules } from './../helpers';
+import { TableOfContents } from '../../server/src/types/DocumentRepresentation';
+import { getDocFromJson, runModules } from './../helpers';
 
-const assetsDir = __dirname + '/assets/';
+let toc: TableOfContents;
+
+function executePipeLine(fileName: string, done) {
+  getDocFromJson(doc => runModules(doc, [new TableOfContentsDetectionModule()]), fileName).then(
+    after => {
+      [toc] = after.getElementsOfType<TableOfContents>(TableOfContents);
+      done();
+    },
+  );
+}
 
 describe('Table of Contents Detection Module', () => {
   withData(
     {
-      'one TOC Item per paragraph': [
-        '2_1_185_CarPolicyWording-3.json', 21,
-      ],
-      'multiple TOC Items per paragraph': [
-        '756_pages-3-5.json', 49,
-      ],
+      'one TOC Item per paragraph': ['2_1_185_CarPolicyWording-3.json', 21],
+      'multiple TOC Items per paragraph': ['756_pages-3-5.json', 49],
     },
     (fileName, tocItemCount) => {
-      let docBefore: Document;
-      let toc: TableOfContents;
-
       before(done => {
-        const json = JSON.parse(
-          fs.readFileSync(assetsDir + fileName, { encoding: 'utf8' }),
-        );
-
-        docBefore = json2document(json);
-        docBefore.inputFile = assetsDir + fileName;
-        runModules(docBefore, [new TableOfContentsDetectionModule()]).then(after => {
-          [toc] = after.getElementsOfType<TableOfContents>(TableOfContents);
-          done();
-        });
+        executePipeLine(fileName, done);
       });
 
       it(`should have correct amount of items`, () => {
@@ -60,38 +51,19 @@ describe('Table of Contents Detection Module', () => {
 
   withData(
     {
-      '(1) document with no Table of Contents': [
-        'testReadingOrder.json',
-      ],
-      '(2) document with no Table of Contents': [
-        'paragraph-merge-2.json',
-      ],
-      '(3) document with no Table of Contents': [
-        'paragraph-merge-3.json',
-      ],
-      '(4) document with no Table of Contents': [
-        'paragraph-merge-5.json',
-      ],
+      '(1) document with no Table of Contents': ['testReadingOrder.json'],
+      '(2) document with no Table of Contents': ['paragraph-merge-2.json'],
+      '(3) document with no Table of Contents': ['paragraph-merge-3.json'],
+      '(4) document with no Table of Contents': ['paragraph-merge-5.json'],
     },
-    (fileName) => {
-      let docBefore: Document;
-      let toc: TableOfContents;
-
+    fileName => {
       before(done => {
-        const json = JSON.parse(
-          fs.readFileSync(assetsDir + fileName, { encoding: 'utf8' }),
-        );
-
-        docBefore = json2document(json);
-        docBefore.inputFile = assetsDir + fileName;
-        runModules(docBefore, [new TableOfContentsDetectionModule()]).then(after => {
-          [toc] = after.getElementsOfType<TableOfContents>(TableOfContents);
-          done();
-        });
+        executePipeLine(fileName, done);
       });
       it('document should not have a TOC', () => {
         // tslint:disable-next-line: no-unused-expression
         expect(toc).to.be.undefined;
       });
-    });
+    },
+  );
 });
