@@ -15,7 +15,7 @@
  */
 
 import * as clone from 'clone';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { PdfminerExtractor } from '../server/src/input/pdfminer/PdfminerExtractor';
 import { TesseractExtractor } from '../server/src/input/tesseract/TesseractExtractor';
 import { Module } from '../server/src/processing/Module';
@@ -73,31 +73,25 @@ export function getPdf(
 export function getDocFromJson(
   func: (doc: Document) => Promise<Document>,
   filename: string,
+  pdfFilename?: string, // Parameter required to assign the path of a pdf inside document.inputFile
 ): Promise<Document> {
-  // const config: Config = JSON.parse(
-  //   readFileSync(`${__dirname}/../server/defaultConfig.json`, 'utf8'),
-  // );
-  const inputFile = `${__dirname}/assets/${filename}`;
+  let pdfInputFile: string;
+  let inputFile = `${__dirname}/assets/${filename}`;
+  // Deal with the sub-directory /unit inside of /test directory
+  if (existsSync(inputFile) === false) {
+    inputFile = `${__dirname}/unit/assets/${filename}`;
+  }
   const document = json2document(JSON.parse(readFileSync(inputFile, 'utf8')));
-  document.inputFile = inputFile;
+  if (pdfFilename) {
+    pdfInputFile = `${__dirname}/assets/${pdfFilename}`;
+    // Deal with the sub-directory /unit inside of /test directory
+    if (existsSync(pdfInputFile) === false) {
+      pdfInputFile = `${__dirname}/unit/assets/${pdfFilename}`;
+    }
+    document.inputFile = pdfInputFile;
+  }
   return func(document);
 }
-// })
-
-// return docBefore;
-
-// return;
-// return new PdfminerExtractor(config)
-//   .run(`${__dirname}/assets/${filename}`)
-//   .then((doc: Document) => {
-//     docBefore = clone(doc);
-//     const docAfterPromise: Promise<Document> = func(doc);
-//     return docAfterPromise;
-//   })
-//   .then(docAfter => {
-//     return [docBefore, docAfter] as [Document, Document]; // required because TS doesn't handle tuples correctly
-//   });
-// }
 
 export async function getImage(
   func: (doc: Document) => Promise<Document>,
