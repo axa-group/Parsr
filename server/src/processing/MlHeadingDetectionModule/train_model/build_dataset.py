@@ -44,9 +44,9 @@ def extract_lines(file):
             nb_nouns = len([chunk.text for chunk in doc.noun_chunks])
             nb_cardinal = len([entity.text for entity in doc.ents if entity.label_=="CARDINAL"])
                 
-            acc.append([line.strip(), is_bold^(commonFont['weight'] == 'bold'), line_font['size']>commonFont['size'],
-                        line_font['color']!=commonFont['color'], len(set(fonts_ids))==1, text_case, len(node['content']),
-                        nb_verbs, nb_nouns, nb_cardinal, 'paragraph'
+            acc.append([line.strip(), int(is_bold^(commonFont['weight'] == 'bold')), int(line_font['size']>commonFont['size']),
+                        int(line_font['color']!=commonFont['color']), int(len(set(fonts_ids))==1), text_case, len(node['content']),
+                        int(line.strip().isdigit()), nb_verbs, nb_nouns, nb_cardinal, 'paragraph'
                        ])
 
         elif node['type'] == 'paragraph' or node['type'] == 'heading' or node['type'] == 'list':
@@ -70,7 +70,7 @@ args = parser.parse_args()
 paths = os.listdir(args.json_dir)
 
 for path in paths:
-    if path.endswith('.json') and not path.endswith('.stats.json'):
+    if path.endswith('.json'):
         print(path)
 
         with open(os.path.join(args.json_dir, path), mode='r', encoding='utf8') as f:
@@ -86,16 +86,15 @@ for path in paths:
                 for i, line in enumerate(contract):
                     if line[0] == text_line:
                         contract[i][-1] = 'heading'
-                    elif line[0] in text_line:
-                        if (line[1] and line[4]) or line[2] or line[3] or (line[5]==2 and line[6]>1):
+                    elif line[0] in text_line and line[7] == 0:
+                        if (line[1] and line[4]) or line[2] or line[3]:
                             contract[i][-1] = 'heading'
 
         col_names = ['line', 'is_different_style', 'is_font_bigger', 
-                     'different_color', 'is_font_unique', 'text_case', 'word_count',
+                     'different_color', 'is_font_unique', 'text_case', 'word_count', 'is_number',
                      'nb_of_verbs', 'nb_of_nouns', 'nb_of_cardinal_numbers', 'label']
 
         with open(os.path.join(args.out_dir, path.replace('.pdf.json', '.csv')), newline='\n',  mode='w+', encoding='utf8') as f:
             writer = csv.writer(f, quoting=csv.QUOTE_ALL)
             writer.writerow(col_names)
             writer.writerows(contract)
-
