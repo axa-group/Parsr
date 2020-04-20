@@ -26,6 +26,7 @@ import {
 } from '../server/src/processing/TableDetectionModule/TableDetectionModule';
 import { Config } from '../server/src/types/Config';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
+import { json2document } from '../server/src/utils/json2document';
 
 export class TableExtractorStub implements TableExtractor {
   private status: number;
@@ -67,6 +68,20 @@ export function getPdf(
     .then(docAfter => {
       return [docBefore, docAfter] as [Document, Document]; // required because TS doesn't handle tuples correctly
     });
+}
+
+export function getDocFromJson(
+  func: (doc: Document) => Promise<Document>,
+  jsonName: string,
+  pdfFilename?: string, // Parameter required to assign the path of a pdf inside document.inputFile
+): Promise<Document> {
+  const document = json2document(
+    JSON.parse(readFileSync(`${__dirname}/assets/${jsonName}`, 'utf8')),
+  );
+  if (pdfFilename) {
+    document.inputFile = `${__dirname}/assets/sources/${pdfFilename}`;
+  }
+  return func(document);
 }
 
 export async function getImage(

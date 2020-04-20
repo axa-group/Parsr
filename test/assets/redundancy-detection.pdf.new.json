@@ -1,0 +1,79 @@
+{
+  "metadata": [],
+  "pages": [
+    {
+      "margins": { "top": -1, "left": -1, "bottom": -1, "right": -1 },
+      "box": { "l": 0, "t": 0, "w": 594.96, "h": 840.96 },
+      "rotation": { "degrees": 0, "origin": { "x": 0, "y": 0 }, "translation": { "x": 0, "y": 0 } },
+      "pageNumber": 1,
+      "elements": [
+        {
+          "id": 14,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 34, "t": 53.5, "w": 114.72, "h": 24 },
+          "content": "Redundant",
+          "font": 1
+        },
+        {
+          "id": 15,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 154.72, "t": 53.5, "w": 44.45, "h": 24 },
+          "content": "Text",
+          "font": 1
+        },
+        {
+          "id": 29,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 34, "t": 53.5, "w": 114.72, "h": 24 },
+          "content": "Redundant",
+          "font": 1
+        },
+        {
+          "id": 30,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 154.72, "t": 53.5, "w": 44.45, "h": 24 },
+          "content": "Text",
+          "font": 1
+        },
+        {
+          "id": 44,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 34, "t": 53.5, "w": 114.72, "h": 24 },
+          "content": "Redundant",
+          "font": 1
+        },
+        {
+          "id": 45,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 154.72, "t": 53.5, "w": 44.45, "h": 24 },
+          "content": "Text",
+          "font": 1
+        }
+      ]
+    }
+  ],
+  "fonts": [
+    {
+      "id": 1,
+      "name": "Times-Bold",
+      "size": 24,
+      "weight": "bold",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    }
+  ]
+}

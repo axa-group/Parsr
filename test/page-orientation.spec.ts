@@ -19,8 +19,8 @@ import 'mocha';
 
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { Document } from '../../server/src/types/DocumentRepresentation/Document';
-import { json2document } from '../../server/src/utils/json2document';
+import { Document } from '../server/src/types/DocumentRepresentation/Document';
+import { json2document } from '../server/src/utils/json2document';
 
 let document: Document;
 
@@ -37,5 +37,5 @@ describe('PDFMiner - page orientations', () => {
     expect(document.pages[2].getMainRotationAngle()).to.equal(180);
     expect(document.pages[3].getMainRotationAngle()).to.equal(-90);
     expect(document.pages[4].getMainRotationAngle()).to.equal(0);
-    });
   });
+});

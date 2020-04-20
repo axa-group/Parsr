@@ -184,41 +184,45 @@ export class MlHeadingDetectionModule extends Module {
   }
 
   private isHeadingLine(line: Line, commonFont: Font): boolean {
-    // const word_count = line.content.length;
-    const isFontBigger = line.getMainFont().size > commonFont.size;
+    const lineStr = line.toString();
+    if (lineStr.length == 1 || !isNaN(lineStr as any)) {
+      return false;
+    }
+    const wordCount = line.content.length;
     const isDifferentStyle = line.getMainFont().weight !== commonFont.weight;
+    const isFontBigger = line.getMainFont().size > commonFont.size;
     const isFontUnique = line.isUniqueFont();
-    // const different_color = line.getMainFont().color !== commonFont.color;
+    const differentColor = line.getMainFont().color !== commonFont.color;
+    const isNumber = !isNaN(lineStr as any)
 
-    // const is_title_case = this.titleCase(line);
-    // const is_lower_case = line.toString().toLowerCase() === line.toString();
-    // const is_upper_case = line.toString().toUpperCase() === line.toString();
-    // let text_case = 3;
-    // if (is_title_case) {
-    //   text_case = 2;
-    // } else if (is_lower_case) {
-    //   text_case = 0;
-    // } else if (is_upper_case) {
-    //   text_case = 1;
-    // }
+    const is_lower_case = lineStr.toLowerCase() === lineStr;
+    const is_upper_case = lineStr.toUpperCase() === lineStr;
+    let textCase = 3;
+    if (this.titleCase(line)) {
+      textCase = 2;
+    } else if (is_lower_case) {
+      textCase = 0;
+    } else if (is_upper_case) {
+      textCase = 1;
+    }
 
-    const features = [isDifferentStyle, isFontBigger, isFontUnique];
+    const features = [isDifferentStyle, isFontBigger, isFontUnique, textCase, wordCount, differentColor, isNumber];
     const clf = new DecisionTreeClassifier();
 
     return clf.predict(features) === 1;
   }
 
-  // private titleCase(line: Line) {
-  //   return line.content.map((word) => {
-  //     const lengthThreshold = 4;
-  //     const text = word.toString();
-  //     if (text.length > lengthThreshold) {
-  //       return (/^[A-Z]\w+/.test(text) || /^(?:\W*\d+\W*)+\w+/.test(text));
-  //     } else {
-  //       return true;
-  //     }
-  //   }).reduce((acc, curr) => acc && curr);
-  // }
+  private titleCase(line: Line) {
+    return line.content.map((word) => {
+      const lengthThreshold = 4;
+      const text = word.toString();
+      if (text.length > lengthThreshold) {
+        return (/^[A-Z]\w+/.test(text) || /^(?:\W*\d+\W*)+\w+/.test(text));
+      } else {
+        return true;
+      }
+    }).reduce((acc, curr) => acc && curr);
+  }
 
   private groupHeadingsByFont(headingIndexes: number[], lines: Line[]): number[][] {
     // Skip join heading lines if they doesn't have same font

@@ -24,21 +24,22 @@ import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrd
 import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
 import { Document, Element, JsonExport } from '../server/src/types/DocumentRepresentation';
 import { json2document } from '../server/src/utils/json2document';
-import { getPdf, runModules } from './helpers';
+import { getDocFromJson, runModules } from './helpers';
 
 describe('JSON export and import', () => {
   withData(
     {
-      'one line': 'line-merge.pdf',
-      'big text': 'text-order-detection.pdf',
+      'one line': 'line-merge.pdf.new.json',
+      'big text': 'text-order-detection.json',
     },
-    pdfName => {
-      let pdfBefore: Document;
-      let pdfAfter: Document;
 
-      function clean(pdf: Document): Promise<Document> {
+    jsonName => {
+      let docBefore: Document;
+      let docAfter: Document;
+
+      function clean(json: Document): Promise<Document> {
         Element.resetGlobalId();
-        return runModules(pdf, [
+        return runModules(json, [
           new ReadingOrderDetectionModule(),
           new WordsToLineModule(),
           new LinesToParagraphModule(),
@@ -47,27 +48,27 @@ describe('JSON export and import', () => {
       }
 
       before(done => {
-        function transform(pdf: Document): Promise<Document> {
-          return clean(pdf).then(doc => {
+        function transform(json: Document): Promise<Document> {
+          return clean(json).then(doc => {
             const jsonExporter = new JsonExporter(doc, 'word');
             const jsonDoc: JsonExport = jsonExporter.getJson();
-            pdfAfter = json2document(jsonDoc);
-            return pdfAfter;
+            docAfter = json2document(jsonDoc);
+            return docAfter;
           });
         }
 
-        getPdf(transform, pdfName).then(([pdfB, pdfA]) => {
-          clean(pdfB).then(pdfBClean => {
-            pdfAfter = pdfA;
-            pdfBefore = pdfBClean;
+        getDocFromJson(transform, jsonName).then(docB => {
+          clean(docB).then(docA => {
+            docAfter = docA;
+            docBefore = docB;
             done();
           });
         });
       });
 
       it('should not change the document structure', () => {
-        const jsonBefore: JsonExport = new JsonExporter(pdfBefore, 'word').getJson();
-        const jsonAfter: JsonExport = new JsonExporter(pdfAfter, 'word').getJson();
+        const jsonBefore: JsonExport = new JsonExporter(docBefore, 'word').getJson();
+        const jsonAfter: JsonExport = new JsonExporter(docAfter, 'word').getJson();
 
         const jsonObjBefore: object = jsonBefore;
         const jsonObjAfter: object = jsonAfter;

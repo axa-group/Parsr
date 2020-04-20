@@ -15,14 +15,11 @@
  */
 
 import { expect } from 'chai';
-import * as fs from 'fs';
 import { withData } from 'leche';
 import 'mocha';
-import { WordsToLineModule } from '../../server/src/processing/WordsToLineModule/WordsToLineModule';
-import { Document, Line, Word } from '../../server/src/types/DocumentRepresentation';
-import { json2document } from '../../server/src/utils/json2document';
-
-import { runModules } from './../helpers';
+import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
+import { Document, Line, Word } from '../server/src/types/DocumentRepresentation';
+import { getDocFromJson, runModules } from './helpers';
 
 describe('Words to Line Module', () => {
   withData(
@@ -44,27 +41,25 @@ describe('Words to Line Module', () => {
       ],
     },
     (fileName, lineCount, textContent) => {
-      let docBefore: Document;
       let docAfter: Document;
 
       before(done => {
-        const json = JSON.parse(
-          fs.readFileSync(__dirname + '/assets/' + fileName, { encoding: 'utf8' }),
-        );
-
-        // sets each word 'order' property for WordsToLine module to work properly
-        json.pages.forEach(page => {
-          page.elements.forEach((element, order) => {
-            element.properties = { order };
+        function sortWords(doc: Document): Document {
+          // sets each word 'order' property for WordsToLine module to work properly
+          doc.pages.forEach(page => {
+            page.elements.forEach((element, order) => {
+              element.properties = { order };
+            });
           });
-        });
+          return doc;
+        }
 
-        docBefore = json2document(json);
-
-        runModules(docBefore, [new WordsToLineModule()]).then(after => {
-          docAfter = after;
-          done();
-        });
+        getDocFromJson(doc => runModules(sortWords(doc), [new WordsToLineModule()]), fileName).then(
+          after => {
+            docAfter = after;
+            done();
+          },
+        );
       });
 
       it('should merge side-by-side words into a single block', () => {

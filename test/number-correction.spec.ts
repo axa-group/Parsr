@@ -30,19 +30,18 @@ import {
   TableRow,
   Word,
 } from '../server/src/types/DocumentRepresentation';
-import { getPdf, runModules } from './helpers';
+import { getDocFromJson, runModules } from './helpers';
 
 describe('Number correction from pdf', () => {
-  const pdfName = 'number-correction-1.pdf';
-  let pdfAfter: Document;
+  const jsonName = 'number-correction-1.pdf.new.json';
+  let docAfter: Document;
 
   before(done => {
-    function transform(doc: Document) {
-      return runModules(doc, [new NumberCorrectionModule()]);
+    function transform(json: Document) {
+      return runModules(json, [new NumberCorrectionModule()]);
     }
-
-    getPdf(transform, pdfName).then(([, pdfA]) => {
-      pdfAfter = pdfA;
+    getDocFromJson(transform, jsonName).then(after => {
+      docAfter = after;
       done();
     });
   });
@@ -51,7 +50,7 @@ describe('Number correction from pdf', () => {
   const testIds: number[] = Array.from(Array(11).keys());
   testIds.forEach(i => {
     it(`should fix number misrecognition looking like 0.00`, () => {
-      const expected = pdfAfter.pages[0].elements[i].content;
+      const expected = docAfter.pages[0].elements[i].content;
       expect(expected).to.be.equal('0.00');
     });
   });
@@ -153,7 +152,12 @@ describe('Single string number correction', () => {
   withData(['ISS'], test => {
     it(`should not change whitelisted word "${test}" looking like "155"`, () => {
       expect(
-        testableSuggest(numberCorrectionModule, test, accountingFormat, new Set<string>(['ISS'])),
+        testableSuggest(
+          numberCorrectionModule,
+          test,
+          accountingFormat,
+          new Set<string>(['ISS']),
+        ),
       ).to.be.equal(test);
     });
   });

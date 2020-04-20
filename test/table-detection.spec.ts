@@ -19,33 +19,29 @@ import * as fs from 'fs';
 import 'mocha';
 import { TableDetectionModule } from '../server/src/processing/TableDetectionModule/TableDetectionModule';
 import { TableRow } from '../server/src/types/DocumentRepresentation';
-import { Element } from '../server/src/types/DocumentRepresentation/Element';
 import { Table } from '../server/src/types/DocumentRepresentation/Table';
-import { getPdf, runModules, TableExtractorStub } from './helpers';
+import { getDocFromJson, runModules, TableExtractorStub } from './helpers';
 
+const jsonName = 'table-detection.pdf.new.json';
 const pdfName = 'table-detection.pdf';
 
 describe('No Table detection function', () => {
-  let table: Element;
+  let tableNumber: number;
   const noTableDetectedExtractor = new TableExtractorStub(0, '', '[]');
   const tableDetectionModule = new TableDetectionModule();
   tableDetectionModule.setExtractor(noTableDetectedExtractor);
 
   before(done => {
-    getPdf(
-      d => runModules(d, [tableDetectionModule]),
-      pdfName,
-    ).then(([_, pdfAfter]) => {
-      pdfAfter.pages[0].getElementsOfType<Table>(Table).forEach(elt => {
-        table = elt;
-      });
-      done();
-    });
+    getDocFromJson(doc => runModules(doc, [tableDetectionModule]), jsonName, pdfName).then(
+      docAfter => {
+        tableNumber = docAfter.pages[0].getElementsOfType<Table>(Table).length;
+        done();
+      },
+    );
   });
 
   it('should have no table detected', () => {
-    // tslint:disable-next-line
-    expect(table).not.exist;
+    expect(tableNumber).to.eql(0);
   });
 });
 
@@ -61,11 +57,8 @@ describe('One Table detection function', () => {
   tableDetectionModule.setExtractor(oneTableDetectedExtractor);
 
   before(done => {
-    getPdf(
-      d => runModules(d, [tableDetectionModule]),
-      pdfName,
-    ).then(([_, pdfAfter]) => {
-      pdfAfter.pages[0].getElementsOfType<Table>(Table).forEach(elt => {
+    getDocFromJson(d => runModules(d, [tableDetectionModule]), jsonName, pdfName).then(docAfter => {
+      docAfter.pages[0].getElementsOfType<Table>(Table).forEach(elt => {
         table = elt;
         tableRows = table.content;
       });

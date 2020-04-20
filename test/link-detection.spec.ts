@@ -15,14 +15,11 @@
  */
 
 import { expect } from 'chai';
-import * as fs from 'fs';
 import { withData } from 'leche';
 import 'mocha';
-import { LinkDetectionModule } from '../../server/src/processing/LinkDetectionModule/LinkDetectionModule';
-import { Document, Word } from '../../server/src/types/DocumentRepresentation';
-import { json2document } from '../../server/src/utils/json2document';
-
-import { runModules } from './../helpers';
+import { LinkDetectionModule } from '../server/src/processing/LinkDetectionModule/LinkDetectionModule';
+import { Document, Word } from '../server/src/types/DocumentRepresentation';
+import { getDocFromJson, runModules } from './helpers';
 
 const mdLinkRegExp = new RegExp(/\[(.*?)\]\(.*?\)/);
 
@@ -30,7 +27,9 @@ describe('Link Detection Module', () => {
   withData(
     {
       'simple links': [
-        'link-test-1.json', 7, [
+        'link-test-1.json',
+        7,
+        [
           'http://par.sr/',
           'http://par.sr/',
           'http://par.sr/',
@@ -41,7 +40,9 @@ describe('Link Detection Module', () => {
         ],
       ],
       'two different links in the same line': [
-        'link-test-2.json', 5, [
+        'link-test-2.json',
+        5,
+        [
           'https://www.google.com/',
           'https://www.google.com/',
           'https://www.google.com/',
@@ -50,7 +51,9 @@ describe('Link Detection Module', () => {
         ],
       ],
       'multi-line link': [
-        'link-test-3.json', 8, [
+        'link-test-3.json',
+        8,
+        [
           'https://www.google.com/?multiline=true',
           'https://www.google.com/?multiline=true',
           'https://www.google.com/?multiline=true',
@@ -63,38 +66,41 @@ describe('Link Detection Module', () => {
       ],
     },
     (fileName, wordWithLinkCount, linksData) => {
-      let docBefore: Document;
       let docAfter: Document;
 
       before(done => {
-        const json = JSON.parse(
-          fs.readFileSync(__dirname + '/assets/' + fileName, { encoding: 'utf8' }),
+        const pdfName = fileName.replace('.json', '.pdf');
+        getDocFromJson(doc => runModules(doc, [new LinkDetectionModule()]), fileName, pdfName).then(
+          after => {
+            docAfter = after;
+            done();
+          },
         );
-
-        docBefore = json2document(json);
-        docBefore.inputFile = __dirname + '/assets/' + fileName.replace('.json', '.pdf');
-
-        runModules(docBefore, [new LinkDetectionModule()]).then(after => {
-          docAfter = after;
-          done();
-        });
       });
 
       it('should have the expected amount of links', () => {
-        const links = docAfter.pages[0].getElementsOfType<Word>(Word).filter(w => !!w.properties.targetURL);
+        const links = docAfter.pages[0]
+          .getElementsOfType<Word>(Word)
+          .filter(w => !!w.properties.targetURL);
         expect(links.length).to.be.equal(wordWithLinkCount);
       });
 
       it('each word should have the correct targetURL', () => {
-        const links = docAfter.pages[0].getElementsOfType<Word>(Word).filter(w => !!w.properties.targetURL);
+        const links = docAfter.pages[0]
+          .getElementsOfType<Word>(Word)
+          .filter(w => !!w.properties.targetURL);
         expect(linksData.map((l, i) => links[i].properties.targetURL === l))
-          .to.be.an('array').that.does.not.include(false);
+          .to.be.an('array')
+          .that.does.not.include(false);
       });
 
       it('links to MarkDown should be correctly formatted', () => {
-        const links = docAfter.pages[0].getElementsOfType<Word>(Word).filter(w => !!w.properties.targetURL);
+        const links = docAfter.pages[0]
+          .getElementsOfType<Word>(Word)
+          .filter(w => !!w.properties.targetURL);
         expect(links.map((link: Word) => mdLinkRegExp.test(link.toMarkDown())))
-          .to.be.an('array').that.does.not.include(false);
+          .to.be.an('array')
+          .that.does.not.include(false);
       });
     },
   );

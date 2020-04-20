@@ -20,40 +20,40 @@ import 'mocha';
 import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
 import { Document, Element } from '../server/src/types/DocumentRepresentation';
-import { getPdf, runModules } from './helpers';
+import { getDocFromJson, runModules } from './helpers';
 
 describe('Line merge function', () => {
   withData(
     {
-      'one line': ['line-merge.pdf', 'I’m a sentence with multiple words.'],
+      'one line': ['line-merge.pdf.new.json', 'I’m a sentence with multiple words.'],
       'justified text': [
-        'line-merge-2.pdf',
+        'line-merge-2.pdf.new.json',
         'Lorem ipsum, sagittis a, dolor. Nullam turpis lacus.',
       ],
     },
-    (pdfName, text) => {
-      let pdfAfter: Document;
+    (jsonName, text) => {
+      let docAfter: Document;
 
       before(done => {
-        function transform(pdf: Document) {
-          return runModules(pdf, [new ReadingOrderDetectionModule(), new WordsToLineModule()]);
+        function transform(json: Document) {
+          return runModules(json, [new ReadingOrderDetectionModule(), new WordsToLineModule()]);
         }
 
-        getPdf(transform, pdfName).then(([, pdfA]) => {
-          pdfAfter = pdfA;
+        getDocFromJson(transform, jsonName).then(after => {
+          docAfter = after;
           done();
         });
       });
 
       it('should merge side-by-side words into a single block', () => {
-        expect(pdfAfter.pages[0].elements)
+        expect(docAfter.pages[0].elements)
           .to.be.an('array')
           .and.to.be.of.length(1);
       });
 
       it('should not alter the content', () => {
         expect(
-          (pdfAfter.pages[0].elements[0].content as Element[]).map(t => t.toString()).join(' '),
+          (docAfter.pages[0].elements[0].content as Element[]).map(t => t.toString()).join(' '),
         ).to.be.equal(text);
       });
 

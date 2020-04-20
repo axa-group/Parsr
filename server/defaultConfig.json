@@ -50,7 +50,7 @@
       "header-footer-detection",
       {
         "ignorePages": [],
-        "maxMarginPercentage": 15
+        "maxMarginPercentage": 8
       }
     ],
     [
