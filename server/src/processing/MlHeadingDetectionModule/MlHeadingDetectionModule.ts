@@ -361,19 +361,15 @@ export class MlHeadingDetectionModule extends Module {
         upperCase: utils.isGeneralUpperCase(heading.content),
       };
     };
-    // get all heading fonts sorted by size & upperCase
-    // TODO: ¿ sort also by weight ?
+    // get all heading fonts sorted by size, weight and upperCase
     const sortedFonts = headings
-      /*.filter(h => {
-        console.log(
-          h.toString() + ' Footer ' + h.properties.isFooter + ' header ' + h.properties.isHeader,
-        );
-        return !h.properties.isFooter && !h.properties.isHeader;
-      })*/
       .map(h => fontInfo(h))
       .sort((a, b) => {
         if (a.size !== b.size) {
           return b.size - a.size;
+        }
+        else if (a.weight !== b.weight) {
+          return a.weight === 'bold' ? -1 : 1;
         }
         return a.upperCase === b.upperCase ? 0 : a.upperCase ? -1 : 1;
       });
@@ -381,6 +377,7 @@ export class MlHeadingDetectionModule extends Module {
     const uniqueSortedFonts = [...new Set(sortedFonts.map(f => JSON.stringify(f)))].map(s =>
       JSON.parse(s),
     );
+    console.log(uniqueSortedFonts);
 
     const serializeFont = (heading: Heading) => {
       return (
@@ -388,13 +385,12 @@ export class MlHeadingDetectionModule extends Module {
       );
     };
 
-    // console.log(uniqueSortedFonts);
-
     headings.forEach(h => {
       const level = uniqueSortedFonts
-        .map(f => f.size + '|' + f.weight + '|' + f.upperCase)
+        .map(f => f.size + '|' + f.weight + '|' + f.upperCase)  // TODO: group sizes that are close in value
         .indexOf(serializeFont(h));
       h.level = level + 1;
     });
   }
 }
+
