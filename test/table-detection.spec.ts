@@ -17,14 +17,13 @@
 import { expect } from 'chai';
 import * as fs from 'fs';
 import 'mocha';
-import { join } from 'path';
 import { TableDetectionModule } from '../server/src/processing/TableDetectionModule/TableDetectionModule';
 import { TableRow } from '../server/src/types/DocumentRepresentation';
 import { Table } from '../server/src/types/DocumentRepresentation/Table';
 import { getDocFromJson, runModules, TableExtractorStub } from './helpers';
 
-const jsonName = join(__dirname, 'assets', 'table-detection.pdf.new.json');
-const pdfName = join(__dirname, 'assets', 'table-detection.pdf');
+const jsonName = 'table-detection.pdf.new.json';
+const pdfName = 'table-detection.pdf';
 
 describe('No Table detection function', () => {
   let tableNumber: number;

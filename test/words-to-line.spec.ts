@@ -17,10 +17,9 @@
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
-import { join } from 'path';
-import { WordsToLineModule } from '../../server/src/processing/WordsToLineModule/WordsToLineModule';
-import { Document, Line, Word } from '../../server/src/types/DocumentRepresentation';
-import { getDocFromJson, runModules } from './../helpers';
+import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
+import { Document, Line, Word } from '../server/src/types/DocumentRepresentation';
+import { getDocFromJson, runModules } from './helpers';
 
 describe('Words to Line Module', () => {
   withData(
@@ -55,8 +54,7 @@ describe('Words to Line Module', () => {
           return doc;
         }
 
-        const fullJsonPath = join(__dirname, 'assets', fileName);
-        getDocFromJson(doc => runModules(sortWords(doc), [new WordsToLineModule()]), fullJsonPath).then(
+        getDocFromJson(doc => runModules(sortWords(doc), [new WordsToLineModule()]), fileName).then(
           after => {
             docAfter = after;
             done();

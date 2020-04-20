@@ -72,12 +72,14 @@ export function getPdf(
 
 export function getDocFromJson(
   func: (doc: Document) => Promise<Document>,
-  fullJsonPath: string,
+  jsonName: string,
   pdfFilename?: string, // Parameter required to assign the path of a pdf inside document.inputFile
 ): Promise<Document> {
-  const document = json2document(JSON.parse(readFileSync(fullJsonPath, 'utf8')));
+  const document = json2document(
+    JSON.parse(readFileSync(`${__dirname}/assets/${jsonName}`, 'utf8')),
+  );
   if (pdfFilename) {
-    document.inputFile = pdfFilename;
+    document.inputFile = `${__dirname}/assets/sources/${pdfFilename}`;
   }
   return func(document);
 }

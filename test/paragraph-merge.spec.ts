@@ -26,7 +26,6 @@ import {
 import { WhitespaceRemovalModule } from '../server/src/processing/WhitespaceRemovalModule/WhitespaceRemovalModule';
 
 import * as fs from 'fs';
-import { join } from 'path';
 import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
 import { Paragraph } from '../server/src/types/DocumentRepresentation';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
@@ -50,9 +49,8 @@ function executePipeLine(jsonName: string, done, tableExtractor?: TableExtractor
       new LinesToParagraphModule(),
     ]);
   }
-  const jsonPath = join(__dirname, 'assets', jsonName);
-  const pdfName = join(__dirname, 'assets', 'paragraph-merge.pdf');
-  getDocFromJson(cleaner, jsonPath, pdfName).then(after => {
+
+  getDocFromJson(cleaner, jsonName, 'paragraph-merge.pdf').then(after => {
     docAfter = after;
     done();
   });

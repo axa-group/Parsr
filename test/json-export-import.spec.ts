@@ -17,7 +17,6 @@
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
-import { join } from 'path';
 import { JsonExporter } from '../server/src/output/json/JsonExporter';
 import { HierarchyDetectionModule } from '../server/src/processing/HierarchyDetectionModule/HierarchyDetectionModule';
 import { LinesToParagraphModule } from '../server/src/processing/LinesToParagraphModule/LinesToParagraphModule';
@@ -58,8 +57,7 @@ describe('JSON export and import', () => {
           });
         }
 
-        const fullJsonPath = join(__dirname, 'assets', jsonName);
-        getDocFromJson(transform, fullJsonPath).then(docB => {
+        getDocFromJson(transform, jsonName).then(docB => {
           clean(docB).then(docA => {
             docAfter = docA;
             docBefore = docB;

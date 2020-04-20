@@ -18,19 +18,18 @@ import { expect } from 'chai';
 import * as fs from 'fs';
 import { withData } from 'leche';
 import 'mocha';
-import { join } from 'path';
-import { TableDetectionModule } from '../../server/src/processing/TableDetectionModule/TableDetectionModule';
-import { Table } from '../../server/src/types/DocumentRepresentation';
-import { getDocFromJson, runModules, TableExtractorStub } from './../helpers';
+import { TableDetectionModule } from '../server/src/processing/TableDetectionModule/TableDetectionModule';
+import { Table } from '../server/src/types/DocumentRepresentation';
+import { getDocFromJson, runModules, TableExtractorStub } from './helpers';
 
-const assetsDir = __dirname + '/assets/table-reconstruction/';
+const assetsDir = __dirname + '/assets/';
 
 describe('Table Reconstruction Module', () => {
   describe('horizontal cell merge', () => {
     withData(
       {
         'table with no joined cells': [
-          'very-simple-output.json',
+          'table-very-simple-output.json',
           [
             [1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1],
@@ -38,7 +37,7 @@ describe('Table Reconstruction Module', () => {
           ],
         ],
         'only one cell merge': [
-          'one-cell-merged.json',
+          'table-one-cell-merged.json',
           [
             [2, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1],
@@ -46,7 +45,7 @@ describe('Table Reconstruction Module', () => {
           ],
         ],
         'two different merges in same row': [
-          'two-different-merges-in-same-row.json',
+          'table-two-different-merges-in-same-row.json',
           [
             [2, 1, 1, 2],
             [1, 2, 2, 1],
@@ -54,7 +53,7 @@ describe('Table Reconstruction Module', () => {
           ],
         ],
         'two different consecutive merges in same row': [
-          'two-different-consecutive-merges-in-same-row.json',
+          'table-two-different-consecutive-merges-in-same-row.json',
           [
             [2, 2, 1, 1],
             [1, 1, 1, 1, 1, 1],
@@ -62,15 +61,12 @@ describe('Table Reconstruction Module', () => {
           ],
         ],
         'multiple colspan merge in multiple rows': [
-          'multiple-colspan-merge.json',
+          'table-multiple-colspan-merge.json',
           [[4, 1, 1], [1, 3, 2], [6]],
         ],
       },
       (fileName, cellInfo) => {
         let table: Table;
-        const fullJsonPath = join(__dirname, 'assets', 'table-reconstruction', 'test-table-reconstruction.json');
-        const pdfName = fullJsonPath.replace('.json', '.pdf');
-
         before(done => {
           const camelotOutput = fs.readFileSync(assetsDir + fileName, { encoding: 'utf8' });
 
@@ -79,8 +75,8 @@ describe('Table Reconstruction Module', () => {
           tableDetectionModule.setExtractor(tableExtractor);
           getDocFromJson(
             doc => runModules(doc, [tableDetectionModule]),
-            fullJsonPath,
-            pdfName,
+            'table-reconstruction.json',
+            'test-table-reconstruction.pdf',
           ).then(after => {
             table = after.getElementsOfType<Table>(Table)[0];
             done();

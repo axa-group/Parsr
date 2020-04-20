@@ -16,12 +16,11 @@
 
 import { expect } from 'chai';
 import 'mocha';
-import { join } from 'path';
 import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 import { Element } from '../server/src/types/DocumentRepresentation/Element';
 import { getDocFromJson, runModules } from './helpers';
 
-const documentName = join(__dirname, 'assets', 'text-order-detection.json');
+const documentName = 'text-order-detection.json';
 
 describe('Text order detection function', () => {
   let first: Element;

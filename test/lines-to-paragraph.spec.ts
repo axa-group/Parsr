@@ -17,17 +17,15 @@
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
-import { LinesToParagraphModule } from '../../server/src/processing/LinesToParagraphModule/LinesToParagraphModule';
-import { Document, Heading, Line } from '../../server/src/types/DocumentRepresentation';
+import { LinesToParagraphModule } from '../server/src/processing/LinesToParagraphModule/LinesToParagraphModule';
+import { Document, Heading, Line } from '../server/src/types/DocumentRepresentation';
 
-import { join } from 'path';
-import { getDocFromJson, runModules } from './../helpers';
+import { getDocFromJson, runModules } from './helpers';
 
 let docAfter: Document;
 
 function executePipeLine(fileName, done) {
-  const fullJsonPath = join(__dirname, 'assets', fileName);
-  getDocFromJson(doc => runModules(doc, [new LinesToParagraphModule()]), fullJsonPath).then(after => {
+  getDocFromJson(doc => runModules(doc, [new LinesToParagraphModule()]), fileName).then(after => {
     docAfter = after;
     done();
   });
