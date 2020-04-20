@@ -15,14 +15,10 @@
  */
 
 import { expect } from 'chai';
-import {readFileSync} from 'fs';
 import 'mocha';
-import { resolve } from 'path';
 import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
-import { Document } from '../server/src/types/DocumentRepresentation';
 import { Element } from '../server/src/types/DocumentRepresentation/Element';
-import { json2document } from './../server/src/utils/json2document';
-import { runModules } from './helpers';
+import { getDocFromJson, runModules } from './helpers';
 
 const documentName = 'text-order-detection.json';
 
@@ -33,11 +29,9 @@ describe('Text order detection function', () => {
   let fourth: Element;
 
   before(done => {
-    const json = readFileSync(resolve(__dirname, 'assets', documentName), 'utf8');
-    const document: Document = json2document(JSON.parse(json));
-    runModules(document, [new ReadingOrderDetectionModule()])
-    .then((docAfter) => {
-      docAfter.pages[0].elements.forEach(elt => {
+    getDocFromJson(doc => runModules(doc, [new ReadingOrderDetectionModule()]), documentName).then(
+      docAfter => {
+        docAfter.pages[0].elements.forEach(elt => {
           switch (elt.toString()) {
             case 'FIRST':
               first = elt;
@@ -53,7 +47,7 @@ describe('Text order detection function', () => {
               break;
           }
         });
-      done();
+        done();
       },
     );
   });

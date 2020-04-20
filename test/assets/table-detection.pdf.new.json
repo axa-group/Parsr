@@ -1,0 +1,641 @@
+{
+  "inputFile": "",
+  "metadata": [],
+  "pages": [
+    {
+      "margins": { "top": -1, "left": -1, "bottom": -1, "right": -1 },
+      "box": { "l": 0, "t": 0, "w": 612, "h": 792 },
+      "rotation": { "degrees": 0, "origin": { "x": 0, "y": 0 }, "translation": { "x": 0, "y": 0 } },
+      "pageNumber": 1,
+      "elements": [
+        {
+          "id": 13,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 72, "t": 98.24, "w": 55.68, "h": 14.04 },
+          "content": "Example",
+          "font": 1
+        },
+        {
+          "id": 14,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 130.66, "t": 98.24, "w": 32.66, "h": 14.04 },
+          "content": "table",
+          "font": 1
+        },
+        {
+          "id": 43,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 72, "t": 114.7, "w": 26.16, "h": 15.96 },
+          "content": "This",
+          "font": 2
+        },
+        {
+          "id": 44,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 101.75, "t": 114.7, "w": 9.96, "h": 15.96 },
+          "content": "is",
+          "font": 2
+        },
+        {
+          "id": 45,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 115.3, "t": 114.7, "w": 16.06, "h": 15.96 },
+          "content": "an",
+          "font": 2
+        },
+        {
+          "id": 46,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 134.98, "t": 114.7, "w": 55.33, "h": 15.96 },
+          "content": "example",
+          "font": 2
+        },
+        {
+          "id": 47,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 194, "t": 114.7, "w": 13.26, "h": 15.96 },
+          "content": "of",
+          "font": 2
+        },
+        {
+          "id": 48,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 210.9, "t": 114.7, "w": 7.64, "h": 15.96 },
+          "content": "a",
+          "font": 2
+        },
+        {
+          "id": 49,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 222.18, "t": 114.7, "w": 29.11, "h": 15.96 },
+          "content": "data",
+          "font": 2
+        },
+        {
+          "id": 50,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 254.93, "t": 114.7, "w": 37.12, "h": 15.96 },
+          "content": "table.",
+          "font": 2
+        },
+        {
+          "id": 61,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 90, "t": 161.09, "w": 46.49, "h": 12 },
+          "content": "Disability",
+          "font": 3
+        },
+        {
+          "id": 70,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 90, "t": 175.73, "w": 44.57, "h": 12 },
+          "content": "Category",
+          "font": 3
+        },
+        {
+          "id": 83,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 167.16, "t": 168.41, "w": 59.51, "h": 12 },
+          "content": "Participants",
+          "font": 3
+        },
+        {
+          "id": 91,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 239.4, "t": 161.09, "w": 34.07, "h": 12 },
+          "content": "Ballots",
+          "font": 3
+        },
+        {
+          "id": 101,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 239.4, "t": 175.73, "w": 54.68, "h": 12 },
+          "content": "Completed",
+          "font": 3
+        },
+        {
+          "id": 109,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 311.4, "t": 153.77, "w": 34.07, "h": 12 },
+          "content": "Ballots",
+          "font": 3
+        },
+        {
+          "id": 121,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 311.4, "t": 168.41, "w": 61.8, "h": 12 },
+          "content": "Incomplete/",
+          "font": 3
+        },
+        {
+          "id": 132,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 311.4, "t": 183.05, "w": 58.04, "h": 12 },
+          "content": "Terminated",
+          "font": 3
+        },
+        {
+          "id": 138,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 90, "t": 217.54, "w": 22.59, "h": 11.04 },
+          "content": "Blind",
+          "font": 4
+        },
+        {
+          "id": 148,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 90, "t": 243.46, "w": 18.34, "h": 11.04 },
+          "content": "Low",
+          "font": 4
+        },
+        {
+          "id": 149,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 110.88, "t": 243.46, "w": 27.15, "h": 11.04 },
+          "content": "Vision",
+          "font": 4
+        },
+        {
+          "id": 159,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 90, "t": 294.82, "w": 41.25, "h": 11.04 },
+          "content": "Dexterity",
+          "font": 4
+        },
+        {
+          "id": 168,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 90, "t": 320.74, "w": 37.28, "h": 11.04 },
+          "content": "Mobility",
+          "font": 4
+        },
+        {
+          "id": 170,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 195.12, "t": 217.54, "w": 5.6, "h": 11.04 },
+          "content": "5",
+          "font": 4
+        },
+        {
+          "id": 172,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 195.12, "t": 243.46, "w": 5.6, "h": 11.04 },
+          "content": "5",
+          "font": 4
+        },
+        {
+          "id": 174,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 195.11, "t": 294.82, "w": 5.6, "h": 11.04 },
+          "content": "5",
+          "font": 4
+        },
+        {
+          "id": 176,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 195.12, "t": 320.74, "w": 5.6, "h": 11.04 },
+          "content": "3",
+          "font": 4
+        },
+        {
+          "id": 178,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 267.24, "t": 217.54, "w": 5.6, "h": 11.04 },
+          "content": "1",
+          "font": 4
+        },
+        {
+          "id": 180,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 267.25, "t": 243.46, "w": 5.6, "h": 11.04 },
+          "content": "2",
+          "font": 4
+        },
+        {
+          "id": 182,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 267.24, "t": 294.82, "w": 5.6, "h": 11.04 },
+          "content": "4",
+          "font": 4
+        },
+        {
+          "id": 184,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 267.25, "t": 320.74, "w": 5.6, "h": 11.04 },
+          "content": "3",
+          "font": 4
+        },
+        {
+          "id": 186,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 343.68, "t": 217.54, "w": 5.6, "h": 11.04 },
+          "content": "4",
+          "font": 4
+        },
+        {
+          "id": 188,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 343.69, "t": 243.46, "w": 5.6, "h": 11.04 },
+          "content": "3",
+          "font": 4
+        },
+        {
+          "id": 190,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 343.68, "t": 294.82, "w": 5.6, "h": 11.04 },
+          "content": "1",
+          "font": 4
+        },
+        {
+          "id": 192,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 343.69, "t": 320.74, "w": 5.6, "h": 11.04 },
+          "content": "0",
+          "font": 4
+        },
+        {
+          "id": 200,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 448.2, "t": 146.21, "w": 35.99, "h": 12 },
+          "content": "Results",
+          "font": 3
+        },
+        {
+          "id": 209,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 400.68, "t": 173.57, "w": 44.81, "h": 12 },
+          "content": "Accuracy",
+          "font": 3
+        },
+        {
+          "id": 216,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 483.12, "t": 173.57, "w": 24.76, "h": 12 },
+          "content": "Time",
+          "font": 3
+        },
+        {
+          "id": 217,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 510.6, "t": 173.57, "w": 10.66, "h": 12 },
+          "content": "to",
+          "font": 3
+        },
+        {
+          "id": 226,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 478.68, "t": 190.37, "w": 46.96, "h": 12 },
+          "content": "complete",
+          "font": 3
+        },
+        {
+          "id": 236,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 398.28, "t": 217.54, "w": 30.24, "h": 11.04 },
+          "content": "34.5%,",
+          "font": 4
+        },
+        {
+          "id": 237,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 431.04, "t": 217.54, "w": 16.76, "h": 11.04 },
+          "content": "n=1",
+          "font": 4
+        },
+        {
+          "id": 249,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 471.48, "t": 217.54, "w": 22.4, "h": 11.04 },
+          "content": "1199",
+          "font": 4
+        },
+        {
+          "id": 250,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 496.32, "t": 217.54, "w": 17.28, "h": 11.04 },
+          "content": "sec,",
+          "font": 4
+        },
+        {
+          "id": 251,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 515.99, "t": 217.54, "w": 16.88, "h": 11.04 },
+          "content": "n=1",
+          "font": 4
+        },
+        {
+          "id": 260,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 399.61, "t": 243.46, "w": 27.46, "h": 11.04 },
+          "content": "98.3%",
+          "font": 4
+        },
+        {
+          "id": 261,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 429.6, "t": 243.46, "w": 16.76, "h": 11.04 },
+          "content": "n=2",
+          "font": 4
+        },
+        {
+          "id": 273,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 471.49, "t": 243.46, "w": 22.4, "h": 11.04 },
+          "content": "1716",
+          "font": 4
+        },
+        {
+          "id": 274,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 496.33, "t": 243.46, "w": 17.28, "h": 11.04 },
+          "content": "sec,",
+          "font": 4
+        },
+        {
+          "id": 275,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 516, "t": 243.46, "w": 16.88, "h": 11.04 },
+          "content": "n=3",
+          "font": 4
+        },
+        {
+          "id": 287,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 394.93, "t": 268.9, "w": 33.59, "h": 11.04 },
+          "content": "(97.7%,",
+          "font": 4
+        },
+        {
+          "id": 288,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 430.92, "t": 268.9, "w": 20.27, "h": 11.04 },
+          "content": "n=3)",
+          "font": 4
+        },
+        {
+          "id": 302,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 468.24, "t": 268.9, "w": 25.76, "h": 11.04 },
+          "content": "(1934",
+          "font": 4
+        },
+        {
+          "id": 303,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 496.44, "t": 268.9, "w": 17.16, "h": 11.04 },
+          "content": "sec,",
+          "font": 4
+        },
+        {
+          "id": 304,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 516.11, "t": 268.9, "w": 20.15, "h": 11.04 },
+          "content": "n=2)",
+          "font": 4
+        },
+        {
+          "id": 314,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 398.28, "t": 294.82, "w": 30.24, "h": 11.04 },
+          "content": "98.3%,",
+          "font": 4
+        },
+        {
+          "id": 315,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 431.04, "t": 294.82, "w": 16.76, "h": 11.04 },
+          "content": "n=4",
+          "font": 4
+        },
+        {
+          "id": 329,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 467.4, "t": 294.82, "w": 30.68, "h": 11.04 },
+          "content": "1672.1",
+          "font": 4
+        },
+        {
+          "id": 330,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 500.64, "t": 294.82, "w": 17.16, "h": 11.04 },
+          "content": "sec,",
+          "font": 4
+        },
+        {
+          "id": 331,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 520.32, "t": 294.82, "w": 16.76, "h": 11.04 },
+          "content": "n=4",
+          "font": 4
+        },
+        {
+          "id": 341,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 398.29, "t": 320.74, "w": 30.24, "h": 11.04 },
+          "content": "95.4%,",
+          "font": 4
+        },
+        {
+          "id": 342,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 431.05, "t": 320.74, "w": 16.76, "h": 11.04 },
+          "content": "n=3",
+          "font": 4
+        },
+        {
+          "id": 354,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 471.49, "t": 320.74, "w": 22.4, "h": 11.04 },
+          "content": "1416",
+          "font": 4
+        },
+        {
+          "id": 355,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 496.33, "t": 320.74, "w": 17.28, "h": 11.04 },
+          "content": "sec,",
+          "font": 4
+        },
+        {
+          "id": 356,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": { "l": 516, "t": 320.74, "w": 16.88, "h": 11.04 },
+          "content": "n=3",
+          "font": 4
+        }
+      ]
+    }
+  ],
+  "fonts": [
+    {
+      "id": 1,
+      "name": "UJIRXF+Cambria-Bold",
+      "size": 14.04,
+      "weight": "bold",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#376092",
+      "sizeUnit": "px"
+    },
+    {
+      "id": 2,
+      "name": "QDKTTN+Calibri",
+      "size": 15.96,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    },
+    {
+      "id": 3,
+      "name": "IRJSLD+Calibri-Bold",
+      "size": 12,
+      "weight": "bold",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    },
+    {
+      "id": 4,
+      "name": "QDKTTN+Calibri",
+      "size": 11.04,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    }
+  ]
+}
