@@ -15,7 +15,6 @@
  */
 
 import { expect } from 'chai';
-import * as fs from 'fs';
 import { withData } from 'leche';
 import 'mocha';
 import { WordsToLineModule } from '../../server/src/processing/WordsToLineModule/WordsToLineModule';
@@ -45,19 +44,22 @@ describe('Words to Line Module', () => {
       let docAfter: Document;
 
       before(done => {
-        const json = JSON.parse(
-          fs.readFileSync(__dirname + '/assets/' + fileName, { encoding: 'utf8' }),
-        );
-        // sets each word 'order' property for WordsToLine module to work properly
-        json.pages.forEach(page => {
-          page.elements.forEach((element, order) => {
-            element.properties = { order };
+        function sortWords(doc: Document): Document {
+          // sets each word 'order' property for WordsToLine module to work properly
+          doc.pages.forEach(page => {
+            page.elements.forEach((element, order) => {
+              element.properties = { order };
+            });
           });
-        });
-        getDocFromJson(doc => runModules(doc, [new WordsToLineModule()]), fileName).then(after => {
-          docAfter = after;
-          done();
-        });
+          return doc;
+        }
+
+        getDocFromJson(doc => runModules(sortWords(doc), [new WordsToLineModule()]), fileName).then(
+          after => {
+            docAfter = after;
+            done();
+          },
+        );
       });
 
       it('should merge side-by-side words into a single block', () => {
