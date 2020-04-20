@@ -17,6 +17,7 @@
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
+import { join } from 'path';
 import { TableOfContentsDetectionModule } from '../../server/src/processing/TableOfContentsDetectionModule/TableOfContentsDetectionModule';
 import { TableOfContents } from '../../server/src/types/DocumentRepresentation';
 import { getDocFromJson, runModules } from './../helpers';
@@ -24,7 +25,8 @@ import { getDocFromJson, runModules } from './../helpers';
 let toc: TableOfContents;
 
 function executePipeLine(fileName: string, done) {
-  getDocFromJson(doc => runModules(doc, [new TableOfContentsDetectionModule()]), fileName).then(
+  const fullJsonPath = join(__dirname, 'assets', fileName);
+  getDocFromJson(doc => runModules(doc, [new TableOfContentsDetectionModule()]), fullJsonPath).then(
     after => {
       [toc] = after.getElementsOfType<TableOfContents>(TableOfContents);
       done();

@@ -17,6 +17,7 @@
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
+import { join } from 'path';
 import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
 import { Document, Element } from '../server/src/types/DocumentRepresentation';
@@ -39,7 +40,8 @@ describe('Line merge function', () => {
           return runModules(json, [new ReadingOrderDetectionModule(), new WordsToLineModule()]);
         }
 
-        getDocFromJson(transform, jsonName).then(after => {
+        const fullJsonPath = join(__dirname, 'assets', jsonName);
+        getDocFromJson(transform, fullJsonPath).then(after => {
           docAfter = after;
           done();
         });

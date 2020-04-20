@@ -18,6 +18,7 @@ import { expect } from 'chai';
 import * as fs from 'fs';
 import { withData } from 'leche';
 import 'mocha';
+import { join } from 'path';
 import { TableDetectionModule } from '../../server/src/processing/TableDetectionModule/TableDetectionModule';
 import { Table } from '../../server/src/types/DocumentRepresentation';
 import { getDocFromJson, runModules, TableExtractorStub } from './../helpers';
@@ -67,7 +68,8 @@ describe('Table Reconstruction Module', () => {
       },
       (fileName, cellInfo) => {
         let table: Table;
-        const pdfName = 'table-reconstruction/test-table-reconstruction.pdf';
+        const fullJsonPath = join(__dirname, 'assets', 'table-reconstruction', 'test-table-reconstruction.json');
+        const pdfName = fullJsonPath.replace('.json', '.pdf');
 
         before(done => {
           const camelotOutput = fs.readFileSync(assetsDir + fileName, { encoding: 'utf8' });
@@ -77,7 +79,7 @@ describe('Table Reconstruction Module', () => {
           tableDetectionModule.setExtractor(tableExtractor);
           getDocFromJson(
             doc => runModules(doc, [tableDetectionModule]),
-            'table-reconstruction/test-table-reconstruction.json',
+            fullJsonPath,
             pdfName,
           ).then(after => {
             table = after.getElementsOfType<Table>(Table)[0];

@@ -17,6 +17,7 @@
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
+import { join } from 'path';
 import { LinkDetectionModule } from '../../server/src/processing/LinkDetectionModule/LinkDetectionModule';
 import { Document, Word } from '../../server/src/types/DocumentRepresentation';
 import { getDocFromJson, runModules } from './../helpers';
@@ -69,8 +70,9 @@ describe('Link Detection Module', () => {
       let docAfter: Document;
 
       before(done => {
-        const pdfName = fileName.replace('.json', '.pdf');
-        getDocFromJson(doc => runModules(doc, [new LinkDetectionModule()]), fileName, pdfName).then(
+        const fullJsonPath = join(__dirname, 'assets', fileName);
+        const pdfName = fullJsonPath.replace('.json', '.pdf');
+        getDocFromJson(doc => runModules(doc, [new LinkDetectionModule()]), fullJsonPath, pdfName).then(
           after => {
             docAfter = after;
             done();

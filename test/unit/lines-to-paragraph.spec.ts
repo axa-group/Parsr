@@ -20,12 +20,14 @@ import 'mocha';
 import { LinesToParagraphModule } from '../../server/src/processing/LinesToParagraphModule/LinesToParagraphModule';
 import { Document, Heading, Line } from '../../server/src/types/DocumentRepresentation';
 
+import { join } from 'path';
 import { getDocFromJson, runModules } from './../helpers';
 
 let docAfter: Document;
 
 function executePipeLine(fileName, done) {
-  getDocFromJson(doc => runModules(doc, [new LinesToParagraphModule()]), fileName).then(after => {
+  const fullJsonPath = join(__dirname, 'assets', fileName);
+  getDocFromJson(doc => runModules(doc, [new LinesToParagraphModule()]), fullJsonPath).then(after => {
     docAfter = after;
     done();
   });

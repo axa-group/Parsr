@@ -17,6 +17,7 @@
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
+import { join } from 'path';
 import { NumberCorrectionModule } from '../server/src/processing/NumberCorrectionModule/NumberCorrectionModule';
 import {
   BoundingBox,
@@ -40,8 +41,8 @@ describe('Number correction from pdf', () => {
     function transform(json: Document) {
       return runModules(json, [new NumberCorrectionModule()]);
     }
-
-    getDocFromJson(transform, jsonName).then(after => {
+    const fullJsonPath = join(__dirname, 'assets', jsonName);
+    getDocFromJson(transform, fullJsonPath).then(after => {
       docAfter = after;
       done();
     });

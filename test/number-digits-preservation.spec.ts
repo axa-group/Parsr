@@ -16,11 +16,12 @@
 
 import { expect } from 'chai';
 import 'mocha';
+import { join } from 'path';
 import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 import { getDocFromJson, getImage, runModules } from './helpers';
 
 const imageName = 'number-digits-preservation.jpg';
-const jsonName = 'number-digits-preservation.pdf.new.json';
+const jsonName = join(__dirname, 'assets', 'number-digits-preservation.pdf.new.json');
 const expectedWords = ['FR76', '1234', '5678', '0004', '0066', '9012', '345'];
 
 describe('Number parsing on images', () => {

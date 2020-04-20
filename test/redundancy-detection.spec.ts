@@ -16,12 +16,13 @@
 
 import { expect } from 'chai';
 import 'mocha';
+import { join } from 'path';
 import { RedundancyDetectionModule } from '../server/src/processing/RedundancyDetectionModule/RedundancyDetectionModule';
 import { Word } from '../server/src/types/DocumentRepresentation';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
 import { getDocFromJson, runModules } from './helpers';
 
-const jsonName = 'redundancy-detection.pdf.new.json';
+const jsonName = join(__dirname, 'assets', 'redundancy-detection.pdf.new.json');
 
 describe('Redundancy detection function', () => {
   let docAfter: Document;
