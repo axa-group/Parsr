@@ -18,6 +18,9 @@ import * as pdfjs from 'pdfjs-dist';
 import logger from '../../../utils/Logger';
 import { OperationState } from './../OperationState';
 
+/**
+ * applies matrix to the current state transform
+ */
 export default {
   key: 'transform',
   value: (a: number, b: number, c: number, d: number, e: number, f: number) => {

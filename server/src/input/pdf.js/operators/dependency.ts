@@ -18,10 +18,14 @@
 import logger from '../../../utils/Logger';
 import { OperationState } from '../OperationState';
 
+/**
+ * this operator loads the document's assets like fonts and images
+ */
 export default {
   key: 'dependency',
   value: (depId: string, commonObjs: any) => {
     logger.debug(`==> dependency(${depId})`);
+    // g_* assets are font references
     if (depId.startsWith('g_') && commonObjs.has(depId)) {
       OperationState.state.loadedFonts[depId] = commonObjs.get(depId);
     }

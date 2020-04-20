@@ -18,6 +18,9 @@
 import logger from '../../../utils/Logger';
 import { OperationState } from '../OperationState';
 
+/**
+ * saves current state to a stack and resets it
+ */
 export default {
   key: 'save',
   value: () => {

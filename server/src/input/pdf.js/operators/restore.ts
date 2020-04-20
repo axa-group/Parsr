@@ -18,6 +18,9 @@
 import logger from '../../../utils/Logger';
 import { OperationState } from '../OperationState';
 
+/**
+ * restores previously saved state
+ */
 export default {
   key: 'restore',
   value: () => {

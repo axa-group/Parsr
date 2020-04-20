@@ -18,6 +18,10 @@
 import logger from '../../../utils/Logger';
 import { OperationState } from '../OperationState';
 
+/**
+ * this operator contains data to draw shapes into the page
+ * for now we don't render those shapes but we need to keep track of the (x,y) state coordinates
+ */
 export default {
   key: 'constructPath',
   value: (ops: number[], args: any[]) => {

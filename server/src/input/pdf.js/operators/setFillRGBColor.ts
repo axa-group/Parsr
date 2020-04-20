@@ -19,6 +19,9 @@ import logger from '../../../utils/Logger';
 import { OperationState } from '../OperationState';
 import { rgbToHex } from './../../../utils';
 
+/**
+ * sets the state's font color
+ */
 export default {
   key: 'setFillRGBColor',
   value: (r: number, g: number, b: number) => {

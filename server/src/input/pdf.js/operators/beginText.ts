@@ -19,6 +19,9 @@ import logger from '../../../utils/Logger';
 import { OperationState } from './../OperationState';
 import { IDENTITY_MATRIX } from './helper';
 
+/**
+ * sets state to begin showing text
+ */
 export default {
   key: 'beginText',
   value: () => {

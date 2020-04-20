@@ -17,6 +17,7 @@
 const IDENTITY_MATRIX = [1, 0, 0, 1, 0, 0];
 const FONT_IDENTITY_MATRIX = [0.001, 0, 0, 0.001, 0, 0];
 
+// this is a slightly different parseFloat algo
 const pf = value => {
   if (Number.isInteger(value)) {
     return value.toString();

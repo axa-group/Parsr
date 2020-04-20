@@ -18,6 +18,9 @@ import logger from '../../../utils/Logger';
 import { OperationState } from '../OperationState';
 import { FONT_IDENTITY_MATRIX, pf } from './helper';
 
+/**
+ * sets state's font object (raw font representation) and its properties like weight and size
+ */
 export default {
   key: 'setFont',
   value: (fontRefName: string, size: number) => {

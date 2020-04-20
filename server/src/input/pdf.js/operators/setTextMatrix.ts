@@ -19,6 +19,9 @@ import logger from '../../../utils/Logger';
 import { OperationState } from '../OperationState';
 import { pf } from './helper';
 
+/**
+ * sets the current textMatrix and restarts pointer and texts
+ */
 export default {
   key: 'setTextMatrix',
   value: (a: number, b: number, c: number, d: number, e: number, f: number) => {

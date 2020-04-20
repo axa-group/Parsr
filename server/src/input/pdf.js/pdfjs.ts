@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BoundingBox, Page, Word } from '../../types/DocumentRepresentation';
+import { BoundingBox, Element, Page } from '../../types/DocumentRepresentation';
 import { OperatorsManager } from './OperatorsManager';
 
 /**
@@ -28,10 +28,10 @@ import { OperatorsManager } from './OperatorsManager';
 
 export async function loadPage(document: any, pageNum: number): Promise<Page> {
   const page = await document.getPage(pageNum);
-  const viewport = page.getViewport({ scale: 1.0 });
-  const pageOperatorList: any = await page.getOperatorList();
 
-  const opManager = new OperatorsManager(pageOperatorList, page);
-  const pageWords: Word[] = opManager.processOperators();
-  return new Page(pageNum, pageWords, new BoundingBox(0, 0, viewport.width, viewport.height));
+  const opManager = new OperatorsManager(page);
+  const pageElements: Element[] = await opManager.processOperators();
+
+  const viewport = page.getViewport({ scale: 1.0 });
+  return new Page(pageNum, pageElements, new BoundingBox(0, 0, viewport.width, viewport.height));
 }

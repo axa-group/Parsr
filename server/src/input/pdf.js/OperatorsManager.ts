@@ -15,7 +15,7 @@
  */
 
 import * as pdfjsLib from 'pdfjs-dist';
-import { BoundingBox, Font, Word } from "../../types/DocumentRepresentation";
+import { BoundingBox, Element, Font, Word } from "../../types/DocumentRepresentation";
 import logger from "../../utils/Logger";
 import { OperationState } from './OperationState';
 import { matrixToCoords } from './operators/helper';
@@ -55,33 +55,38 @@ type TextElement = {
   },
 };
 
+/**
+ * responsible for processing all page operators
+ * and parsing them into an array of Elements for the document
+ */
 export class OperatorsManager {
-  private opList: OpList;
+  private opList: Promise<OpList>;
   private viewport;
   private commonPageObjects;
   private notImplementedFunctions: string[] = [];
 
-  // receives an OpList given by pdfjs-dist "page.getOperatorList()"
-  constructor(operatorList: OpList, page: any) {
-    this.opList = operatorList;
+  // receives the page representation of pdfjs-dist
+  constructor(page: any) {
+    this.opList = page.getOperatorList();
     this.viewport = page.getViewport({ scale: 1 });
     this.commonPageObjects = page.commonObjs;
   }
 
-  public processOperators(): Word[] {
-    const elements: Word[] = [];
-    this.opList.fnArray.forEach((opNumber, i) => {
+  public async processOperators(): Promise<Element[]> {
+    const elements: Element[] = [];
+    const opList = await this.opList;
+    opList.fnArray.forEach((opNumber, i) => {
       const operatorName = Object.keys((pdfjsLib as any).OPS)[opNumber - 1];
       if (isAvailable(operatorName)) {
-        const args = this.opList.argsArray[i];
-        let textElement: TextElement;
+        const args = opList.argsArray[i];
+        let fnReturn: TextElement; // for now, the only possible return is a TextElement type
         if (args) {
-          textElement = fn(operatorName)(...args, this.commonPageObjects);
+          fnReturn = fn(operatorName)(...args, this.commonPageObjects);
         } else {
-          textElement = fn(operatorName)(this.commonPageObjects);
+          fnReturn = fn(operatorName)(this.commonPageObjects);
         }
-        if (textElement) {
-          this.parseTextElement(textElement, elements);
+        if (fnReturn) {
+          this.parseTextElement(fnReturn, elements);
         }
       } else {
         if (!this.notImplementedFunctions.includes(operatorName)) {
@@ -93,15 +98,15 @@ export class OperatorsManager {
     return elements.filter(e => e.box && e.box.width > 0);
   }
 
-  private parseTextElement(element: TextElement, parsedWords: Word[]) {
+  private parseTextElement(textElem: TextElement, parsedElements: Element[]) {
     const pageTransform = Util.transform(this.viewport.transform, OperationState.state.transformMatrix);
-    const transform = matrixToCoords(Util.transform(pageTransform, element.transform.matrixArray));
+    const transform = matrixToCoords(Util.transform(pageTransform, textElem.transform.matrixArray));
     const scaleX = transform.scale.x;
     const scaleY = transform.scale.y;
     const posX = transform.position.x;
     const posY = transform.position.y;
 
-    const { tspan } = element;
+    const { tspan } = textElem;
     if (tspan.x) {
       const xChars = tspan.x.split(' ').map(n => parseFloat(n));
       tspan.textContent.split('').forEach((char, currentX) => {
@@ -122,20 +127,25 @@ export class OperatorsManager {
             }),
           );
 
-          const previousWord = parsedWords.length > 0 && parsedWords.pop();
-          const prevRight = previousWord && parseFloat(previousWord.right.toFixed(3));
+          const previousElement =
+            parsedElements.length > 0 &&
+            parsedElements[parsedElements.length - 1] &&
+            parsedElements.pop();
+
+          const prevRight = previousElement && parseFloat(previousElement.right.toFixed(3));
           const currLeft = parseFloat(currentWord.left.toFixed(3));
 
           if (
-            previousWord &&
-            Math.abs(prevRight - currLeft) * 10 <= previousWord.font.size &&
-            Math.round(currentWord.top) === Math.round(previousWord.top)
+            previousElement &&
+            previousElement instanceof Word &&
+            Math.abs(prevRight - currLeft) * 10 <= previousElement.font.size &&
+            Math.round(currentWord.top) === Math.round(previousElement.top)
           ) {
-            parsedWords.push(previousWord.join(currentWord));
-          } else if (previousWord) {
-            parsedWords.push(previousWord, currentWord);
+            parsedElements.push(previousElement.join(currentWord));
+          } else if (parsedElements) {
+            parsedElements.push(previousElement, currentWord);
           } else {
-            parsedWords.push(currentWord);
+            parsedElements.push(currentWord);
           }
         }
       });

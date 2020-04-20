@@ -19,6 +19,10 @@ import logger from '../../../utils/Logger';
 import { OperationState } from '../OperationState';
 import { matrixToCoords, pf } from './helper';
 
+/**
+ * this operator has info to create a TextElement type (defined in OperatorsManager)
+ * and returns it to be parsed into doc Elements
+ */
 export default {
   key: 'showText',
   value: (glyphs: any[]) => {
@@ -41,58 +45,30 @@ export default {
     const widthAdvanceScale = fontSize * fontMatrix[0];
 
     let x = 0;
-    let iteratorNormalCompletion = true;
-    let didIteratorError = false;
-    let iteratorError;
-    let iterator;
-    let step;
-    let glyph;
-
-    try {
-      for (iterator = glyphs[Symbol.iterator](), step;
-        // tslint:disable-next-line
-        !(iteratorNormalCompletion = (step = iterator.next()).done); iteratorNormalCompletion = true) {
-        glyph = step.value;
-
-        if (glyph === null) {
-          x += fontDirection * wordSpacing;
-          continue;
-        } else if (typeof glyph === 'number') {
-          x += -glyph * fontSize * 0.001;
-          continue;
-        }
-
-        const width = glyph.width;
-        const character = glyph.unicode;
-        const spacing = (glyph.isSpace ? wordSpacing : 0) + charSpacing;
-        const charWidth = width * widthAdvanceScale + spacing * fontDirection;
-
-        // there are some cases where the glyph is a mix of more than 1 character
-        const chars = character.split('');
-        chars.forEach(char => {
-          current.xcoords.push(current.x + x * textHScale);
-          current.tspan.textContent += char;
-          x += charWidth / chars.length;
-        });
-
+    for (const glyph of glyphs) {
+      if (glyph === null) {
+        x += fontDirection * wordSpacing;
+        continue;
+      } else if (typeof glyph === 'number') {
+        x += -glyph * fontSize * 0.001;
+        continue;
       }
-      current.xcoords.push(current.x + x * textHScale);
-    } catch (err) {
-      didIteratorError = true;
-      iteratorError = err;
-    } finally {
-      try {
-        if (!iteratorNormalCompletion && iterator.return != null) {
-          iterator.return();
-        }
-      } finally {
-        if (didIteratorError) {
-          // tslint:disable-next-line
-          throw iteratorError;
-        }
-      }
+
+      const width = glyph.width;
+      const character = glyph.unicode;
+      const spacing = (glyph.isSpace ? wordSpacing : 0) + charSpacing;
+      const charWidth = width * widthAdvanceScale + spacing * fontDirection;
+
+      // there are some cases where the glyph is a mix of more than 1 character
+      const chars = character.split('');
+      chars.forEach(char => {
+        current.xcoords.push(current.x + x * textHScale);
+        current.tspan.textContent += char;
+        x += charWidth / chars.length;
+      });
     }
 
+    current.xcoords.push(current.x + x * textHScale);
     if (font.vertical) {
       current.y -= x * textHScale;
     } else {

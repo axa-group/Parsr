@@ -18,7 +18,6 @@
 import beginText from './beginText';
 import constructPath from './constructPath';
 import dependency from './dependency';
-import endText from './endText';
 import moveText from './moveText';
 import nextLine from './nextLine';
 import restore from './restore';
@@ -39,7 +38,6 @@ const availableOperators = [
   beginText,
   constructPath,
   dependency,
-  endText,
   moveText,
   nextLine,
   restore,

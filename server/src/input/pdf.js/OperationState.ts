@@ -19,20 +19,24 @@ import { FONT_IDENTITY_MATRIX, IDENTITY_MATRIX } from './operators/helper';
 export class OperationState {
   public static state = {
     current: {
+      // font data
       font: null,
+      fontFamily: undefined,
       fontWeight: 'normal',
       fontStyle: 'normal',
-      fontMatrix: FONT_IDENTITY_MATRIX,
+      fontSize: 0,
       fontDirection: 1,
       fillColor: '#000000',
+      fontMatrix: FONT_IDENTITY_MATRIX,
+
+      // pointer data
       x: 0,
       y: 0,
       lineX: 0,
       lineY: 0,
+
+      // text reconstruction data
       xcoords: [],
-      tspan: null,
-      fontFamily: undefined,
-      fontSize: 0,
       charSpacing: 0,
       wordSpacing: 0,
       textMatrix: IDENTITY_MATRIX,
@@ -40,8 +44,10 @@ export class OperationState {
       textHScale: 1,
       textRise: 0,
       leading: 0,
+      tspan: null,
     },
 
+    // cache of fonts loaded with "dependency" operator
     loadedFonts: {},
     fontMatrix: FONT_IDENTITY_MATRIX,
     transformMatrix: IDENTITY_MATRIX,

@@ -19,6 +19,9 @@ import logger from '../../../utils/Logger';
 import { OperationState } from './../OperationState';
 import { pf } from './helper';
 
+/**
+ * moves the current (x,y) coordinates
+ */
 export default {
   key: 'moveText',
   value: (x: number, y: number) => {

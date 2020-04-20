@@ -19,6 +19,9 @@ import logger from '../../../utils/Logger';
 import { OperationState } from '../OperationState';
 import moveText from './moveText';
 
+/**
+ * this does a "newLine + carriageReturn", moving pointer to (0, leading)
+ */
 export default {
   key: 'nextLine',
   value: () => {
