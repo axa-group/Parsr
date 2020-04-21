@@ -29,6 +29,11 @@ import pandas as pd
 import requests
 from io import StringIO
 
+import diff_match_patch
+from sxsdiff import DiffCalculator
+from sxsdiff.generators.github import GitHubStyledGenerator
+
+
 class ParsrClient():
 	def __init__(self, server):
 		self.revision_history = {}
@@ -59,14 +64,14 @@ class ParsrClient():
 		if not document_name:
 			document_name = os.path.splitext(os.path.basename(file))[0]
 		if document_name not in self.revision_history:
-			self.revision_history[document_name] = [str(semver.VersionInfo.parse('1.0.0'))]
+			self.revision_history[document_name] = { str(semver.VersionInfo.parse('1.0.0')): jobId }
 		else:
-			latest_revision = max(semver.VersionInfo.parse(i) for i in self.revision_history[document_name])
+			latest_revision = max(semver.VersionInfo.parse(i) for i in list(self.revision_history[document_name].keys()))
 			if revision == 'major':
 				new_revision = latest_revision.bump_major()
 			elif revision == 'minor':
 				new_revision = latest_revision.bump_minor()
-			self.revision_history[document_name].append(str(new_revision))
+			self.revision_history[document_name][str(new_revision)] = jobId
 		if save_request_id:
 			self.set_current_request_id(jobId)
 		if not wait_till_finished:
@@ -82,11 +87,45 @@ class ParsrClient():
 			print('>> Job done!')
 			return {'file': file, 'config': config, 'status_code': r.status_code, 'server_response': r.text}
 
+	def get_request_id(self, document_name:str, revision:str) -> str:
+		if document_name in self.revision_history:
+			if revision in self.revision_history[document_name].keys():
+				return self.revision_history[document_name][revision]
+			else:
+				print('Revision {} not found for document {}'.format(revision, document_name))
+		else:
+			print('Document name {} not found'.format(document_name))
+		return ""
+
 	def get_revisions(self, document_name:str) -> list:
 		if document_name in self.revision_history:
-			return self.revision_history[document_name]
+			return list(self.revision_history[document_name].keys())
 		else:
 			return []
+
+	def compare_revisions(self, document_name:str, revisions:list = [], pretty_html:bool = False) -> list:
+		diffs = []
+		if len(revisions) == 0:
+			revisions = self.get_revisions(document_name)
+		request_ids = [self.get_request_id(document_name, i) for i in revisions]
+		for i in range(0, len(request_ids) - 1):
+			request_id1 = request_ids[i]
+			request_id2 = request_ids[i + 1]
+			md1 = self.get_markdown(request_id1)
+			md2 = self.get_markdown(request_id2)
+
+			if pretty_html:
+				sxsdiff_result = DiffCalculator().run(md1, md2)
+				html_store = StringIO()
+				GitHubStyledGenerator(file=html_store).run(sxsdiff_result)
+				html_diff = html_store.getvalue()
+				diffs.append(html_diff)
+			else:
+				dmp = diff_match_patch.diff_match_patch()
+				diff = dmp.diff_main(md1, md2)
+				dmp.diff_cleanupSemantic(diff)
+				diffs.append(diff)
+		return diffs
 
 	def send_documents_folder(self, folder:str, config:str, server:str="") -> list:
 		if server == "":
@@ -202,9 +241,3 @@ class ParsrClient():
 				return r.text
 		else:
 			return r.text
-
-	def get_revisions(self, document_name:str) -> list:
-		if document_name in self.revision_history:
-			return self.revision_history[document_name]
-		else:
-			return []
