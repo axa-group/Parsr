@@ -48,6 +48,14 @@ version = "0.4.3"
 
 [[package]]
 category = "main"
+description = "Repackaging of Google's Diff Match and Patch libraries. Offers robust algorithms to perform the operations required for synchronizing plain text."
+name = "diff-match-patch"
+optional = false
+python-versions = "*"
+version = "20181111"
+
+[[package]]
+category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -202,6 +210,18 @@ version = "1.14.0"
 
 [[package]]
 category = "main"
+description = "Side by side diff generator for python"
+name = "sxsdiff"
+optional = false
+python-versions = "*"
+version = "0.3.0"
+
+[package.dependencies]
+diff-match-patch = "*"
+six = ">=1.9.0"
+
+[[package]]
+category = "main"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 name = "urllib3"
 optional = false
@@ -222,7 +242,7 @@ python-versions = "*"
 version = "0.1.9"
 
 [metadata]
-content-hash = "e11fe52bcd1dac0c9564115ffeda40720fd8619973d61d2c09cd77c0eca51bd4"
+content-hash = "66e80c0709ffbc910f672bdb1401317c787b6d39f46705b5f66c2b3a6f04cbe6"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -245,6 +265,9 @@ chardet = [
 colorama = [
     {file = "colorama-0.4.3-py2.py3-none-any.whl", hash = "sha256:7d73d2a99753107a36ac6b455ee49046802e59d9d076ef8e47b61499fa29afff"},
     {file = "colorama-0.4.3.tar.gz", hash = "sha256:e96da0d330793e2cb9485e9ddfd918d456036c7149416295932478192f4436a1"},
+]
+diff-match-patch = [
+    {file = "diff-match-patch-20181111.tar.gz", hash = "sha256:a809a996d0f09b9bbd59e9bbd0b71eed8c807922512910e05cbd3f9480712ddb"},
 ]
 idna = [
     {file = "idna-2.9-py2.py3-none-any.whl", hash = "sha256:a068a21ceac8a4d63dbfd964670474107f541babbd2250d61922f029858365fa"},
@@ -334,6 +357,10 @@ semver = [
 six = [
     {file = "six-1.14.0-py2.py3-none-any.whl", hash = "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c"},
     {file = "six-1.14.0.tar.gz", hash = "sha256:236bdbdce46e6e6a3d61a337c0f8b763ca1e8717c03b369e87a7ec7ce1319c0a"},
+]
+sxsdiff = [
+    {file = "sxsdiff-0.3.0-py2.py3-none-any.whl", hash = "sha256:5f1649d9b1d528f1b845adeb1d9c7f7f68c516e983b144af47d4f1460787d65b"},
+    {file = "sxsdiff-0.3.0.zip", hash = "sha256:416c0e710b7e1efc37c4c5da1f076354b099dc972c07a54c8d6b7bc84fe335a8"},
 ]
 urllib3 = [
     {file = "urllib3-1.25.8-py2.py3-none-any.whl", hash = "sha256:2f3db8b19923a873b3e5256dc9c2dedfa883e33d87c690d9c7913e1f40673cdc"},
