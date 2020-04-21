@@ -312,18 +312,20 @@ export class ApiServer {
   private handlePostDoc(req: Request, res: Response): void {
     res.setHeader('Access-Control-Allow-Origin', '*');
 
-    if (!('files' in req && 'file' in req.files && 'config' in req.files)) {
-      res.status(400).send(`Bad request: file or config not found.`);
+    if (!('files' in req && 'file' in req.files)) {
+      res.status(400).send(`Bad request: file not found.`);
       return;
     }
-
     const doc: Express.Multer.File = req.files.file[0];
-    const config: Express.Multer.File = req.files.config[0];
+    let config: Express.Multer.File;
+    if (req.files.config) {
+      config = req.files.config[0];
+    }
     const docName: string = doc.originalname.split('.')[0];
     const docId: string = this.getUUID();
     const outputPath = path.resolve(`${this.outputDir}/${docName}-${docId}`);
 
-    if (!this.isValidDocument(doc) || !this.isValidConfig(config)) {
+    if (!this.isValidDocument(doc) || (!!config && !this.isValidConfig(config))) {
       res.sendStatus(415);
       return;
     }
@@ -334,9 +336,13 @@ export class ApiServer {
       res.status(500).send(err);
       return;
     }
+    let configPath = '../../server/defaultConfig.json';
+    if (!!config) {
+      configPath = config.path;
+    }
 
-    this.fileManager.newBinder(docId, doc.path, config.path, outputPath, docName);
-    this.processManager.start(doc.path, docId, config.path, docName, outputPath);
+    this.fileManager.newBinder(docId, doc.path, configPath, outputPath, docName);
+    this.processManager.start(doc.path, docId, configPath, docName, outputPath);
 
     res
       .status(202)
@@ -398,11 +404,7 @@ export class ApiServer {
   private fileToLocalPath(docId: string): (file: string) => string {
     return (file: string) => {
       const match = file.match(/-(\d+)-(\d+)\.csv$/);
-      return this.fileManager.getCsvFilePath(
-        docId,
-        parseInt(match[1], 10),
-        parseInt(match[2], 10),
-      );
+      return this.fileManager.getCsvFilePath(docId, parseInt(match[1], 10), parseInt(match[2], 10));
     };
   }
 
@@ -554,7 +556,8 @@ export class ApiServer {
     let convert;
     const command = this.getCommandLocationOnSystem('magick convert', 'convert');
     if (command) {
-      const inputFile = fileType.ext === 'pdf' ? binder.input.concat(`[${page - 1}]`) : binder.input;
+      const inputFile =
+        fileType.ext === 'pdf' ? binder.input.concat(`[${page - 1}]`) : binder.input;
       convert = new Promise((resolve, reject) => {
         exec([command, '-resize', '200x200', inputFile, filePath].join(' '), err => {
           if (err) {
@@ -585,7 +588,6 @@ export class ApiServer {
     } catch (error) {
       res.status(500).send(error);
     }
-
   }
 
   private isValidDocument(doc: Express.Multer.File): boolean {
