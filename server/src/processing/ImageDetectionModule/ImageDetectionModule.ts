@@ -24,7 +24,7 @@ import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
-import { DumpPdfImageExtractor, ImageExtractor, PdfJsImageExtractor } from './extractors';
+import { ImageExtractor, PdfJsImageExtractor, PdfminerImageExtractor } from './extractors';
 
 interface Options {
   ocrImages?: boolean;
@@ -60,9 +60,12 @@ export class ImageDetectionModule extends Module<Options> {
       case 'pdfjs':
         this.extractor = new PdfJsImageExtractor();
         break;
-      default:
-        this.extractor = new DumpPdfImageExtractor();
+      case 'pdfminer':
+        this.extractor = new PdfminerImageExtractor();
         break;
+      default:
+        logger.warn(`No image extractor implemented for ${config.extractor.pdf}`);
+        return doc;
     }
 
     await this.extractor.run(doc);

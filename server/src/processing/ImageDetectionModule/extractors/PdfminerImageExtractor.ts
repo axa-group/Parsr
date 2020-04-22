@@ -20,7 +20,7 @@ import logger from '../../../utils/Logger';
 import * as DumpPdf from './DumpPdfParsr';
 import { ImageExtractor } from "./ImageExtractor";
 
-export class DumpPdfImageExtractor extends ImageExtractor {
+export class PdfminerImageExtractor extends ImageExtractor {
   private linkedDumpPdfImages: number = 0;
   private missedDumpPdfImages: number = 0;
   private mutoolMissedImages: number = 0;

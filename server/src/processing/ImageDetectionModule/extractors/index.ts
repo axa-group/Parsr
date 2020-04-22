@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { DumpPdfImageExtractor } from './DumpPdfImageExtractor';
 import { ImageExtractor } from './ImageExtractor';
 import { PdfJsImageExtractor } from './PdfJsImageExtractor';
+import { PdfminerImageExtractor } from './PdfminerImageExtractor';
 
 export {
-  DumpPdfImageExtractor,
+  PdfminerImageExtractor,
   ImageExtractor,
   PdfJsImageExtractor,
 };
