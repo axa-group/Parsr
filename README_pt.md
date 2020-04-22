@@ -23,18 +23,18 @@
 
 - Ele fornece aos usuários informações limpas, estruturadas e enriquecidas com rótulos, para aplicativos prontos para uso, que variam de entrada de dados e automação de análise de documentos, arquivamento e muitos outros.
 
-- Currently, Parsr can perform document cleaning, _hierarchy regeneration_ (words, lines, paragraphs), detection of _headings, tables, lists, ToCs, page numbers, headers/footers, links_, and others. Check out [all the features](server/src/processing/README.md#1-current-processing-modules).
+- Atualmente, Parsr pode executar limpeza de documentos, regeneração de hierarquia (palavras, linhas, parágrafos), detecção de \*títulos, tabelas, listas, índices, número de páginas, cabeçalhos, rodapé e muito mais. Aqui está uma lista de todas as [todas as funcionalidades](server/src/processing/README.md#1-current-processing-modules).
 
-# Table of Contents
+# Índice
 
-- [Table of Contents](#table-of-contents)
-- [Getting Started](#começando)
-- [Installation](#instalação)
-- [Usage](#uso)
-- [Documentation](#documentação)
-- [Contribute](#contribua)
-- [Third Party Licenses](#licenças-de-terceiros)
-- [License](#licença)
+- [Índice](#índice)
+- [Começando](#começando)
+- [Instalação](#instalação)
+- [Uso](#uso)
+- [Documentação](#documentação)
+- [Contribua](#contribua)
+- [Licenças de Terceiros](#licenças-de-terceiros)
+- [Licença](#licença)
 
 # Começando
 
