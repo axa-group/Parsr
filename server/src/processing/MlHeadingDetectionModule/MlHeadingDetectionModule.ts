@@ -360,6 +360,7 @@ export class MlHeadingDetectionModule extends Module {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
     const clf = new DecisionTreeClassifierLevel();    
 
+    // TODO: try to normalize the features
     headings.forEach(h => {
       const size = h.getMainFont().size;
       const weight = h.getMainFont().weight === 'bold' ? 1 : 0;
