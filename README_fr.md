@@ -48,7 +48,14 @@ Parsr prend en entrée une image (.jpg, .png, .tiff, ...) ou un pdf et génère 
 
 ## Table des matières
 
-- [Transformez vos documents en données!](#transformez-vos-documents-en-données) - [Table des matières](#table-des-matières) - [Débuter avec Parsr](#débuter-avec-parsr) - [Installation](#installation) - [Utilisation](#utilisation) - [Documentation](#documentation) - [Comment contribuer](#comment-contribuer) - [Licences tierces](#licences-tierces) - [Licence](#licence)
+- [Table des matières](#table-des-matières)
+- [Débuter avec Parsr](#débuter-avec-parsr)
+- [Installation](#installation)
+- [Utilisation](#utilisation)
+- [Documentation](#documentation)
+- [Comment contribuer](#comment-contribuer)
+- [Licences tierces](#licences-tierces)
+- [Licence](#licence)
 
 ## Débuter avec Parsr
 
