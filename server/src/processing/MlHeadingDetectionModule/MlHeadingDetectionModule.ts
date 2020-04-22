@@ -30,6 +30,7 @@ import logger from '../../utils/Logger';
 import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagraphModule';
 import { Module } from '../Module';
 import { DecisionTreeClassifier } from './train_model/model';
+import { DecisionTreeClassifierLevel } from './train_model/model_level';
 
 export class MlHeadingDetectionModule extends Module {
   public static moduleName = 'ml-heading-detection';
@@ -194,17 +195,7 @@ export class MlHeadingDetectionModule extends Module {
     const isFontUnique = line.isUniqueFont();
     const differentColor = line.getMainFont().color !== commonFont.color;
     const isNumber = !isNaN(lineStr as any)
-
-    const is_lower_case = lineStr.toLowerCase() === lineStr;
-    const is_upper_case = lineStr.toUpperCase() === lineStr;
-    let textCase = 3;
-    if (this.titleCase(line)) {
-      textCase = 2;
-    } else if (is_lower_case) {
-      textCase = 0;
-    } else if (is_upper_case) {
-      textCase = 1;
-    }
+    const textCase = this.textCase(lineStr);
 
     const features = [isDifferentStyle, isFontBigger, isFontUnique, textCase, wordCount, differentColor, isNumber];
     const clf = new DecisionTreeClassifier();
@@ -212,16 +203,28 @@ export class MlHeadingDetectionModule extends Module {
     return clf.predict(features) === 1;
   }
 
-  private titleCase(line: Line) {
-    return line.content.map((word) => {
+  private textCase(lineStr: string) {
+    const isTitleCase = lineStr.split(" ").map((word) => {
       const lengthThreshold = 4;
-      const text = word.toString();
-      if (text.length > lengthThreshold) {
-        return (/^[A-Z]\w+/.test(text) || /^(?:\W*\d+\W*)+\w+/.test(text));
+      if (word.length > lengthThreshold) {
+        return (/^[A-Z]\w+/.test(word) || /^(?:\W*\d+\W*)+\w+/.test(word));
       } else {
         return true;
       }
     }).reduce((acc, curr) => acc && curr);
+    const isLowerCase = lineStr.toLowerCase() === lineStr;
+    const isUpperCase = lineStr.toUpperCase() === lineStr;
+
+    let textCase = 3;
+    if (isTitleCase) {
+      textCase = 2;
+    } else if (isLowerCase) {
+      textCase = 0;
+    } else if (isUpperCase) {
+      textCase = 1;
+    }
+
+    return textCase;
   }
 
   private groupHeadingsByFont(headingIndexes: number[], lines: Line[]): number[][] {
@@ -353,44 +356,16 @@ export class MlHeadingDetectionModule extends Module {
   }
 
   private computeHeadingLevels(document: Document) {
-    const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
-    const fontInfo = (heading: Heading) => {
-      return {
-        size: heading.getMainFont().size,
-        weight: heading.getMainFont().weight,
-        upperCase: utils.isGeneralUpperCase(heading.content),
-      };
-    };
-    // get all heading fonts sorted by size, weight and upperCase
-    const sortedFonts = headings
-      .map(h => fontInfo(h))
-      .sort((a, b) => {
-        if (a.size !== b.size) {
-          return b.size - a.size;
-        }
-        else if (a.weight !== b.weight) {
-          return a.weight === 'bold' ? -1 : 1;
-        }
-        return a.upperCase === b.upperCase ? 0 : a.upperCase ? -1 : 1;
-      });
-    // remove duplicates
-    const uniqueSortedFonts = [...new Set(sortedFonts.map(f => JSON.stringify(f)))].map(s =>
-      JSON.parse(s),
-    );
-    console.log(uniqueSortedFonts);
 
-    const serializeFont = (heading: Heading) => {
-      return (
-        fontInfo(heading).size + '|' + fontInfo(heading).weight + '|' + fontInfo(heading).upperCase
-      );
-    };
+    const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
+    const clf = new DecisionTreeClassifierLevel();    
 
     headings.forEach(h => {
-      const level = uniqueSortedFonts
-        .map(f => f.size + '|' + f.weight + '|' + f.upperCase)  // TODO: group sizes that are close in value
-        .indexOf(serializeFont(h));
-      h.level = level + 1;
+      const size = h.getMainFont().size;
+      const weight = h.getMainFont().weight === 'bold' ? 1 : 0;
+      const textCase = this.textCase(h.toString());
+      const features = [size, weight, textCase];
+      h.level = clf.predict(features) + 1;
     });
   }
 }
-
