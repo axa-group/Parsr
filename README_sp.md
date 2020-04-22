@@ -69,12 +69,11 @@ Consulta la documentación de [uso de la API](docs/api-guide.md).
 
 1. Para acceder al cliente **python** de la API de Parsr:
 
-   ````sh
-   t
-   `
-   Para probar la **Jupyter Notebook** usando el cliente de Python, dirígete a la [demo jupyter](demo/parsr-jupyter-demo).
+   ```sh
+   pip install parsr-client
+   ```
 
-   ````
+   Para probar la **Jupyter Notebook** usando el cliente de Python, dirígete a la [demo jupyter](demo/parsr-jupyter-demo).
 
 2. Para utilizar la interfaz gráfica de Parsr (la API debe estar lanzada previamente):
    ```sh

@@ -69,14 +69,13 @@ Consult the documentation on the [usage of the API](docs/api-guide.md).
 
 1. To access the **python** client to Parsr API, issue:
 
-   ````sh
-   t
-   `
+   ```sh
+   pip install parsr-client
+   ```
+
    To sample the **Jupyter Notebook**, using the python client, head over to the [jupyter demo](demo/parsr-jupyter-demo).
 
-   ````
-
-2. To use the GUI tool (the API needs to already be running), issue:
+2) To use the GUI tool (the API needs to already be running), issue:
    ```sh
    docker run -t -p 8080:80 axarev/parsr-ui-localhost:latest
    ```

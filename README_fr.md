@@ -93,11 +93,10 @@ Consultez la documentation sur [l'utilisation de l'API](docs/api-guide.md).
 1. Pour utiliser le client **python** de Parsr:
 
    ```sh
-   t
+   pip install parsr-client
+   ```
 
    Pour utiliser le **Jupyter Notebook** utilisant ce client, [cliquez ici](demo/parsr-jupyter-demo).
-
-   ```
 
 2. Pour utiliser l'outil GUI (l'API doit déjà être en cours d'exécution), lancez:
    ```sh
