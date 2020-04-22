@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import * as fs from 'fs';
-import * as CommandExecuter from '../../utils/CommandExecuter';
+import * as CommandExecuter from '../../../utils/CommandExecuter';
 
 export function getFileMetadata(pdfFilePath: string): Promise<any> {
   return new Promise(resolve => {
@@ -27,6 +28,7 @@ export function getFileMetadata(pdfFilePath: string): Promise<any> {
       });
   });
 }
+
 export function extractPageNodeIds(data: string) {
   const rootPageObjId = data.match('<key>Pages</key>\r?\n<value><ref id="(\\d+)" /></value>')[1];
   const rootPagesNode = getNode(rootPageObjId, data);

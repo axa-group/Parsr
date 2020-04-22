@@ -24,7 +24,7 @@ import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
-import * as DumpPdf from './DumpPdfParsr';
+import { DumpPdfImageExtractor, ImageExtractor, PdfJsImageExtractor } from './extractors';
 
 interface Options {
   ocrImages?: boolean;
@@ -40,10 +40,7 @@ const defaultOptions = (defaultConfig as any) as Options;
 export class ImageDetectionModule extends Module<Options> {
   public static moduleName = 'image-detection';
 
-  private extractorDetectedImages: number = 0;
-  private linkedDumpPdfImages: number = 0;
-  private missedDumpPdfImages: number = 0;
-  private mutoolMissedImages: number = 0;
+  private extractor: ImageExtractor = null;
 
   constructor(options?: Options) {
     super(options, defaultOptions);
@@ -59,18 +56,16 @@ export class ImageDetectionModule extends Module<Options> {
       return doc;
     }
 
-    if (!doc.assetsFolder) {
-      logger.warn('MuPDF not installed !! Skip image detection.');
-      return doc;
+    switch (config.extractor.pdf) {
+      case 'pdfjs':
+        this.extractor = new PdfJsImageExtractor();
+        break;
+      default:
+        this.extractor = new DumpPdfImageExtractor();
+        break;
     }
 
-    this.extractorDetectedImages = this.totalDocumentImages(doc);
-    if (this.extractorDetectedImages === 0) {
-      logger.info('No images detected !! Skip image detection.');
-      return doc;
-    }
-
-    await this.extractImages(doc);
+    await this.extractor.run(doc);
     return this.ocrImages(doc, config)
       .then(() => doc)
       .catch(() => doc);
@@ -148,84 +143,12 @@ export class ImageDetectionModule extends Module<Options> {
     const assets: string[] = fs.readdirSync(doc.assetsFolder);
     return path.resolve(
       doc.assetsFolder +
-        '/' +
-        assets
-          .filter(
-            fileName => fileName === 'img-' + image.xObjId.padStart(4, '0') + '.' + image.xObjExt,
-          )
-          .pop(),
+      '/' +
+      assets
+        .filter(
+          fileName => fileName === 'img-' + image.xObjId.padStart(4, '0') + '.' + image.xObjExt,
+        )
+        .pop(),
     );
-  }
-
-  private async extractImages(doc: Document) {
-    const dumpPdfData = await DumpPdf.getFileMetadata(doc.inputFile);
-    if (dumpPdfData != null) {
-      const assets: string[] = fs.readdirSync(doc.assetsFolder);
-      const pageIds = DumpPdf.extractPageNodeIds(dumpPdfData);
-      doc.pages.forEach((page, index) => {
-        const images = page.getElementsOfType(Image, true);
-        images.forEach(img => (img.enabled = true));
-        if (images.length > 0) {
-          this.linkImages(images, pageIds[index], dumpPdfData, index);
-          this.linkXObjectWithExtensions(images, assets, index, pageIds[index]);
-        }
-      });
-
-      logger.info(
-        `Images Detected ${this.extractorDetectedImages} Reconstructed ${this.linkedDumpPdfImages -
-          this.mutoolMissedImages -
-          this.missedDumpPdfImages} Mutool missed ${this.mutoolMissedImages} DumpPDF missed ${
-          this.missedDumpPdfImages
-        }`,
-      );
-    }
-  }
-
-  private linkXObjectWithExtensions(
-    images: Image[],
-    assets: string[],
-    pageIndex: number,
-    pageNodeId: string,
-  ) {
-    images
-      .filter(img => !!img.xObjId)
-      .forEach(img => {
-        const asset = assets.filter(filename => {
-          return filename.startsWith('img-' + img.xObjId.padStart(4, '0'));
-        });
-        if (asset.length === 1) {
-          img.xObjExt = asset[0].split('.').pop();
-        } else {
-          this.mutoolMissedImages++;
-          logger.warn(
-            `Page ${pageIndex + 1} \(nodeId ${pageNodeId}\) image ${
-              img.refId
-            } no extension found for file ${img.xObjId}`,
-          );
-        }
-      });
-  }
-
-  private linkImages(images: Image[], pageNodeId: string, data: string, pageIndex: number) {
-    let rootNode = DumpPdf.getNode(pageNodeId, data);
-    const resourcesNodeId = DumpPdf.getResourceId(rootNode);
-    if (resourcesNodeId != null) {
-      pageNodeId = resourcesNodeId;
-      rootNode = DumpPdf.getNode(resourcesNodeId, data);
-    }
-    images.forEach(img => {
-      const imgRefId = DumpPdf.getImageRefId(img.refId, rootNode, data);
-      if (imgRefId != null) {
-        img.xObjId = imgRefId;
-        this.linkedDumpPdfImages = this.linkedDumpPdfImages + 1;
-      } else {
-        this.missedDumpPdfImages = this.missedDumpPdfImages + 1;
-        logger.warn(`Page ${pageIndex + 1} Xml node missed for image Id ${img.refId}`);
-      }
-    });
-  }
-
-  private totalDocumentImages(doc: Document): number {
-    return doc.getElementsOfType(Image, true).length;
   }
 }
