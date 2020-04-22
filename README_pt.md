@@ -66,19 +66,18 @@ Para executar a [API](docs/api-guide.md), lance:
 docker run -p 3001:3001 axarev/parsr
 ```
 
-que o iniciará em [http://localhost:3001](http://localhost:3001).  
+Este comando iniciará a API em [http://localhost:3001](http://localhost:3001).  
 Consulte a documentação sobre o [uso da API](docs/api-guide.md).
 
 1. Para acessar o cliente **python** na API de Parsr, lance:
 
    ```sh
-   t
-   `
-   Para experimentar o **Jupyter Notebook**, usando o cliente python, vá para [demo jupyter](demo/parsr-jupyter-demo).
-
+   pip install parsr-client
    ```
 
-2. Para usar a ferramenta GUI (a API já deve estar em execução), lance:
+   Para experimentar o **Jupyter Notebook**, usando o cliente python, vá para [demo jupyter](demo/parsr-jupyter-demo).
+
+2) Para usar a ferramenta GUI (a API já deve estar em execução), lance:
    ```sh
    docker run -t -p 8080:80 axarev/parsr-ui-localhost:latest
    ```

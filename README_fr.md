@@ -1,12 +1,23 @@
 <p align='center'>
-  <img src="logo.png" width="275">
+  <img src="assets/logo.png" width="275">
 </p>
 
-[![Build Status](https://cloud.drone.io/api/badges/axa-group/Parsr/status.svg)](https://cloud.drone.io/axa-group/Parsr)
+<h2 align="center"><i>Transformez vos documents en données!</i></h2>
 
-# Transformez vos documents en données!
+<p align="center">
+	<a href="https://cloud.drone.io/axa-group/Parsr"><img src="https://cloud.drone.io/api/badges/axa-group/Parsr/status.svg"></a>
+</p>
 
-[English](README.md) | [Spanish](README_sp.md) | [Portuguese](README_pt.md)| [中文](README_zh-cn.md)
+<p align="center">
+	<a href="README.md">English</a> |
+  <a href="README_pt.md">Portuguese</a> |
+  <a href="README_sp.md">Spanish</a> |
+	<a href="README_zh-cn.md">中文</a>
+</p>
+
+<p align='center'>
+  <img src="assets/demo_screen.gif">
+</p>
 
 **Parsr** est une chaîne d'outils de nettoyage, d'analyse et d'extraction de documents (image, pdf) qui génère des données facilement disponibles, organisées et utilisables pour les développeurs et les scientifiques de données (data scientists).
 
@@ -73,12 +84,14 @@ qui le lancera sur [http://localhost:3001](http://localhost:3001).
 Consultez la documentation sur [l'utilisation de l'API](docs/api-guide.md).
 
 1. Pour utiliser le client **python** de Parsr:
-   ````sh
+
+   ```sh
    t
 
    Pour utiliser le **Jupyter Notebook** utilisant ce client, [cliquez ici](demo/parsr-jupyter-demo).
 
-   ````
+   ```
+
 2. Pour utiliser l'outil GUI (l'API doit déjà être en cours d'exécution), lancez:
    ```sh
    docker run -t -p 8080:80 axarev/parsr-ui-localhost:latest
