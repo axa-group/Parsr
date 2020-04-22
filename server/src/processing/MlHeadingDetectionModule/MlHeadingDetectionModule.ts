@@ -30,7 +30,7 @@ import logger from '../../utils/Logger';
 import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagraphModule';
 import { Module } from '../Module';
 import { DecisionTreeClassifier } from './train_model/model';
-import { DecisionTreeClassifierLevel } from './train_model/model_level';
+import { DecisionTreeClassifier as DecisionTreeClassifierLevel } from './train_model/model_level';
 
 export class MlHeadingDetectionModule extends Module {
   public static moduleName = 'ml-heading-detection';
@@ -365,6 +365,7 @@ export class MlHeadingDetectionModule extends Module {
       const weight = h.getMainFont().weight === 'bold' ? 1 : 0;
       const textCase = this.textCase(h.toString());
       const features = [size, weight, textCase];
+      // need to add 1 because the prediction is an index
       h.level = clf.predict(features) + 1;
     });
   }
