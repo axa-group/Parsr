@@ -16,7 +16,7 @@
 
 import * as pdfjsLib from 'pdfjs-dist';
 import { BoundingBox, Element, Font, Word } from "../../types/DocumentRepresentation";
-import logger from "../../utils/Logger";
+import logger from '../../utils/Logger';
 import { OperationState } from './OperationState';
 import { matrixToCoords } from './operators/helper';
 import { getOperator as fn, isAvailable } from './operators/index';
@@ -26,6 +26,11 @@ const Util = (pdfjsLib as any).Util;
 type OpList = {
   fnArray: number[];
   argsArray: any[];
+};
+
+type ManagerOptions = {
+  extractImages?: boolean;
+  extractText?: boolean;
 };
 
 type TextSpan = {
@@ -39,6 +44,7 @@ type TextSpan = {
   x: string;
   y: string;
 };
+
 type TextElement = {
   tspan: TextSpan,
   transform: {
@@ -55,6 +61,11 @@ type TextElement = {
   },
 };
 
+export type OperatorResponse = {
+  type: 'text' | 'images';
+  data: any;
+};
+
 /**
  * responsible for processing all page operators
  * and parsing them into an array of Elements for the document
@@ -62,14 +73,19 @@ type TextElement = {
 export class OperatorsManager {
   private opList: Promise<OpList>;
   private viewport;
-  private commonPageObjects;
+  private commonObjects;
+  private pageObjects;
   private notImplementedFunctions: string[] = [];
 
   // receives the page representation of pdfjs-dist
-  constructor(page: any) {
+  constructor(page: any, options?: ManagerOptions) {
     this.opList = page.getOperatorList();
     this.viewport = page.getViewport({ scale: 1 });
-    this.commonPageObjects = page.commonObjs;
+    this.commonObjects = page.commonObjs;
+    this.pageObjects = page.objs;
+
+    OperationState.state.extractImages = options && options.extractImages;
+    OperationState.state.extractText = !options || (options.hasOwnProperty('extractText') && options.extractText);
   }
 
   public async processOperators(): Promise<Element[]> {
@@ -79,14 +95,20 @@ export class OperatorsManager {
       const operatorName = Object.keys((pdfjsLib as any).OPS)[opNumber - 1];
       if (isAvailable(operatorName)) {
         const args = opList.argsArray[i];
-        let fnReturn: TextElement; // for now, the only possible return is a TextElement type
+        let fnReturn: OperatorResponse;
         if (args) {
-          fnReturn = fn(operatorName)(...args, this.commonPageObjects);
+          fnReturn = fn(operatorName)(...args, {
+            commonObjects: this.commonObjects,
+            pageObjects: this.pageObjects,
+          });
         } else {
-          fnReturn = fn(operatorName)(this.commonPageObjects);
+          fnReturn = fn(operatorName)({
+            commonObjects: this.commonObjects,
+            pageObjects: this.pageObjects,
+          });
         }
-        if (fnReturn) {
-          this.parseTextElement(fnReturn, elements);
+        if (fnReturn && fnReturn.type === 'text') {
+          this.parseTextElement(fnReturn.data, elements);
         }
       } else {
         if (!this.notImplementedFunctions.includes(operatorName)) {
