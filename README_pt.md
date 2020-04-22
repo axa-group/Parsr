@@ -28,11 +28,13 @@
 # Table of Contents
 
 - [Table of Contents](#table-of-contents)
-- [Getting Started](#getting-started) - [Installation](#installation) - [Usage](#usage)
-- [Documentation](#documentation)
-- [Contribute](#contribute)
-- [Third Party Licenses](#third-party-licenses)
-- [License](#license)
+- [Getting Started](#começando)
+- [Installation](#instalação)
+- [Usage](#uso)
+- [Documentation](#documentação)
+- [Contribute](#contribua)
+- [Third Party Licenses](#licenças-de-terceiros)
+- [License](#licença)
 
 # Começando
 
@@ -67,7 +69,7 @@ docker run -p 3001:3001 axarev/parsr
 que o iniciará em [http://localhost:3001](http://localhost:3001).  
 Consulte a documentação sobre o [uso da API](docs/api-guide.md).
 
-1. 1. Para acessar o cliente **python** na API de Parsr, lance:
+1. Para acessar o cliente **python** na API de Parsr, lance:
 
    ```sh
    t
@@ -76,7 +78,7 @@ Consulte a documentação sobre o [uso da API](docs/api-guide.md).
 
    ```
 
-2. 2. Para usar a ferramenta GUI (a API já deve estar em execução), lance:
+2. Para usar a ferramenta GUI (a API já deve estar em execução), lance:
    ```sh
    docker run -t -p 8080:80 axarev/parsr-ui-localhost:latest
    ```
