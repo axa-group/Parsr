@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2020 AXA Group Operations S.A.
  *
@@ -14,10 +15,19 @@
  * limitations under the License.
  */
 
-var shell = require('shelljs');
+import logger from '../../../utils/Logger';
+import { OperationState } from '../OperationState';
 
-if (!shell.test('-d', './dist/assets') || !shell.test('-d', './dist/bin')) {
-  shell.mkdir('./dist', './dist/assets', './dist/bin');
-}
-shell.cp('-u', './server/assets/*.py', './dist/assets/');
-shell.cp('-u', './server/defaultConfig.json', './dist/bin/');
+/**
+ * this operator loads the document's assets like fonts and images
+ */
+export default {
+  key: 'dependency',
+  value: (depId: string, commonObjs: any) => {
+    logger.debug(`==> dependency(${depId})`);
+    // g_* assets are font references
+    if (depId.startsWith('g_') && commonObjs.has(depId)) {
+      OperationState.state.loadedFonts[depId] = commonObjs.get(depId);
+    }
+  },
+};

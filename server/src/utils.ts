@@ -774,3 +774,14 @@ export function sanitizeXML(xmlPath: string): Promise<string> {
     }
   });
 }
+
+// each value should be a number between 0 and 255
+export function rgbToHex(r: number, g: number, b: number) {
+  return '#' +
+    [r, g, b]
+      .map(x => {
+        const hex = Math.ceil(x).toString(16);
+        return hex.length === 1 ? '0' + hex : hex;
+      })
+      .join('');
+}

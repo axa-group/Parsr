@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2020 AXA Group Operations S.A.
  *
@@ -14,10 +15,19 @@
  * limitations under the License.
  */
 
-var shell = require('shelljs');
+import logger from '../../../utils/Logger';
+import { OperationState } from '../OperationState';
+import { rgbToHex } from './../../../utils';
 
-if (!shell.test('-d', './dist/assets') || !shell.test('-d', './dist/bin')) {
-  shell.mkdir('./dist', './dist/assets', './dist/bin');
-}
-shell.cp('-u', './server/assets/*.py', './dist/assets/');
-shell.cp('-u', './server/defaultConfig.json', './dist/bin/');
+/**
+ * sets the state's font color
+ */
+export default {
+  key: 'setFillRGBColor',
+  value: (r: number, g: number, b: number) => {
+    logger.debug(`==> setFillRGBColor(${r},${g},${b})`);
+    OperationState.state.current.fillColor = rgbToHex(r, g, b);
+    OperationState.state.current.tspan = { textContent: '' };
+    OperationState.state.current.xcoords = [];
+  },
+};
