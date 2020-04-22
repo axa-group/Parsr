@@ -80,7 +80,7 @@ function main(): void {
   const configPath: string = path.resolve(commander.config);
   let fileType: { ext: string; mime: string } = filetype(fs.readFileSync(filePath));
   const configStr: string = fs.readFileSync(configPath, 'utf-8');
-  const config: Config = new Config(JSON.parse(configStr));
+  const config: Config = new Config(configStr);
 
   logger.info('Using config:');
   logger.info(utils.prettifyObject(config));

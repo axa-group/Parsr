@@ -330,11 +330,6 @@ export class ApiServer {
       return;
     }
 
-    if (!this.checkConfig(config)) {
-      res.status(419).send('Config file is not valid, check the JSON format and required keys');
-      return;
-    }
-
     try {
       fs.mkdirSync(outputPath);
     } catch (err) {
@@ -608,27 +603,6 @@ export class ApiServer {
       return false;
     }
     return true;
-  }
-
-  private checkConfig(config: Express.Multer.File): boolean {
-    const configStr: string = fs.readFileSync(config.path, 'utf-8');
-    let configObj;
-    try {
-      configObj = JSON.parse(configStr);
-    } catch (e) {
-      logger.info('The config file is not valid JSON file');
-      return false;
-    }
-    if (
-      configObj.hasOwnProperty('version') &&
-      configObj.hasOwnProperty('extractor') &&
-      configObj.hasOwnProperty('cleaner') &&
-      configObj.hasOwnProperty('output')
-    ) {
-      return true;
-    }
-    logger.info('Required key(s) is/are missing');
-    return false;
   }
 
   private getRandomFolder(): string {

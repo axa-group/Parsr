@@ -79,14 +79,21 @@ _This means the module called `fontMerge` will be called, then `removeOutOfPage`
 Different extractors are available for each input file format.
 
 - **PDF files:** two extractors are currently available for PDF files:
+
   - `pdfminer`, which is an advanced python based extractor capable of extracting low and high level textual structures (from characters to paragraphs),
   - `pdfjs`, Mozilla's free solution for parsing documents. This is the recommended extractor to parse large documents (200+ pages).
+
+  If none is specified, `pdfminer` is the default one.
+
 - **Images:** five OCR extractors are supported for images:
+
   - `tesseract` which is an Open Source OCR software,
   - `abbyy`, that relies on ABBYY Finereader, a paid solution for OCR on documents and images,
   - `google-vision`, which uses the [Google Vision](https://cloud.google.com/vision/) API to detect the contents of an image (see the [google vision documentation for more](../server/src/input/google-vision/README.md)),
   - `ms-cognitive-services`, that uses [Microsoft Cognitive Services](https://azure.microsoft.com/es-es/services/cognitive-services/) OCR to detect and process text inside an image.
   - `amazon-textract`, that uses [Amazon Textract](https://us-east-2.console.aws.amazon.com/textract/home) service to detect and process text inside an image.
+
+  If none is specified, `tesseract` is the default one.
 
 ### 2.2. Language
 
@@ -171,6 +178,8 @@ The platform can export the following formats:
 ### 4.2. Granularity
 
 The `granularity` parameter can be either `word` or `character` and defines at what level of granularity the export will be.
+
+If the level is not specified, `word` is the default one.
 
 _Warning: exporting with a character granularity will result on very big Json files (probably more than 10Mo)._
 
