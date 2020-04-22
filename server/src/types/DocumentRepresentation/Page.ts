@@ -21,6 +21,7 @@ import { BoundingBox } from './BoundingBox';
 import { Character } from './Character';
 import { Element } from './Element';
 import { Font } from './Font';
+import { Image } from './Image';
 import { Paragraph } from './Paragraph';
 import { Text } from './Text';
 import { Word } from './Word';
@@ -74,16 +75,15 @@ export class Page {
   }
 
   public getMainRotationAngle(): number {
-    const rotations = this.getElementsOfType<Word>(Word, true)
-      .map((word) => {
-        if (Array.isArray(word.content) && word.content.length > 1) {
-          const { left: x1, bottom: y1 } = word.content[0] as Character;
-          const { left: x2, bottom: y2 } = word.content[word.content.length - 1] as Character;
-          const arcTan = Math.round(Math.atan((y1 - y2) / (x1 - x2)) * 180 / Math.PI);
-          return arcTan === 0 ? (x1 < x2 ? 0 : 180) : arcTan;
-        }
-        return 0;
-      });
+    const rotations = this.getElementsOfType<Word>(Word, true).map(word => {
+      if (Array.isArray(word.content) && word.content.length > 1) {
+        const { left: x1, bottom: y1 } = word.content[0] as Character;
+        const { left: x2, bottom: y2 } = word.content[word.content.length - 1] as Character;
+        const arcTan = Math.round((Math.atan((y1 - y2) / (x1 - x2)) * 180) / Math.PI);
+        return arcTan === 0 ? (x1 < x2 ? 0 : 180) : arcTan;
+      }
+      return 0;
+    });
 
     if (rotations.length === 0) {
       return 0;
@@ -96,7 +96,9 @@ export class Page {
     }, {});
 
     const highestValue: number = Math.max(...(Object.values(elementsPerRotation) as number[]));
-    const mainRotation = Object.keys(elementsPerRotation).find(k => elementsPerRotation[k] === highestValue);
+    const mainRotation = Object.keys(elementsPerRotation).find(
+      k => elementsPerRotation[k] === highestValue,
+    );
     return parseInt(mainRotation, 10);
   }
 
@@ -356,6 +358,7 @@ export class Page {
     let barriers: number[][] = [];
     if (direction === 'horizontal') {
       barriers = this.elements
+        .filter((elem: Element) => elem instanceof Image === false)
         .map((elem: Element) => elem.box)
         .map((b: BoundingBox) => {
           const start: number = b.top;
@@ -364,6 +367,7 @@ export class Page {
         });
     } else {
       barriers = this.elements
+        .filter((elem: Element) => elem instanceof Image === false)
         .map((elem: Element) => elem.box)
         .map((b: BoundingBox) => {
           const start: number = b.left;
