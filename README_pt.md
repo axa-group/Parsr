@@ -86,7 +86,7 @@ Consulte a documentação sobre o [uso da API](docs/api-guide.md).
 
 Consulte a [Documentação de configuração](docs/configuration.md) para interpretar as opções configuráveis no visualizador da GUI.
 
-O [Uso baseado em API](docs/usage.md#3-api) e o [uso da linha de comando](docs/usage.md#23-command-line-usage) estão documentados no [guia de uso avançado](docs/usage).
+O [Uso baseado em API](docs/usage.md#3-api) e o [uso da linha de comando](docs/usage.md#23-command-line-usage) estão documentados no [guia de uso avançado](docs/usage.md).
 
 # Documentação
 
