@@ -98,7 +98,7 @@ export class OperatorsManager {
     this.assetsFolder = options && options.assetsFolder;
 
     OperationState.state.extractImages = options && options.extractImages;
-    OperationState.state.extractText = !options || (options.hasOwnProperty('extractText') && options.extractText);
+    OperationState.state.extractText = !options || !options.hasOwnProperty('extractText') || options.extractText;
   }
 
   public async processOperators(pageNumber: number): Promise<Element[]> {
