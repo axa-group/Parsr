@@ -20,6 +20,7 @@ import constructPath from './constructPath';
 import dependency from './dependency';
 import moveText from './moveText';
 import nextLine from './nextLine';
+import paintImageXObject from './paintImageXObject';
 import restore from './restore';
 import save from './save';
 import setCharSpacing from './setCharSpacing';
@@ -40,6 +41,7 @@ const availableOperators = [
   dependency,
   moveText,
   nextLine,
+  paintImageXObject,
   restore,
   save,
   setCharSpacing,

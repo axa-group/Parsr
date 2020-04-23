@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+import { existsSync, mkdirSync } from 'fs';
 import * as limit from 'limit-async';
+import { basename, dirname, join } from 'path';
 import { getDocument } from 'pdfjs-dist';
 import { Document, Page } from '../../types/DocumentRepresentation';
 import logger from '../../utils/Logger';
@@ -36,6 +38,11 @@ export class PDFJsExtractor extends Extractor {
     // this is for limiting page fetching to 10 at the same time and avoid memory overflows
     const limiter = limit(10);
 
+    const assetsFolder = join(dirname(inputFile), `assets_${basename(inputFile).replace('.pdf', '')}`);
+    if (!existsSync(assetsFolder)) {
+      mkdirSync(assetsFolder);
+    }
+
     return new Promise<Document>((resolveDocument, rejectDocument) => {
       return repairPdf(inputFile).then((repairedPdf: string) => {
         const pages: Array<Promise<Page>> = [];
@@ -48,7 +55,7 @@ export class PDFJsExtractor extends Extractor {
             return Promise.all(pages).then((p: Page[]) => {
               const endTime: number = (Date.now() - startTime) / 1000;
               logger.info(`Elapsed time: ${endTime}s`);
-              resolveDocument(new Document(p, repairedPdf));
+              resolveDocument(new Document(p, repairedPdf, assetsFolder));
             });
           });
         } catch (e) {

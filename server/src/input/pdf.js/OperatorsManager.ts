@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+import { writeFileSync } from 'fs';
+import { join } from 'path';
 import * as pdfjsLib from 'pdfjs-dist';
-import { BoundingBox, Element, Font, Word } from "../../types/DocumentRepresentation";
+import { BoundingBox, Element, Font, Image, Word } from "../../types/DocumentRepresentation";
 import logger from '../../utils/Logger';
 import { OperationState } from './OperationState';
 import { matrixToCoords } from './operators/helper';
@@ -31,6 +33,7 @@ type OpList = {
 type ManagerOptions = {
   extractImages?: boolean;
   extractText?: boolean;
+  assetsFolder?: string;
 };
 
 type TextSpan = {
@@ -61,8 +64,16 @@ type TextElement = {
   },
 };
 
+type ImageElement = {
+  imageData: Uint8Array;
+  objectId: string;
+  height: number;
+  width: number;
+  transform: number[];
+};
+
 export type OperatorResponse = {
-  type: 'text' | 'images';
+  type: 'text' | 'image';
   data: any;
 };
 
@@ -76,6 +87,7 @@ export class OperatorsManager {
   private commonObjects;
   private pageObjects;
   private notImplementedFunctions: string[] = [];
+  private assetsFolder: string;
 
   // receives the page representation of pdfjs-dist
   constructor(page: any, options?: ManagerOptions) {
@@ -83,12 +95,13 @@ export class OperatorsManager {
     this.viewport = page.getViewport({ scale: 1 });
     this.commonObjects = page.commonObjs;
     this.pageObjects = page.objs;
+    this.assetsFolder = options && options.assetsFolder;
 
     OperationState.state.extractImages = options && options.extractImages;
     OperationState.state.extractText = !options || (options.hasOwnProperty('extractText') && options.extractText);
   }
 
-  public async processOperators(): Promise<Element[]> {
+  public async processOperators(pageNumber: number): Promise<Element[]> {
     const elements: Element[] = [];
     const opList = await this.opList;
     opList.fnArray.forEach((opNumber, i) => {
@@ -109,6 +122,9 @@ export class OperatorsManager {
         }
         if (fnReturn && fnReturn.type === 'text') {
           this.parseTextElement(fnReturn.data, elements);
+        }
+        if (this.assetsFolder && fnReturn && fnReturn.type === 'image') {
+          this.parseImageElement(fnReturn.data, elements, pageNumber);
         }
       } else {
         if (!this.notImplementedFunctions.includes(operatorName)) {
@@ -172,5 +188,27 @@ export class OperatorsManager {
         }
       });
     }
+  }
+
+  private parseImageElement(imgElem: ImageElement, parsedElements: Element[], pageNumber: number) {
+    const transform = matrixToCoords(Util.transform(this.viewport.transform, imgElem.transform));
+    const { x, y } = transform.position;
+    const { x: width, y: height } = transform.scale;
+
+    const imageCount = parsedElements.filter(e => e instanceof Image).length.toString();
+    const xObjId = pageNumber.toString().concat(imageCount).padStart(4, '0');
+    const xObjExt = 'png';
+
+    const imagePath = join(this.assetsFolder, `img-${xObjId}.${xObjExt}`);
+    writeFileSync(imagePath, imgElem.imageData, 'binary');
+
+    const image = new Image(
+      new BoundingBox(x, y - Math.abs(height), Math.abs(width), Math.abs(height)),
+      imagePath,
+    );
+    image.xObjId = xObjId;
+    image.xObjExt = xObjExt;
+    image.enabled = true;
+    parsedElements.push(image);
   }
 }
