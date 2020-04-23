@@ -31,7 +31,7 @@
             <button class="button-primary" onclick="doMagic()">Magic</button>
             <div id="upload_container"></div>
             <div id="magic_container"></div>
-            <div id="json_container"></div>
+            <div id="johnson_container"></div>
 
         </div>
 
@@ -68,8 +68,7 @@
 
             function doMagic() {
                 var request = {
-                    filename: sessionStorage.filename,
-                    config: {{ url_for('static', filename='defaultConfig.json') }}
+                    filename: sessionStorage.filename
                 }
                 doAjax("/do/magic", "POST", doMagicHandler, request);
             }
@@ -77,12 +76,32 @@
             function doMagicHandler(response) {
                 if (this.responseText) {
                     var response = JSON.parse(this.responseText);
-                    document.getElementById("magic_container").innerHTML = response.result;
+                    if (response.status === 'ok') {
+                        document.getElementById("magic_container").innerHTML = "🧐 Analysing Hold them horses...";
+                        pollServerForRequest(response.result.server_response)
+                    } else {
+                        document.getElementById("magic_container").innerHTML = response.error;                        
+                    }
                 }
             }
 
+            function pollServerForRequest(jobID) {
+                doAjax("/poll", "POST", pollOutputHandler, {jobID: jobID});
+            }
+
+            function pollOutputHandler(response) {
+                if (this.responseText) {
+                    var response = JSON.parse(this.responseText);
+                    if (response.status === 'ok') {
+                        document.getElementById("magic_container").innerHTML = "😄 Analysed! Let those horses go!";
+                    } else {
+                        document.getElementById("magic_container").innerHTML = "an error..." + response.error;                        
+                    }
+                }                
+            }
+
             function toggleFullscreen() {
-                doAjax("/fullscreen", "POST", doMagicHandler);
+                doAjax("/fullscreen", "POST", false);
             }
 
             function openLink(e) {

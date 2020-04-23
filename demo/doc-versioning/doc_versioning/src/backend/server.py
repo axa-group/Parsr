@@ -2,10 +2,13 @@ import json
 import os
 import webbrowser
 from functools import wraps
+import time
 
 from flask import Flask, url_for, render_template, jsonify, request, make_response
 import webview
 from . import app
+
+from parsr_client import ParsrClient
 
 gui_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'gui')  # development path
 
@@ -14,6 +17,8 @@ if not os.path.exists(gui_dir):  # frozen executable path
 
 server = Flask(__name__, static_folder=gui_dir, template_folder=gui_dir)
 server.config['SEND_FILE_MAX_AGE_DEFAULT'] = 1  # disable caching
+
+parsr = ParsrClient('localhost:3001')
 
 def verify_token(function):
 	@wraps(function)
@@ -102,9 +107,26 @@ def open_url():
 @server.route('/do/magic', methods=['POST'])
 @verify_token
 def doMagic():
+	my_path = os.path.abspath(os.path.dirname(__file__))
 	filename = request.json['filename']
-	config = request.json['config']
-	result = app.doMagic(filename, config)
+	result = parsr.send_document(filename, my_path + '/defaultConfig.json')
+
+	if result:
+		response = {'status': 'ok', 'result': result}
+	else:
+		response = {'status': 'error'}
+
+	return jsonify(response)
+
+@server.route('/poll', methods=['POST'])
+@verify_token
+def poll_server():
+	jobID = request.json['jobID']
+	result = parsr.get_status(jobID)
+
+	while ('progress-percentage' in result['server_response'].keys()):
+		result = parsr.get_status(jobID)
+		time.sleep(1)
 
 	if result:
 		response = {'status': 'ok', 'result': result}
