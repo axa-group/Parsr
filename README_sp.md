@@ -11,6 +11,7 @@
 <p align="center">
 	<a href="README.md">English</a> |
 	<a href="README_fr.md">Français</a> |
+  <a href="README_pt.md">Portuguese</a> |
 	<a href="README_zh-cn.md">中文</a>
 </p>
 
@@ -22,15 +23,12 @@
 
 - Provee información limpia y estructurada a analistas de datos y desarrolladores para aplicaciones que van desde ingreso de datos, automatización de análisis de documentos, archivos y muchas más.
 
-- Actualmente, Parsr puede realizar limpieza de documentos, *regeneración de jerarquías* (palabras, líneas, párrafos), detección de *títulos, tablas, listas, tablas de contenido, número de páginas, cabeceras, pie de página y más. Aquí hay un listado de [todas las funcionalidades](server/src/processing/README.md#1-current-processing-modules).
-
+- Actualmente, Parsr puede realizar limpieza de documentos, _regeneración de jerarquías_ (palabras, líneas, párrafos), detección de \*títulos, tablas, listas, tablas de contenido, número de páginas, cabeceras, pie de página y más. Aquí hay un listado de [todas las funcionalidades](server/src/processing/README.md#1-current-processing-modules).
 
 # Tabla de Contenidos
 
 - [Tabla de Contenidos](#tabla-de-contenidos)
-- [Primeros Pasos](#primeros-pasos)
-	- [Instalación](#instalación)
-	- [Uso](#uso)
+- [Primeros Pasos](#primeros-pasos) - [Instalación](#instalación) - [Uso](#uso)
 - [Documentación](#documentación)
 - [Contribuir](#contribuir)
 - [Licencias de Terceros](#licencias-de-terceros)
@@ -70,9 +68,11 @@ Este comando lanzará la API en [http://localhost:3001](http://localhost:3001).
 Consulta la documentación de [uso de la API](docs/api-guide.md).
 
 1. Para acceder al cliente **python** de la API de Parsr:
+
    ```sh
-	 pip install parsr-client
-	 ```
+   pip install parsr-client
+   ```
+
    Para probar la **Jupyter Notebook** usando el cliente de Python, dirígete a la [demo jupyter](demo/parsr-jupyter-demo).
 
 2. Para utilizar la interfaz gráfica de Parsr (la API debe estar lanzada previamente):
