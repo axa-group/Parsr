@@ -355,6 +355,60 @@ export class MlHeadingDetectionModule extends Module {
     return detected;
   }
 
+  // private computeHeadingLevels(document: Document) {
+  //   const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
+  //   const fontInfo = (heading: Heading) => {
+  //     return {
+  //       size: heading.getMainFont().size,
+  //       weight: heading.getMainFont().weight,
+  //       upperCase: utils.isGeneralUpperCase(heading.content),
+  //     };
+  //   };
+  //   const sortedFonts = headings
+  //     .map(h => fontInfo(h))
+  //     .sort((a, b) => {
+  //       if (a.size !== b.size) {
+  //         return b.size - a.size;
+  //       }
+  //       return a.upperCase === b.upperCase ? 0 : a.upperCase ? -1 : 1;
+  //     });
+  //   // remove duplicates
+  //   const uniqueSortedFonts = [...new Set(sortedFonts.map(f => JSON.stringify(f)))].map(s =>
+  //     JSON.parse(s),
+  //   );
+  //   // group fonts by rounded values
+  //   const groupedFonts = uniqueSortedFonts
+  //     .reduce((acc, font) => {
+  //       // Rounded size of the font
+  //       // let size = Math.round(font.size*2) / 2;
+  //       let size = font.size.toFixed();
+  //       // If the size doesn't already exist as a key in the object, create it
+  //       if (!acc.hasOwnProperty(size)) {
+  //         acc[size] = [];
+  //       }
+  //       // Push the font to its key
+  //       acc[size].push(font.size + '|' + font.weight + '|' + font.upperCase);
+  //       return acc;
+  //     }, {});
+
+  //   const serializeFont = (heading: Heading) => {
+  //     return (
+  //       fontInfo(heading).size + '|' + fontInfo(heading).weight + '|' + fontInfo(heading).upperCase
+  //     );
+  //   };
+
+  //   headings.forEach(h => {
+  //     const font = serializeFont(h);
+  //     let level = 0;
+  //     Object.values(groupedFonts).reverse().forEach((group, ind) => {
+  //       if (Object.values(group).includes(font)) {
+  //         level = ind + 1;
+  //       }
+  //     });
+  //     h.level = level;
+  //   });
+  // }
+
   private computeHeadingLevels(document: Document) {
 
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
