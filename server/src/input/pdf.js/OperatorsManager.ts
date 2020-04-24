@@ -196,7 +196,7 @@ export class OperatorsManager {
     const { x: width, y: height } = transform.scale;
 
     const imageCount = parsedElements.filter(e => e instanceof Image).length.toString();
-    const xObjId = pageNumber.toString().concat(imageCount).padStart(4, '0');
+    const xObjId = pageNumber.toString().concat('_', imageCount).padStart(4, '0');
     const xObjExt = 'png';
 
     const imagePath = join(this.assetsFolder, `img-${xObjId}.${xObjExt}`);
