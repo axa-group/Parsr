@@ -38,9 +38,12 @@ export class Module<T = undefined> {
       Object.keys(defaultOptions[spec]).forEach(key => {
         specsKeys.push(key);
       });
-      Object.keys(options).forEach(optKey => {
-        optKeys.push(optKey);
-      });
+      if (options) {
+        Object.keys(options).forEach(optKey => {
+          optKeys.push(optKey);
+        });
+      }
+
       if (optKeys.length > specsKeys.length) {
         logger.info(
           'To many keys as been set inside of this: ' +
@@ -71,7 +74,6 @@ export class Module<T = undefined> {
         }
         i += 1;
       });
-      logger.info('mergedOptions = ' + JSON.stringify(mergedOptions));
       this._options = mergedOptions;
     }
     this._extraOptions = extraOptions;
