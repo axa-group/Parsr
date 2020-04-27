@@ -37,6 +37,22 @@ export class RegexMatcherModule extends Module<Options> {
     super(options, defaultOptions);
   }
 
+  public findWordsAndAddMetadata(paragraph: Paragraph, result: any, query: any): any {
+    const matchingWords: Word[] = paragraph.findWordsFromParagraphSubstring(
+      result.index,
+      result[0].length,
+    );
+
+    const metadata = new RegexMetadata(matchingWords, {
+      name: query.label,
+      regex: query.regex,
+      fullMatch: result[0],
+      groups: result.slice(1),
+    });
+
+    matchingWords.forEach(word => word.metadata.push(metadata));
+  }
+
   public main(doc: Document): Document {
     this.options.queries.forEach(query => {
       logger.info(`Labeling Texts with label ${query.label} from regex ${query.regex}`);
@@ -48,35 +64,27 @@ export class RegexMatcherModule extends Module<Options> {
       if (this.options.isCaseSensitive) {
         regexType += 'i';
       }
-
       const re: RegExp = new RegExp(query.regex, regexType);
       doc.pages = doc.pages.map(page => {
-        // const labelCount = 0;
-
         const paragraphs = page.getElementsOfType<Paragraph>(Paragraph);
         for (const paragraph of paragraphs) {
           let result = null;
-          // tslint:disable-next-line:no-conditional-assignment
-          while ((result = re.exec(paragraph.toString()))) {
-            const matchingWords: Word[] = paragraph.findWordsFromParagraphSubstring(
-              result.index,
-              result[0].length,
-            );
-
-            const metadata = new RegexMetadata(matchingWords, {
-              name: query.label,
-              regex: query.regex,
-              fullMatch: result[0],
-              groups: result.slice(1),
-            });
-
-            matchingWords.forEach(word => word.metadata.push(metadata));
+          if (this.options.isGlobal) {
+            // tslint:disable-next-line: no-conditional-assignment
+            while ((result = re.exec(paragraph.toString()))) {
+              this.findWordsAndAddMetadata(paragraph, result, query);
+            }
+          } else if (
+            !this.options.isGobal &&
+            // tslint:disable-next-line: no-conditional-assignment
+            (result = paragraph.toString().match(query.regex))
+          ) {
+            this.findWordsAndAddMetadata(paragraph, result, query);
           }
         }
         return page;
       });
     });
-
     return doc;
   }
 }
