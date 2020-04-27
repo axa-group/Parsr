@@ -103,6 +103,12 @@ class ParsrClient():
 		else:
 			return []
 
+	def get_document_name_from_request_id(self, request_id:str) -> str:
+		for document_name in list(self.revision_history.keys()):
+			if request_id in [self.revision_history[document_name][i] for i in list(self.revision_history[document_name])]:
+				return document_name
+		return ""
+
 	def compare_revisions(self, document_name:str, revisions:list = [], pretty_html:bool = False) -> list:
 		diffs = []
 		if len(revisions) == 0:
