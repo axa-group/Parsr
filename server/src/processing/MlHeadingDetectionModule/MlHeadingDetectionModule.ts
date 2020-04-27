@@ -62,7 +62,7 @@ export class MlHeadingDetectionModule extends Module {
     });
 
     if (this.headingsDetected(doc)) {
-      this.computeHeadingLevels(doc);
+      this.computeHeadingLevels(doc, mainCommonFont);
     }
     return doc;
   }
@@ -355,8 +355,7 @@ export class MlHeadingDetectionModule extends Module {
     return detected;
   }
 
-  private computeHeadingLevels(document: Document) {
-
+  private computeHeadingLevels(document: Document,  commonFont: Font) {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
     const clf = new DecisionTreeClassifierLevel();    
 
@@ -365,7 +364,8 @@ export class MlHeadingDetectionModule extends Module {
       const size = h.getMainFont().size;
       const weight = h.getMainFont().weight === 'bold' ? 1 : 0;
       const textCase = this.textCase(h.toString());
-      const features = [size, weight, textCase];
+      const isFontBigger = size > commonFont.size; 
+      const features = [size, weight, textCase, isFontBigger];
       // need to add 1 because the prediction is an index
       h.level = clf.predict(features) + 1;
     });

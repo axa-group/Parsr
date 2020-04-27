@@ -29,8 +29,7 @@ for path in paths:
         continue
         
     for i in range(len(df_headings)):
-        X.append([df_headings['font_size'][i], df_headings['is_bold'][i], df_headings['text_case'][i]])
-        # X.append([df_headings['font_size'][i], df_headings['is_bold'][i]])
+        X.append([df_headings['font_size'][i], df_headings['is_bold'][i], df_headings['text_case'][i], df_headings['is_font_bigger'][i]])
             
     y = y + list(df_headings['level'])
     
@@ -40,14 +39,14 @@ for path in paths:
 X_res, y_res = X, y
 X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2)
 
-parameters = {'min_samples_leaf':[1,2,3], 'min_samples_split':[2,3], 'criterion':['entropy','gini']}
-clf_cv = GridSearchCV(DecisionTreeClassifier(), parameters).fit(X_res, y_res)
+parameters = {'min_samples_leaf':[1,2,3,4], 'min_samples_split':[2,3,4], 'criterion':['entropy','gini']}
+clf_cv = GridSearchCV(DecisionTreeClassifier(), parameters).fit(X_train, y_train)
 clf = DecisionTreeClassifier(min_samples_leaf=clf_cv.best_params_['min_samples_leaf'],
                              min_samples_split=clf_cv.best_params_['min_samples_split'],
                              criterion=clf_cv.best_params_['criterion'],
                              splitter='best')
 selector = RFECV(clf, step=1, cv=10, scoring=metrics.make_scorer(metrics.accuracy_score))
-selector = selector.fit(X_res, y_res)
+selector = selector.fit(X_train, y_train)
 
 y_pred = selector.predict(X_test)
 print('accuracy:', metrics.accuracy_score(y_test, y_pred))
