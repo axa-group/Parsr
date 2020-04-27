@@ -21,7 +21,7 @@ import * as tesseract2json from './tesseract2json';
  * An extractor class to extract content from images using the tesseract OCR extraction tool.
  */
 export class TesseractExtractor extends OcrExtractorFactory {
-  public async scanImage(inputFile: string) {
+  public async scanFile(inputFile: string) {
     return tesseract2json.execute(inputFile, this.config);
   }
 }
