@@ -37,6 +37,12 @@ export default {
       fontMatrix,
     } = current;
 
+    OperationState.state.current.tspan = {
+      textContent: '',
+    };
+
+    OperationState.state.current.xcoords = [];
+
     if (!extractText) {
       return null;
     }

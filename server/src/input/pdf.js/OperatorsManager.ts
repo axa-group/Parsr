@@ -180,7 +180,7 @@ export class OperatorsManager {
             Math.round(currentWord.top) === Math.round(previousElement.top)
           ) {
             parsedElements.push(previousElement.join(currentWord));
-          } else if (parsedElements) {
+          } else if (!!previousElement) {
             parsedElements.push(previousElement, currentWord);
           } else {
             parsedElements.push(currentWord);
