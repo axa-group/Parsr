@@ -602,7 +602,6 @@ export class ApiServer {
     if (config.mimetype !== 'application/json') {
       return false;
     }
-
     return true;
   }
 
