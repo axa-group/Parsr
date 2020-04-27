@@ -3,7 +3,7 @@ name = "doc-versioning"
 version = "0.1.0"
 description = "Document (PDF, DOCx, Images) versioning/revisioning and diffing/visualization library"
 authors = ["AXA Group Operations S.A."]
-readme = 'README.rst'
+readme = 'README.md'
 repository = 'https://github.com/axa-group/Parsr/tree/develop/demo/doc-versioning'
 
 [tool.poetry.dependencies]
