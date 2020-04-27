@@ -9,7 +9,7 @@
 Dependencies:
 1. [Flask](https://flask.palletsprojects.com/en/1.1.x/installation/#install-flask)
 2. [PyWebview](https://pywebview.flowrl.com/guide/installation.html#dependencies)
-3. [Parsr-Client](https://pypi.org/project/parsr-client/)
+3. [Parsr-Client](https://pypi.org/project/parsr-client/) > v3.1.0
 
 ## Usage
 

@@ -129,7 +129,7 @@ def poll_server():
 		time.sleep(1)
 
 	if result:
-		response = {'status': 'ok', 'result': result, 'docName': parsr.get}
+		response = {'status': 'ok', 'result': result, 'docName': parsr.get_document_name_from_request_id(jobID)}
 	else:
 		response = {'status': 'error'}
 
