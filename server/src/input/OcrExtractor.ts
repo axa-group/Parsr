@@ -52,14 +52,19 @@ export abstract class OcrExtractorFactory extends OcrExtractor {
       logger.info('There was an error while doing image rotation. Using original file...');
     }
 
-    return this.scanFile(inputFile).then((doc: Document) => {
-      setPageDimensions(doc, orignalInput);
-      doc.inputFile = orignalInput;
-      if (rotationCorrection && doc.pages.length > 0) {
-        doc.pages[0].pageRotation = rotationCorrection;
-      }
-      return doc;
-    });
+    return this.scanFile(inputFile)
+      .then((doc: Document) => {
+        setPageDimensions(doc, orignalInput);
+        doc.inputFile = orignalInput;
+        if (rotationCorrection && doc.pages.length > 0) {
+          doc.pages[0].pageRotation = rotationCorrection;
+        }
+        return doc;
+      })
+      .catch((error: Error) => {
+        logger.info(`Error OCR scanning file ${error}`);
+        return new Document([]);
+      });
   }
 
   public isPdfFile(filePath: string): boolean {
