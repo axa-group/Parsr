@@ -27,8 +27,7 @@ export default {
   normalizeImagesSrc(markdown, docId) {
     const regexp = /!\[\]\(assets_.{1,}\/img-(\d+_?\d*).{1,}/g;
     for (const matching of markdown.matchAll(regexp)) {
-      const url =
-        '![](' + baseURL + '/image/' + docId + '/' + matching[1] + ')';
+      const url = '![](' + baseURL + '/image/' + docId + '/' + matching[1] + ')';
       markdown = markdown.replace(matching[0], url);
     }
     return markdown;
