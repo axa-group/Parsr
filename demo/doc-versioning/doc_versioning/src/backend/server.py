@@ -129,11 +129,16 @@ def poll_server():
 		time.sleep(1)
 
 	if result:
-		response = {'status': 'ok', 'result': result}
+		response = {'status': 'ok', 'result': result, 'docName': parsr.get}
 	else:
 		response = {'status': 'error'}
 
 	return jsonify(response)
+
+@server.route('/document/<doc_name>', methods=['POST'])
+@verify_token
+def document(doc_name):
+	return render_template('document.html', token=webview.token)
 
 
 def run_server():
