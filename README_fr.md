@@ -1,12 +1,23 @@
 <p align='center'>
-  <img src="logo.png" width="275">
+  <img src="assets/logo.png" width="275">
 </p>
 
-[![Build Status](https://cloud.drone.io/api/badges/axa-group/Parsr/status.svg)](https://cloud.drone.io/axa-group/Parsr)
+<h2 align="center"><i>Transformez vos documents en données!</i></h2>
 
-# Transformez vos documents en données!
+<p align="center">
+	<a href="https://cloud.drone.io/axa-group/Parsr"><img src="https://cloud.drone.io/api/badges/axa-group/Parsr/status.svg"></a>
+</p>
 
-[English](README.md) | [Spanish](README_sp.md) | [中文](README_zh-cn.md)
+<p align="center">
+	<a href="README.md">English</a> |
+  <a href="README_pt.md">Portuguese</a> |
+  <a href="README_sp.md">Spanish</a> |
+	<a href="README_zh-cn.md">中文</a>
+</p>
+
+<p align='center'>
+  <img src="assets/demo_screen.gif">
+</p>
 
 **Parsr** est une chaîne d'outils de nettoyage, d'analyse et d'extraction de documents (image, pdf) qui génère des données facilement disponibles, organisées et utilisables pour les développeurs et les scientifiques de données (data scientists).
 
@@ -36,21 +47,21 @@ Parsr prend en entrée une image (.jpg, .png, .tiff, ...) ou un pdf et génère 
 - PDF
 
 ## Table des matières
-- [Transformez vos documents en données!](#transformez-vos-documents-en-données)
-	- [Table des matières](#table-des-matières)
-	- [Débuter avec Parsr](#débuter-avec-parsr)
-		- [Installation](#installation)
-		- [Utilisation](#utilisation)
-	- [Documentation](#documentation)
-	- [Comment contribuer](#comment-contribuer)
-	- [Licences tierces](#licences-tierces)
-	- [Licence](#licence)
-  
+
+- [Table des matières](#table-des-matières)
+- [Débuter avec Parsr](#débuter-avec-parsr)
+- [Installation](#installation)
+- [Utilisation](#utilisation)
+- [Documentation](#documentation)
+- [Comment contribuer](#comment-contribuer)
+- [Licences tierces](#licences-tierces)
+- [Licence](#licence)
+
 ## Débuter avec Parsr
 
 ### Installation
 
-*-- Le guide d'installation avancé est disponible [ici](docs/installation.md) --*
+_-- Le guide d'installation avancé est disponible [ici](docs/installation.md) --_
 
 Le moyen le plus rapide pour installer et exécuter l'API Parsr est via [l'image docker](https://hub.docker.com/r/axarev/parsr):
 
@@ -68,9 +79,10 @@ Remarque: Parsr peut également être installé directement sur la machine (sans
 
 ### Utilisation
 
-*-- Le guide d'utilisation avancé est disponible [ici](docs/usage.md) --*
+_-- Le guide d'utilisation avancé est disponible [ici](docs/usage.md) --_
 
 Pour exécuter [l'API](docs/api-guide.md), lancez:
+
 ```sh
 docker run -p 3001:3001 axarev/parsr
 ```
@@ -79,17 +91,18 @@ qui le lancera sur [http://localhost:3001](http://localhost:3001).
 Consultez la documentation sur [l'utilisation de l'API](docs/api-guide.md).
 
 1. Pour utiliser le client **python** de Parsr:
-   ```sh
-	 pip install parsr-client
-	 ``` 
-   Pour utiliser le **Jupyter Notebook** utilisant ce client, [cliquez ici](demo/parsr-jupyter-demo).
-	 
-2. Pour utiliser l'outil GUI (l'API doit déjà être en cours d'exécution), lancez:
-    ```sh
-    docker run -t -p 8080:80 axarev/parsr-ui-localhost:latest
-    ```
-    Ensuite, accédez-y via [http://localhost:8080](http://localhost:8080).
 
+   ```sh
+   pip install parsr-client
+   ```
+
+   Pour utiliser le **Jupyter Notebook** utilisant ce client, [cliquez ici](demo/parsr-jupyter-demo).
+
+2. Pour utiliser l'outil GUI (l'API doit déjà être en cours d'exécution), lancez:
+   ```sh
+   docker run -t -p 8080:80 axarev/parsr-ui-localhost:latest
+   ```
+   Ensuite, accédez-y via [http://localhost:8080](http://localhost:8080).
 
 Reportez-vous à la [Documentation de configuration](docs/configuration.md) pour interpréter les options configurables dans l'interface graphique.
 

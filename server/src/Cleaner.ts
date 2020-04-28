@@ -147,6 +147,7 @@ export class Cleaner {
 
       const moduleClass: typeof Module = this.getModuleByName(toolName);
       this.checkDependenciesAndAdd(moduleClass);
+      logger.info('Check config module: ' + toolName);
       this.modules.push(new moduleClass(options));
     });
   }

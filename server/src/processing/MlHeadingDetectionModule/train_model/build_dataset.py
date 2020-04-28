@@ -4,6 +4,7 @@ import json as json
 import os
 import re
 import spacy
+import numpy as np
 from collections import Counter
 from utils import mostCommonFont, markdown_to_text
 
@@ -46,7 +47,8 @@ def extract_lines(file):
                 
             acc.append([line.strip(), int(is_bold^(commonFont['weight'] == 'bold')), int(line_font['size']>commonFont['size']),
                         int(line_font['color']!=commonFont['color']), int(len(set(fonts_ids))==1), text_case, len(node['content']),
-                        int(line.strip().isdigit()), nb_verbs, nb_nouns, nb_cardinal, 'paragraph'
+                        int(line.strip().isdigit()), nb_verbs, nb_nouns, nb_cardinal,
+                        line_font['size'], int(is_bold), 0, 'paragraph', False
                        ])
 
         elif node['type'] == 'paragraph' or node['type'] == 'heading' or node['type'] == 'list':
@@ -82,17 +84,29 @@ for path in paths:
         contract = extract_lines(file)
         for md_line in md:
             if md_line.startswith('#'):
+                # counting the number of '#'
+                level = len(md_line.split()[0])
                 text_line = markdown_to_text(md_line)
                 for i, line in enumerate(contract):
+                    if contract[i][-1]:
+                        continue
                     if line[0] == text_line:
-                        contract[i][-1] = 'heading'
+                        contract[i][-3] = level
+                        contract[i][-2] = 'heading'
+                        contract[i][-1] = True
                     elif line[0] in text_line and line[7] == 0:
                         if (line[1] and line[4]) or line[2] or line[3]:
-                            contract[i][-1] = 'heading'
+                            contract[i][-3] = level
+                            contract[i][-2] = 'heading'
+                            contract[i][-1] = True
 
+        if len(contract) != 0:
+            # delete the last column that was used to avoid overwriting
+            contract = np.array(contract)[:,:-1]
         col_names = ['line', 'is_different_style', 'is_font_bigger', 
-                     'different_color', 'is_font_unique', 'text_case', 'word_count', 'is_number',
-                     'nb_of_verbs', 'nb_of_nouns', 'nb_of_cardinal_numbers', 'label']
+                     'different_color', 'is_font_unique', 'text_case', 'word_count',
+                     'is_number', 'nb_of_verbs', 'nb_of_nouns', 'nb_of_cardinal_numbers',
+                     'font_size', 'is_bold', 'level', 'label']
 
         with open(os.path.join(args.out_dir, path.replace('.pdf.json', '.csv')), newline='\n',  mode='w+', encoding='utf8') as f:
             writer = csv.writer(f, quoting=csv.QUOTE_ALL)

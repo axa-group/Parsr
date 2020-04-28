@@ -10,6 +10,7 @@
 
 <p align="center">
 	<a href="README_fr.md">Français</a> |
+  <a href="README_pt.md">Portuguese</a> |
   <a href="README_sp.md">Spanish</a> |
 	<a href="README_zh-cn.md">中文</a>
 </p>
@@ -22,14 +23,12 @@
 
 - It provides analysis, data scientists and developers with clean structured and label-enriched information set for ready-to-use applications ranging from data entry and document analysts automation, archival, and many others.
 
-- Currently, Parsr can perform document cleaning, *hierarchy regeneration* (words, lines, paragraphs), detection of *headings, tables, lists, ToCs, page numbers, headers/footers, links*, and others. Check out [all the features](server/src/processing/README.md#1-current-processing-modules).
+- Currently, Parsr can perform document cleaning, _hierarchy regeneration_ (words, lines, paragraphs), detection of _headings, tables, lists, ToCs, page numbers, headers/footers, links_, and others. Check out [all the features](server/src/processing/README.md#1-current-processing-modules).
 
 # Table of Contents
 
 - [Table of Contents](#table-of-contents)
-- [Getting Started](#getting-started)
-	- [Installation](#installation)
-	- [Usage](#usage)
+- [Getting Started](#getting-started) - [Installation](#installation) - [Usage](#usage)
 - [Documentation](#documentation)
 - [Contribute](#contribute)
 - [Third Party Licenses](#third-party-licenses)
@@ -69,12 +68,14 @@ which will launch it on [http://localhost:3001](http://localhost:3001).
 Consult the documentation on the [usage of the API](docs/api-guide.md).
 
 1. To access the **python** client to Parsr API, issue:
+
    ```sh
-	 pip install parsr-client
-	 ```
+   pip install parsr-client
+   ```
+
    To sample the **Jupyter Notebook**, using the python client, head over to the [jupyter demo](demo/parsr-jupyter-demo).
 
-2. To use the GUI tool (the API needs to already be running), issue:
+2) To use the GUI tool (the API needs to already be running), issue:
    ```sh
    docker run -t -p 8080:80 axarev/parsr-ui-localhost:latest
    ```

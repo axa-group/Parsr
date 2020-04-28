@@ -4,6 +4,7 @@
       class="Page"
       :id="'SVG_' + page.pageNumber"
       :style="{
+        fontSize: '7px',
         zoom: zoom * zoomToFitPage,
         transform: pageTransformation,
         transformOrigin: page.rotation.origin.x + 'px ' + page.rotation.origin.y + 'px',
