@@ -51,6 +51,7 @@ export class RegexMatcherModule extends Module<Options> {
     });
 
     matchingWords.forEach(word => word.metadata.push(metadata));
+    logger.info('matching words= ' + matchingWords.toString());
   }
 
   public main(doc: Document): Document {
@@ -75,7 +76,6 @@ export class RegexMatcherModule extends Module<Options> {
               this.findWordsAndAddMetadata(paragraph, result, query);
             }
           } else if (
-            !this.options.isGobal &&
             // tslint:disable-next-line: no-conditional-assignment
             (result = paragraph.toString().match(query.regex))
           ) {
