@@ -51,7 +51,6 @@ export class RegexMatcherModule extends Module<Options> {
     });
 
     matchingWords.forEach(word => word.metadata.push(metadata));
-    logger.info('matching words= ' + matchingWords.toString());
   }
 
   public main(doc: Document): Document {
