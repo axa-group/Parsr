@@ -23,6 +23,7 @@ import {
   Line,
   Page,
   Paragraph,
+  TableCell,
   Word,
 } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
@@ -100,17 +101,20 @@ export class MlHeadingDetectionModule extends Module {
     commonFont: Font,
     headingFonts: Font[],
   ): Element[] {
-    this.getElementsWithParagraphs(elements, []).forEach(element => {
-      const newContents = this.extractHeadingsInParagraphs(
-        this.getParagraphsInElement(element),
-        commonFont,
-        headingFonts,
-      );
-      const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
-      const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
+    this.getElementsWithParagraphs(elements, [])
+    // this is to avoid setting table content as headings
+      .filter(e => !(e instanceof TableCell))
+      .forEach(element => {
+        const newContents = this.extractHeadingsInParagraphs(
+          this.getParagraphsInElement(element),
+          commonFont,
+          headingFonts,
+        );
+        const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
+        const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
 
-      element.content = [...headings, ...paras];
-    });
+        element.content = [...headings, ...paras];
+      });
     return elements;
   }
 
@@ -186,7 +190,7 @@ export class MlHeadingDetectionModule extends Module {
 
   private isHeadingLine(line: Line, commonFont: Font): boolean {
     const lineStr = line.toString();
-    if (lineStr.length == 1 || !isNaN(lineStr as any)) {
+    if (lineStr.length === 1 || !isNaN(lineStr as any)) {
       return false;
     }
     const wordCount = line.content.length;
@@ -194,7 +198,7 @@ export class MlHeadingDetectionModule extends Module {
     const isFontBigger = line.getMainFont().size > commonFont.size;
     const isFontUnique = line.isUniqueFont();
     const differentColor = line.getMainFont().color !== commonFont.color;
-    const isNumber = !isNaN(lineStr as any)
+    const isNumber = !isNaN(lineStr as any);
     const textCase = this.textCase(lineStr);
 
     const features = [isDifferentStyle, isFontBigger, isFontUnique, textCase, wordCount, differentColor, isNumber];
@@ -358,7 +362,7 @@ export class MlHeadingDetectionModule extends Module {
   private computeHeadingLevels(document: Document) {
 
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
-    const clf = new DecisionTreeClassifierLevel();    
+    const clf = new DecisionTreeClassifierLevel();
 
     // TODO: try to normalize the features
     headings.forEach(h => {
