@@ -50,3 +50,18 @@ export class AbbyyToolsXml extends AbbyyTools {
     return promise;
   }
 }
+
+// tslint:disable-next-line: max-classes-per-file
+export class AbbyyToolsLocalXml extends AbbyyToolsXml {
+  constructor() {
+    super(null);
+  }
+
+  public checkCredentials(_required: string[]) {
+    // Skip credentials check if we are parsing local XML file
+  }
+
+  public checkCredentialAsURL(_credential: string) {
+    // Skip credentials check if we are parsing local XML file
+  }
+}

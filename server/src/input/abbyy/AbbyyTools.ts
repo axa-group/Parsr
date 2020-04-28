@@ -80,7 +80,7 @@ export class AbbyyTools extends OcrExtractorFactory {
     return promise;
   }
 
-  public scanImage(inputFile: string): Promise<Document> {
+  public scanFile(inputFile: string): Promise<Document> {
     const host: string = this.config.extractor.credentials.ABBYY_SERVER_URL;
     const serverVersion: string = this.config.extractor.credentials.ABBYY_SERVER_VER;
     const workflowName: string = this.config.extractor.credentials.ABBYY_WORKFLOW;

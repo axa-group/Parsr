@@ -9,7 +9,7 @@
       <fieldset>
         <legend>Extractor configuration</legend>
         <v-select
-          :items="['pdfminer', 'pdfjs']"
+          :items="['pdfminer', 'pdfjs', 'abbyy']"
           v-model="defaultConfig.extractor.pdf"
           :flat="true"
           :hide-details="true"
@@ -95,7 +95,7 @@
 
         <div
           class="selectOptionExtractor ocrParameters"
-          v-if="defaultConfig.extractor.ocr === 'abbyy'"
+          v-if="defaultConfig.extractor.ocr === 'abbyy' || defaultConfig.extractor.pdf === 'abbyy'"
         >
           <legend>Abbyy_server_url<sup>*</sup></legend>
           <input

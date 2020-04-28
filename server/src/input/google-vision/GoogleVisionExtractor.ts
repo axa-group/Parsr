@@ -38,20 +38,19 @@ type GoogleVisionBoundingPoly = vision.protos.google.cloud.vision.v1.IBoundingPo
  * An extractor class to extract content from images using Google Vision
  */
 export class GoogleVisionExtractor extends OcrExtractorFactory {
-
   constructor(config: Config) {
     super(config, credentials);
     this.checkCredentials([
-      "auth_provider_x509_cert_url",
-      "auth_uri",
-      "client_email",
-      "client_id",
-      "client_x509_cert_url",
-      "private_key",
-      "private_key_id",
-      "project_id",
-      "token_uri",
-      "type",
+      'auth_provider_x509_cert_url',
+      'auth_uri',
+      'client_email',
+      'client_id',
+      'client_x509_cert_url',
+      'private_key',
+      'private_key_id',
+      'project_id',
+      'token_uri',
+      'type',
     ]);
 
     const filePath = getTemporaryFile('.json');
@@ -59,7 +58,7 @@ export class GoogleVisionExtractor extends OcrExtractorFactory {
     process.env.GOOGLE_APPLICATION_CREDENTIALS = filePath;
   }
 
-  public async scanImage(inputFile: string) {
+  public async scanFile(inputFile: string) {
     const client = new vision.ImageAnnotatorClient();
     const [result] = await client.documentTextDetection(inputFile);
 

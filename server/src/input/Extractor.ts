@@ -31,22 +31,23 @@ export abstract class Extractor {
   constructor(config: Config, credentials: any = {}) {
     this.config = config;
 
-    if (!this.config.extractor.credentials) {
+    if (this.config && !this.config.extractor.credentials) {
       this.config.extractor.credentials = {};
     }
     Object.keys(credentials).forEach(key => {
-      if (!this.config.extractor.credentials[key]) {
+      if (this.config && !this.config.extractor.credentials[key]) {
         this.config.extractor.credentials[key] = credentials[key];
       }
     });
   }
 
   public checkCredentials(required: string[]) {
-    const missingCredentials: string[] = required.filter(c => !this.config.extractor.credentials[c]);
+    const missingCredentials: string[] = required.filter(
+      c => !this.config.extractor.credentials[c],
+    );
     if (missingCredentials.length > 0) {
-      throw new Error(`Required credentials not found: ${missingCredentials.join(', ')}. Make sure you set it in the extractor configuration:
-${
-        JSON.stringify({
+      const json = JSON.stringify(
+        {
           extractor: {
             pdf: '...',
             ocr: '...',
@@ -58,8 +59,14 @@ ${
               }, {}),
             },
           },
-        }, null, 2)
-        }`,
+        },
+        null,
+        2,
+      );
+      throw new Error(
+        `Required credentials not found: ${missingCredentials.join(
+          ', ',
+        )}. Make sure you set it in the extractor configuration: ${json}`,
       );
     }
   }
@@ -68,22 +75,18 @@ ${
     const filePath = this.config.extractor.credentials[credential];
     const fileExists = existsSync(filePath);
     if (!fileExists || !filePath.endsWith(format)) {
-      throw new Error(
-        `${credential} must be an absolute path to a ${format} file.`,
-      );
+      throw new Error(`${credential} must be an absolute path to a ${format} file.`);
     }
   }
 
   public checkCredentialAsURL(credential: string) {
-      try {
-        // tslint:disable-next-line: no-unused-expression
-        new URL(this.config.extractor.credentials[credential]);
-      } catch (err) {
-        throw new Error(
-          `${credential} must be a valid URL`,
-        );      }
+    try {
+      // tslint:disable-next-line: no-unused-expression
+      new URL(this.config.extractor.credentials[credential]);
+    } catch (err) {
+      throw new Error(`${credential} must be a valid URL`);
+    }
   }
 
   public abstract run(inputFile: string): Promise<Document>;
-
 }

@@ -57,10 +57,7 @@ export class AmazonTextractExtractor extends OcrExtractorFactory {
 
   constructor(config: Config) {
     super(config, credentials);
-    this.checkCredentials([
-      'AWS_ACCESS_KEY_ID',
-      'AWS_SECRET_ACCESS_KEY',
-    ]);
+    this.checkCredentials(['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY']);
 
     this.textract = new Textract({
       accessKeyId: this.config.extractor.credentials.AWS_ACCESS_KEY_ID,
@@ -69,7 +66,7 @@ export class AmazonTextractExtractor extends OcrExtractorFactory {
     });
   }
 
-  public async scanImage(inputFile: string) {
+  public async scanFile(inputFile: string) {
     return new Promise<Document>((resolve, reject) => {
       this.textract.detectDocumentText(
         {
