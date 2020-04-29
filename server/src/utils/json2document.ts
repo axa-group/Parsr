@@ -292,6 +292,7 @@ function drawingFromJson(drawingObj: JsonElement): Drawing | void {
   if (typeof svgShapeDS !== 'undefined') {
     const newDrawing: Drawing = new Drawing(
       new BoundingBox(drawingObj.box.l, drawingObj.box.t, drawingObj.box.w, drawingObj.box.h),
+      svgShapeDS,
     );
     newDrawing.id = drawingObj.id;
     newDrawing.properties = propertiesFromJson(drawingObj.properties);
@@ -301,12 +302,13 @@ function drawingFromJson(drawingObj: JsonElement): Drawing | void {
 
 function svgShapeFromJson(shapeObj: JsonElement): SvgShape {
   const newLine: SvgLine = new SvgLine(
-    new BoundingBox(shapeObj.box.l, shapeObj.box.l, shapeObj.box.l, shapeObj.box.l),
+    new BoundingBox(shapeObj.box.l, shapeObj.box.t, shapeObj.box.w, shapeObj.box.h),
     shapeObj.thickness,
     shapeObj.fromX,
     shapeObj.fromY,
     shapeObj.toX,
     shapeObj.toY,
+    shapeObj.color,
   );
   newLine.id = shapeObj.id;
   newLine.properties = propertiesFromJson(shapeObj.properties);

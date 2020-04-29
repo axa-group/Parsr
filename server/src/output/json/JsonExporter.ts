@@ -254,6 +254,7 @@ export class JsonExporter extends Exporter {
         jsonElement.toX = element.toX;
         jsonElement.toY = element.toY;
         jsonElement.thickness = element.thickness;
+        jsonElement.color = element.color;
       }
     } else if (element instanceof Drawing) {
       jsonElement.content = element.content.map(elem => this.elementToJsonElement(elem));
