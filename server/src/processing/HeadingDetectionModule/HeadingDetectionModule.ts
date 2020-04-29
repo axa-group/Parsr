@@ -23,6 +23,7 @@ import {
   Line,
   Page,
   Paragraph,
+  TableCell,
   TableOfContents,
   Word,
 } from '../../types/DocumentRepresentation';
@@ -108,18 +109,21 @@ export class HeadingDetectionModule extends Module {
     headingFonts: Font[],
     // commonLineHeight: number,
   ): Element[] {
-    this.getElementsWithParagraphs(elements, []).forEach(element => {
-      const newContents = this.extractHeadingsInParagraphs(
-        this.getParagraphsInElement(element),
-        commonFont,
-        headingFonts,
-        // commonLineHeight,
-      );
-      const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
-      const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
+    this.getElementsWithParagraphs(elements, [])
+      // this is to avoid setting table content as headings
+      .filter(e => !(e instanceof TableCell))
+      .forEach(element => {
+        const newContents = this.extractHeadingsInParagraphs(
+          this.getParagraphsInElement(element),
+          commonFont,
+          headingFonts,
+          // commonLineHeight,
+        );
+        const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
+        const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
 
-      element.content = [...headings, ...paras];
-    });
+        element.content = [...headings, ...paras];
+      });
     return elements;
   }
 
