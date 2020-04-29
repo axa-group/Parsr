@@ -355,18 +355,17 @@ export class MlHeadingDetectionModule extends Module {
     return detected;
   }
 
-  private computeHeadingLevels(document: Document,  commonFont: Font) {
+  private computeHeadingLevels(document: Document, commonFont: Font) {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
-    const clf = new DecisionTreeClassifierLevel();    
+    const clf = new DecisionTreeClassifierLevel();
 
-    // TODO: try to normalize the features
     headings.forEach(h => {
       const size = h.getMainFont().size;
       const weight = h.getMainFont().weight === 'bold' ? 1 : 0;
       const textCase = this.textCase(h.toString());
-      const isFontBigger = size > commonFont.size; 
-      const features = [size, weight, textCase, isFontBigger];
-      // need to add 1 because the prediction is an index
+      const isFontBigger = size > commonFont.size ? 1 : 0;
+      const differentColor = h.getMainFont().color !== commonFont.color ? 1 : 0;
+      const features = [size, weight, textCase, isFontBigger, differentColor];
       h.level = clf.predict(features) + 1;
     });
   }
