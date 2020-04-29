@@ -32,31 +32,29 @@ args = parser.parse_args()
 
 dataset_dir = args.dataset_dir
 paths = os.listdir(dataset_dir)
-X_heading = []
-y_heading = []
-X_lvl = []
-y_lvl = []
+dataset = []
 
 for path in paths:
     df = pd.read_csv(os.path.join(dataset_dir, path), header=0)
-    df_lvl = df.loc[df['label']=='heading'].reset_index().copy()
-    df_lvl['font_size'] = df_lvl['font_size'].apply(lambda x: round(x, 2))
+    df['font_size'] = df['font_size'].apply(lambda x: round(x, 2))
     df['label'] = df['label'].apply(lambda x: 1 if x == 'heading' else 0)
 
-    for i in range(len(df)):
-        X_heading.append([df['is_different_style'][i], df['is_font_bigger'][i],
-                          df['is_font_unique'][i], df['text_case'][i],
-                          df['word_count'][i], df['different_color'][i],
-                          df['is_number'][i]
-                          ])
-    y_heading = y_heading + list(df['label'])
+    dataset.append(df[['is_different_style', 'is_font_bigger', 'is_font_unique',
+                       'text_case', 'word_count', 'different_color',
+                       'is_number', 'font_size', 'is_bold',
+                       'level', 'label']])
 
-    for i in range(len(df_lvl)):
-        X_lvl.append([df_lvl['font_size'][i], df_lvl['is_bold'][i],
-                      df_lvl['text_case'][i], df_lvl['is_font_bigger'][i],
-                      df_lvl['different_color'][i]
-                      ])    
-    y_lvl = y_lvl + list(df_lvl['level'])
+df_dataset = pd.concat(dataset)
+X_heading = df_dataset[['is_different_style', 'is_font_bigger', 'is_font_unique',
+                        'text_case', 'word_count', 'different_color',
+                        'is_number']].to_numpy()
+y_heading = list(df_dataset['label'])
+
+# only taking the headings into account
+df_lvl = df_dataset.loc[df_dataset['label']==1].reset_index()
+X_lvl = df_lvl[['font_size', 'is_bold', 'text_case',
+                'is_font_bigger', 'different_color']].to_numpy()
+y_lvl = list(df_lvl['level'])
 
 X_train1, X_test1, y_train1, y_test1 = train_test_split(X_heading, y_heading, test_size=0.2)
 X_train2, X_test2, y_train2, y_test2 = train_test_split(X_lvl, y_lvl, test_size=0.2)
