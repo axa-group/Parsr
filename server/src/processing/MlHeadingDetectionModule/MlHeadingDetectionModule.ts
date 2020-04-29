@@ -23,7 +23,6 @@ import {
   Line,
   Page,
   Paragraph,
-  TableCell,
   Word,
 } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
@@ -63,7 +62,7 @@ export class MlHeadingDetectionModule extends Module {
     });
 
     if (this.headingsDetected(doc)) {
-      this.computeHeadingLevels(doc);
+      this.computeHeadingLevels(doc, mainCommonFont);
     }
     return doc;
   }
@@ -101,20 +100,17 @@ export class MlHeadingDetectionModule extends Module {
     commonFont: Font,
     headingFonts: Font[],
   ): Element[] {
-    this.getElementsWithParagraphs(elements, [])
-    // this is to avoid setting table content as headings
-      .filter(e => !(e instanceof TableCell))
-      .forEach(element => {
-        const newContents = this.extractHeadingsInParagraphs(
-          this.getParagraphsInElement(element),
-          commonFont,
-          headingFonts,
-        );
-        const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
-        const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
+    this.getElementsWithParagraphs(elements, []).forEach(element => {
+      const newContents = this.extractHeadingsInParagraphs(
+        this.getParagraphsInElement(element),
+        commonFont,
+        headingFonts,
+      );
+      const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
+      const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
 
-        element.content = [...headings, ...paras];
-      });
+      element.content = [...headings, ...paras];
+    });
     return elements;
   }
 
@@ -359,18 +355,17 @@ export class MlHeadingDetectionModule extends Module {
     return detected;
   }
 
-  private computeHeadingLevels(document: Document) {
-
+  private computeHeadingLevels(document: Document, commonFont: Font) {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
     const clf = new DecisionTreeClassifierLevel();
 
-    // TODO: try to normalize the features
     headings.forEach(h => {
       const size = h.getMainFont().size;
       const weight = h.getMainFont().weight === 'bold' ? 1 : 0;
       const textCase = this.textCase(h.toString());
-      const features = [size, weight, textCase];
-      // need to add 1 because the prediction is an index
+      const isFontBigger = size > commonFont.size ? 1 : 0;
+      const differentColor = h.getMainFont().color !== commonFont.color ? 1 : 0;
+      const features = [size, weight, textCase, isFontBigger, differentColor];
       h.level = clf.predict(features) + 1;
     });
   }
