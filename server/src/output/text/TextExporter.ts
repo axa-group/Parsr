@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Document, List, Paragraph, Table } from '../../types/DocumentRepresentation';
+import { Document, Drawing, Image, List, Paragraph, Table } from '../../types/DocumentRepresentation';
 import { TableOfContents } from '../../types/DocumentRepresentation/TableOfContents';
 import { Exporter } from '../Exporter';
 
@@ -38,6 +38,9 @@ export class TextExporter extends Exporter {
           (element.properties.isHeader || element.properties.isFooter) &&
           !this.includeHeaderFooter
         ) {
+          return;
+        }
+        if (element instanceof Drawing || element instanceof Image) {
           return;
         }
         if (element instanceof Paragraph) {

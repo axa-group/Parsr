@@ -16,6 +16,7 @@
 
 import {
   Document,
+  Drawing,
   Heading,
   Image,
   List,
@@ -49,6 +50,9 @@ export class MarkdownExporter extends Exporter {
           (element.properties.isHeader || element.properties.isFooter) &&
           !this.includeHeaderFooter
         ) {
+          return;
+        }
+        if (element instanceof Drawing) {
           return;
         }
         if (element instanceof Heading) {
