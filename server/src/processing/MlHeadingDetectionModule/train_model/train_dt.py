@@ -35,7 +35,6 @@ for path in paths:
     df['label'] = df['label'].apply(lambda x: 1 if x == 'heading' else 0)
     y = y + list(df['label'])
 
-# X_res, y_res = SMOTE(random_state=42).fit_resample(X, y)
 X_res, y_res = X, y
 X_train, X_test, y_train, y_test = train_test_split(X_res, y_res, test_size=0.2)
 parameters = {'min_samples_leaf':[1,2,3,4,5,6,7], 'min_samples_split':[2,3,4,5,6,7], 'criterion':['entropy','gini']}

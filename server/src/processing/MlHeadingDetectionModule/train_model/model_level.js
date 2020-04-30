@@ -755,11 +755,11 @@ if (typeof process !== 'undefined' && typeof process.argv !== 'undefined') {
     if (process.argv.length - 2 === 3) {
 
         // Features:
-        var features = process.argv.slice(2);
+        var ftures = process.argv.slice(2);
 
         // Prediction:
         var clf = new DecisionTreeClassifier();
-        var prediction = clf.predict(features);
+        var prediction = clf.predict(ftures);
         console.log(prediction);
 
     }

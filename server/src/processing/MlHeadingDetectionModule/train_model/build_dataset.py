@@ -6,59 +6,63 @@ import re
 import spacy
 import numpy as np
 from collections import Counter
-from utils import mostCommonFont, markdown_to_text
+from utils import most_common_font, markdown_to_text
 
 # Load English tokenizer, tagger, parser, NER and word vectors
 nlp = spacy.load("en_core_web_sm")
 
+def walk_line(file, node, acc):
+    common_font = most_common_font(file)
+    line = ''
+    fonts_ids = []
+    is_title_case = True
+    for word in node['content']:
+        text = word['content']
+        if len(text) > 4:
+            is_title_case = is_title_case and (
+                bool(re.match(r'^[A-Z]\w+', text)) or bool(re.match(r'^(?:\W*\d+\W*)+\w+', text)))
+
+        fonts_ids.append(word['font'])
+        line += text + ' '
+
+    line_font = file['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]  # font ids start at 1
+    is_bold = all(file['fonts'][font_id - 1]['weight'] == 'bold' for font_id in fonts_ids)
+
+    if line.islower():
+        text_case = 0
+    elif line.isupper():
+        text_case = 1
+    elif is_title_case:
+        text_case = 2
+    else:
+        text_case = 3
+
+    doc = nlp(line)
+    nb_verbs = len([token.lemma_ for token in doc if token.pos_=="VERB"])
+    nb_nouns = len([chunk.text for chunk in doc.noun_chunks])
+    nb_cardinal = len([entity.text for entity in doc.ents if entity.label_=="CARDINAL"])
+                
+    acc.append([line.strip(), int(is_bold^(common_font['weight'] == 'bold')), int(line_font['size']>common_font['size']),
+                int(line_font['color']!=common_font['color']), int(len(set(fonts_ids))==1), text_case, len(node['content']),
+                int(line.strip().isdigit()), nb_verbs, nb_nouns, nb_cardinal,
+                line_font['size'], int(is_bold), 0, 'paragraph', False
+               ])
+    return acc
+
+def walk(file, node, acc):
+    if node['type'] == 'line':
+        return walk_line(file, node, acc)
+
+    elif node['type'] == 'paragraph' or node['type'] == 'heading' or node['type'] == 'list':
+        for line in node['content']:
+            walk(file, line, acc)
+
 
 def extract_lines(file):
-    commonFont = mostCommonFont(file)
-    def walk(node, acc):
-        if node['type'] == 'line':
-            line = ''
-            fonts_ids = []
-            is_title_case = True
-            for word in node['content']:
-                text = word['content']
-                if len(text) > 4:
-                    is_title_case = is_title_case and (
-                        bool(re.match(r'^[A-Z]\w+', text)) or bool(re.match(r'^(?:\W*\d+\W*)+\w+', text)))
-
-                fonts_ids.append(word['font'])
-                line += text + ' '
-
-            line_font = file['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]  # font ids start at 1
-            is_bold = all(file['fonts'][font_id - 1]['weight'] == 'bold' for font_id in fonts_ids)
-
-            if line.islower():
-                text_case = 0
-            elif line.isupper():
-                text_case = 1
-            elif is_title_case:
-                text_case = 2
-            else:
-                text_case = 3
-
-            doc = nlp(line)
-            nb_verbs = len([token.lemma_ for token in doc if token.pos_=="VERB"])
-            nb_nouns = len([chunk.text for chunk in doc.noun_chunks])
-            nb_cardinal = len([entity.text for entity in doc.ents if entity.label_=="CARDINAL"])
-                
-            acc.append([line.strip(), int(is_bold^(commonFont['weight'] == 'bold')), int(line_font['size']>commonFont['size']),
-                        int(line_font['color']!=commonFont['color']), int(len(set(fonts_ids))==1), text_case, len(node['content']),
-                        int(line.strip().isdigit()), nb_verbs, nb_nouns, nb_cardinal,
-                        line_font['size'], int(is_bold), 0, 'paragraph', False
-                       ])
-
-        elif node['type'] == 'paragraph' or node['type'] == 'heading' or node['type'] == 'list':
-            for line in node['content']:
-                walk(line, acc)
-
     lines = []
     for page in file['pages']: 
         for element in page['elements']:
-            walk(element, lines)
+            lines = walk(file, element, lines)
 
     return lines
 
@@ -90,15 +94,10 @@ for path in paths:
                 for i, line in enumerate(contract):
                     if contract[i][-1]:
                         continue
-                    if line[0] == text_line:
+                    if line[0] == text_line or (line[0] in text_line and line[7] == 0 and ((line[1] and line[4]) or line[2] or line[3])):
                         contract[i][-3] = level
                         contract[i][-2] = 'heading'
                         contract[i][-1] = True
-                    elif line[0] in text_line and line[7] == 0:
-                        if (line[1] and line[4]) or line[2] or line[3]:
-                            contract[i][-3] = level
-                            contract[i][-2] = 'heading'
-                            contract[i][-1] = True
 
         if len(contract) != 0:
             # delete the last column that was used to avoid overwriting
