@@ -33,7 +33,6 @@
             <button class="button-primary" onclick="window.location.replace(`/`);">Home</button>
             <h1>"{{ name }}"</h1>
             {% if diffs|count > 0 %}
-            <hr />
             <h4>Revisions</h4>
             <table class="u-full-width">
             <!-- <table width="30%"> -->
@@ -47,7 +46,6 @@
                 </tbody>
             </table>
             {% endif %}
-            <hr />
             <h4>Versions</h4>
             <table class="u-full-width">
                 <tbody>
