@@ -47,11 +47,10 @@ def walk_line(file, node, acc):
                 int(line.strip().isdigit()), nb_verbs, nb_nouns, nb_cardinal,
                 line_font['size'], int(is_bold), 0, 'paragraph', False
                ])
-    return acc
 
 def walk(file, node, acc):
     if node['type'] == 'line':
-        return walk_line(file, node, acc)
+        walk_line(file, node, acc)
 
     elif node['type'] == 'paragraph' or node['type'] == 'heading' or node['type'] == 'list':
         for line in node['content']:
@@ -62,8 +61,7 @@ def extract_lines(file):
     lines = []
     for page in file['pages']: 
         for element in page['elements']:
-            lines = walk(file, element, lines)
-
+            walk(file, element, lines)
     return lines
 
 
@@ -76,13 +74,14 @@ args = parser.parse_args()
 paths = os.listdir(args.json_dir)
 
 for path in paths:
-    if path.endswith('.json'):
+    END_JSON_PATH = '.pdf.json'
+    if path.endswith(END_JSON_PATH):
         print(path)
 
         with open(os.path.join(args.json_dir, path), mode='r', encoding='utf8') as f:
             file = json.load(f)
 
-        with open(os.path.join(args.md_dir, path.replace('.pdf.json', '.md')), mode='r', encoding='utf8') as f:
+        with open(os.path.join(args.md_dir, path.replace(END_JSON_PATH, '.md')), mode='r', encoding='utf8') as f:
             md = f.readlines()
 
         contract = extract_lines(file)
@@ -107,7 +106,7 @@ for path in paths:
                      'is_number', 'nb_of_verbs', 'nb_of_nouns', 'nb_of_cardinal_numbers',
                      'font_size', 'is_bold', 'level', 'label']
 
-        with open(os.path.join(args.out_dir, path.replace('.pdf.json', '.csv')), newline='\n',  mode='w+', encoding='utf8') as f:
+        with open(os.path.join(args.out_dir, path.replace(END_JSON_PATH, '.csv')), newline='\n',  mode='w+', encoding='utf8') as f:
             writer = csv.writer(f, quoting=csv.QUOTE_ALL)
             writer.writerow(col_names)
             writer.writerows(contract)
