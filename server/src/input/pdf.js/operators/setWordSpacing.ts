@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2020 AXA Group Operations S.A.
  *
@@ -14,10 +15,13 @@
  * limitations under the License.
  */
 
-var shell = require('shelljs');
+import logger from '../../../utils/Logger';
+import { OperationState } from '../OperationState';
 
-if (!shell.test('-d', './dist/assets') || !shell.test('-d', './dist/bin')) {
-  shell.mkdir('./dist', './dist/assets', './dist/bin');
-}
-shell.cp('-u', './server/assets/*.py', './dist/assets/');
-shell.cp('-u', './server/defaultConfig.json', './dist/bin/');
+export default {
+  key: 'setWordSpacing',
+  value: (wordSpacing: number) => {
+    logger.debug(`==> setWordSpacing(${wordSpacing})`);
+    OperationState.state.current.wordSpacing = wordSpacing;
+  },
+};

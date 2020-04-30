@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-var shell = require('shelljs');
+import * as pdfjs from 'pdfjs-dist';
+import logger from '../../../utils/Logger';
+import { OperationState } from './../OperationState';
 
-if (!shell.test('-d', './dist/assets') || !shell.test('-d', './dist/bin')) {
-  shell.mkdir('./dist', './dist/assets', './dist/bin');
-}
-shell.cp('-u', './server/assets/*.py', './dist/assets/');
-shell.cp('-u', './server/defaultConfig.json', './dist/bin/');
+/**
+ * applies matrix to the current state transform
+ */
+export default {
+  key: 'transform',
+  value: (a: number, b: number, c: number, d: number, e: number, f: number) => {
+    const Util = (pdfjs as any).Util;
+    logger.debug(`==> transform(${[a, b, c, d, e, f].join(', ')})`);
+    const stateMatrix = OperationState.state.transformMatrix;
+    OperationState.state.transformMatrix = Util.transform(stateMatrix, [a, b, c, d, e, f]);
+  },
+};
