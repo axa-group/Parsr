@@ -47,11 +47,10 @@ def walk_line(file, node, acc):
                 int(line.strip().isdigit()), nb_verbs, nb_nouns, nb_cardinal,
                 line_font['size'], int(is_bold), 0, 'paragraph', False
                ])
-    return acc
 
 def walk(file, node, acc):
     if node['type'] == 'line':
-        return walk_line(file, node, acc)
+        walk_line(file, node, acc)
 
     elif node['type'] == 'paragraph' or node['type'] == 'heading' or node['type'] == 'list':
         for line in node['content']:
@@ -62,8 +61,8 @@ def extract_lines(file):
     lines = []
     for page in file['pages']: 
         for element in page['elements']:
-            lines = walk(file, element, lines)
-
+            walk(file, element, lines)
+    print(lines)
     return lines
 
 
@@ -76,7 +75,7 @@ args = parser.parse_args()
 paths = os.listdir(args.json_dir)
 
 for path in paths:
-    if path.endswith('.json'):
+    if path.endswith('.pdf.json'):
         print(path)
 
         with open(os.path.join(args.json_dir, path), mode='r', encoding='utf8') as f:
