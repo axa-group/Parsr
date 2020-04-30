@@ -54,7 +54,12 @@ export abstract class OcrExtractorFactory extends OcrExtractor {
 
     return this.scanFile(inputFile)
       .then((doc: Document) => {
-        setPageDimensions(doc, orignalInput);
+        if (this.isPdfFile(inputFile)) {
+          return doc;
+        }
+        return setPageDimensions(doc, orignalInput);
+      })
+      .then((doc: Document) => {
         doc.inputFile = orignalInput;
         if (rotationCorrection && doc.pages.length > 0) {
           doc.pages[0].pageRotation = rotationCorrection;
