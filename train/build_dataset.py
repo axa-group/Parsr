@@ -5,11 +5,11 @@ import os
 import re
 from collections import Counter
 
-def walk_line(file, node, acc):
+def walk_line(file_line, node_line, acc_line_line):
     line = ''
     fonts_ids = []
     is_title_case = True
-    for word in node['content']:
+    for word in node_line['content']:
         text = word['content']
         if len(text) > 4:
             is_title_case = is_title_case and (
@@ -18,26 +18,25 @@ def walk_line(file, node, acc):
         fonts_ids.append(word['font'])
         line += text + ' '
 
-    line_font = file['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]  # font ids start at 1
-    is_bold = all(file['fonts'][font_id - 1]['weight'] == 'bold' for font_id in fonts_ids)
+    line_font = file_line['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]  # font ids start at 1
+    is_bold = all(file_line['fonts'][font_id - 1]['weight'] == 'bold' for font_id in fonts_ids)
 
-    acc.append([line.strip(), len(node['content']), line_font['size'],
+    acc_line.append([line.strip(), len(node_line['content']), line_font['size'],
                 is_bold, line_font['color'], is_title_case, 'paragraph'])
-    return acc
 
-def walk(file, node, acc):
+def walk(filename, node, acc):
     if node['type'] == 'line':
-        return walk_line(file, node, acc)
+        return walk_line(filename, node, acc)
 
     elif node['type'] == 'paragraph' or node['type'] == 'heading' or node['type'] == 'list':
         for line in node['content']:
-            walk(file, line, acc)
+            walk(filename, line, acc)
 
 def extract_lines(file):
     lines = []
     for page in file['pages']:
         for element in page['elements']:
-            lines = walk(file, element, lines)
+            walk(file, element, lines)
     return lines
 
 

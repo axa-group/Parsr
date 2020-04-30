@@ -11,12 +11,12 @@ from utils import most_common_font, markdown_to_text
 # Load English tokenizer, tagger, parser, NER and word vectors
 nlp = spacy.load("en_core_web_sm")
 
-def walk_line(file, node, acc):
-    common_font = most_common_font(file)
+def walk_line(filename_line, node_line, acc_line):
+    common_font = most_common_font(filename_line)
     line = ''
     fonts_ids = []
     is_title_case = True
-    for word in node['content']:
+    for word in node_line['content']:
         text = word['content']
         if len(text) > 4:
             is_title_case = is_title_case and (
@@ -25,8 +25,8 @@ def walk_line(file, node, acc):
         fonts_ids.append(word['font'])
         line += text + ' '
 
-    line_font = file['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]  # font ids start at 1
-    is_bold = all(file['fonts'][font_id - 1]['weight'] == 'bold' for font_id in fonts_ids)
+    line_font = filename_line['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]  # font ids start at 1
+    is_bold = all(filename_line['fonts'][font_id - 1]['weight'] == 'bold' for font_id in fonts_ids)
 
     if line.islower():
         text_case = 0
@@ -42,19 +42,19 @@ def walk_line(file, node, acc):
     nb_nouns = len([chunk.text for chunk in doc.noun_chunks])
     nb_cardinal = len([entity.text for entity in doc.ents if entity.label_=="CARDINAL"])
                 
-    acc.append([line.strip(), int(is_bold^(common_font['weight'] == 'bold')), int(line_font['size']>common_font['size']),
-                int(line_font['color']!=common_font['color']), int(len(set(fonts_ids))==1), text_case, len(node['content']),
+    acc_line.append([line.strip(), int(is_bold^(common_font['weight'] == 'bold')), int(line_font['size']>common_font['size']),
+                int(line_font['color']!=common_font['color']), int(len(set(fonts_ids))==1), text_case, len(node_line['content']),
                 int(line.strip().isdigit()), nb_verbs, nb_nouns, nb_cardinal,
                 line_font['size'], int(is_bold), 0, 'paragraph', False
                ])
 
-def walk(file, node, acc):
+def walk(filename, node, acc):
     if node['type'] == 'line':
-        walk_line(file, node, acc)
+        walk_line(filename, node, acc)
 
     elif node['type'] == 'paragraph' or node['type'] == 'heading' or node['type'] == 'list':
         for line in node['content']:
-            walk(file, line, acc)
+            walk(filename, line, acc)
 
 
 def extract_lines(file):
