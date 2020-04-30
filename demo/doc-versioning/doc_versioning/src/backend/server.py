@@ -5,6 +5,7 @@ from functools import wraps
 import time
 from sys import stderr
 import itertools
+from markdown import markdown
 
 from flask import Flask, url_for, render_template, jsonify, request, make_response
 import webview
@@ -75,7 +76,7 @@ def view(doc_name, revision):
 		'view.html',
 		name=doc_name,
 		revision=revision,
-		render = parsr.get_markdown( parsr.revision_history[doc_name][revision] ),
+		render = markdown(parsr.get_markdown( parsr.revision_history[doc_name][revision] )),
 	)
 
 

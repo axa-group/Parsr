@@ -26,7 +26,9 @@
             <button class="button-primary" onclick="window.location.replace(`/`);">Home</button>
             <button onclick="window.location.replace(`/document/{{ name }}`);">"{{ name }} - All"</button>
             <h1>"{{ name }}" - <code>{{ revision }}</code></h1>
-            {{ render|safe }}
+          </div>
+          <div style="text-align: left; margin-top: 50px; margin-left: 50px">
+              {{ render|safe }}
           </div>
         </div>
     </body>
