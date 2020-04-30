@@ -283,6 +283,15 @@ function shapeToDrawing(shape: PdfminerShape, pageHeight: number): Drawing {
         drawingContent.push(new SvgLine(drawingBox, thickness, x1, y1, x2, y2));
       }
     }
+
+    const firstFromX = pts[0];
+    const firstFromY = pageHeight - pts[1];
+    const lastToX = pts[pts.length - 2];
+    const lastToY = pageHeight - pts[pts.length - 1];
+
+    if (firstFromX !== lastToX || firstFromY !== lastToY) {
+      drawingContent.push(new SvgLine(drawingBox, thickness, lastToX, lastToY, firstFromX, firstFromY));
+    }
   }
 
   return new Drawing(drawingBox, drawingContent);
