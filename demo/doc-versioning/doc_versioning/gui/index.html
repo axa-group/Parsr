@@ -93,8 +93,8 @@
                 if (this.responseText) {
                     var response = JSON.parse(this.responseText);
                     if (response.status === 'ok') {
-                        document.getElementById("magic_container").innerHTML = "😄 Analysed! Let those horses go!";
-                        setTimeout(gotoDocument.bind(response.docName), 500);
+                        document.getElementById("magic_container").innerHTML = `😄 Analysed ${response.docName}! Let those horses go!`;
+                        setTimeout(gotoDocument(response.docName), 500);
                     } else {
                         document.getElementById("magic_container").innerHTML = "an error..." + response.error;
                     }
@@ -102,7 +102,7 @@
             }
 
             function gotoDocument(docName) {
-                doAjax(`/document/${docName}`, "POST", false);
+                window.location.replace(`document/${docName}`);
             }
 
             function toggleFullscreen() {

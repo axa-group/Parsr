@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Basic Page Needs
+             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <meta charset="utf-8">
+        <title>Doc Versioning</title>
+
+        <!-- Mobile Specific Metas
+             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- FONT
+             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+        <!-- CSS
+             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
+
+    </head>
+    <body>
+        <div class="container">
+          <div style="text-align: center; margin-top: 50px; margin-left: 50px">
+            <button class="button-primary" onclick="window.location.replace(`/`);">Home</button>
+            <button onclick="window.location.replace(`/document/{{ name }}`);">"{{ name }} - All"</button>
+            <h1>"{{ name }}" - <code>{{ revision }}</code></h1>
+            {{ render|safe }}
+          </div>
+        </div>
+    </body>
+</html>

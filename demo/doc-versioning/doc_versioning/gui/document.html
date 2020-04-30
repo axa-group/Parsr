@@ -18,8 +18,48 @@
              –––––––––––––––––––––––––––––––––––––––––––––––––– -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
+
+        <!-- <\!-- differ -- -->
+        <!-- -- --------------------------------------------------- -\-> -->
+        <!-- <\!-- CSS -\-> -->
+        <!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css" /> -->
+
+        <!-- <\!-- Javascripts -\-> -->
+        <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html.min.js"></script> -->
     </head>
     <body>
-      <h1>YEAHYEAHYEAH</h1>
+        <!-- <div class="container"> -->
+        <div style="text-align: center; margin-top: 50px; margin-left: 50px">
+            <button class="button-primary" onclick="window.location.replace(`/`);">Home</button>
+            <h1>"{{ name }}"</h1>
+            {% if diffs|count > 0 %}
+            <hr />
+            <h4>Revisions</h4>
+            <table class="u-full-width">
+            <!-- <table width="30%"> -->
+                <tbody>
+                    {% for key, value in diffs.items() %}
+                    <tr>
+                        <td><h5><code>{{ key|e }}</h5></code></td>
+                        <td>{{ value|safe }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            <hr />
+            <h4>Versions</h4>
+            <table class="u-full-width">
+                <tbody>
+                    {% for revision in revisions %}
+                    <tr>
+                        <td><h5><code>{{ revision  }}</code><h5></td>
+                        <td><button class="button-primary" onclick="window.location.replace(`/view/{{ name }}/{{ revision }}`);">View</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- </div> -->
     </body>
 </html>

@@ -3,6 +3,8 @@ import os
 import webbrowser
 from functools import wraps
 import time
+from sys import stderr
+import itertools
 
 from flask import Flask, url_for, render_template, jsonify, request, make_response
 import webview
@@ -45,6 +47,36 @@ def landing():
 	Render index.html. Initialization is performed asynchronously in initialize() function
 	"""
 	return render_template('index.html', token=webview.token)
+
+@server.route('/document/<doc_name>', methods=['GET'])
+def document(doc_name):
+	"""
+	Render document.html to show document data
+	"""
+	revisions = parsr.get_revisions( document_name=doc_name )
+	diffs = parsr.compare_revisions( document_name=doc_name, pretty_html=True )
+	revision_pairs = [(revisions[i], revisions[i + 1]) for i in range(len(revisions) - 1)]
+	diffs_dict = dict()
+	for i in range(len(revision_pairs)):
+		diffs_dict[revision_pairs[i]] = diffs[i]
+	return render_template(
+		'document.html',
+		name=doc_name,
+		revisions=revisions,
+		diffs = diffs_dict,
+	)
+
+@server.route('/view/<doc_name>/<revision>', methods=['GET'])
+def view(doc_name, revision):
+	"""
+	Render view.html to show a revision content
+	"""
+	return render_template(
+		'view.html',
+		name=doc_name,
+		revision=revision,
+		render = parsr.get_markdown( parsr.revision_history[doc_name][revision] ),
+	)
 
 
 @server.route('/init', methods=['POST'])
@@ -134,11 +166,6 @@ def poll_server():
 		response = {'status': 'error'}
 
 	return jsonify(response)
-
-@server.route('/document/<doc_name>', methods=['POST'])
-@verify_token
-def document(doc_name):
-	return render_template('document.html', token=webview.token)
 
 
 def run_server():
