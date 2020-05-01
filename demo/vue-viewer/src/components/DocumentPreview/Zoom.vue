@@ -1,8 +1,8 @@
 <template>
   <ul class="PreviewZoom">
-    <li @click="$emit('zoomIn')"><img :src="zoomInIcon" /></li>
-    <li @click="$emit('zoomOut')"><img :src="zoomOutIcon" /></li>
-    <li><img :src="zoomFitIcon" /></li>
+    <li @click="$emit('zoomIn')"><img :src="zoomInIcon" alt="zoom in icon" /></li>
+    <li @click="$emit('zoomOut')"><img :src="zoomOutIcon" alt="zoom out icon" /></li>
+    <li><img :src="zoomFitIcon" alt="zoom fit icon" /></li>
   </ul>
 </template>
 
