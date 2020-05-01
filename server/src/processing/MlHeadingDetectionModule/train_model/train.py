@@ -72,32 +72,32 @@ X_heading = df_dataset[['is_different_style', 'is_font_bigger', 'is_font_unique'
 y_heading = list(df_dataset['label'])
 
 # only taking the headings into account for the levels
-df_lvl = df_dataset.loc[df_dataset['label']==1].reset_index()
-X_lvl = df_lvl[['font_size', 'is_bold', 'text_case',
+df_level = df_dataset.loc[df_dataset['label']==1].reset_index()
+X_level = df_level[['font_size', 'is_bold', 'text_case',
                 'is_font_bigger', 'different_color']].to_numpy()
-y_lvl = list(df_lvl['level'])
+y_level = list(df_level['level'])
 
 # splitting the dataset into training and test sets
 X_train1, X_test1, y_train1, y_test1 = train_test_split(X_heading, y_heading, test_size=0.2)
-X_train2, X_test2, y_train2, y_test2 = train_test_split(X_lvl, y_lvl, test_size=0.2)
+X_train2, X_test2, y_train2, y_test2 = train_test_split(X_level, y_level, test_size=0.2)
 
-# those parameters are found through grid search
+# these parameters are found through grid search
 parameters_heading = {'n_estimators': 48, 'min_samples_leaf': 1, 'min_samples_split': 7, 'criterion': 'entropy'}
-parameters_lvl = {'min_samples_leaf': 1, 'min_samples_split': 2, 'criterion': 'entropy'}              
+parameters_level = {'min_samples_leaf': 1, 'min_samples_split': 2, 'criterion': 'entropy'}              
 
 # computing the models
 selector_heading = rf_model(parameters_heading, X_heading, y_heading, metrics.f1_score)
-selector_lvl = dt_model(parameters_lvl, X_lvl, y_lvl, metrics.accuracy_score)
+selector_level = dt_model(parameters_level, X_level, y_level, metrics.accuracy_score)
 
 # evaluating the performance
 y_pred_heading = selector_heading.predict(X_test1)
-y_pred_lvl = selector_lvl.predict(X_test2)
+y_pred_level = selector_level.predict(X_test2)
 print('precision (heading detection):', metrics.precision_score(y_test1, y_pred_heading))
 print('recall (heading detection):', metrics.recall_score(y_test1, y_pred_heading))
 print('f1-score (heading detection):', metrics.f1_score(y_test1, y_pred_heading))
-print('accuracy (headings level):', metrics.accuracy_score(y_test2, y_pred_lvl))
+print('accuracy (headings level):', metrics.accuracy_score(y_test2, y_pred_level))
 
 # exporting the models
 export_model_to_js(selector_heading, 'model.js')
-export_model_to_js(selector_lvl, 'model_level.js')
+export_model_to_js(selector_level, 'model_level.js')
         
