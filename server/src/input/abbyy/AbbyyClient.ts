@@ -179,7 +179,7 @@ export class AbbyyClient {
   constructor(host: string, serverVersion: string, serverTimeout: number) {
     this.host = host;
     this.serverVersion = serverVersion;
-    this.serverString = `http://${this.host}/FineReaderServer${this.serverVersion}/WebService.asmx`;
+    this.serverString = `${this.host}/FineReaderServer${this.serverVersion}/WebService.asmx`;
     this.serverTimeout = serverTimeout;
     this.headers = {
       'content-type': 'text/xml',

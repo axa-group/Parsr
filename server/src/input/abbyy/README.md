@@ -12,7 +12,7 @@ When ABBYY FineReader Server is chosen as the working OCR extraction solution, t
 
   ```json
   "extractor": {
-    "pdf": "...",
+    "pdf": "abbyy",
     "ocr": "abbyy",
     "credentials": {
       "ABBYY_SERVER_URL": "...",

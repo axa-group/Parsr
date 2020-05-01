@@ -19,31 +19,48 @@ export class Config {
   public cleaner: CleanerConfig;
   public extractor: ExtractorConfig;
   public output: OutputConfig;
-  constructor(config: any) {
-    this.version = config.version;
-    this.cleaner = config.cleaner;
-    if (config.version <= 0.8) {
-      const deprecatedConfig: ExtractorConfig = {
-        pdf: config.extractor.pdf,
-        ocr: config.extractor.img,
-        language: config.extractor.language,
-      };
-      this.extractor = deprecatedConfig;
+  constructor(configStr: any) {
+    let config;
+    try {
+      config = JSON.parse(configStr);
+    } catch (err) {
+      throw new Error(`The Json config file is not valid`);
+    }
+    if (
+      config.hasOwnProperty('version') &&
+      config.hasOwnProperty('extractor') &&
+      config.hasOwnProperty('cleaner') &&
+      config.hasOwnProperty('output')
+    ) {
+      this.version = config.version;
+      this.cleaner = config.cleaner;
+      if (config.version <= 0.8) {
+        const deprecatedConfig: ExtractorConfig = {
+          pdf: config.extractor.pdf,
+          ocr: config.extractor.img,
+          language: config.extractor.language,
+        };
+        this.extractor = deprecatedConfig;
+      } else {
+        this.extractor = config.extractor;
+      }
+      this.output = config.output;
+
+      if (typeof this.extractor.pdf === 'undefined') {
+        this.extractor.pdf = 'pdfminer';
+      }
+
+      if (typeof this.extractor.ocr === 'undefined') {
+        this.extractor.ocr = 'tesseract';
+      }
+
+      if (typeof this.output.granularity === 'undefined') {
+        this.output.granularity = 'word';
+      }
     } else {
-      this.extractor = config.extractor;
-    }
-    this.output = config.output;
-
-    if (typeof this.extractor.pdf === 'undefined') {
-      this.extractor.pdf = 'pdfminer';
-    }
-
-    if (typeof this.extractor.ocr === 'undefined') {
-      this.extractor.ocr = 'tesseract';
-    }
-
-    if (typeof this.output.granularity === 'undefined') {
-      this.output.granularity = 'word';
+      throw new Error(
+        `Required key(s) is/are missing. Please check your config file with the documentation.`,
+      );
     }
   }
 }

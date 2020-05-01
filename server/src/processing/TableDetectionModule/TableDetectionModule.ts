@@ -247,13 +247,15 @@ export class TableDetectionModule extends Module<Options> {
   }
 
   private isFalseTable(table: Table): boolean {
-    let isFalse = false;
-    table.content.forEach((_, index) => {
-      if (!this.existAdjacentRow(index, table)) {
-        isFalse = true;
-      }
-    });
-    return isFalse;
+    // this detects 1x1 tables with no content
+    const is1x1 =
+      table.content.length === 1
+      && table.content[0].content.length === 1
+      && table.content[0].content[0].content.length === 0;
+
+    const isFalse = table.content.some((_, index) => !this.existAdjacentRow(index, table));
+
+    return is1x1 || isFalse;
   }
 
   private existAdjacentRow(rowIndex: number, table: Table): TableRow {

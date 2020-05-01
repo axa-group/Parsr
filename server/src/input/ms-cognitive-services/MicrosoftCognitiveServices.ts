@@ -45,10 +45,7 @@ export class MicrosoftCognitiveExtractor extends OcrExtractorFactory {
 
   constructor(config: Config) {
     super(config, credentials);
-    this.checkCredentials([
-      'OCP_APIM_SUBSCRIPTION_KEY',
-      'OCP_APIM_ENDPOINT',
-    ]);
+    this.checkCredentials(['OCP_APIM_SUBSCRIPTION_KEY', 'OCP_APIM_ENDPOINT']);
 
     this.checkCredentialAsURL('OCP_APIM_ENDPOINT');
 
@@ -62,7 +59,7 @@ export class MicrosoftCognitiveExtractor extends OcrExtractorFactory {
     });
   }
 
-  public async scanImage(inputFile: string) {
+  public async scanFile(inputFile: string) {
     try {
       const { headers } = await this.apiClient.post(
         '/vision/v2.0/read/core/asyncBatchAnalyze',

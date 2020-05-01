@@ -30,13 +30,50 @@ export class Module<T = undefined> {
       and returns a merged object in key-value format, prioritizing the values in options object
     */
     this._options = {};
-    if (defaultOptions && defaultOptions.hasOwnProperty('specs')) {
-      const mergedOptions = Object.assign({}, (defaultOptions as any).specs);
-      Object.keys(mergedOptions).forEach(key => {
-        mergedOptions[key] =
-          options && options.hasOwnProperty(key) ? options[key] : mergedOptions[key].value;
-      });
+    const specsKeys = [];
+    const optKeys = [];
 
+    if (defaultOptions && defaultOptions.hasOwnProperty('specs')) {
+      const spec = 'specs';
+      Object.keys(defaultOptions[spec]).forEach(key => {
+        specsKeys.push(key);
+      });
+      if (options) {
+        Object.keys(options).forEach(optKey => {
+          optKeys.push(optKey);
+        });
+      }
+
+      if (optKeys.length > specsKeys.length) {
+        logger.info(
+          'To many keys as been set inside of this: ' +
+            JSON.stringify(options) +
+            '\nGot ' +
+            optKeys.length +
+            'keys, expected ' +
+            specsKeys.length +
+            '.',
+        );
+      }
+      const mergedOptions = Object.assign({}, (defaultOptions as any).specs);
+      let i: number = 0;
+      Object.keys(mergedOptions).forEach(key => {
+        if (i < optKeys.length && !specsKeys.includes(optKeys[i])) {
+          logger.info("The key '" + optKeys[i] + "' is misspelled or unknown.");
+        }
+        if (options && options.hasOwnProperty(key)) {
+          mergedOptions[key] = options[key];
+        } else {
+          logger.info(
+            "The key '" +
+              key +
+              "' is not set, the default value has been set to " +
+              mergedOptions[key].value,
+          );
+          mergedOptions[key] = mergedOptions[key].value;
+        }
+        i += 1;
+      });
       this._options = mergedOptions;
     }
     this._extraOptions = extraOptions;

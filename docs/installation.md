@@ -60,7 +60,7 @@ pacman -S nodejs npm qpdf imagemagick python-pdfminer tesseract python-pip
 pip install camelot-py[cv] numpy pillow scikit-image PyPDF2
 ```
 
-Note: if camelot-py[cv] generates an error in console, you might want to try replacing it with camelot-py\[cv\].
+Note: if camelot-py[cv] generates an error in console, you might want to try replacing it with camelot-py\\[cv\\].
 
 ### 3.2. Installing Dependencies under MacOS
 

@@ -19,7 +19,7 @@ import * as filetype from 'file-type';
 import * as fs from 'fs';
 import * as path from 'path';
 import { Cleaner } from '../src/Cleaner';
-import { AbbyyToolsXml } from '../src/input/abbyy/AbbyyToolsXml';
+import { AbbyyToolsLocalXml } from '../src/input/abbyy/AbbyyToolsXml';
 import { DocxExtractor } from '../src/input/doc/DocxExtractor';
 import { EmailExtractor } from '../src/input/email/EmailExtractor';
 import { JsonExtractor } from '../src/input/json/JsonExtractor';
@@ -80,7 +80,7 @@ function main(): void {
   const configPath: string = path.resolve(commander.config);
   let fileType: { ext: string; mime: string } = filetype(fs.readFileSync(filePath));
   const configStr: string = fs.readFileSync(configPath, 'utf-8');
-  const config: Config = new Config(JSON.parse(configStr));
+  const config: Config = new Config(configStr);
 
   logger.info('Using config:');
   logger.info(utils.prettifyObject(config));
@@ -98,7 +98,7 @@ function main(): void {
    * Decide file type and associate a suitable orchestrator
    */
   if (fileType.ext === 'xml') {
-    orchestrator = new Orchestrator(new AbbyyToolsXml(config), cleaner);
+    orchestrator = new Orchestrator(new AbbyyToolsLocalXml(), cleaner);
   } else if (fileType.ext === 'pdf') {
     orchestrator = new Orchestrator(utils.getPdfExtractor(config), cleaner);
   } else if (fileType.mime.slice(0, 5) === 'image') {
