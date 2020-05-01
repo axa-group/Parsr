@@ -5,6 +5,7 @@
 `python3 -m pip install sklearn_porter`
 `python3 -m pip install scikit-learn==0.22.2`
 `python3 -m spacy download en_core_web_sm`
+`pip3 install beautifulsoup4`
 
 ## Building the Dataset (this step is optional)
 
