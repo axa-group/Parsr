@@ -5,17 +5,34 @@ from sklearn import metrics
 from sklearn.feature_selection import RFECV
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn_porter import Porter
 
-def model(parameters, X, y, score_function):
-    clf_cv = GridSearchCV(DecisionTreeClassifier(), parameters).fit(X, y)
-    clf = DecisionTreeClassifier(min_samples_leaf=clf_cv.best_params_['min_samples_leaf'],
-                                 min_samples_split=clf_cv.best_params_['min_samples_split'],
-                                 criterion=clf_cv.best_params_['criterion'],
+
+def dt_model(parameters, X, y, score_function):
+    clf = DecisionTreeClassifier(min_samples_leaf=parameters['min_samples_leaf'],
+                                 min_samples_split=parameters['min_samples_split'],
+                                 criterion=parameters['criterion'],
                                  splitter='best')
-    selector = RFECV(clf, step=1, cv=10, scoring=metrics.make_scorer(score_function))
-    selector = selector.fit(X, y)
+    selector = RFECV(clf, step=1, cv=10, scoring=metrics.make_scorer(score_function)).fit(X, y)
     return selector
+
+def rf_model(parameters, X, y, score_function):
+    clf = RandomForestClassifier(n_estimators=parameters['n_estimators'],
+                                 min_samples_leaf=parameters['min_samples_leaf'],
+                                 min_samples_split=parameters['min_samples_split'],
+                                 criterion=parameters['criterion'],
+                                 random_state=0)
+    selector = RFECV(clf, step=1, cv=10, scoring=metrics.make_scorer(score_function)).fit(X, y)
+    return selector
+
+def adaboost_model(parameters, X, y):
+    estimator = DecisionTreeClassifier(min_samples_leaf=parameters['min_samples_leaf'],
+                                       min_samples_split=parameters['min_samples_split'],
+                                       criterion=parameters['criterion'],
+                                       splitter='best')
+    clf = AdaBoostClassifier(base_estimator=estimator, n_estimators=100, random_state=0).fit(X, y)
+    return clf
 
 def export_model_to_js(selector, filename):
     porter = Porter(selector.estimator_, language='js')
@@ -58,20 +75,23 @@ y_lvl = list(df_lvl['level'])
 X_train1, X_test1, y_train1, y_test1 = train_test_split(X_heading, y_heading, test_size=0.2)
 X_train2, X_test2, y_train2, y_test2 = train_test_split(X_lvl, y_lvl, test_size=0.2)
 
-parameters_heading = {'min_samples_leaf':[1,2,3,4,5,6,7], 'min_samples_split':[2,3,4,5,6,7], 'criterion':['entropy','gini']}
-parameters_lvl = {'min_samples_leaf':[1,2,3,4,5], 'min_samples_split':[2,3,4,5], 'criterion':['entropy','gini']}              
+# those parameters are found through grid search
+parameters_heading = {'n_estimators': 48, 'min_samples_leaf': 1, 'min_samples_split': 7, 'criterion': 'entropy'}
+parameters_lvl = {'min_samples_leaf': 1, 'min_samples_split': 2, 'criterion': 'entropy'}              
 
-selector_heading = model(parameters_heading, X_train1, y_train1, metrics.f1_score)
-selector_lvl = model(parameters_lvl, X_train2, y_train2, metrics.accuracy_score)
+# computing the models
+selector_heading = rf_model(parameters_heading, X_heading, y_heading, metrics.f1_score)
+selector_lvl = dt_model(parameters_lvl, X_lvl, y_lvl, metrics.accuracy_score)
 
-y_pred_heading = selector_heading.predict(X_test1)
-y_pred_lvl = selector_lvl.predict(X_test2)
-
-print('precision (heading detection):', metrics.precision_score(y_test1, y_pred_heading))
-print('recall (heading detection):', metrics.recall_score(y_test1, y_pred_heading))
-print('f1 (heading detection):', metrics.f1_score(y_test1, y_pred_heading))
-
-print('accuracy (headings level):', metrics.accuracy_score(y_test2, y_pred_lvl))
-
+# exporting the models
 export_model_to_js(selector_heading, 'model.js')
 export_model_to_js(selector_lvl, 'model_level.js')
+
+# evaluating the performance
+y_pred_heading = selector_heading.predict(X_test1)
+y_pred_lvl = selector_lvl.predict(X_test2)
+print('precision (heading detection):', metrics.precision_score(y_test1, y_pred_heading))
+print('recall (heading detection):', metrics.recall_score(y_test1, y_pred_heading))
+print('f1-score (heading detection):', metrics.f1_score(y_test1, y_pred_heading))
+print('accuracy (headings level):', metrics.accuracy_score(y_test2, y_pred_lvl))
+        

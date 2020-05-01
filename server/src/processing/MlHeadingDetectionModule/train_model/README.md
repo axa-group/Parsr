@@ -30,7 +30,10 @@ For each document, the script generates a corresponding csv in the output folder
 9. nb_verbs: number of verbs in the line
 10. nb_nouns: number of nouns in the line
 11. nb_cardinal_numbers: number of cardinal numbers in the line
-12. label: "paragraph" or "heading"
+12. font_size: the font size of the line
+13. is_bold: whether the line is bold or not
+14. level: the level of the headings (= 0 if it is not a heading)
+15. label: "paragraph" or "heading"
 
 ```
 usage: build_dataset.py [-h] md_dir json_dir out_dir
