@@ -77,10 +77,7 @@ clf = clf.fit(X, y)
 
 print('best params: ', clf.best_params_)
 
-#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
-#clf = DecisionTreeClassifier(min_samples_leaf=3, min_samples_split=2, criterion='entropy')
 clf = clf = DecisionTreeClassifier(min_samples_leaf=clf.best_params_['min_samples_leaf'], min_samples_split=clf.best_params_['min_samples_split'], criterion='entropy')
-#clf = clf.fit(X_train, y_train)
 
 print('length of dataset before SMOTE: ', len(X))
 

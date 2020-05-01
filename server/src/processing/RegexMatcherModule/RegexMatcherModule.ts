@@ -61,7 +61,7 @@ export class RegexMatcherModule extends Module<Options> {
       if (this.options.isGlobal) {
         regexType += 'g';
       }
-      if (this.options.isCaseSensitive) {
+      if (!this.options.isCaseSensitive) {
         regexType += 'i';
       }
       const re: RegExp = new RegExp(query.regex, regexType);
