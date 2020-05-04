@@ -16,6 +16,8 @@
 
 const IDENTITY_MATRIX = [1, 0, 0, 1, 0, 0];
 const FONT_IDENTITY_MATRIX = [0.001, 0, 0, 0.001, 0, 0];
+const LINE_CAP_STYLES = ['butt', 'round', 'square'];
+const LINE_JOIN_STYLES = ['miter', 'round', 'bevel'];
 
 // this is a slightly different parseFloat algo
 const pf = value => {
@@ -225,4 +227,6 @@ export {
   convertImgDataToPng,
   IDENTITY_MATRIX,
   FONT_IDENTITY_MATRIX,
+  LINE_CAP_STYLES,
+  LINE_JOIN_STYLES,
 };

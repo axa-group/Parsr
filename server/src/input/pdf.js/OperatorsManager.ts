@@ -72,8 +72,25 @@ type ImageElement = {
   transform: number[];
 };
 
+type PathElement = {
+  transform: number[];
+  d: string;
+  fill?: string;
+  clipRule?: string;
+  fillRule?: string;
+  fillOpacity?: string;
+  stroke?: string;
+  strokeOpacity?: number;
+  strokeMiterlimit?: string;
+  strokeLinecap?: string;
+  strokeLinejoin?: string;
+  strokeWidth?: string;
+  strokeDasharray?: string;
+  strokeDashoffset?: string;
+};
+
 export type OperatorResponse = {
-  type: 'text' | 'image';
+  type: 'text' | 'image' | 'path';
   data: any;
 };
 
@@ -126,10 +143,13 @@ export class OperatorsManager {
         if (this.assetsFolder && fnReturn && fnReturn.type === 'image') {
           this.parseImageElement(fnReturn.data, elements, pageNumber);
         }
+        if (fnReturn && fnReturn.type === 'path') {
+          this.parsePathElement(fnReturn.data, elements);
+        }
       } else {
         if (!this.notImplementedFunctions.includes(operatorName)) {
           this.notImplementedFunctions.push(operatorName);
-          logger.debug(`==> WARN: ${operatorName} operator is not implemented`);
+          logger.debug(`WARN ==> ${operatorName} operator is not implemented`);
         }
       }
     });
@@ -210,5 +230,9 @@ export class OperatorsManager {
     image.xObjExt = xObjExt;
     image.enabled = true;
     parsedElements.push(image);
+  }
+
+  private parsePathElement(pathElem: PathElement, _parsedElements: Element[]) {
+    logger.info(JSON.stringify(pathElem));
   }
 }

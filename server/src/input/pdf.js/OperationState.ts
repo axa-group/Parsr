@@ -45,6 +45,18 @@ export class OperationState {
       textRise: 0,
       leading: 0,
       tspan: null,
+
+      // Graphic state data (SVG rendering)
+      lineWidth: 1,
+      lineCap: '',
+      lineJoin: '',
+      miterLimit: 0,
+      dashArray: [],
+      dashPhase: 0,
+      strokeAlpha: 1,
+      fillAlpha: 1,
+      strokeColor: '#000000',
+      path: null,
     },
 
     // cache of fonts and images loaded with "dependency" operator
@@ -59,6 +71,7 @@ export class OperationState {
 
     extractImages: false,
     extractText: true,
+    pendingClip: null,
   };
 
   public static newState() {
@@ -73,5 +86,15 @@ export class OperationState {
     this.state.current.textHScale = 1;
     this.state.current.textRise = 0;
     this.state.current.fillColor = '#000000';
+    this.state.current.lineWidth = 1;
+    this.state.current.lineCap = '';
+    this.state.current.lineJoin = '';
+    this.state.current.miterLimit = 0;
+    this.state.current.dashArray = [];
+    this.state.current.dashPhase = 0;
+    this.state.current.strokeAlpha = 1;
+    this.state.current.fillAlpha = 1;
+    this.state.current.strokeColor = '#000000';
+    this.state.current.path = null;
   }
 }
