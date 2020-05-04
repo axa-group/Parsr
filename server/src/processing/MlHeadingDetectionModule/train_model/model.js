@@ -1176,10 +1176,10 @@ if (typeof process !== 'undefined' && typeof process.argv !== 'undefined') {
     if (process.argv.length - 2 == 2) {
 
         // Features:
-        var features_ = process.argv.slice(2);
+        var features = process.argv.slice(2);
 
         // Prediction:
-        var prediction = new RandomForestClassifier().predict(features_);
+        var prediction = new RandomForestClassifier().predict(features);
         console.log(prediction);
 
     }

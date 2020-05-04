@@ -34,7 +34,7 @@ export var DecisionTreeClassifier = function() {
                             classes[15] = 0; 
                             classes[16] = 0; 
                         } else {
-                            if (features[1] <= 0.5) {
+                            if (features[0] <= 6.144999980926514) {
                                 classes[0] = 0; 
                                 classes[1] = 0; 
                                 classes[2] = 4; 
@@ -133,12 +133,12 @@ export var DecisionTreeClassifier = function() {
                     }
                 } else {
                     if (features[1] <= 0.5) {
-                        if (features[4] <= 0.5) {
+                        if (features[0] <= 7.740000009536743) {
                             classes[0] = 0; 
                             classes[1] = 0; 
-                            classes[2] = 1; 
+                            classes[2] = 0; 
                             classes[3] = 0; 
-                            classes[4] = 0; 
+                            classes[4] = 3; 
                             classes[5] = 0; 
                             classes[6] = 0; 
                             classes[7] = 0; 
@@ -154,9 +154,9 @@ export var DecisionTreeClassifier = function() {
                         } else {
                             classes[0] = 0; 
                             classes[1] = 0; 
-                            classes[2] = 0; 
+                            classes[2] = 1; 
                             classes[3] = 0; 
-                            classes[4] = 3; 
+                            classes[4] = 0; 
                             classes[5] = 0; 
                             classes[6] = 0; 
                             classes[7] = 0; 
@@ -196,44 +196,8 @@ export var DecisionTreeClassifier = function() {
                         if (features[0] <= 8.985000133514404) {
                             if (features[0] <= 8.414999961853027) {
                                 if (features[3] <= 0.5) {
-                                    if (features[1] <= 0.5) {
-                                        classes[0] = 0; 
-                                        classes[1] = 0; 
-                                        classes[2] = 0; 
-                                        classes[3] = 2; 
-                                        classes[4] = 0; 
-                                        classes[5] = 0; 
-                                        classes[6] = 0; 
-                                        classes[7] = 0; 
-                                        classes[8] = 0; 
-                                        classes[9] = 0; 
-                                        classes[10] = 0; 
-                                        classes[11] = 0; 
-                                        classes[12] = 0; 
-                                        classes[13] = 0; 
-                                        classes[14] = 0; 
-                                        classes[15] = 0; 
-                                        classes[16] = 0; 
-                                    } else {
-                                        if (features[0] <= 8.039999961853027) {
-                                            classes[0] = 0; 
-                                            classes[1] = 0; 
-                                            classes[2] = 0; 
-                                            classes[3] = 0; 
-                                            classes[4] = 0; 
-                                            classes[5] = 0; 
-                                            classes[6] = 0; 
-                                            classes[7] = 0; 
-                                            classes[8] = 0; 
-                                            classes[9] = 0; 
-                                            classes[10] = 1; 
-                                            classes[11] = 0; 
-                                            classes[12] = 0; 
-                                            classes[13] = 0; 
-                                            classes[14] = 0; 
-                                            classes[15] = 0; 
-                                            classes[16] = 0; 
-                                        } else {
+                                    if (features[0] <= 8.039999961853027) {
+                                        if (features[1] <= 0.5) {
                                             classes[0] = 0; 
                                             classes[1] = 0; 
                                             classes[2] = 0; 
@@ -251,7 +215,43 @@ export var DecisionTreeClassifier = function() {
                                             classes[14] = 0; 
                                             classes[15] = 0; 
                                             classes[16] = 0; 
+                                        } else {
+                                            classes[0] = 0; 
+                                            classes[1] = 0; 
+                                            classes[2] = 0; 
+                                            classes[3] = 0; 
+                                            classes[4] = 0; 
+                                            classes[5] = 0; 
+                                            classes[6] = 0; 
+                                            classes[7] = 0; 
+                                            classes[8] = 0; 
+                                            classes[9] = 0; 
+                                            classes[10] = 1; 
+                                            classes[11] = 0; 
+                                            classes[12] = 0; 
+                                            classes[13] = 0; 
+                                            classes[14] = 0; 
+                                            classes[15] = 0; 
+                                            classes[16] = 0; 
                                         }
+                                    } else {
+                                        classes[0] = 0; 
+                                        classes[1] = 0; 
+                                        classes[2] = 0; 
+                                        classes[3] = 2; 
+                                        classes[4] = 0; 
+                                        classes[5] = 0; 
+                                        classes[6] = 0; 
+                                        classes[7] = 0; 
+                                        classes[8] = 0; 
+                                        classes[9] = 0; 
+                                        classes[10] = 0; 
+                                        classes[11] = 0; 
+                                        classes[12] = 0; 
+                                        classes[13] = 0; 
+                                        classes[14] = 0; 
+                                        classes[15] = 0; 
+                                        classes[16] = 0; 
                                     }
                                 } else {
                                     if (features[1] <= 0.5) {
@@ -592,10 +592,10 @@ export var DecisionTreeClassifier = function() {
                 } else {
                     if (features[1] <= 0.5) {
                         if (features[2] <= 2.5) {
-                            if (features[0] <= 8.75) {
-                                classes[0] = 0; 
+                            if (features[3] <= 0.5) {
+                                classes[0] = 2; 
                                 classes[1] = 0; 
-                                classes[2] = 1; 
+                                classes[2] = 4; 
                                 classes[3] = 0; 
                                 classes[4] = 0; 
                                 classes[5] = 0; 
@@ -611,9 +611,9 @@ export var DecisionTreeClassifier = function() {
                                 classes[15] = 0; 
                                 classes[16] = 0; 
                             } else {
-                                classes[0] = 2; 
+                                classes[0] = 0; 
                                 classes[1] = 0; 
-                                classes[2] = 4; 
+                                classes[2] = 1; 
                                 classes[3] = 0; 
                                 classes[4] = 0; 
                                 classes[5] = 0; 
@@ -708,7 +708,7 @@ export var DecisionTreeClassifier = function() {
                                 classes[16] = 5; 
                             }
                         } else {
-                            if (features[3] <= 0.5) {
+                            if (features[2] <= 1.5) {
                                 classes[0] = 0; 
                                 classes[1] = 0; 
                                 classes[2] = 0; 
@@ -951,8 +951,8 @@ export var DecisionTreeClassifier = function() {
                                             classes[16] = 0; 
                                         } else {
                                             if (features[2] <= 2.5) {
-                                                if (features[4] <= 0.5) {
-                                                    if (features[0] <= 11.019999980926514) {
+                                                if (features[0] <= 11.019999980926514) {
+                                                    if (features[4] <= 0.5) {
                                                         classes[0] = 0; 
                                                         classes[1] = 5; 
                                                         classes[2] = 0; 
@@ -974,7 +974,7 @@ export var DecisionTreeClassifier = function() {
                                                         classes[0] = 0; 
                                                         classes[1] = 0; 
                                                         classes[2] = 0; 
-                                                        classes[3] = 1; 
+                                                        classes[3] = 0; 
                                                         classes[4] = 0; 
                                                         classes[5] = 0; 
                                                         classes[6] = 0; 
@@ -983,7 +983,7 @@ export var DecisionTreeClassifier = function() {
                                                         classes[9] = 0; 
                                                         classes[10] = 0; 
                                                         classes[11] = 0; 
-                                                        classes[12] = 0; 
+                                                        classes[12] = 1; 
                                                         classes[13] = 0; 
                                                         classes[14] = 0; 
                                                         classes[15] = 0; 
@@ -993,7 +993,7 @@ export var DecisionTreeClassifier = function() {
                                                     classes[0] = 0; 
                                                     classes[1] = 0; 
                                                     classes[2] = 0; 
-                                                    classes[3] = 0; 
+                                                    classes[3] = 1; 
                                                     classes[4] = 0; 
                                                     classes[5] = 0; 
                                                     classes[6] = 0; 
@@ -1002,7 +1002,7 @@ export var DecisionTreeClassifier = function() {
                                                     classes[9] = 0; 
                                                     classes[10] = 0; 
                                                     classes[11] = 0; 
-                                                    classes[12] = 1; 
+                                                    classes[12] = 0; 
                                                     classes[13] = 0; 
                                                     classes[14] = 0; 
                                                     classes[15] = 0; 
@@ -1010,7 +1010,7 @@ export var DecisionTreeClassifier = function() {
                                                 }
                                             } else {
                                                 if (features[3] <= 0.5) {
-                                                    if (features[4] <= 0.5) {
+                                                    if (features[0] <= 11.019999980926514) {
                                                         classes[0] = 0; 
                                                         classes[1] = 0; 
                                                         classes[2] = 0; 
@@ -1389,12 +1389,12 @@ export var DecisionTreeClassifier = function() {
                                     classes[16] = 0; 
                                 }
                             } else {
-                                if (features[0] <= 13.5) {
-                                    classes[0] = 0; 
+                                if (features[2] <= 1.5) {
+                                    classes[0] = 1; 
                                     classes[1] = 0; 
                                     classes[2] = 0; 
                                     classes[3] = 0; 
-                                    classes[4] = 5; 
+                                    classes[4] = 0; 
                                     classes[5] = 0; 
                                     classes[6] = 0; 
                                     classes[7] = 0; 
@@ -1408,11 +1408,11 @@ export var DecisionTreeClassifier = function() {
                                     classes[15] = 0; 
                                     classes[16] = 0; 
                                 } else {
-                                    classes[0] = 1; 
+                                    classes[0] = 0; 
                                     classes[1] = 0; 
                                     classes[2] = 0; 
                                     classes[3] = 0; 
-                                    classes[4] = 0; 
+                                    classes[4] = 5; 
                                     classes[5] = 0; 
                                     classes[6] = 0; 
                                     classes[7] = 0; 
@@ -1688,26 +1688,8 @@ export var DecisionTreeClassifier = function() {
                                     classes[15] = 0; 
                                     classes[16] = 0; 
                                 } else {
-                                    if (features[2] <= 1.5) {
-                                        if (features[4] <= 0.5) {
-                                            classes[0] = 1; 
-                                            classes[1] = 0; 
-                                            classes[2] = 0; 
-                                            classes[3] = 0; 
-                                            classes[4] = 0; 
-                                            classes[5] = 0; 
-                                            classes[6] = 0; 
-                                            classes[7] = 0; 
-                                            classes[8] = 0; 
-                                            classes[9] = 0; 
-                                            classes[10] = 0; 
-                                            classes[11] = 0; 
-                                            classes[12] = 0; 
-                                            classes[13] = 0; 
-                                            classes[14] = 0; 
-                                            classes[15] = 0; 
-                                            classes[16] = 0; 
-                                        } else {
+                                    if (features[0] <= 10.674999713897705) {
+                                        if (features[0] <= 10.339999675750732) {
                                             classes[0] = 0; 
                                             classes[1] = 0; 
                                             classes[2] = 0; 
@@ -1723,6 +1705,24 @@ export var DecisionTreeClassifier = function() {
                                             classes[12] = 0; 
                                             classes[13] = 0; 
                                             classes[14] = 1; 
+                                            classes[15] = 0; 
+                                            classes[16] = 0; 
+                                        } else {
+                                            classes[0] = 1; 
+                                            classes[1] = 0; 
+                                            classes[2] = 0; 
+                                            classes[3] = 0; 
+                                            classes[4] = 0; 
+                                            classes[5] = 0; 
+                                            classes[6] = 0; 
+                                            classes[7] = 0; 
+                                            classes[8] = 0; 
+                                            classes[9] = 0; 
+                                            classes[10] = 0; 
+                                            classes[11] = 0; 
+                                            classes[12] = 0; 
+                                            classes[13] = 0; 
+                                            classes[14] = 0; 
                                             classes[15] = 0; 
                                             classes[16] = 0; 
                                         }
@@ -1754,7 +1754,7 @@ export var DecisionTreeClassifier = function() {
                                 if (features[0] <= 11.164999961853027) {
                                     if (features[2] <= 1.5) {
                                         if (features[0] <= 10.989999771118164) {
-                                            if (features[0] <= 10.949999809265137) {
+                                            if (features[3] <= 0.5) {
                                                 classes[0] = 0; 
                                                 classes[1] = 0; 
                                                 classes[2] = 1; 
@@ -1793,13 +1793,13 @@ export var DecisionTreeClassifier = function() {
                                             }
                                         } else {
                                             if (features[2] <= 0.5) {
-                                                if (features[3] <= 0.5) {
-                                                    classes[0] = 2; 
+                                                if (features[0] <= 11.019999980926514) {
+                                                    classes[0] = 0; 
                                                     classes[1] = 0; 
-                                                    classes[2] = 0; 
-                                                    classes[3] = 0; 
-                                                    classes[4] = 1; 
-                                                    classes[5] = 1; 
+                                                    classes[2] = 1; 
+                                                    classes[3] = 1; 
+                                                    classes[4] = 0; 
+                                                    classes[5] = 0; 
                                                     classes[6] = 0; 
                                                     classes[7] = 0; 
                                                     classes[8] = 0; 
@@ -1812,12 +1812,12 @@ export var DecisionTreeClassifier = function() {
                                                     classes[15] = 0; 
                                                     classes[16] = 0; 
                                                 } else {
-                                                    classes[0] = 0; 
+                                                    classes[0] = 2; 
                                                     classes[1] = 0; 
-                                                    classes[2] = 1; 
-                                                    classes[3] = 1; 
-                                                    classes[4] = 0; 
-                                                    classes[5] = 0; 
+                                                    classes[2] = 0; 
+                                                    classes[3] = 0; 
+                                                    classes[4] = 1; 
+                                                    classes[5] = 1; 
                                                     classes[6] = 0; 
                                                     classes[7] = 0; 
                                                     classes[8] = 0; 
@@ -1910,25 +1910,7 @@ export var DecisionTreeClassifier = function() {
                                                     classes[15] = 0; 
                                                     classes[16] = 0; 
                                                 } else {
-                                                    if (features[0] <= 11.019999980926514) {
-                                                        classes[0] = 1; 
-                                                        classes[1] = 0; 
-                                                        classes[2] = 1; 
-                                                        classes[3] = 0; 
-                                                        classes[4] = 0; 
-                                                        classes[5] = 0; 
-                                                        classes[6] = 0; 
-                                                        classes[7] = 0; 
-                                                        classes[8] = 0; 
-                                                        classes[9] = 0; 
-                                                        classes[10] = 0; 
-                                                        classes[11] = 0; 
-                                                        classes[12] = 0; 
-                                                        classes[13] = 0; 
-                                                        classes[14] = 0; 
-                                                        classes[15] = 0; 
-                                                        classes[16] = 0; 
-                                                    } else {
+                                                    if (features[3] <= 0.5) {
                                                         classes[0] = 9; 
                                                         classes[1] = 5; 
                                                         classes[2] = 15; 
@@ -1946,18 +1928,36 @@ export var DecisionTreeClassifier = function() {
                                                         classes[14] = 0; 
                                                         classes[15] = 0; 
                                                         classes[16] = 0; 
+                                                    } else {
+                                                        classes[0] = 1; 
+                                                        classes[1] = 0; 
+                                                        classes[2] = 1; 
+                                                        classes[3] = 0; 
+                                                        classes[4] = 0; 
+                                                        classes[5] = 0; 
+                                                        classes[6] = 0; 
+                                                        classes[7] = 0; 
+                                                        classes[8] = 0; 
+                                                        classes[9] = 0; 
+                                                        classes[10] = 0; 
+                                                        classes[11] = 0; 
+                                                        classes[12] = 0; 
+                                                        classes[13] = 0; 
+                                                        classes[14] = 0; 
+                                                        classes[15] = 0; 
+                                                        classes[16] = 0; 
                                                     }
                                                 }
                                             } else {
-                                                if (features[3] <= 0.5) {
-                                                    classes[0] = 4; 
-                                                    classes[1] = 5; 
+                                                if (features[0] <= 11.009999752044678) {
+                                                    classes[0] = 0; 
+                                                    classes[1] = 0; 
                                                     classes[2] = 0; 
                                                     classes[3] = 0; 
                                                     classes[4] = 0; 
-                                                    classes[5] = 1; 
+                                                    classes[5] = 0; 
                                                     classes[6] = 0; 
-                                                    classes[7] = 0; 
+                                                    classes[7] = 1; 
                                                     classes[8] = 0; 
                                                     classes[9] = 0; 
                                                     classes[10] = 0; 
@@ -1968,14 +1968,14 @@ export var DecisionTreeClassifier = function() {
                                                     classes[15] = 0; 
                                                     classes[16] = 0; 
                                                 } else {
-                                                    classes[0] = 0; 
-                                                    classes[1] = 0; 
+                                                    classes[0] = 4; 
+                                                    classes[1] = 5; 
                                                     classes[2] = 0; 
                                                     classes[3] = 0; 
                                                     classes[4] = 0; 
-                                                    classes[5] = 0; 
+                                                    classes[5] = 1; 
                                                     classes[6] = 0; 
-                                                    classes[7] = 1; 
+                                                    classes[7] = 0; 
                                                     classes[8] = 0; 
                                                     classes[9] = 0; 
                                                     classes[10] = 0; 
@@ -2526,10 +2526,10 @@ export var DecisionTreeClassifier = function() {
                                         }
                                     }
                                 } else {
-                                    if (features[2] <= 1.5) {
-                                        classes[0] = 1; 
+                                    if (features[0] <= 13.614999771118164) {
+                                        classes[0] = 0; 
                                         classes[1] = 0; 
-                                        classes[2] = 0; 
+                                        classes[2] = 14; 
                                         classes[3] = 0; 
                                         classes[4] = 0; 
                                         classes[5] = 0; 
@@ -2545,9 +2545,9 @@ export var DecisionTreeClassifier = function() {
                                         classes[15] = 0; 
                                         classes[16] = 0; 
                                     } else {
-                                        classes[0] = 0; 
+                                        classes[0] = 1; 
                                         classes[1] = 0; 
-                                        classes[2] = 14; 
+                                        classes[2] = 0; 
                                         classes[3] = 0; 
                                         classes[4] = 0; 
                                         classes[5] = 0; 
@@ -3918,11 +3918,11 @@ if (typeof process !== 'undefined' && typeof process.argv !== 'undefined') {
     if (process.argv.length - 2 === 5) {
 
         // Features:
-        var features_ = process.argv.slice(2);
+        var features = process.argv.slice(2);
 
         // Prediction:
         var clf = new DecisionTreeClassifier();
-        var prediction = clf.predict(features_);
+        var prediction = clf.predict(features);
         console.log(prediction);
 
     }
