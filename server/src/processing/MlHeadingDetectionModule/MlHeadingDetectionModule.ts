@@ -124,14 +124,16 @@ export class MlHeadingDetectionModule extends Module {
 
     paragraphs.map(paragraph => paragraph.content)
       .forEach(linesInParagraph => {
-        // let initiatedHeading = false;
+        let initiatedHeading = false;
         if (commonFont instanceof Font) {
           const headingIdx: number[] = linesInParagraph.map((line: Line, pos: number) => {
             // const prevLine: Line = linesInParagraph[pos-1];
             // const nextLine: Line = linesInParagraph[pos+1];
-            if (this.isHeadingCandidate(line, commonFont, headingFonts)) {
+            if ((pos === 0 || initiatedHeading) && this.isHeadingCandidate(line, commonFont, headingFonts)) {
+              initiatedHeading = true;
               return pos;
             } else {
+              initiatedHeading = false;
               return undefined;
             }
           }).filter((i: number) => i !== undefined);
