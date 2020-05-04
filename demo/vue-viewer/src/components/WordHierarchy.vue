@@ -22,12 +22,6 @@
               color="f9f9fd"
               @update:active="onActiveUpdated"
             >
-              <!--template v-slot:label="{ item, active }">
-					<span>{{ item.name }}</span>
-					<v-icon v-if="active" size="20" style="margin-left:10px" title="Inspected">
-						mdi-crosshairs
-					</v-icon>
-							</template-->
             </v-treeview>
           </div>
         </v-expansion-panel-content>
@@ -62,7 +56,6 @@ export default {
     if (this.selectedElement) {
       this.populateTreeView();
     }
-    //});
   },
   watch: {
     selectedElement(element) {
@@ -135,7 +128,7 @@ export default {
       const parent = elements
         .filter(el => {
           if (Array.isArray(el.content)) {
-            const child = el.content.filter(child => child.id === childId).shift();
+            const child = el.content.filter(chld => chld.id === childId).shift();
             if (child) return true;
             else {
               return this.parentElement(childId, el.content, hierachy);
