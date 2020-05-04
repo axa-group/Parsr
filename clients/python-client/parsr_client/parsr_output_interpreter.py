@@ -28,6 +28,12 @@ class ParsrOutputInterpreter(object):
 	def __get_text_types(self):
 		return ['word', 'line', 'character', 'paragraph', 'heading']
 
+	def __text_objects_none_page(self, txts, page_number_none):
+		for page in self.object['pages']:
+			for element in page['elements']:
+				if element['type'] in self.__get_text_types():
+					txts.append(element)
+	
 	def __get_text_objects(self, page_number=None):
 		texts = []
 		if page_number is not None:
@@ -40,18 +46,13 @@ class ParsrOutputInterpreter(object):
 					if element['type'] in self.__get_text_types():
 						texts.append(element)
 		else:
-			for page in self.object['pages']:
-				for element in page['elements']:
-					if element['type'] in self.__get_text_types():
-						texts.append(element)
+			texts = self.__text_object_none_page(texts, page_number)
+			
 		return texts
 	
 	def __text_from_text_object(self, text_object:dict) -> str:
 		result = ""
-		if text_object['type'] in ['paragraph', 'heading']:
-			for i in text_object['content']:
-				result += self.__text_from_text_object(i)
-		elif text_object['type'] in ['line']:
+		if (text_object['type'] in ['paragraph', 'heading']) or (text_object['type'] in ['line']):
 			for i in text_object['content']:
 				result += self.__text_from_text_object(i)
 		elif text_object['type'] in ['word']:
@@ -77,7 +78,7 @@ class ParsrOutputInterpreter(object):
 
 	def get_text(self, page_number:int=None) -> str:
 		final_text = ""
-		for textObj in self.__get_text_objects(page_number):
-			final_text += self.__text_from_text_object(textObj)
+		for text_obj in self.__get_text_objects(page_number):
+			final_text += self.__text_from_text_object(text_obj)
 			final_text += "\n\n"
 		return final_text
