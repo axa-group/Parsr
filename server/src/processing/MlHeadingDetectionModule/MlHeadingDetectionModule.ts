@@ -29,8 +29,8 @@ import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagraphModule';
 import { Module } from '../Module';
-import { DecisionTreeClassifier } from './train_model/model';
-import { DecisionTreeClassifier as DecisionTreeClassifierLevel } from './train_model/model_level';
+import { RandomForestClassifier } from './train_model/model';
+import { DecisionTreeClassifier } from './train_model/model_level';
 
 export class MlHeadingDetectionModule extends Module {
   public static moduleName = 'ml-heading-detection';
@@ -198,7 +198,7 @@ export class MlHeadingDetectionModule extends Module {
     const textCase = this.textCase(lineStr);
 
     const features = [isDifferentStyle, isFontBigger, isFontUnique, textCase, wordCount, differentColor, isNumber];
-    const clf = new DecisionTreeClassifier();
+    const clf = new RandomForestClassifier();
 
     return clf.predict(features) === 1;
   }
@@ -357,7 +357,7 @@ export class MlHeadingDetectionModule extends Module {
 
   private computeHeadingLevels(document: Document, commonFont: Font) {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
-    const clf = new DecisionTreeClassifierLevel();
+    const clf = new DecisionTreeClassifier();
 
     headings.forEach(h => {
       const size = h.getMainFont().size;

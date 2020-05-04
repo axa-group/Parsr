@@ -215,17 +215,6 @@ export default {
       return 'none';
     },
     componentFor() {
-      /*return element => {
-				if (this.element.type === 'paragraph') {
-				return 'Paragraph';
-			} else if (this.element.type === 'line') {
-				return 'LineElement';
-			} else if (this.element.type === 'word') {
-				return 'Word';
-			} else {
-				//console.log('UNKNOWN TYPE ' + this.element.type + ' ID ' + this.element.id);
-				return 'Paragraph';
-			}*/
       return element => {
         switch (element.type) {
           case 'paragraph':
@@ -242,8 +231,8 @@ export default {
     elementSelected(element) {
       // if a Word is clicked, I make sure to remove all remaining highlighted elements instead of just the last clicked element
       const highlightedWords = document.getElementsByClassName('highlighted');
-      Array.from(highlightedWords || []).forEach(element => {
-        element.classList.remove('highlighted');
+      Array.from(highlightedWords || []).forEach(elem => {
+        elem.classList.remove('highlighted');
       });
 
       const shouldFill =
@@ -289,9 +278,13 @@ export default {
       this.fitPageToScreen();
     });
 
-    this.onAppear('PageContainer_' + this.page.pageNumber, 0.1, () => {
-      this.appeared = true;
-    });
+    this.onAppear(
+      'PageContainer_' + this.page.pageNumber,
+      () => {
+        this.appeared = true;
+      },
+      0.1,
+    );
   },
   watch: {
     'pageElements.length': {

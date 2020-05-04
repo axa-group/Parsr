@@ -27,7 +27,7 @@ export default {
     logger.debug(`==> setFont(${fontRefName}, ${size})`);
     const { current } = OperationState.state;
 
-    const fontObj = OperationState.state.loadedFonts[fontRefName];
+    const fontObj = OperationState.state.loadedAssets.fonts[fontRefName];
     if (fontObj) {
       OperationState.state.current.font = fontObj;
       OperationState.state.current.fontMatrix = fontObj.fontMatrix ? fontObj.fontMatrix : FONT_IDENTITY_MATRIX;
