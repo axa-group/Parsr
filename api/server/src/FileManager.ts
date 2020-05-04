@@ -16,7 +16,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { Binder, FileMapper, OutputConfig, SingleFileType } from './types';
+import { Binder, FileMapper, SingleFileType } from './types';
 
 export class FileManager {
   private fileSystem: FileMapper = {};
