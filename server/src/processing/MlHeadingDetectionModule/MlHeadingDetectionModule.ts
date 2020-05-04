@@ -29,8 +29,8 @@ import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagraphModule';
 import { Module } from '../Module';
-import { DecisionTreeClassifier } from './train_model/model';
-import { DecisionTreeClassifier as DecisionTreeClassifierLevel } from './train_model/model_level';
+import { RandomForestClassifier } from './train_model/model';
+import { DecisionTreeClassifier } from './train_model/model_level';
 
 export class MlHeadingDetectionModule extends Module {
   public static moduleName = 'ml-heading-detection';
@@ -62,7 +62,7 @@ export class MlHeadingDetectionModule extends Module {
     });
 
     if (this.headingsDetected(doc)) {
-      this.computeHeadingLevels(doc);
+      this.computeHeadingLevels(doc, mainCommonFont);
     }
     return doc;
   }
@@ -186,7 +186,7 @@ export class MlHeadingDetectionModule extends Module {
 
   private isHeadingLine(line: Line, commonFont: Font): boolean {
     const lineStr = line.toString();
-    if (lineStr.length == 1 || !isNaN(lineStr as any)) {
+    if (lineStr.length === 1 || !isNaN(lineStr as any)) {
       return false;
     }
     const wordCount = line.content.length;
@@ -194,11 +194,11 @@ export class MlHeadingDetectionModule extends Module {
     const isFontBigger = line.getMainFont().size > commonFont.size;
     const isFontUnique = line.isUniqueFont();
     const differentColor = line.getMainFont().color !== commonFont.color;
-    const isNumber = !isNaN(lineStr as any)
+    const isNumber = !isNaN(lineStr as any);
     const textCase = this.textCase(lineStr);
 
     const features = [isDifferentStyle, isFontBigger, isFontUnique, textCase, wordCount, differentColor, isNumber];
-    const clf = new DecisionTreeClassifier();
+    const clf = new RandomForestClassifier();
 
     return clf.predict(features) === 1;
   }
@@ -355,18 +355,17 @@ export class MlHeadingDetectionModule extends Module {
     return detected;
   }
 
-  private computeHeadingLevels(document: Document) {
-
+  private computeHeadingLevels(document: Document, commonFont: Font) {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
-    const clf = new DecisionTreeClassifierLevel();    
+    const clf = new DecisionTreeClassifier();
 
-    // TODO: try to normalize the features
     headings.forEach(h => {
       const size = h.getMainFont().size;
       const weight = h.getMainFont().weight === 'bold' ? 1 : 0;
       const textCase = this.textCase(h.toString());
-      const features = [size, weight, textCase];
-      // need to add 1 because the prediction is an index
+      const isFontBigger = size > commonFont.size ? 1 : 0;
+      const differentColor = h.getMainFont().color !== commonFont.color ? 1 : 0;
+      const features = [size, weight, textCase, isFontBigger, differentColor];
       h.level = clf.predict(features) + 1;
     });
   }

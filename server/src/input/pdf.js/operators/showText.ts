@@ -27,7 +27,7 @@ export default {
   key: 'showText',
   value: (glyphs: any[]) => {
     logger.debug(`==> showText(${glyphs.map(g => g.unicode).join('')})`);
-    const { current } = OperationState.state;
+    const { current, extractText } = OperationState.state;
     const {
       font,
       fontSize,
@@ -36,6 +36,16 @@ export default {
       fontDirection,
       fontMatrix,
     } = current;
+
+    OperationState.state.current.tspan = {
+      textContent: '',
+    };
+
+    OperationState.state.current.xcoords = [];
+
+    if (!extractText) {
+      return null;
+    }
 
     if (fontSize === 0) {
       return null;
@@ -90,8 +100,11 @@ export default {
     }
 
     return {
-      transform: matrixToCoords(current.textMatrix),
-      tspan: current.tspan,
+      type: 'text',
+      data: {
+        transform: matrixToCoords(current.textMatrix),
+        tspan: current.tspan,
+      },
     };
   },
 };

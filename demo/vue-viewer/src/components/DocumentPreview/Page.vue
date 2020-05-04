@@ -273,9 +273,13 @@ export default {
       this.fitPageToScreen();
     });
 
-    this.onAppear('PageContainer_' + this.page.pageNumber, () => {
-      this.appeared = true;
-    }, 0.1);
+    this.onAppear(
+      'PageContainer_' + this.page.pageNumber,
+      () => {
+        this.appeared = true;
+      },
+      0.1,
+    );
   },
   watch: {
     'pageElements.length': {

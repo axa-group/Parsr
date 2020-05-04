@@ -47,12 +47,18 @@ export class OperationState {
       tspan: null,
     },
 
-    // cache of fonts loaded with "dependency" operator
-    loadedFonts: {},
+    // cache of fonts and images loaded with "dependency" operator
+    loadedAssets: {
+      fonts: {},
+      images: {},
+    },
     fontMatrix: FONT_IDENTITY_MATRIX,
     transformMatrix: IDENTITY_MATRIX,
     transformStack: [],
     extraStack: [],
+
+    extractImages: false,
+    extractText: true,
   };
 
   public static newState() {

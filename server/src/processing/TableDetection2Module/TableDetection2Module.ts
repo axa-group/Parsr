@@ -131,7 +131,44 @@ export class TableDetection2Module extends Module<Options> {
     if (tableData.content && tableData.flavor === 'stream') {
       table.content = this.joinCellsByContent(table.content, tableData.content);
     }
-    page.elements = page.elements.concat(table);
+    if (!this.isFalseTable(table)) {
+      page.elements = page.elements.concat(table);
+    }
+  }
+
+  private isFalseTable(table: Table): boolean {
+    // this detects 1x1 tables with no content
+    const is1x1 =
+      table.content.length === 1
+      && table.content[0].content.length === 1
+      && table.content[0].content[0].content.length === 0;
+
+    const isFalse = table.content.some((_, index) => !this.existAdjacentRow(index, table));
+
+    return is1x1 || isFalse;
+  }
+
+  private existAdjacentRow(rowIndex: number, table: Table): TableRow {
+    if (rowIndex + 1 === table.content.length) {
+      return this.existPreviousRow(rowIndex, table);
+    }
+    const row = table.content[rowIndex];
+    const findRowWithTop = Math.ceil(row.box.top + row.box.height);
+
+    return table.content
+      .filter(rowToFind => Math.ceil(rowToFind.box.top) === findRowWithTop)
+      .shift();
+  }
+
+  private existPreviousRow(rowIndex: number, table: Table): TableRow {
+    const row = table.content[rowIndex];
+    const findRowWithBottom = Math.ceil(row.box.top);
+
+    return table.content
+      .filter(
+        rowToFind => Math.ceil(rowToFind.box.top + rowToFind.box.height) === findRowWithBottom,
+      )
+      .shift();
   }
 
   private joinCellsByContent(tableContent: TableRow[], tableData: string[][]): TableRow[] {

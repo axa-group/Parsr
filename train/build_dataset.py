@@ -5,7 +5,7 @@ import os
 import re
 from collections import Counter
 
-def walk_line(file_line, node_line, acc_line_line):
+def walk_line(file_line, node_line, acc_line):
     line = ''
     fonts_ids = []
     is_title_case = True
