@@ -98,6 +98,14 @@ export class SvgLine extends SvgShape {
     return this._toY;
   }
 
+  public get fillOpacity(): number {
+    return this._fillOpacity;
+  }
+
+  public get strokeOpacity(): number {
+    return this._strokeOpacity;
+  }
+
   /**
    * Setter fromX
    * @param {number} value
@@ -129,6 +137,15 @@ export class SvgLine extends SvgShape {
   public set toY(value: number) {
     this._toY = value;
   }
+
+  public set fillOpacity(value: number) {
+    this._fillOpacity = value;
+  }
+
+  public set strokeOpacity(value: number) {
+    this._strokeOpacity = value;
+  }
+
   public content: null = null;
   private _lineType: string;
   private _thickness: number;
@@ -137,6 +154,8 @@ export class SvgLine extends SvgShape {
   private _toX: number;
   private _toY: number;
   private _color: string;
+  private _fillOpacity: number;
+  private _strokeOpacity: number;
 
   constructor(
     bbox: BoundingBox,

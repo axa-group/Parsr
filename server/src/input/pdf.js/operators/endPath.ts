@@ -22,7 +22,11 @@ export default {
   key: 'endPath',
   value: () => {
     logger.debug(`==> endPath()`);
-    const { current: { path }, pendingClip } = OperationState.state;
+    const { current: { path }, pendingClip, extractShapes } = OperationState.state;
+
+    if (!extractShapes) {
+      return null;
+    }
 
     // if (!pendingClip) {
     //   return null;

@@ -55,6 +55,7 @@ export class PdfJsImageExtractor extends ImageExtractor {
   private async loadImagesFromPage(pdfjsDoc: any, pageNumber: number, assetsFolder: string): Promise<PageElements> {
     const pdfjsPage = await pdfjsDoc.getPage(pageNumber);
     const opManager = new OperatorsManager(pdfjsPage, {
+      extractShapes: false,
       extractText: false,
       extractImages: true,
       assetsFolder,

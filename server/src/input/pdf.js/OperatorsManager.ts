@@ -17,7 +17,8 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import * as pdfjsLib from 'pdfjs-dist';
-import { BoundingBox, Element, Font, Image, Word } from "../../types/DocumentRepresentation";
+import { BoundingBox, Drawing, Element, Font, Image, Word } from "../../types/DocumentRepresentation";
+import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import logger from '../../utils/Logger';
 import { OperationState } from './OperationState';
 import { matrixToCoords } from './operators/helper';
@@ -33,6 +34,7 @@ type OpList = {
 type ManagerOptions = {
   extractImages?: boolean;
   extractText?: boolean;
+  extractShapes?: boolean;
   assetsFolder?: string;
 };
 
@@ -78,13 +80,13 @@ type PathElement = {
   fill?: string;
   clipRule?: string;
   fillRule?: string;
-  fillOpacity?: string;
+  fillOpacity?: number;
   stroke?: string;
   strokeOpacity?: number;
   strokeMiterlimit?: string;
   strokeLinecap?: string;
   strokeLinejoin?: string;
-  strokeWidth?: string;
+  strokeWidth?: number;
   strokeDasharray?: string;
   strokeDashoffset?: string;
 };
@@ -116,6 +118,7 @@ export class OperatorsManager {
 
     OperationState.state.extractImages = options && options.extractImages;
     OperationState.state.extractText = !options || !options.hasOwnProperty('extractText') || options.extractText;
+    OperationState.state.extractShapes = !options || !options.hasOwnProperty('extractShapes') || options.extractShapes;
   }
 
   public async processOperators(pageNumber: number): Promise<Element[]> {
@@ -232,7 +235,70 @@ export class OperatorsManager {
     parsedElements.push(image);
   }
 
-  private parsePathElement(pathElem: PathElement, _parsedElements: Element[]) {
-    logger.info(JSON.stringify(pathElem));
+  private parsePathElement(pathElem: PathElement, parsedElements: Element[]) {
+    const transform = matrixToCoords(Util.transform(this.viewport.transform, pathElem.transform));
+    const { x: scaleX, y: scaleY } = transform.scale;
+    const { x: posX, y: posY } = transform.position;
+
+    const color = pathElem.stroke || '#000000';
+    const pathInstructions = pathElem.d.split(' ');
+    let fromX = 0;
+    let fromY = 0;
+    let toX = 0;
+    let toY = 0;
+    const lines: SvgLine[] = [];
+    const box = new BoundingBox(1, 1, 1, 1);
+
+    let pathFirstX = posX + parseFloat(pathInstructions[1]) * scaleX;
+    let pathFirstY = posY + parseFloat(pathInstructions[2]) * scaleY;
+
+    for (let i = 0; i < pathInstructions.length;) {
+      const cmd = pathInstructions[i++];
+      switch (cmd) {
+        case 'M':
+          fromX = posX + parseFloat(pathInstructions[i++]) * scaleX;
+          fromY = posY + parseFloat(pathInstructions[i++]) * scaleY;
+          break;
+        case 'L':
+          toX = posX + parseFloat(pathInstructions[i++]) * scaleX;
+          toY = posY + parseFloat(pathInstructions[i++]) * scaleY;
+          lines.push(new SvgLine(box, 1, fromX, fromY, toX, toY, color));
+          fromX = toX;
+          fromY = toY;
+          break;
+        case 'C':
+          i += 4;
+          toX = posX + parseFloat(pathInstructions[i++]) * scaleX;
+          toY = posY + parseFloat(pathInstructions[i++]) * scaleY;
+          lines.push(new SvgLine(box, 1, fromX, fromY, toX, toY, color));
+          fromX = toX;
+          fromY = toY;
+          break;
+        case 'Z':
+          lines.push(new SvgLine(box, 1, fromX, fromY, pathFirstX, pathFirstY, color));
+          fromX = pathFirstX;
+          fromY = pathFirstY;
+          if (pathInstructions[i + 2]) {
+            pathFirstX = posX + parseFloat(pathInstructions[i + 1]) * scaleX;
+            pathFirstY = posY + parseFloat(pathInstructions[i + 2]) * scaleY;
+          }
+          break;
+        default:
+          break;
+      }
+      if (lines.length > 0) {
+        lines.forEach(line => {
+          line.fillOpacity = pathElem.hasOwnProperty('fillOpacity') ? pathElem.fillOpacity : 1;
+          line.strokeOpacity = pathElem.hasOwnProperty('strokeOpacity') ? pathElem.strokeOpacity : 1;
+          line.thickness = pathElem.hasOwnProperty('strokeWidth') ? pathElem.strokeWidth : 1;
+        });
+      }
+    }
+    const left = Math.min(...lines.map(l => l.left));
+    const top = Math.min(...lines.map(l => l.top));
+    const right = Math.max(...lines.map(l => l.right));
+    const bottom = Math.max(...lines.map(l => l.bottom));
+    const drawingBox = new BoundingBox(left, top, Math.abs(right - left), Math.abs(top - bottom));
+    parsedElements.push(new Drawing(drawingBox, lines));
   }
 }

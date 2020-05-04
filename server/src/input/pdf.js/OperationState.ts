@@ -71,6 +71,7 @@ export class OperationState {
 
     extractImages: false,
     extractText: true,
+    extractShapes: true,
     pendingClip: null,
   };
 

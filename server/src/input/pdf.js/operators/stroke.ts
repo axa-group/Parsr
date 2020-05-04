@@ -42,7 +42,7 @@ export default {
       path.strokeMiterlimit = pf(miterLimit);
       path.strokeLinecap = lineCap;
       path.strokeLinejoin = lineJoin;
-      path.strokeWidth = pf(lineWidth) + 'px';
+      path.strokeWidth = lineWidth;
       path.strokeDasharray = dashArray.map(pf).join(' ');
       path.strokeDashoffset = pf(dashPhase) + 'px';
       return endPath.value();

@@ -312,6 +312,8 @@ function svgShapeFromJson(shapeObj: JsonElement): SvgShape {
   );
   newLine.id = shapeObj.id;
   newLine.properties = propertiesFromJson(shapeObj.properties);
+  newLine.fillOpacity = shapeObj.fillOpacity;
+  newLine.strokeOpacity = shapeObj.strokeOpacity;
   return newLine;
 }
 
