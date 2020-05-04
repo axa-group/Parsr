@@ -30,7 +30,7 @@ export async function loadPage(document: any, pageNum: number): Promise<Page> {
   const page = await document.getPage(pageNum);
 
   const opManager = new OperatorsManager(page);
-  const pageElements: Element[] = await opManager.processOperators();
+  const pageElements: Element[] = await opManager.processOperators(pageNum);
 
   const viewport = page.getViewport({ scale: 1.0 });
   return new Page(pageNum, pageElements, new BoundingBox(0, 0, viewport.width, viewport.height));

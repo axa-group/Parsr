@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
+import { writeFileSync } from 'fs';
+import { join } from 'path';
 import * as pdfjsLib from 'pdfjs-dist';
-import { BoundingBox, Element, Font, Word } from "../../types/DocumentRepresentation";
-import logger from "../../utils/Logger";
+import { BoundingBox, Element, Font, Image, Word } from "../../types/DocumentRepresentation";
+import logger from '../../utils/Logger';
 import { OperationState } from './OperationState';
 import { matrixToCoords } from './operators/helper';
 import { getOperator as fn, isAvailable } from './operators/index';
@@ -26,6 +28,12 @@ const Util = (pdfjsLib as any).Util;
 type OpList = {
   fnArray: number[];
   argsArray: any[];
+};
+
+type ManagerOptions = {
+  extractImages?: boolean;
+  extractText?: boolean;
+  assetsFolder?: string;
 };
 
 type TextSpan = {
@@ -39,6 +47,7 @@ type TextSpan = {
   x: string;
   y: string;
 };
+
 type TextElement = {
   tspan: TextSpan,
   transform: {
@@ -55,6 +64,19 @@ type TextElement = {
   },
 };
 
+type ImageElement = {
+  imageData: Uint8Array;
+  objectId: string;
+  height: number;
+  width: number;
+  transform: number[];
+};
+
+export type OperatorResponse = {
+  type: 'text' | 'image';
+  data: any;
+};
+
 /**
  * responsible for processing all page operators
  * and parsing them into an array of Elements for the document
@@ -62,31 +84,47 @@ type TextElement = {
 export class OperatorsManager {
   private opList: Promise<OpList>;
   private viewport;
-  private commonPageObjects;
+  private commonObjects;
+  private pageObjects;
   private notImplementedFunctions: string[] = [];
+  private assetsFolder: string;
 
   // receives the page representation of pdfjs-dist
-  constructor(page: any) {
+  constructor(page: any, options?: ManagerOptions) {
     this.opList = page.getOperatorList();
     this.viewport = page.getViewport({ scale: 1 });
-    this.commonPageObjects = page.commonObjs;
+    this.commonObjects = page.commonObjs;
+    this.pageObjects = page.objs;
+    this.assetsFolder = options && options.assetsFolder;
+
+    OperationState.state.extractImages = options && options.extractImages;
+    OperationState.state.extractText = !options || !options.hasOwnProperty('extractText') || options.extractText;
   }
 
-  public async processOperators(): Promise<Element[]> {
+  public async processOperators(pageNumber: number): Promise<Element[]> {
     const elements: Element[] = [];
     const opList = await this.opList;
     opList.fnArray.forEach((opNumber, i) => {
       const operatorName = Object.keys((pdfjsLib as any).OPS)[opNumber - 1];
       if (isAvailable(operatorName)) {
         const args = opList.argsArray[i];
-        let fnReturn: TextElement; // for now, the only possible return is a TextElement type
+        let fnReturn: OperatorResponse;
         if (args) {
-          fnReturn = fn(operatorName)(...args, this.commonPageObjects);
+          fnReturn = fn(operatorName)(...args, {
+            commonObjects: this.commonObjects,
+            pageObjects: this.pageObjects,
+          });
         } else {
-          fnReturn = fn(operatorName)(this.commonPageObjects);
+          fnReturn = fn(operatorName)({
+            commonObjects: this.commonObjects,
+            pageObjects: this.pageObjects,
+          });
         }
-        if (fnReturn) {
-          this.parseTextElement(fnReturn, elements);
+        if (fnReturn && fnReturn.type === 'text') {
+          this.parseTextElement(fnReturn.data, elements);
+        }
+        if (this.assetsFolder && fnReturn && fnReturn.type === 'image') {
+          this.parseImageElement(fnReturn.data, elements, pageNumber);
         }
       } else {
         if (!this.notImplementedFunctions.includes(operatorName)) {
@@ -142,7 +180,7 @@ export class OperatorsManager {
             Math.round(currentWord.top) === Math.round(previousElement.top)
           ) {
             parsedElements.push(previousElement.join(currentWord));
-          } else if (parsedElements) {
+          } else if (!!previousElement) {
             parsedElements.push(previousElement, currentWord);
           } else {
             parsedElements.push(currentWord);
@@ -150,5 +188,27 @@ export class OperatorsManager {
         }
       });
     }
+  }
+
+  private parseImageElement(imgElem: ImageElement, parsedElements: Element[], pageNumber: number) {
+    const transform = matrixToCoords(Util.transform(this.viewport.transform, imgElem.transform));
+    const { x, y } = transform.position;
+    const { x: width, y: height } = transform.scale;
+
+    const imageCount = parsedElements.filter(e => e instanceof Image).length.toString();
+    const xObjId = pageNumber.toString().concat('_', imageCount).padStart(4, '0');
+    const xObjExt = 'png';
+
+    const imagePath = join(this.assetsFolder, `img-${xObjId}.${xObjExt}`);
+    writeFileSync(imagePath, imgElem.imageData, 'binary');
+
+    const image = new Image(
+      new BoundingBox(x, y - Math.abs(height), Math.abs(width), Math.abs(height)),
+      imagePath,
+    );
+    image.xObjId = xObjId;
+    image.xObjExt = xObjExt;
+    image.enabled = true;
+    parsedElements.push(image);
   }
 }
