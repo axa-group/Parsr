@@ -148,6 +148,8 @@ export class OperatorsManager {
         }
         if (fnReturn && fnReturn.type === 'path') {
           this.parsePathElement(fnReturn.data, elements);
+          // I bring shapes to the front of the array, so word join on parseTextElement won't fail
+          elements.sort(e => e instanceof Drawing ? -1 : 1);
         }
       } else {
         if (!this.notImplementedFunctions.includes(operatorName)) {
