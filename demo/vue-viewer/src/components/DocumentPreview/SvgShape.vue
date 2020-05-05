@@ -8,7 +8,9 @@
       :y1="svgLine.fromY"
       :x2="svgLine.toX"
       :y2="svgLine.toY"
-      :style="`stroke: ${svgLine.color}; stroke-width: ${svgLine.thickness}; opacity: 0.1`"
+      :stroke="svgLine.color || '#000000'"
+      :stroke-opacity="svgLine.hasOwnProperty('strokeOpacity') ? svgLine.strokeOpacity : 0.5"
+      :stroke-width="svgLine.hasOwnProperty('thickness') ? svgLine.thickness : 1"
     />
   </svg>
 </template>

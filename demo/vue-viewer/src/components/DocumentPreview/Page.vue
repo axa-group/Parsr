@@ -381,4 +381,12 @@ g.TableContainer text {
   stroke: purple;
   stroke-width: 1;
 }
+
+svg line {
+  display: none;
+}
+
+.VisibleShapes svg line {
+  display: block;
+}
 </style>
