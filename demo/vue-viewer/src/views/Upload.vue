@@ -142,7 +142,7 @@
       <div class="processTracker" ref="processTracker">
         <p v-for="(status, i) in processStatus" :key="`${status}${i}`">
           <span v-html="status" />
-          <img :src="checkIcon" />
+          <img :src="checkIcon" alt="Check icon" />
         </p>
         <p v-if="processError">
           <span style="vertical-align:middle">Process failed</span>
@@ -208,16 +208,7 @@ export default {
           !(this.ABBYY_SERVER_URL && this.ABBYY_SERVER_VER && this.ABBYY_WORKFLOW))
       );
     },
-    /*
-			this function takes the config in 'specs' format and returns only the values of each parameter
-			ex:
-				parameter: {
-					value: 'foo',
-					range: ['foo', 'bar']
-				}
-
-			returns parameter: 'foo'
-		*/
+   
     keyValueConfig() {
       // i have to make sure to clone the values and not the references of the configs
       const config = JSON.parse(JSON.stringify({ ...this.defaultConfig, ...this.customConfig }));
@@ -271,9 +262,9 @@ export default {
     configChange(configItem) {
       if (configItem.selected) {
         this.customConfig.cleaner.push(configItem.item);
-        const moduleName = configItem => {
-          if (Array.isArray(configItem)) {
-            return configItem[0];
+        const moduleName = confItem => {
+          if (Array.isArray(confItem)) {
+            return confItem[0];
           }
           return configItem;
         };
