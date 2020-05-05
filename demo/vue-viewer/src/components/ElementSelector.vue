@@ -39,17 +39,18 @@ export default {
     ...mapMutations(['switchExpansionPanel']),
     flatten(element) {
       var flattend = [];
-      !(function flat(element, buildID) {
-        flattend.push({ text: buildID(element), value: element });
-        if (element.content) {
-          element.content.forEach(function(el) {
+      var storeInFlattend = function flat(elem, buildID) {
+        flattend.push({ text: buildID(elem), value: elem });
+        if (elem.content) {
+          elem.content.forEach(function(el) {
             flattend.push({ text: buildID(el), value: el });
             if (Array.isArray(el.content)) {
               flat(el, buildID);
             }
           });
         }
-      })(element, this.buildID);
+      };
+      storeInFlattend(element, this.buildID);
       return flattend;
     },
     sortFunction({ value: elementA }, { value: elementB }) {
