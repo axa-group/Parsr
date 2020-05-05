@@ -43,6 +43,11 @@ import { OcrExtractorFactory } from '../OcrExtractor';
 import { AbbyyClient } from './AbbyyClient';
 import * as credentials from './credentials.json';
 
+// type CellPosition = {
+//   x: number;
+//   y: number;
+// };
+
 export class AbbyyTools extends OcrExtractorFactory {
   /**
    * Getter fonts
@@ -327,27 +332,28 @@ export class AbbyyTools extends OcrExtractorFactory {
   private parseAbbyyTable(tableObject: any, cleanTable: boolean = false): Element[] {
     const rowsDS: TableRow[] = [];
     const tableBBox: BoundingBox = this.computeBoundingBox(tableObject.$);
-    let topUntilHere: number = tableBBox.top;
+    let cellX = tableBBox.left;
+    let cellY = tableBBox.top;
+    const rowSpanOffsets = [];
 
     for (const rowNum in tableObject.row) {
+      cellX = tableBBox.left;
       const row = tableObject.row[rowNum];
       const cellsDS: TableCell[] = [];
-      let leftUntilHere = tableBBox.left;
-      let maxCellHeight: number = 0;
-      for (const cellNum in row.cell) {
-        const cell = row.cell[cellNum];
+      let colSpanOffsets = 0;
+      for (const colNum in row.cell) {
+        const cell = row.cell[colNum];
         const cellWidth = parseInt(cell.$.width, 10);
         const cellHeight = parseInt(cell.$.height, 10);
-        if (maxCellHeight < cellHeight) {
-          maxCellHeight = cellHeight;
-        }
         let colSpan: number = 1;
         if ('colSpan' in cell.$) {
           colSpan = parseInt(cell.$.colSpan, 10);
+          colSpanOffsets += colSpan - 1;
         }
         let rowSpan: number = 1;
         if ('rowSpan' in cell.$) {
           rowSpan = parseInt(cell.$.rowSpan, 10);
+          this.trackRowSpan(rowSpanOffsets, rowNum, colNum, cell, colSpanOffsets);
         }
         const elementsDS: Element[] = [];
         for (const textNum in cell.text) {
@@ -361,18 +367,20 @@ export class AbbyyTools extends OcrExtractorFactory {
             }
           }
         }
-        const cellBBox: BoundingBox = new BoundingBox(
-          leftUntilHere,
-          topUntilHere,
-          cellWidth,
-          cellHeight,
+        const cellXOffset = rowSpanOffsets.filter(
+          span => span.row === parseInt(rowNum, 10) && span.col === parseInt(colNum, 10),
         );
+        if (cellXOffset.length > 0) {
+          cellX += cellXOffset.pop().width;
+        }
+        const cellBBox: BoundingBox = new BoundingBox(cellX, cellY, cellWidth, cellHeight);
         const tableCellDS: TableCell = new TableCell(cellBBox, elementsDS, rowSpan, colSpan);
-        leftUntilHere += cellWidth;
         cellsDS.push(tableCellDS);
+        cellX += cellWidth;
       }
-      topUntilHere += maxCellHeight;
       rowsDS.push(new TableRow(cellsDS, BoundingBox.merge(cellsDS.map(cell => cell.box))));
+      cellY += Math.min(...cellsDS.map(cell => cell.box.height));
+      this.mergeConsecutiveRowSpanOffsets(rowSpanOffsets, rowNum);
     }
     const tableDS = new Table(rowsDS, tableBBox);
     let elements: Element[] = [];
@@ -383,6 +391,46 @@ export class AbbyyTools extends OcrExtractorFactory {
       elements.push(tableDS);
     }
     return elements;
+  }
+
+  private mergeConsecutiveRowSpanOffsets(
+    rowSpanOffsets: any,
+    rowNum: string,
+    colNum: string = '0',
+  ) {
+    const row = parseInt(rowNum, 10) + 1;
+    const col = parseInt(colNum, 10);
+    const newRowSpans = rowSpanOffsets.filter(span => span.row === row && span.width !== 0);
+    for (let i = col; i < newRowSpans.length; i++) {
+      if (i + 1 < newRowSpans.length && newRowSpans[i].col === newRowSpans[i + 1].col - 1) {
+        this.mergeConsecutiveRowSpanOffsets(rowSpanOffsets, rowNum, (i + 1).toString());
+      } else if (col - 1 >= 0 && newRowSpans[col].col - 1 === newRowSpans[col - 1].col) {
+        newRowSpans[col - 1].width += newRowSpans[col].width;
+        newRowSpans[col].width = 0;
+      }
+    }
+  }
+  private trackRowSpan(
+    rowSpanOffsets: any,
+    rowNum: string,
+    colNum: string,
+    cell: any,
+    colSpanOffsets: number,
+  ) {
+    let cont = 0;
+    const rowSpan = parseInt(cell.$.rowSpan, 10);
+    const row = parseInt(rowNum, 10);
+    const col = parseInt(colNum, 10);
+
+    while (rowSpan - 1 - cont > 0) {
+      rowSpanOffsets.push({
+        row: row + 1 + cont,
+        col: col + colSpanOffsets,
+        width: parseInt(cell.$.width, 10),
+      });
+
+      cont++;
+    }
   }
 
   private parseAbbyyImage(imageObject: any): Image {
