@@ -48,18 +48,21 @@ export class ReadingOrderDetectionModule extends Module<Options> {
   public main(doc: Document): Document {
     doc.pages = doc.pages.map((page: Page) => {
       // FIXME Hotfix because this algorithm bugs with floating point number
-      const elements: Element[] = page.elements.filter(e => Element.hasBoundingBox(e) && !(e instanceof Drawing));
-      const drawings: Element[] = page.elements.filter(e => Element.hasBoundingBox(e) && e instanceof Drawing);
+      const sortableElements: Element[] =
+        page.elements.filter(e => Element.hasBoundingBox(e) && !(e instanceof Drawing));
+
+      const drawings: Element[] = page.elements.filter(e => e instanceof Drawing);
+
       this.order = 0;
       // The min width is actually as a % of page width
       this.currentPageMinColumnWidth = Math.trunc(
         (this.options.minColumnWidthInPagePercent / 100) * page.width,
       );
 
-      this.process(elements);
+      this.process(sortableElements);
 
-      elements.sort(utils.sortElementsByOrder);
-      page.elements = [...elements, ...drawings];
+      sortableElements.sort(utils.sortElementsByOrder);
+      page.elements = [...sortableElements, ...drawings];
 
       return page;
     });
