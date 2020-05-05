@@ -19,7 +19,7 @@ import json
 
 PORT = 8888
 
-class S(BaseHTTPRequestHandler):
+class PostHandler(BaseHTTPRequestHandler):
 	def do_POST(self):
 		content_length = int(self.headers['Content-Length'])
 		post_data = self.rfile.read(content_length)
@@ -31,7 +31,7 @@ class S(BaseHTTPRequestHandler):
 		self.end_headers()
 		self.wfile.write(json.dumps(new_json_data).encode('utf8'))
 
-def run(server_class=HTTPServer, handler_class=S, port=PORT):
+def run(server_class=HTTPServer, handler_class=PostHandler, port=PORT):
 	server_address = ('', port)
 	httpd = server_class(server_address, handler_class)
 	print('Starting httpd on port {}'.format(port))

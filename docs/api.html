@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Parsr API</title>
@@ -366,6 +366,10 @@
     line-height: 16px;
     margin: 0 0 8px 0;
   }
+  caption {
+    display: none;
+    text-align: left;
+  }
   
   table {
     border-collapse: collapse;
@@ -396,6 +400,14 @@
   
   .label-optional {
     float: right;
+  }
+  
+  .name-table {
+    width: 150px;
+  }
+
+  .type-format-table {
+    width: 100px;
   }
   
   .open-left {
@@ -944,12 +956,7 @@
         <nav id="scrollingNav">
           <ul class="sidenav nav nav-list">
             <!-- Logo Area -->
-              <!--<div style="width: 80%; background-color: #4c8eca; color: white; padding: 20px; text-align: center; margin-bottom: 20px; ">
-
-              API Docs 2
-
-              </div>
-            -->
+              <!-- API Docs 2 -->
             <li class="nav-fixed nav-header active" data-group="_"><a href="#api-_">API Summary</a></li>
 
                   <li class="nav-header" data-group="Input"><a href="#api-Input">API Methods - Input</a></li>
@@ -1017,10 +1024,8 @@
                           <li class="active"><a href="#examples-Input-postDocument-0-curl">Curl</a></li>
                           <li class=""><a href="#examples-Input-postDocument-0-java">Java</a></li>
                           <li class=""><a href="#examples-Input-postDocument-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Input-postDocument-0-groovy">Groovy</a></li>-->
                           <li class=""><a href="#examples-Input-postDocument-0-objc">Obj-C</a></li>
                           <li class=""><a href="#examples-Input-postDocument-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Input-postDocument-0-angular">Angular</a></li>-->
                           <li class=""><a href="#examples-Input-postDocument-0-csharp">C#</a></li>
                           <li class=""><a href="#examples-Input-postDocument-0-php">PHP</a></li>
                           <li class=""><a href="#examples-Input-postDocument-0-perl">Perl</a></li>
@@ -1077,10 +1082,6 @@ public class InputApiExample {
     }
 }</code></pre>
                           </div>
-  <!--
-  <div class="tab-pane" id="examples-Input-postDocument-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
                             <div class="tab-pane" id="examples-Input-postDocument-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">byte[] *file = file_example; //  (optional)
 config *config = ; //  (optional)
@@ -1117,9 +1118,6 @@ api.postDocument(, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Input-postDocument-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
                             <div class="tab-pane" id="examples-Input-postDocument-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
@@ -1217,9 +1215,10 @@ except ApiException as e:
 
                             <div class="methodsubtabletitle">Form parameters</div>
                             <table id="methodsubtable">
+                              <caption>Form parameters</caption>                              
                               <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
+                                <th class="name-table" scope="col">Name</th>
+                                <th scope="col">Description</th>
                               </tr>
                                   <tr><td style="width:150px;">file</td>
                                   <td>
@@ -1324,11 +1323,12 @@ except ApiException as e:
                                 </div>
                                 <div class="tab-pane" id="responses-postDocument-202-headers">
                                     <table>
+                                      <caption>Responses Post Document: 202 headers</caption>
                                         <tr>
-                                            <th width="150px">Name</th>
-                                            <th width="100px">Type</th>
-                                            <th width="100px">Format</th>
-                                            <th>Description</th>
+                                            <th class="name-table" scope="col">Name</th>
+                                            <th class="name-type-format" scope="col">Type</th>
+                                            <th class="name-type-format" scope="col">Format</th>
+                                            <th scope="col">Description</th>
                                         </tr>
                                         <tr>
                                             <td>Location</td>
@@ -1374,10 +1374,8 @@ except ApiException as e:
                           <li class="active"><a href="#examples-Output-getCsv-0-curl">Curl</a></li>
                           <li class=""><a href="#examples-Output-getCsv-0-java">Java</a></li>
                           <li class=""><a href="#examples-Output-getCsv-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Output-getCsv-0-groovy">Groovy</a></li>-->
                           <li class=""><a href="#examples-Output-getCsv-0-objc">Obj-C</a></li>
                           <li class=""><a href="#examples-Output-getCsv-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Output-getCsv-0-angular">Angular</a></li>-->
                           <li class=""><a href="#examples-Output-getCsv-0-csharp">C#</a></li>
                           <li class=""><a href="#examples-Output-getCsv-0-php">PHP</a></li>
                           <li class=""><a href="#examples-Output-getCsv-0-perl">Perl</a></li>
@@ -1436,10 +1434,6 @@ public class OutputApiExample {
     }
 }</code></pre>
                           </div>
-  <!--
-  <div class="tab-pane" id="examples-Output-getCsv-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
                             <div class="tab-pane" id="examples-Output-getCsv-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">String *id = id_example; // ID of the document
 BigDecimal *page = 1.2; // Page number
@@ -1481,9 +1475,6 @@ api.getCsv(id, page, table, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Output-getCsv-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
                             <div class="tab-pane" id="examples-Output-getCsv-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
@@ -1582,9 +1573,10 @@ except ApiException as e:
 
                             <div class="methodsubtabletitle">Path parameters</div>
                             <table id="methodsubtable">
+                              <caption>Form parameters</caption>
                                 <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
+                                  <th class="name-table" scope="col">Name</th>
+                                  <th scope="col">Description</th>
                                 </tr>
                                   <tr><td style="width:150px;">id*</td>
                                   <td>
@@ -1740,10 +1732,8 @@ except ApiException as e:
                           <li class="active"><a href="#examples-Output-getCsvList-0-curl">Curl</a></li>
                           <li class=""><a href="#examples-Output-getCsvList-0-java">Java</a></li>
                           <li class=""><a href="#examples-Output-getCsvList-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Output-getCsvList-0-groovy">Groovy</a></li>-->
                           <li class=""><a href="#examples-Output-getCsvList-0-objc">Obj-C</a></li>
                           <li class=""><a href="#examples-Output-getCsvList-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Output-getCsvList-0-angular">Angular</a></li>-->
                           <li class=""><a href="#examples-Output-getCsvList-0-csharp">C#</a></li>
                           <li class=""><a href="#examples-Output-getCsvList-0-php">PHP</a></li>
                           <li class=""><a href="#examples-Output-getCsvList-0-perl">Perl</a></li>
@@ -1798,7 +1788,6 @@ public class OutputApiExample {
     }
 }</code></pre>
                           </div>
-  <!--
   <div class="tab-pane" id="examples-Output-getCsvList-0-groovy">
   <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
   </div> -->
@@ -1837,9 +1826,6 @@ api.getCsvList(id, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Output-getCsvList-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
                             <div class="tab-pane" id="examples-Output-getCsvList-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
@@ -1930,9 +1916,10 @@ except ApiException as e:
 
                             <div class="methodsubtabletitle">Path parameters</div>
                             <table id="methodsubtable">
+                              <caption>Form parameters</caption>
                                 <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
+                                  <th class="name-table" scope="col">Name</th>
+                                  <th scope="col"> Description</th>
                                 </tr>
                                   <tr><td style="width:150px;">id*</td>
                                   <td>
@@ -2048,10 +2035,8 @@ except ApiException as e:
                           <li class="active"><a href="#examples-Output-getJson-0-curl">Curl</a></li>
                           <li class=""><a href="#examples-Output-getJson-0-java">Java</a></li>
                           <li class=""><a href="#examples-Output-getJson-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Output-getJson-0-groovy">Groovy</a></li>-->
                           <li class=""><a href="#examples-Output-getJson-0-objc">Obj-C</a></li>
                           <li class=""><a href="#examples-Output-getJson-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Output-getJson-0-angular">Angular</a></li>-->
                           <li class=""><a href="#examples-Output-getJson-0-csharp">C#</a></li>
                           <li class=""><a href="#examples-Output-getJson-0-php">PHP</a></li>
                           <li class=""><a href="#examples-Output-getJson-0-perl">Perl</a></li>
@@ -2106,10 +2091,7 @@ public class OutputApiExample {
     }
 }</code></pre>
                           </div>
-  <!--
-  <div class="tab-pane" id="examples-Output-getJson-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
+  
                             <div class="tab-pane" id="examples-Output-getJson-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">String *id = id_example; // ID of the document
 
@@ -2145,9 +2127,6 @@ api.getJson(id, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Output-getJson-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
                             <div class="tab-pane" id="examples-Output-getJson-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
@@ -2238,9 +2217,10 @@ except ApiException as e:
 
                             <div class="methodsubtabletitle">Path parameters</div>
                             <table id="methodsubtable">
+                              <caption>Form parameters</caption>
                                 <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
+                                  <th class="name-table" scope="col">Name</th>
+                                  <th scope="col">Description</th>
                                 </tr>
                                   <tr><td style="width:150px;">id*</td>
                                   <td>
@@ -2350,10 +2330,8 @@ except ApiException as e:
                           <li class="active"><a href="#examples-Output-getMarkdown-0-curl">Curl</a></li>
                           <li class=""><a href="#examples-Output-getMarkdown-0-java">Java</a></li>
                           <li class=""><a href="#examples-Output-getMarkdown-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Output-getMarkdown-0-groovy">Groovy</a></li>-->
                           <li class=""><a href="#examples-Output-getMarkdown-0-objc">Obj-C</a></li>
                           <li class=""><a href="#examples-Output-getMarkdown-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Output-getMarkdown-0-angular">Angular</a></li>-->
                           <li class=""><a href="#examples-Output-getMarkdown-0-csharp">C#</a></li>
                           <li class=""><a href="#examples-Output-getMarkdown-0-php">PHP</a></li>
                           <li class=""><a href="#examples-Output-getMarkdown-0-perl">Perl</a></li>
@@ -2408,10 +2386,7 @@ public class OutputApiExample {
     }
 }</code></pre>
                           </div>
-  <!--
-  <div class="tab-pane" id="examples-Output-getMarkdown-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
+ 
                             <div class="tab-pane" id="examples-Output-getMarkdown-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">String *id = id_example; // ID of the document
 
@@ -2447,9 +2422,6 @@ api.getMarkdown(id, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Output-getMarkdown-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
                             <div class="tab-pane" id="examples-Output-getMarkdown-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
@@ -2540,9 +2512,10 @@ except ApiException as e:
 
                             <div class="methodsubtabletitle">Path parameters</div>
                             <table id="methodsubtable">
+                              <caption>Form parameters</caption>
                                 <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
+                                  <th class="name-table" scope="col">Name</th>
+                                  <th scope="col">Description</th>
                                 </tr>
                                   <tr><td style="width:150px;">id*</td>
                                   <td>
@@ -2654,10 +2627,8 @@ except ApiException as e:
                           <li class="active"><a href="#examples-Output-getText-0-curl">Curl</a></li>
                           <li class=""><a href="#examples-Output-getText-0-java">Java</a></li>
                           <li class=""><a href="#examples-Output-getText-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Output-getText-0-groovy">Groovy</a></li>-->
                           <li class=""><a href="#examples-Output-getText-0-objc">Obj-C</a></li>
                           <li class=""><a href="#examples-Output-getText-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Output-getText-0-angular">Angular</a></li>-->
                           <li class=""><a href="#examples-Output-getText-0-csharp">C#</a></li>
                           <li class=""><a href="#examples-Output-getText-0-php">PHP</a></li>
                           <li class=""><a href="#examples-Output-getText-0-perl">Perl</a></li>
@@ -2712,10 +2683,7 @@ public class OutputApiExample {
     }
 }</code></pre>
                           </div>
-  <!--
-  <div class="tab-pane" id="examples-Output-getText-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
+  
                             <div class="tab-pane" id="examples-Output-getText-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">String *id = id_example; // ID of the document
 
@@ -2751,9 +2719,6 @@ api.getText(id, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Output-getText-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
                             <div class="tab-pane" id="examples-Output-getText-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
@@ -2844,9 +2809,10 @@ except ApiException as e:
 
                             <div class="methodsubtabletitle">Path parameters</div>
                             <table id="methodsubtable">
+                              <caption>Form parameters</caption>
                                 <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
+                                  <th class="name-table" scope="col">Name</th>
+                                  <th scope="col">Description</th>
                                 </tr>
                                   <tr><td style="width:150px;">id*</td>
                                   <td>
@@ -2961,10 +2927,8 @@ except ApiException as e:
                           <li class="active"><a href="#examples-Processing-getQueueStatus-0-curl">Curl</a></li>
                           <li class=""><a href="#examples-Processing-getQueueStatus-0-java">Java</a></li>
                           <li class=""><a href="#examples-Processing-getQueueStatus-0-android">Android</a></li>
-                          <!--<li class=""><a href="#examples-Processing-getQueueStatus-0-groovy">Groovy</a></li>-->
                           <li class=""><a href="#examples-Processing-getQueueStatus-0-objc">Obj-C</a></li>
                           <li class=""><a href="#examples-Processing-getQueueStatus-0-javascript">JavaScript</a></li>
-                          <!--<li class=""><a href="#examples-Processing-getQueueStatus-0-angular">Angular</a></li>-->
                           <li class=""><a href="#examples-Processing-getQueueStatus-0-csharp">C#</a></li>
                           <li class=""><a href="#examples-Processing-getQueueStatus-0-php">PHP</a></li>
                           <li class=""><a href="#examples-Processing-getQueueStatus-0-perl">Perl</a></li>
@@ -3019,10 +2983,7 @@ public class ProcessingApiExample {
     }
 }</code></pre>
                           </div>
-  <!--
-  <div class="tab-pane" id="examples-Processing-getQueueStatus-0-groovy">
-  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-  </div> -->
+  
                             <div class="tab-pane" id="examples-Processing-getQueueStatus-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">String *id = id_example; // ID of the document
 
@@ -3058,9 +3019,6 @@ api.getQueueStatus(id, callback);
 </code></pre>
                             </div>
 
-                            <!--<div class="tab-pane" id="examples-Processing-getQueueStatus-0-angular">
-              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
-            </div>-->
                             <div class="tab-pane" id="examples-Processing-getQueueStatus-0-csharp">
                               <pre class="prettyprint"><code class="language-cs">using System;
 using System.Diagnostics;
@@ -3151,9 +3109,10 @@ except ApiException as e:
 
                             <div class="methodsubtabletitle">Path parameters</div>
                             <table id="methodsubtable">
+                              <caption>Form parameters</caption>
                                 <tr>
-                                  <th width="150px">Name</th>
-                                  <th>Description</th>
+                                  <th class="name-table" scope="col">Name</th>
+                                  <th scope="col">Description</th>
                                 </tr>
                                   <tr><td style="width:150px;">id*</td>
                                   <td>
@@ -3294,11 +3253,12 @@ except ApiException as e:
                                 </div>
                                 <div class="tab-pane" id="responses-getQueueStatus-201-headers">
                                     <table>
+                                      <caption>ResponsesGet queue status: 201 headers</caption>
                                         <tr>
-                                            <th width="150px">Name</th>
-                                            <th width="100px">Type</th>
-                                            <th width="100px">Format</th>
-                                            <th>Description</th>
+                                            <th class="name-table" scope="col">Name</th>
+                                            <th class="type-format-table" scope="col">Type</th>
+                                            <th class="type-format-table" scope="col">Format</th>
+                                            <th scope="col">Description</th>
                                         </tr>
                                         <tr>
                                             <td>Location</td>

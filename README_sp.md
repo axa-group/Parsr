@@ -15,9 +15,9 @@
 	<a href="README_zh-cn.md">中文</a>
 </p>
 
-<p align='center'>
+<!--p align='center'>
   <img src="assets/demo_screen.gif">
-</p>
+</p-->
 
 - **Parsr** es una herramienta de parseo, extracción y limpieza de documentos (**imágenes, pdf, docx, eml**) de huella mínima, que genera datos organizados y usables en formato, **JSON, Markdown (MD), CSV/Pandas DF** o **TXT**.
 

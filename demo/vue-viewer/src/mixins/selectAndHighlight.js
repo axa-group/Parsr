@@ -12,8 +12,8 @@ export default {
     selectAndHighlight(element) {
       // removes all other highlighted elements when this selector is used
       const highlightedElements = document.getElementsByClassName('highlighted');
-      Array.from(highlightedElements || []).forEach(element => {
-        element.classList.remove('highlighted');
+      Array.from(highlightedElements || []).forEach(elem => {
+        elem.classList.remove('highlighted');
       });
 
       if (element) {
