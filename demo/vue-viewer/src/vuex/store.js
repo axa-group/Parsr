@@ -6,17 +6,19 @@ Vue.use(Vuex);
 
 const flattenElement = element => {
   var flattend = [];
-  !(function flat(element) {
-    flattend.push(element);
-    if (element.content) {
-      element.content.forEach(function(el) {
+
+  var storeInFlattend = function flat(elem) {
+    flattend.push(elem);
+    if (elem.content) {
+      elem.content.forEach(function(el) {
         flattend.push(el);
         if (Array.isArray(el.content)) {
           flat(el);
         }
       });
     }
-  })(element);
+  };
+  storeInFlattend(element);
   return flattend;
 };
 
@@ -226,16 +228,16 @@ export default new Vuex.Store({
           throw error;
         });
     },
+
     fetchDocumentCsvList({ commit }) {
       commit('setCsvdownLoading', true);
       return DocumentService.getDocumentCsvs(this.state.uuid)
-        .then(response => {
+        .then(async response => {
           commit('SET_DOCUMENT_CSV_LIST', response.data);
           if (Array.isArray(response.data) && response.data.length > 0) {
             for (const url in response.data) {
-              DocumentService.getDocumentCsv(response.data[url]).then(response => {
-                commit('SET_DOCUMENT_CSV_ITEM', { index: url, csv: response.data });
-              });
+              const resp = await DocumentService.getDocumentCsv(response.data[url]);
+              commit('SET_DOCUMENT_CSV_ITEM', { index: url, csv: resp.data });
             }
           } else {
             commit('setCsvdownLoading', false);
