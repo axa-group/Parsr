@@ -57,6 +57,7 @@ export class ApiServer {
     'image/tiff',
     'image/png',
     'image/jpeg',
+    'application/json',
   ];
 
   constructor() {

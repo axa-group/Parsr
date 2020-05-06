@@ -73,6 +73,14 @@
               :hide-details="true"
               @change="swapFilters()"
             ></v-switch>
+            <v-switch
+              v-model="shapesFilter"
+              label="Shapes"
+              class="switch"
+              color="indigo darken-3"
+              :hide-details="true"
+              @change="swapFilters()"
+            ></v-switch>
           </div>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -93,6 +101,7 @@ export default {
       headingsFilter: this.filters.headings,
       listsFilter: this.filters.lists,
       marginsFilter: this.filters.margins,
+      shapesFilter: this.filters.shapes,
     };
   },
   props: {
@@ -124,6 +133,7 @@ export default {
         headings: this.headingsFilter,
         lists: this.listsFilter,
         margins: this.marginsFilter,
+        shapes: this.shapesFilter,
       };
       this.$store.commit('setInspectorFilters', newFilters);
     },

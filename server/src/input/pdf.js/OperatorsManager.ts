@@ -17,7 +17,8 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import * as pdfjsLib from 'pdfjs-dist';
-import { BoundingBox, Element, Font, Image, Word } from "../../types/DocumentRepresentation";
+import { BoundingBox, Drawing, Element, Font, Image, Word } from "../../types/DocumentRepresentation";
+import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import logger from '../../utils/Logger';
 import { OperationState } from './OperationState';
 import { matrixToCoords } from './operators/helper';
@@ -33,6 +34,7 @@ type OpList = {
 type ManagerOptions = {
   extractImages?: boolean;
   extractText?: boolean;
+  extractShapes?: boolean;
   assetsFolder?: string;
 };
 
@@ -72,8 +74,25 @@ type ImageElement = {
   transform: number[];
 };
 
+type PathElement = {
+  transform: number[];
+  d: string;
+  fill?: string;
+  clipRule?: string;
+  fillRule?: string;
+  fillOpacity?: number;
+  stroke?: string;
+  strokeOpacity?: number;
+  strokeMiterlimit?: string;
+  strokeLinecap?: string;
+  strokeLinejoin?: string;
+  strokeWidth?: number;
+  strokeDasharray?: string;
+  strokeDashoffset?: string;
+};
+
 export type OperatorResponse = {
-  type: 'text' | 'image';
+  type: 'text' | 'image' | 'path';
   data: any;
 };
 
@@ -99,10 +118,14 @@ export class OperatorsManager {
 
     OperationState.state.extractImages = options && options.extractImages;
     OperationState.state.extractText = !options || !options.hasOwnProperty('extractText') || options.extractText;
+    OperationState.state.extractShapes = !options || !options.hasOwnProperty('extractShapes') || options.extractShapes;
   }
 
   public async processOperators(pageNumber: number): Promise<Element[]> {
-    const elements: Element[] = [];
+    const texts: Word[] = [];
+    const images: Image[] = [];
+    const drawings: Drawing[] = [];
+
     const opList = await this.opList;
     opList.fnArray.forEach((opNumber, i) => {
       const operatorName = Object.keys((pdfjsLib as any).OPS)[opNumber - 1];
@@ -121,19 +144,22 @@ export class OperatorsManager {
           });
         }
         if (fnReturn && fnReturn.type === 'text') {
-          this.parseTextElement(fnReturn.data, elements);
+          this.parseTextElement(fnReturn.data, texts);
         }
         if (this.assetsFolder && fnReturn && fnReturn.type === 'image') {
-          this.parseImageElement(fnReturn.data, elements, pageNumber);
+          this.parseImageElement(fnReturn.data, images, pageNumber);
+        }
+        if (fnReturn && fnReturn.type === 'path') {
+          this.parsePathElement(fnReturn.data, drawings);
         }
       } else {
         if (!this.notImplementedFunctions.includes(operatorName)) {
           this.notImplementedFunctions.push(operatorName);
-          logger.debug(`==> WARN: ${operatorName} operator is not implemented`);
+          logger.debug(`WARN ==> ${operatorName} operator is not implemented`);
         }
       }
     });
-    return elements.filter(e => e.box && e.box.width > 0);
+    return [...texts, ...images, ...drawings].filter(e => e.box && e.box.width > 0);
   }
 
   private parseTextElement(textElem: TextElement, parsedElements: Element[]) {
@@ -210,5 +236,83 @@ export class OperatorsManager {
     image.xObjExt = xObjExt;
     image.enabled = true;
     parsedElements.push(image);
+  }
+
+  private parsePathElement(pathElem: PathElement, parsedElements: Element[]) {
+    const transform = matrixToCoords(Util.transform(this.viewport.transform, pathElem.transform));
+    const { x: scaleX, y: scaleY } = transform.scale;
+    const { x: posX, y: posY } = transform.position;
+
+    const color = pathElem.stroke || '#000000';
+    const pathInstructions = pathElem.d.split(' ');
+    let fromX = 0;
+    let fromY = 0;
+    let toX = 0;
+    let toY = 0;
+    const lines: SvgLine[] = [];
+    const box = new BoundingBox(1, 1, 1, 1);
+
+    let pathFirstX = posX + parseFloat(pathInstructions[1]) * scaleX;
+    let pathFirstY = posY + parseFloat(pathInstructions[2]) * scaleY;
+
+    for (let i = 0; i < pathInstructions.length;) {
+      const cmd = pathInstructions[i++];
+      switch (cmd) {
+        case 'M':
+          fromX = posX + parseFloat(pathInstructions[i++]) * scaleX;
+          fromY = posY + parseFloat(pathInstructions[i++]) * scaleY;
+          break;
+        case 'L':
+          toX = posX + parseFloat(pathInstructions[i++]) * scaleX;
+          toY = posY + parseFloat(pathInstructions[i++]) * scaleY;
+          lines.push(new SvgLine(box, 1, fromX, fromY, toX, toY, color));
+          fromX = toX;
+          fromY = toY;
+          break;
+        case 'C':
+          i += 4;
+          toX = posX + parseFloat(pathInstructions[i++]) * scaleX;
+          toY = posY + parseFloat(pathInstructions[i++]) * scaleY;
+          lines.push(new SvgLine(box, 1, fromX, fromY, toX, toY, color));
+          fromX = toX;
+          fromY = toY;
+          break;
+        case 'Z':
+          lines.push(new SvgLine(box, 1, fromX, fromY, pathFirstX, pathFirstY, color));
+          fromX = pathFirstX;
+          fromY = pathFirstY;
+          if (pathInstructions[i + 2]) {
+            pathFirstX = posX + parseFloat(pathInstructions[i + 1]) * scaleX;
+            pathFirstY = posY + parseFloat(pathInstructions[i + 2]) * scaleY;
+          }
+          break;
+        default:
+          break;
+      }
+      if (lines.length > 0) {
+        lines.forEach(line => {
+          line.fillOpacity = pathElem.hasOwnProperty('fillOpacity') ? pathElem.fillOpacity : 1;
+          line.strokeOpacity = pathElem.hasOwnProperty('strokeOpacity') ? pathElem.strokeOpacity : 1;
+          line.thickness = pathElem.hasOwnProperty('strokeWidth') ? pathElem.strokeWidth : 1;
+        });
+      }
+    }
+    const left = Math.min(...lines.map(l => l.fromX));
+    const top = Math.min(...lines.map(l => l.fromY));
+    const right = Math.max(...lines.map(l => l.toX));
+    const bottom = Math.max(...lines.map(l => l.toY));
+    const drawingBox = new BoundingBox(left, top, Math.abs(right - left), Math.abs(top - bottom));
+    const drawing = new Drawing(drawingBox, lines);
+
+    // avoid pushing repeated drawings
+    if (parsedElements.filter(e => e instanceof Drawing).every(d => d.toString() !== drawing.toString())) {
+
+      // avoid pushing drawings that follow the perimeter of the page
+      if (Math.round(drawing.width) !== Math.round(this.viewport.width)
+        || Math.round(drawing.height) !== Math.round(this.viewport.height)
+      ) {
+        parsedElements.push(drawing);
+      }
+    }
   }
 }

@@ -16,44 +16,72 @@
  */
 
 import beginText from './beginText';
+import clip from './clip';
 import constructPath from './constructPath';
 import dependency from './dependency';
+import endPath from './endPath';
+import eoFill from './eoFill';
+import fill from './fill';
 import moveText from './moveText';
 import nextLine from './nextLine';
 import paintImageXObject from './paintImageXObject';
 import restore from './restore';
 import save from './save';
 import setCharSpacing from './setCharSpacing';
+import setDash from './setDash';
+import setFillAlpha from './setFillAlpha';
 import setFillRGBColor from './setFillRGBColor';
 import setFont from './setFont';
+import setGState from './setGState';
 import setHScale from './setHScale';
 import setLeading from './setLeading';
 import setLeadingMoveText from './setLeadingMoveText';
+import setLineCap from './setLineCap';
+import setLineJoin from './setLineJoin';
+import setLineWidth from './setLineWidth';
+import setMiterLimit from './setMiterLimit';
+import setStrokeAlpha from "./setStrokeAlpha";
+import setStrokeRGBColor from "./setStrokeRGBColor";
 import setTextMatrix from './setTextMatrix';
 import setTextRise from './setTextRise';
 import setWordSpacing from './setWordSpacing';
 import showText from './showText';
+import stroke from './stroke';
 import transform from './transform';
 
 const availableOperators = [
   beginText,
+  clip,
   constructPath,
   dependency,
+  endPath,
+  eoFill,
+  fill,
   moveText,
   nextLine,
   paintImageXObject,
   restore,
   save,
   setCharSpacing,
+  setDash,
+  setFillAlpha,
   setFillRGBColor,
   setFont,
+  setGState,
   setHScale,
   setLeading,
   setLeadingMoveText,
+  setLineCap,
+  setLineJoin,
+  setLineWidth,
+  setMiterLimit,
+  setStrokeAlpha,
+  setStrokeRGBColor,
   setTextMatrix,
   setTextRise,
   setWordSpacing,
   showText,
+  stroke,
   transform,
 ];
 

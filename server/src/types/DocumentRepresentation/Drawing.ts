@@ -45,4 +45,8 @@ export class Drawing extends Element {
   public set content(value: SvgShape[]) {
     this._content = value;
   }
+
+  public toString(): string {
+    return this.content.map(c => c.toString()).join('');
+  }
 }

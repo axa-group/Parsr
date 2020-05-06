@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Document, Element, Page } from '../../types/DocumentRepresentation';
+import { Document, Drawing, Element, Page } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import { HeaderFooterDetectionModule } from '../HeaderFooterDetectionModule/HeaderFooterDetectionModule';
 import { Module } from '../Module';
@@ -48,7 +48,10 @@ export class ReadingOrderDetectionModule extends Module<Options> {
   public main(doc: Document): Document {
     doc.pages = doc.pages.map((page: Page) => {
       // FIXME Hotfix because this algorithm bugs with floating point number
-      const elements: Element[] = page.elements.filter(Element.hasBoundingBox);
+      const sortableElements: Element[] =
+        page.elements.filter(e => Element.hasBoundingBox(e) && !(e instanceof Drawing));
+
+      const drawings: Element[] = page.elements.filter(e => e instanceof Drawing);
 
       this.order = 0;
       // The min width is actually as a % of page width
@@ -56,10 +59,10 @@ export class ReadingOrderDetectionModule extends Module<Options> {
         (this.options.minColumnWidthInPagePercent / 100) * page.width,
       );
 
-      this.process(elements);
+      this.process(sortableElements);
 
-      elements.sort(utils.sortElementsByOrder);
-      page.elements = elements;
+      sortableElements.sort(utils.sortElementsByOrder);
+      page.elements = [...sortableElements, ...drawings];
 
       return page;
     });

@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,10 +51,26 @@ export class SvgLine extends SvgShape {
   }
 
   /**
+   * Getter line color
+   * @return {string} in hex format
+   */
+  public get color(): string {
+    return this._color;
+  }
+
+  /**
+   * Setter color
+   * @param {string} value
+   */
+  public set color(value: string) {
+    this._color = value;
+  }
+
+  /**
    * Getter fromX
    * @return {number}
    */
-  public get from_x(): number {
+  public get fromX(): number {
     return this._fromX;
   }
 
@@ -62,7 +78,7 @@ export class SvgLine extends SvgShape {
    * Getter fromY
    * @return {number}
    */
-  public get from_y(): number {
+  public get fromY(): number {
     return this._fromY;
   }
 
@@ -70,7 +86,7 @@ export class SvgLine extends SvgShape {
    * Getter toX
    * @return {number}
    */
-  public get to_x(): number {
+  public get toX(): number {
     return this._toX;
   }
 
@@ -80,6 +96,14 @@ export class SvgLine extends SvgShape {
    */
   public get toY(): number {
     return this._toY;
+  }
+
+  public get fillOpacity(): number {
+    return this._fillOpacity;
+  }
+
+  public get strokeOpacity(): number {
+    return this._strokeOpacity;
   }
 
   /**
@@ -113,6 +137,15 @@ export class SvgLine extends SvgShape {
   public set toY(value: number) {
     this._toY = value;
   }
+
+  public set fillOpacity(value: number) {
+    this._fillOpacity = value;
+  }
+
+  public set strokeOpacity(value: number) {
+    this._strokeOpacity = value;
+  }
+
   public content: null = null;
   private _lineType: string;
   private _thickness: number;
@@ -120,6 +153,9 @@ export class SvgLine extends SvgShape {
   private _fromY: number;
   private _toX: number;
   private _toY: number;
+  private _color: string;
+  private _fillOpacity: number;
+  private _strokeOpacity: number;
 
   constructor(
     bbox: BoundingBox,
@@ -128,12 +164,18 @@ export class SvgLine extends SvgShape {
     fromY: number,
     toX: number,
     toY: number,
+    color: string = '#000000',
   ) {
     super(bbox);
     this.thickness = thickness;
+    this.color = color;
     this.fromX = fromX;
     this.fromY = fromY;
     this.toX = toX;
     this.toY = toY;
+  }
+
+  public toString(): string {
+    return this.fromX + ',' + this.toX + ',' + this.fromY + ',' + this.toY + ',' + this.color + ';';
   }
 }

@@ -96,6 +96,7 @@
           :fonts="fonts"
           @custom-event="elementSelected"
         />
+        <svg-shape v-for="element in shapes" :key="`toc_${element.id}`" :element="element" />
       </g>
     </svg>
   </div>
@@ -110,9 +111,10 @@ import TableData from '@/components/DocumentPreview/Table';
 import TableOfContents from '@/components/DocumentPreview/TableOfContents';
 import List from '@/components/DocumentPreview/List';
 import ImageData from '@/components/DocumentPreview/Image';
+import SvgShape from '@/components/DocumentPreview/SvgShape';
 import { mapState, mapGetters } from 'vuex';
 export default {
-  components: { Paragraph, Heading, TableData, List, ImageData, TableOfContents },
+  components: { Paragraph, Heading, TableData, List, ImageData, TableOfContents, SvgShape },
   mixins: [scrollItemMixin],
   data() {
     return {
@@ -159,6 +161,9 @@ export default {
     },
     toc() {
       return this.elementsOfType['table-of-contents'] || [];
+    },
+    shapes() {
+      return this.elementsOfType['drawing'] || [];
     },
     pageElements() {
       if (!this.appeared) {
@@ -375,5 +380,13 @@ g.TableContainer text {
 .VisibleTOC rect.TOC {
   stroke: purple;
   stroke-width: 1;
+}
+
+svg line {
+  display: none;
+}
+
+.VisibleShapes svg line {
+  display: block;
 }
 </style>
