@@ -164,7 +164,7 @@ export class SvgLine extends SvgShape {
     fromY: number,
     toX: number,
     toY: number,
-    color: string = '#000',
+    color: string = '#000000',
   ) {
     super(bbox);
     this.thickness = thickness;
@@ -173,5 +173,9 @@ export class SvgLine extends SvgShape {
     this.fromY = fromY;
     this.toX = toX;
     this.toY = toY;
+  }
+
+  public toString(): string {
+    return this.fromX + ',' + this.toX + ',' + this.fromY + ',' + this.toY + ',' + this.color + ';';
   }
 }

@@ -296,11 +296,22 @@ export class OperatorsManager {
         });
       }
     }
-    const left = Math.min(...lines.map(l => l.left));
-    const top = Math.min(...lines.map(l => l.top));
-    const right = Math.max(...lines.map(l => l.right));
-    const bottom = Math.max(...lines.map(l => l.bottom));
+    const left = Math.min(...lines.map(l => l.fromX));
+    const top = Math.min(...lines.map(l => l.fromY));
+    const right = Math.max(...lines.map(l => l.toX));
+    const bottom = Math.max(...lines.map(l => l.toY));
     const drawingBox = new BoundingBox(left, top, Math.abs(right - left), Math.abs(top - bottom));
-    parsedElements.push(new Drawing(drawingBox, lines));
+    const drawing = new Drawing(drawingBox, lines);
+
+    // avoid pushing repeated drawings
+    if (parsedElements.filter(e => e instanceof Drawing).every(d => d.toString() !== drawing.toString())) {
+
+      // avoid pushing drawings that follow the perimeter of the page
+      if (Math.round(drawing.width) !== Math.round(this.viewport.width)
+        || Math.round(drawing.height) !== Math.round(this.viewport.height)
+      ) {
+        parsedElements.push(drawing);
+      }
+    }
   }
 }
