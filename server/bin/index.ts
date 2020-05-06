@@ -104,8 +104,7 @@ function main(): void {
   } else if (fileType.mime.slice(0, 5) === 'image') {
     orchestrator = new Orchestrator(utils.getOcrExtractor(config), cleaner);
   } else if (fileType.ext === 'json') {
-    // if input is a json, there is no need to run the pipeline
-    orchestrator = new Orchestrator(new JsonExtractor(config), null);
+    orchestrator = new Orchestrator(new JsonExtractor(config), cleaner);
   } else if (fileType.ext === 'eml') {
     orchestrator = new Orchestrator(new EmailExtractor(config), cleaner);
   } else if (fileType.ext === 'docx') {
