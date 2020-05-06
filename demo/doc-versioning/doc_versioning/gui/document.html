@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <!-- Basic Page Needs
              –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -19,24 +19,23 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
 
-        <!-- <\!-- differ -- -->
-        <!-- -- --------------------------------------------------- -\-> -->
-        <!-- <\!-- CSS -\-> -->
-        <!-- <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css" /> -->
+        <!-- differ
+        -- --------------------------------------------------- -->
 
-        <!-- <\!-- Javascripts -\-> -->
-        <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html.min.js"></script> -->
     </head>
     <body>
-        <!-- <div class="container"> -->
         <div style="text-align: center; margin-top: 50px; margin-left: 50px">
             <button class="button-primary" onclick="window.location.replace(`/`);">Home</button>
             <h1>"{{ name }}"</h1>
             {% if diffs|count > 0 %}
             <h4>Revisions</h4>
             <table class="u-full-width">
-            <!-- <table width="30%"> -->
                 <tbody>
+                    <caption>key and value</caption>
+                    <tr>
+                        <th scope="col">Key</th>
+                        <th scope="col">Value</th>
+                    </tr>
                     {% for key, value in diffs.items() %}
                     <tr>
                         <td><h5><code>{{ key|e }}</h5></code></td>
@@ -49,6 +48,11 @@
             <h4>Versions</h4>
             <table class="u-full-width">
                 <tbody>
+                    <caption>revision and view</caption>
+                    <tr>
+                        <th scope="col">Revision</th>
+                        <th scope="col">View button</th>
+                    </tr>
                     {% for revision in revisions %}
                     <tr>
                         <td><h5><code>{{ revision  }}</code><h5></td>
@@ -58,6 +62,5 @@
                 </tbody>
             </table>
         </div>
-        <!-- </div> -->
     </body>
 </html>
