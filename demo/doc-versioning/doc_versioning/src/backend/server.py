@@ -139,7 +139,7 @@ def open_url():
 
 @server.route('/do/magic', methods=['POST'])
 @verify_token
-def doMagic():
+def do_magic():
 	my_path = os.path.abspath(os.path.dirname(__file__))
 	filename = request.json['filename']
 	result = parsr.send_document(filename, my_path + '/defaultConfig.json')
@@ -154,15 +154,15 @@ def doMagic():
 @server.route('/poll', methods=['POST'])
 @verify_token
 def poll_server():
-	jobID = request.json['jobID']
-	result = parsr.get_status(jobID)
+	job_id = request.json['jobID']
+	result = parsr.get_status(job_id)
 
 	while ('progress-percentage' in result['server_response'].keys()):
-		result = parsr.get_status(jobID)
+		result = parsr.get_status(job_id)
 		time.sleep(1)
 
 	if result:
-		response = {'status': 'ok', 'result': result, 'docName': parsr.get_document_name_from_request_id(jobID)}
+		response = {'status': 'ok', 'result': result, 'docName': parsr.get_document_name_from_request_id(job_id)}
 	else:
 		response = {'status': 'error'}
 
