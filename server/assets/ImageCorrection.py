@@ -99,11 +99,11 @@ def get_rotation_data(original_image, rotated_image, angle, output_file):
 
     return json.dumps(output_data)
 
-def isFaceDown(imagePath):
-    tesseractOutput = subprocess.Popen(['tesseract', imagePath, "-", "--psm", "0"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=1, universal_newlines=True).stdout.read()
+def is_face_down(image_path):
+    tesseract_output = subprocess.Popen(['tesseract', image_path, "-", "--psm", "0"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=1, universal_newlines=True).stdout.read()
     try:
-        tesseractRotation = re.search('(?<=Rotate: )\d+', tesseractOutput).group(0)
-        if tesseractRotation != '0':
+        tesseract_rotation = re.search('(?<=Rotate: )\d+', tesseract_output).group(0)
+        if tesseract_rotation != '0':
             return True
     except Exception as e:
         return False
