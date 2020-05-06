@@ -122,7 +122,10 @@ export class OperatorsManager {
   }
 
   public async processOperators(pageNumber: number): Promise<Element[]> {
-    const elements: Element[] = [];
+    const texts: Word[] = [];
+    const images: Image[] = [];
+    const drawings: Drawing[] = [];
+
     const opList = await this.opList;
     opList.fnArray.forEach((opNumber, i) => {
       const operatorName = Object.keys((pdfjsLib as any).OPS)[opNumber - 1];
@@ -141,15 +144,13 @@ export class OperatorsManager {
           });
         }
         if (fnReturn && fnReturn.type === 'text') {
-          this.parseTextElement(fnReturn.data, elements);
+          this.parseTextElement(fnReturn.data, texts);
         }
         if (this.assetsFolder && fnReturn && fnReturn.type === 'image') {
-          this.parseImageElement(fnReturn.data, elements, pageNumber);
+          this.parseImageElement(fnReturn.data, images, pageNumber);
         }
         if (fnReturn && fnReturn.type === 'path') {
-          this.parsePathElement(fnReturn.data, elements);
-          // I bring shapes to the front of the array, so word join on parseTextElement won't fail
-          elements.sort(e => e instanceof Drawing ? -1 : 1);
+          this.parsePathElement(fnReturn.data, drawings);
         }
       } else {
         if (!this.notImplementedFunctions.includes(operatorName)) {
@@ -158,7 +159,7 @@ export class OperatorsManager {
         }
       }
     });
-    return elements.filter(e => e.box && e.box.width > 0);
+    return [...texts, ...images, ...drawings].filter(e => e.box && e.box.width > 0);
   }
 
   private parseTextElement(textElem: TextElement, parsedElements: Element[]) {
