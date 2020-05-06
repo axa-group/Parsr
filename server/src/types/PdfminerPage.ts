@@ -15,6 +15,7 @@
  */
 
 import { PdfminerFigure } from './PdfminerFigure';
+import { PdfminerShape } from './PdfminerShape';
 import { PdfminerTextbox } from './PdfminerTextbox';
 
 export class PdfminerPage {
@@ -25,6 +26,7 @@ export class PdfminerPage {
   };
   public textbox: PdfminerTextbox[];
   public figure: PdfminerFigure[];
+  public shapes: PdfminerShape[];
 
   constructor(jsonObj: any) {
     this._attr = jsonObj._attr;
@@ -37,6 +39,11 @@ export class PdfminerPage {
       this.figure = jsonObj.figure.map(fig => new PdfminerFigure(fig));
     } else if (jsonObj.figure != null) {
       this.figure = [new PdfminerFigure(jsonObj.figure)];
+    }
+    if (Array.isArray(jsonObj.shapes)) {
+      this.shapes = jsonObj.shapes.map(shape => new PdfminerShape(shape));
+    } else if (jsonObj.shapes != null) {
+      this.shapes = [new PdfminerShape(jsonObj.shapes)];
     }
   }
 }

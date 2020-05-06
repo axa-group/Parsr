@@ -23,11 +23,16 @@ import { OperationState } from '../OperationState';
  */
 export default {
   key: 'dependency',
-  value: (depId: string, commonObjs: any) => {
+  value: (depId: string, { commonObjects, pageObjects }) => {
     logger.debug(`==> dependency(${depId})`);
+    const { extractImages } = OperationState.state;
     // g_* assets are font references
-    if (depId.startsWith('g_') && commonObjs.has(depId)) {
-      OperationState.state.loadedFonts[depId] = commonObjs.get(depId);
+    if (depId.startsWith('g_') && commonObjects.has(depId)) {
+      OperationState.state.loadedAssets.fonts[depId] = commonObjects.get(depId);
+    }
+
+    if (extractImages && depId.startsWith('img_') && pageObjects.has(depId)) {
+      OperationState.state.loadedAssets.images[depId] = pageObjects.get(depId);
     }
   },
 };

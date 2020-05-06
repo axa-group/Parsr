@@ -96,6 +96,7 @@
           :fonts="fonts"
           @custom-event="elementSelected"
         />
+        <svg-shape v-for="element in shapes" :key="`toc_${element.id}`" :element="element" />
       </g>
     </svg>
   </div>
@@ -110,9 +111,10 @@ import TableData from '@/components/DocumentPreview/Table';
 import TableOfContents from '@/components/DocumentPreview/TableOfContents';
 import List from '@/components/DocumentPreview/List';
 import ImageData from '@/components/DocumentPreview/Image';
+import SvgShape from '@/components/DocumentPreview/SvgShape';
 import { mapState, mapGetters } from 'vuex';
 export default {
-  components: { Paragraph, Heading, TableData, List, ImageData, TableOfContents },
+  components: { Paragraph, Heading, TableData, List, ImageData, TableOfContents, SvgShape },
   mixins: [scrollItemMixin],
   data() {
     return {
@@ -159,6 +161,9 @@ export default {
     },
     toc() {
       return this.elementsOfType['table-of-contents'] || [];
+    },
+    shapes() {
+      return this.elementsOfType['drawing'] || [];
     },
     pageElements() {
       if (!this.appeared) {
@@ -210,17 +215,6 @@ export default {
       return 'none';
     },
     componentFor() {
-      /*return element => {
-				if (this.element.type === 'paragraph') {
-				return 'Paragraph';
-			} else if (this.element.type === 'line') {
-				return 'LineElement';
-			} else if (this.element.type === 'word') {
-				return 'Word';
-			} else {
-				//console.log('UNKNOWN TYPE ' + this.element.type + ' ID ' + this.element.id);
-				return 'Paragraph';
-			}*/
       return element => {
         switch (element.type) {
           case 'paragraph':
@@ -237,8 +231,8 @@ export default {
     elementSelected(element) {
       // if a Word is clicked, I make sure to remove all remaining highlighted elements instead of just the last clicked element
       const highlightedWords = document.getElementsByClassName('highlighted');
-      Array.from(highlightedWords || []).forEach(element => {
-        element.classList.remove('highlighted');
+      Array.from(highlightedWords || []).forEach(elem => {
+        elem.classList.remove('highlighted');
       });
 
       const shouldFill =
@@ -284,9 +278,13 @@ export default {
       this.fitPageToScreen();
     });
 
-    this.onAppear('PageContainer_' + this.page.pageNumber, 0.1, () => {
-      this.appeared = true;
-    });
+    this.onAppear(
+      'PageContainer_' + this.page.pageNumber,
+      () => {
+        this.appeared = true;
+      },
+      0.1,
+    );
   },
   watch: {
     'pageElements.length': {
@@ -382,5 +380,13 @@ g.TableContainer text {
 .VisibleTOC rect.TOC {
   stroke: purple;
   stroke-width: 1;
+}
+
+svg line {
+  display: none;
+}
+
+.VisibleShapes svg line {
+  display: block;
 }
 </style>

@@ -15,9 +15,9 @@
 	<a href="README_zh-cn.md">中文</a>
 </p>
 
-<p align='center'>
+<!--p align='center'>
   <img src="assets/demo_screen.gif">
-</p>
+</p-->
 
 - **Parsr**, is a minimal-footprint document (**image, pdf, docx, eml**) cleaning, parsing and extraction toolchain which generates readily available, organized and usable data in **JSON, Markdown (MD), CSV/Pandas DF** or **TXT** formats.
 

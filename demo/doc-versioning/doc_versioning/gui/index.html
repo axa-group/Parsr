@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Basic Page Needs
+             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <meta charset="utf-8">
+        <title>Doc Versioning</title>
+
+        <!-- Mobile Specific Metas
+             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- FONT
+             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+        <!-- CSS
+             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
+    </head>
+    <body>
+        <a href="http://par.sr" target="_blank" style="outline:none;border:none;" onclick="openLink(event)">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" width="15%" alt="Parsr Powered" border="0" />
+        </a>
+        <div style="text-align: center; margin-top: 50px;">
+            <button onclick="toggleFullscreen()">Window / FullScreen</button>
+            <h1>Doc Versioning</h1>
+
+            <button id="upload" onclick="openFile(this.id)">Select Document</button>
+            <button class="button-primary" onclick="doMagic()">Magic</button>
+            <div id="upload_container"></div>
+            <div id="magic_container"></div>
+            <div id="johnson_container"></div>
+
+        </div>
+
+        <script type="text/javascript">
+            window.token = '{{ token }}';
+            // Perform background initialization
+            doAjax("/init", "POST");
+
+            function getMethods(obj) {
+                var result = [];
+                for (var id in obj) {
+                    try {
+                        if (typeof(obj[id]) == "function") {
+                            result.push(id + ": " + obj[id].toString());
+                        }
+                    } catch (err) {
+                        result.push(id + ": inaccessible");
+                    }
+                }
+                return result;
+            }
+
+            function openFile(buttonId) {
+                doAjax("/choose/path", "POST", openFileHandler);
+            }
+
+            function openFileHandler() {
+                if (this.responseText) {
+                    var response = JSON.parse(this.responseText);
+                    sessionStorage.filename = response.file
+                    document.getElementById("upload_container").innerHTML = '✔️ ' + response.file;
+                }
+            }
+
+            function doMagic() {
+                var request = {
+                    filename: sessionStorage.filename
+                }
+                doAjax("/do/magic", "POST", doMagicHandler, request);
+            }
+
+            function doMagicHandler(response) {
+                if (this.responseText) {
+                    var response = JSON.parse(this.responseText);
+                    if (response.status === 'ok') {
+                        document.getElementById("magic_container").innerHTML = "🧐 Analysing. Hold them horses...";
+                        pollServerForRequest(response.result.server_response)
+                    } else {
+                        document.getElementById("magic_container").innerHTML = response.error;
+                    }
+                }
+            }
+
+            function pollServerForRequest(jobID) {
+                doAjax("/poll", "POST", pollOutputHandler, {jobID: jobID});
+            }
+
+            function pollOutputHandler(response) {
+                if (this.responseText) {
+                    var response = JSON.parse(this.responseText);
+                    if (response.status === 'ok') {
+                        document.getElementById("magic_container").innerHTML = `😄 Analysed ${response.docName}! Let those horses go!`;
+                        setTimeout(gotoDocument(response.docName), 500);
+                    } else {
+                        document.getElementById("magic_container").innerHTML = "an error..." + response.error;
+                    }
+                }
+            }
+
+            function gotoDocument(docName) {
+                window.location.replace(`document/${docName}`);
+            }
+
+            function toggleFullscreen() {
+                doAjax("/fullscreen", "POST", false);
+            }
+
+            function openLink(e) {
+                e.preventDefault()
+                var request = {url: e.currentTarget.href}
+                doAjax("/open-url", "POST", false, request)
+            }
+
+            // From https://gist.github.com/dharmavir/936328
+            function getHttpRequestObject()
+            {
+                // Define and initialize as false
+                var xmlHttpRequst = false;
+
+                // Mozilla/Safari/Non-IE
+                if (window.XMLHttpRequest)
+                {
+                    xmlHttpRequst = new XMLHttpRequest();
+                }
+                // IE
+                else if (window.ActiveXObject)
+                {
+                    xmlHttpRequst = new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                return xmlHttpRequst;
+            }
+
+            // Does the AJAX call to URL specific with rest of the parameters
+            function doAjax(url, method, responseHandler, data)
+            {
+                // Set the variables
+                url = url || "";
+                method = method || "GET";
+                async = true;
+                data = data || {};
+                data.token = window.token;
+
+                if(url == "") {
+                    alert("URL can not be null/blank");
+                    return false;
+                }
+                var xmlHttpRequest = getHttpRequestObject();
+
+                // If AJAX supported
+                if(xmlHttpRequest != false) {
+                    xmlHttpRequest.open(method, url, async);
+                    // Set request header (optional if GET method is used)
+                    if(method == "POST")  {
+                        xmlHttpRequest.setRequestHeader("Content-Type", "application/json");
+                    }
+                    // Assign (or define) response-handler/callback when ReadyState is changed.
+                    xmlHttpRequest.onreadystatechange = responseHandler;
+                    // Send data
+                    xmlHttpRequest.send(JSON.stringify(data));
+                }
+                else
+                {
+                    alert("Please use browser with Ajax support.!");
+                }
+            }
+        </script>
+    </body>
+</html>

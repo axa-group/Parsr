@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- Basic Page Needs
+             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <meta charset="utf-8">
+        <title>Doc Versioning</title>
+
+        <!-- Mobile Specific Metas
+             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- FONT
+             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+        <!-- CSS
+             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
+
+        <!-- differ
+        -- --------------------------------------------------- -->
+
+    </head>
+    <body>
+        <div style="text-align: center; margin-top: 50px; margin-left: 50px">
+            <button class="button-primary" onclick="window.location.replace(`/`);">Home</button>
+            <h1>"{{ name }}"</h1>
+            {% if diffs|count > 0 %}
+            <h4>Revisions</h4>
+            <table class="u-full-width">
+                <tbody>
+                    <caption>key and value</caption>
+                    <tr>
+                        <th scope="col">Key</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                    {% for key, value in diffs.items() %}
+                    <tr>
+                        <td><h5><code>{{ key|e }}</h5></code></td>
+                        <td>{{ value|safe }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+            <h4>Versions</h4>
+            <table class="u-full-width">
+                <tbody>
+                    <caption>revision and view</caption>
+                    <tr>
+                        <th scope="col">Revision</th>
+                        <th scope="col">View button</th>
+                    </tr>
+                    {% for revision in revisions %}
+                    <tr>
+                        <td><h5><code>{{ revision  }}</code><h5></td>
+                        <td><button class="button-primary" onclick="window.location.replace(`/view/{{ name }}/{{ revision }}`);">View</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>

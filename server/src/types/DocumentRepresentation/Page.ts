@@ -19,6 +19,7 @@ import { findMostCommonFont, isInBox } from '../../utils';
 import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
 import { Character } from './Character';
+import { Drawing } from './Drawing';
 import { Element } from './Element';
 import { Font } from './Font';
 import { Image } from './Image';
@@ -358,7 +359,7 @@ export class Page {
     let barriers: number[][] = [];
     if (direction === 'horizontal') {
       barriers = this.elements
-        .filter((elem: Element) => elem instanceof Image === false)
+        .filter((elem: Element) => !(elem instanceof Image) && !(elem instanceof Drawing))
         .map((elem: Element) => elem.box)
         .map((b: BoundingBox) => {
           const start: number = b.top;
@@ -367,7 +368,7 @@ export class Page {
         });
     } else {
       barriers = this.elements
-        .filter((elem: Element) => elem instanceof Image === false)
+        .filter((elem: Element) => !(elem instanceof Image) && !(elem instanceof Drawing))
         .map((elem: Element) => elem.box)
         .map((b: BoundingBox) => {
           const start: number = b.left;

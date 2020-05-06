@@ -120,3 +120,9 @@ export default {
   color: #ffffff !important;
 }
 </style>
+
+<style>
+.text img {
+  max-width: 100%;
+}
+</style>

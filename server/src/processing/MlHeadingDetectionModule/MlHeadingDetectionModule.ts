@@ -30,8 +30,8 @@ import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagraphModule';
 import { Module } from '../Module';
-import { DecisionTreeClassifier } from './train_model/model';
-import { DecisionTreeClassifier as DecisionTreeClassifierLevel } from './train_model/model_level';
+import { RandomForestClassifier } from './train_model/model';
+import { DecisionTreeClassifier } from './train_model/model_level';
 
 export class MlHeadingDetectionModule extends Module {
   public static moduleName = 'ml-heading-detection';
@@ -63,7 +63,7 @@ export class MlHeadingDetectionModule extends Module {
     });
 
     if (this.headingsDetected(doc)) {
-      this.computeHeadingLevels(doc);
+      this.computeHeadingLevels(doc, mainCommonFont);
     }
     return doc;
   }
@@ -102,7 +102,7 @@ export class MlHeadingDetectionModule extends Module {
     headingFonts: Font[],
   ): Element[] {
     this.getElementsWithParagraphs(elements, [])
-    // this is to avoid setting table content as headings
+      // this is to avoid setting table content as headings
       .filter(e => !(e instanceof TableCell))
       .forEach(element => {
         const newContents = this.extractHeadingsInParagraphs(
@@ -128,14 +128,16 @@ export class MlHeadingDetectionModule extends Module {
 
     paragraphs.map(paragraph => paragraph.content)
       .forEach(linesInParagraph => {
-        // let initiatedHeading = false;
+        let initiatedHeading = false;
         if (commonFont instanceof Font) {
           const headingIdx: number[] = linesInParagraph.map((line: Line, pos: number) => {
             // const prevLine: Line = linesInParagraph[pos-1];
             // const nextLine: Line = linesInParagraph[pos+1];
-            if (this.isHeadingCandidate(line, commonFont, headingFonts)) {
+            if ((pos === 0 || initiatedHeading) && this.isHeadingCandidate(line, commonFont, headingFonts)) {
+              initiatedHeading = true;
               return pos;
             } else {
+              initiatedHeading = false;
               return undefined;
             }
           }).filter((i: number) => i !== undefined);
@@ -202,7 +204,7 @@ export class MlHeadingDetectionModule extends Module {
     const textCase = this.textCase(lineStr);
 
     const features = [isDifferentStyle, isFontBigger, isFontUnique, textCase, wordCount, differentColor, isNumber];
-    const clf = new DecisionTreeClassifier();
+    const clf = new RandomForestClassifier();
 
     return clf.predict(features) === 1;
   }
@@ -359,18 +361,17 @@ export class MlHeadingDetectionModule extends Module {
     return detected;
   }
 
-  private computeHeadingLevels(document: Document) {
-
+  private computeHeadingLevels(document: Document, commonFont: Font) {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
-    const clf = new DecisionTreeClassifierLevel();
+    const clf = new DecisionTreeClassifier();
 
-    // TODO: try to normalize the features
     headings.forEach(h => {
       const size = h.getMainFont().size;
       const weight = h.getMainFont().weight === 'bold' ? 1 : 0;
       const textCase = this.textCase(h.toString());
-      const features = [size, weight, textCase];
-      // need to add 1 because the prediction is an index
+      const isFontBigger = size > commonFont.size ? 1 : 0;
+      const differentColor = h.getMainFont().color !== commonFont.color ? 1 : 0;
+      const features = [size, weight, textCase, isFontBigger, differentColor];
       h.level = clf.predict(features) + 1;
     });
   }

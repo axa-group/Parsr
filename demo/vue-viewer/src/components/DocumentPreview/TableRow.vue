@@ -16,13 +16,6 @@
       :fonts="props.fonts"
       @custom-event="listeners['custom-event']"
     ></component>
-    <!--line
-			class="TableRow"
-			:x1="props.element.box.l"
-			:y1="props.element.box.t + props.element.box.h"
-			:x2="props.element.box.l + props.element.box.w"
-			:y2="props.element.box.t + props.element.box.h"
-		/-->
   </g>
 </template>
 

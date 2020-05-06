@@ -1,6 +1,6 @@
 export default {
   methods: {
-    onAppear(divID, threshold = 0.8, completionHandler) {
+    onAppear(divID, completionHandler, threshold = 0.8) {
       var observer = new IntersectionObserver(
         entries => {
           if (entries[0].intersectionRatio > 0) {

@@ -45,7 +45,7 @@ export default {
   mixins: [pageElementMixin],
   methods: {
     fontSize(props) {
-      const font = props.fonts.filter(font => font.id === props.element.font).shift();
+      const font = props.fonts.filter(aFont => aFont.id === props.element.font).shift();
       if (font.size == 0) {
         return props.element.box.h + 'px';
       }

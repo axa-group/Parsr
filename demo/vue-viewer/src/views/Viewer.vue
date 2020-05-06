@@ -19,6 +19,7 @@
         VisibleHeadings: isHeadingFilter,
         VisibleTables: isTableFilter,
         VisibleLists: isListFilter,
+        VisibleShapes: isShapesFilter,
       }"
     />
     <div style="border-left: solid 1px #ebebf1;">
@@ -98,6 +99,9 @@ export default {
     },
     isListFilter() {
       return this.inspectorFilters.lists;
+    },
+    isShapesFilter() {
+      return this.inspectorFilters.shapes;
     },
   },
   mounted() {

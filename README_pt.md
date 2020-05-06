@@ -15,9 +15,9 @@
 	<a href="README_zh-cn.md">中文</a>
 </p>
 
-<p align='center'>
+<!--p align='center'>
   <img src="assets/demo_screen.gif">
-</p>
+</p-->
 
 - **Parsr** é uma cadeia de ferramentas para limpeza, análise e extração de documentos (imagem, pdf), que gera dados prontamente disponíveis, organizados e utilizáveis por desenvolvedores e cientistas de dados.
 

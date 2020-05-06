@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+import { writeFileSync } from 'fs';
+import { join } from 'path';
 import * as pdfjsLib from 'pdfjs-dist';
-import { BoundingBox, Element, Font, Word } from "../../types/DocumentRepresentation";
-import logger from "../../utils/Logger";
+import { BoundingBox, Drawing, Element, Font, Image, Word } from "../../types/DocumentRepresentation";
+import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
+import logger from '../../utils/Logger';
 import { OperationState } from './OperationState';
 import { matrixToCoords } from './operators/helper';
 import { getOperator as fn, isAvailable } from './operators/index';
@@ -26,6 +29,13 @@ const Util = (pdfjsLib as any).Util;
 type OpList = {
   fnArray: number[];
   argsArray: any[];
+};
+
+type ManagerOptions = {
+  extractImages?: boolean;
+  extractText?: boolean;
+  extractShapes?: boolean;
+  assetsFolder?: string;
 };
 
 type TextSpan = {
@@ -39,6 +49,7 @@ type TextSpan = {
   x: string;
   y: string;
 };
+
 type TextElement = {
   tspan: TextSpan,
   transform: {
@@ -55,6 +66,36 @@ type TextElement = {
   },
 };
 
+type ImageElement = {
+  imageData: Uint8Array;
+  objectId: string;
+  height: number;
+  width: number;
+  transform: number[];
+};
+
+type PathElement = {
+  transform: number[];
+  d: string;
+  fill?: string;
+  clipRule?: string;
+  fillRule?: string;
+  fillOpacity?: number;
+  stroke?: string;
+  strokeOpacity?: number;
+  strokeMiterlimit?: string;
+  strokeLinecap?: string;
+  strokeLinejoin?: string;
+  strokeWidth?: number;
+  strokeDasharray?: string;
+  strokeDashoffset?: string;
+};
+
+export type OperatorResponse = {
+  type: 'text' | 'image' | 'path';
+  data: any;
+};
+
 /**
  * responsible for processing all page operators
  * and parsing them into an array of Elements for the document
@@ -62,40 +103,63 @@ type TextElement = {
 export class OperatorsManager {
   private opList: Promise<OpList>;
   private viewport;
-  private commonPageObjects;
+  private commonObjects;
+  private pageObjects;
   private notImplementedFunctions: string[] = [];
+  private assetsFolder: string;
 
   // receives the page representation of pdfjs-dist
-  constructor(page: any) {
+  constructor(page: any, options?: ManagerOptions) {
     this.opList = page.getOperatorList();
     this.viewport = page.getViewport({ scale: 1 });
-    this.commonPageObjects = page.commonObjs;
+    this.commonObjects = page.commonObjs;
+    this.pageObjects = page.objs;
+    this.assetsFolder = options && options.assetsFolder;
+
+    OperationState.state.extractImages = options && options.extractImages;
+    OperationState.state.extractText = !options || !options.hasOwnProperty('extractText') || options.extractText;
+    OperationState.state.extractShapes = !options || !options.hasOwnProperty('extractShapes') || options.extractShapes;
   }
 
-  public async processOperators(): Promise<Element[]> {
-    const elements: Element[] = [];
+  public async processOperators(pageNumber: number): Promise<Element[]> {
+    const texts: Word[] = [];
+    const images: Image[] = [];
+    const drawings: Drawing[] = [];
+
     const opList = await this.opList;
     opList.fnArray.forEach((opNumber, i) => {
       const operatorName = Object.keys((pdfjsLib as any).OPS)[opNumber - 1];
       if (isAvailable(operatorName)) {
         const args = opList.argsArray[i];
-        let fnReturn: TextElement; // for now, the only possible return is a TextElement type
+        let fnReturn: OperatorResponse;
         if (args) {
-          fnReturn = fn(operatorName)(...args, this.commonPageObjects);
+          fnReturn = fn(operatorName)(...args, {
+            commonObjects: this.commonObjects,
+            pageObjects: this.pageObjects,
+          });
         } else {
-          fnReturn = fn(operatorName)(this.commonPageObjects);
+          fnReturn = fn(operatorName)({
+            commonObjects: this.commonObjects,
+            pageObjects: this.pageObjects,
+          });
         }
-        if (fnReturn) {
-          this.parseTextElement(fnReturn, elements);
+        if (fnReturn && fnReturn.type === 'text') {
+          this.parseTextElement(fnReturn.data, texts);
+        }
+        if (this.assetsFolder && fnReturn && fnReturn.type === 'image') {
+          this.parseImageElement(fnReturn.data, images, pageNumber);
+        }
+        if (fnReturn && fnReturn.type === 'path') {
+          this.parsePathElement(fnReturn.data, drawings);
         }
       } else {
         if (!this.notImplementedFunctions.includes(operatorName)) {
           this.notImplementedFunctions.push(operatorName);
-          logger.debug(`==> WARN: ${operatorName} operator is not implemented`);
+          logger.debug(`WARN ==> ${operatorName} operator is not implemented`);
         }
       }
     });
-    return elements.filter(e => e.box && e.box.width > 0);
+    return [...texts, ...images, ...drawings].filter(e => e.box && e.box.width > 0);
   }
 
   private parseTextElement(textElem: TextElement, parsedElements: Element[]) {
@@ -142,13 +206,113 @@ export class OperatorsManager {
             Math.round(currentWord.top) === Math.round(previousElement.top)
           ) {
             parsedElements.push(previousElement.join(currentWord));
-          } else if (parsedElements) {
+          } else if (!!previousElement) {
             parsedElements.push(previousElement, currentWord);
           } else {
             parsedElements.push(currentWord);
           }
         }
       });
+    }
+  }
+
+  private parseImageElement(imgElem: ImageElement, parsedElements: Element[], pageNumber: number) {
+    const transform = matrixToCoords(Util.transform(this.viewport.transform, imgElem.transform));
+    const { x, y } = transform.position;
+    const { x: width, y: height } = transform.scale;
+
+    const imageCount = parsedElements.filter(e => e instanceof Image).length.toString();
+    const xObjId = pageNumber.toString().concat('_', imageCount).padStart(4, '0');
+    const xObjExt = 'png';
+
+    const imagePath = join(this.assetsFolder, `img-${xObjId}.${xObjExt}`);
+    writeFileSync(imagePath, imgElem.imageData, 'binary');
+
+    const image = new Image(
+      new BoundingBox(x, y - Math.abs(height), Math.abs(width), Math.abs(height)),
+      imagePath,
+    );
+    image.xObjId = xObjId;
+    image.xObjExt = xObjExt;
+    image.enabled = true;
+    parsedElements.push(image);
+  }
+
+  private parsePathElement(pathElem: PathElement, parsedElements: Element[]) {
+    const transform = matrixToCoords(Util.transform(this.viewport.transform, pathElem.transform));
+    const { x: scaleX, y: scaleY } = transform.scale;
+    const { x: posX, y: posY } = transform.position;
+
+    const color = pathElem.stroke || '#000000';
+    const pathInstructions = pathElem.d.split(' ');
+    let fromX = 0;
+    let fromY = 0;
+    let toX = 0;
+    let toY = 0;
+    const lines: SvgLine[] = [];
+    const box = new BoundingBox(1, 1, 1, 1);
+
+    let pathFirstX = posX + parseFloat(pathInstructions[1]) * scaleX;
+    let pathFirstY = posY + parseFloat(pathInstructions[2]) * scaleY;
+
+    for (let i = 0; i < pathInstructions.length;) {
+      const cmd = pathInstructions[i++];
+      switch (cmd) {
+        case 'M':
+          fromX = posX + parseFloat(pathInstructions[i++]) * scaleX;
+          fromY = posY + parseFloat(pathInstructions[i++]) * scaleY;
+          break;
+        case 'L':
+          toX = posX + parseFloat(pathInstructions[i++]) * scaleX;
+          toY = posY + parseFloat(pathInstructions[i++]) * scaleY;
+          lines.push(new SvgLine(box, 1, fromX, fromY, toX, toY, color));
+          fromX = toX;
+          fromY = toY;
+          break;
+        case 'C':
+          i += 4;
+          toX = posX + parseFloat(pathInstructions[i++]) * scaleX;
+          toY = posY + parseFloat(pathInstructions[i++]) * scaleY;
+          lines.push(new SvgLine(box, 1, fromX, fromY, toX, toY, color));
+          fromX = toX;
+          fromY = toY;
+          break;
+        case 'Z':
+          lines.push(new SvgLine(box, 1, fromX, fromY, pathFirstX, pathFirstY, color));
+          fromX = pathFirstX;
+          fromY = pathFirstY;
+          if (pathInstructions[i + 2]) {
+            pathFirstX = posX + parseFloat(pathInstructions[i + 1]) * scaleX;
+            pathFirstY = posY + parseFloat(pathInstructions[i + 2]) * scaleY;
+          }
+          break;
+        default:
+          break;
+      }
+      if (lines.length > 0) {
+        lines.forEach(line => {
+          line.fillOpacity = pathElem.hasOwnProperty('fillOpacity') ? pathElem.fillOpacity : 1;
+          line.strokeOpacity = pathElem.hasOwnProperty('strokeOpacity') ? pathElem.strokeOpacity : 1;
+          line.thickness = pathElem.hasOwnProperty('strokeWidth') ? pathElem.strokeWidth : 1;
+        });
+      }
+    }
+    const left = Math.min(...lines.map(l => l.fromX));
+    const top = Math.min(...lines.map(l => l.fromY));
+    const right = Math.max(...lines.map(l => l.toX));
+    const bottom = Math.max(...lines.map(l => l.toY));
+    const drawingBox = new BoundingBox(left, top, Math.abs(right - left), Math.abs(top - bottom));
+    const drawing = new Drawing(drawingBox, lines);
+
+    // avoid pushing repeated drawings
+    if (parsedElements.filter(e => e instanceof Drawing).every(d => d.toString() !== drawing.toString())) {
+
+      // avoid pushing drawings that follow the perimeter of the page
+      if (Math.round(drawing.width) !== Math.round(this.viewport.width)
+        || Math.round(drawing.height) !== Math.round(this.viewport.height)
+      ) {
+        parsedElements.push(drawing);
+      }
     }
   }
 }
