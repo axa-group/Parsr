@@ -352,8 +352,8 @@ export default {
   stroke: fuchsia;
   stroke-width: 1;
 }
-.VisibleLines line,
-.Page line.highlighted {
+.VisibleLines line.textLine,
+.Page line.textLine.highlighted {
   stroke: rgb(0, 0, 255);
   stroke-width: 1;
 }
@@ -382,11 +382,11 @@ g.TableContainer text {
   stroke-width: 1;
 }
 
-svg line {
+svg line.drawing {
   display: none;
 }
 
-.VisibleShapes svg line {
+.VisibleShapes svg line.drawing {
   display: block;
 }
 </style>
