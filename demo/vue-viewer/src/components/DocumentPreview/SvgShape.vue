@@ -1,6 +1,7 @@
 <template functional>
   <svg>
     <line
+      class="drawing"
       v-for="svgLine in props.element.content"
       :key="svgLine.id"
       :id="'SVG_' + svgLine.id"
