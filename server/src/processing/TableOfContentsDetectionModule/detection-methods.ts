@@ -15,6 +15,7 @@
  */
 
 import { BoundingBox, Paragraph, Word } from './../../types/DocumentRepresentation';
+import logger from '../../utils/Logger';
 
 export const threshold = 0.4;
 
@@ -26,15 +27,31 @@ const detectionMethods = {
   /*
     searches for text finishing in numbers in the right 10% width area of the BBox
   */
-  endsWithNumber: (p: Paragraph): boolean => {
+  startOrEndsWithNumber: (p: Paragraph): boolean => {
     const w = p.width * 0.1;
-    const intersectionBox = new BoundingBox(p.right - w, p.top, w, p.height);
-    const wordsInsideIntersection =
-      p.getWords()
-        .filter(word => BoundingBox.getOverlap(word.box, intersectionBox).box1OverlapProportion > 0)
-        .filter(word => !isSeparator(word));
+    const intersectionBoxRight = new BoundingBox(p.right - w, p.top, w, p.height);
+    const intersectionBoxLeft = new BoundingBox(p.left, p.top, w, p.height);
+    const wordsInsideIntersectionRight = p
+      .getWords()
+      .filter(
+        word => BoundingBox.getOverlap(word.box, intersectionBoxRight).box1OverlapProportion > 0,
+      )
+      .filter(word => !isSeparator(word));
+    const wordsInsideIntersectionLeft = p
+      .getWords()
+      .filter(
+        word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
+      )
+      .filter(word => !isSeparator(word));
+    logger.info('word right= ' + wordsInsideIntersectionRight.toString());
+    logger.info('word left= ' + wordsInsideIntersectionLeft.toString());
 
-    return wordsInsideIntersection.filter(isNumber).length > Math.floor(wordsInsideIntersection.length * 0.5);
+    return (
+      wordsInsideIntersectionRight.filter(isNumber).length >
+        Math.floor(wordsInsideIntersectionRight.length * 0.5) ||
+      wordsInsideIntersectionLeft.filter(isNumber).length >
+        Math.floor(wordsInsideIntersectionLeft.length * 0.5)
+    );
   },
   hasPageNKeyword: (p: Paragraph, pageKeywords: string[]): boolean => {
     const regexp = `^(${pageKeywords.join('|')}).* (\\d+) (.+)`;
