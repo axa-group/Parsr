@@ -266,7 +266,7 @@ export default {
           if (Array.isArray(confItem)) {
             return confItem[0];
           }
-          return configItem;
+          return confItem;
         };
         const correctOrder = this.modulesOrder;
         this.customConfig.cleaner.sort((a, b) => {
