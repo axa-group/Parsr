@@ -43,9 +43,6 @@ const detectionMethods = {
         word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
       )
       .filter(word => !isSeparator(word));
-    logger.info('word right= ' + wordsInsideIntersectionRight.toString());
-    logger.info('word left= ' + wordsInsideIntersectionLeft.toString());
-
     return (
       wordsInsideIntersectionRight.filter(isNumber).length >
         Math.floor(wordsInsideIntersectionRight.length * 0.5) ||
@@ -60,14 +57,17 @@ const detectionMethods = {
 };
 
 function isNumber(word: Word): boolean {
-  const decimalNumbers = new RegExp(/[0-9]+$/);
+  const integerNumbers = new RegExp(/^\d+$/);
   const romanNumbers = new RegExp(/^[ivxlcdm]+$/i);
   const w = word.toString();
-  return decimalNumbers.test(w) || romanNumbers.test(w);
+  logger.info('Word= ' + w + ' Is_number= ' + integerNumbers.test(w));
+
+  return integerNumbers.test(w) || romanNumbers.test(w);
 }
 
 function isSeparator(word: Word): boolean {
   const separators = new RegExp(/^[-. ]+$/);
+
   return separators.test(word.toString().trim());
 }
 
