@@ -15,7 +15,7 @@
  */
 
 import { BoundingBox, Paragraph, Word } from './../../types/DocumentRepresentation';
-import logger from '../../utils/Logger';
+// import logger from '../../utils/Logger';
 
 export const threshold = 0.4;
 
@@ -43,27 +43,76 @@ const detectionMethods = {
         word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
       )
       .filter(word => !isSeparator(word));
-    return (
-      wordsInsideIntersectionRight.filter(isNumber).length >
-        Math.floor(wordsInsideIntersectionRight.length * 0.5) ||
-      wordsInsideIntersectionLeft.filter(isNumber).length >
-        Math.floor(wordsInsideIntersectionLeft.length * 0.5)
-    );
+    return checkNumbers(wordsInsideIntersectionRight, wordsInsideIntersectionLeft);
   },
   hasPageNKeyword: (p: Paragraph, pageKeywords: string[]): boolean => {
     const regexp = `^(${pageKeywords.join('|')}).* (\\d+) (.+)`;
     return new RegExp(regexp, 'gi').test(p.toString());
   },
 };
-
-function isNumber(word: Word): boolean {
-  const integerNumbers = new RegExp(/^\d+$/);
+function checkNumbers(wordsRight: Word[], wordsLeft: Word[]): boolean {
+  const integerNum = new RegExp(/^\d+$/);
   const romanNumbers = new RegExp(/^[ivxlcdm]+$/i);
-  const w = word.toString();
-  logger.info('Word= ' + w + ' Is_number= ' + integerNumbers.test(w));
-
-  return integerNumbers.test(w) || romanNumbers.test(w);
+  let intLengthRight = 0;
+  let intLengthLeft = 0;
+  const integersStrRight = [];
+  const integersStrLeft = [];
+  wordsRight.forEach(word => {
+    const wd = word.toString();
+    if (integerNum.test(wd)) {
+      integersStrRight.push(wd);
+      intLengthRight += 1;
+    } else if (romanNumbers.test(wd)) {
+      intLengthRight += 1;
+    }
+  });
+  if (intLengthRight > Math.floor(wordsRight.length * 0.5)) {
+    for (let j = 1; j < integersStrRight.length - 1; j++) {
+      if (Number(integersStrRight[j]) < Number(integersStrRight[j - 1])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  wordsLeft.forEach(word => {
+    const wd = word.toString();
+    if (integerNum.test(wd)) {
+      integersStrLeft.push(wd);
+      intLengthLeft += 1;
+    } else if (romanNumbers.test(wd)) {
+      intLengthLeft += 1;
+    }
+  });
+  if (intLengthLeft > Math.floor(wordsLeft.length * 0.5)) {
+    for (let j = 1; j < integersStrLeft.length - 1; j++) {
+      if (Number(integersStrLeft[j]) < Number(integersStrLeft[j - 1])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
 }
+
+// function enoughNumber(
+//   intLenRight: number,
+//   wdRight: Word[],
+//   intLenLeft: number,
+//   wdLeft: Word[],
+// ): boolean {
+//   return (
+//     intLenRight > Math.floor(wdRight.length * 0.5) || intLenLeft > Math.floor(wdLeft.length * 0.5)
+//   );
+// }
+
+// function isNumber(word: Word): boolean {
+//   const integerNumbers = new RegExp(/^\d+$/);
+//   const romanNumbers = new RegExp(/^[ivxlcdm]+$/i);
+//   const w = word.toString();
+//   logger.info('Word= ' + w + ' Is_number= ' + integerNumbers.test(w));
+
+//   return integerNumbers.test(w) || romanNumbers.test(w);
+// }
 
 function isSeparator(word: Word): boolean {
   const separators = new RegExp(/^[-. ]+$/);
