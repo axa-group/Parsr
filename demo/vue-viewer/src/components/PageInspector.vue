@@ -75,7 +75,7 @@
             ></v-switch>
             <v-switch
               v-model="shapesFilter"
-              label="Shapes"
+              label="Drawings"
               class="switch"
               color="indigo darken-3"
               :hide-details="true"
