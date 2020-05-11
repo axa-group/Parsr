@@ -295,7 +295,7 @@ export class OperatorsManager {
     }
 
     // filter lines that follow the perimeter of the page
-    parsedElements.push(...lines.filter(this.filterPerimeterLines));
+    parsedElements.push(...lines.filter(this.filterPerimeterLines, this));
   }
 
   private filterPerimeterLines(l: SvgLine): boolean {
