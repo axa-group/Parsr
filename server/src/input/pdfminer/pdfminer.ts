@@ -19,7 +19,6 @@ import {
   BoundingBox,
   Character,
   Document,
-  Drawing,
   Element,
   Font,
   Image,
@@ -238,14 +237,14 @@ function getPage(pageObj: PdfminerPage): Page {
   // treat svg lines and rectangles
   if (pageObj.shapes !== undefined) {
     pageObj.shapes.forEach(shape => {
-      elements.push(shapeToDrawing(shape, pageBBox.height));
+      elements.push(...pdfminerShapeToSvgShapes(shape, pageBBox.height));
     });
   }
 
   return new Page(parseFloat(pageObj._attr.id), elements, pageBBox);
 }
 
-function shapeToDrawing(shape: PdfminerShape, pageHeight: number): Drawing {
+function pdfminerShapeToSvgShapes(shape: PdfminerShape, pageHeight: number): SvgShape[] {
   const drawingBox: BoundingBox = getBoundingBox(shape._attr.bbox, ',', pageHeight);
 
   const thickness = parseFloat(shape._attr.linewidth) || 1;
@@ -294,7 +293,7 @@ function shapeToDrawing(shape: PdfminerShape, pageHeight: number): Drawing {
     }
   }
 
-  return new Drawing(drawingBox, drawingContent);
+  return drawingContent;
 }
 
 function hasTexts(figure: PdfminerFigure): boolean {

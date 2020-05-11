@@ -17,8 +17,9 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import * as pdfjsLib from 'pdfjs-dist';
-import { BoundingBox, Drawing, Element, Font, Image, Word } from "../../types/DocumentRepresentation";
+import { BoundingBox, Element, Font, Image, Word } from "../../types/DocumentRepresentation";
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
+import { SvgShape } from '../../types/DocumentRepresentation/SvgShape';
 import logger from '../../utils/Logger';
 import { OperationState } from './OperationState';
 import { matrixToCoords } from './operators/helper';
@@ -124,7 +125,7 @@ export class OperatorsManager {
   public async processOperators(pageNumber: number): Promise<Element[]> {
     const texts: Word[] = [];
     const images: Image[] = [];
-    const drawings: Drawing[] = [];
+    const shapes: SvgShape[] = [];
 
     const opList = await this.opList;
     opList.fnArray.forEach((opNumber, i) => {
@@ -150,7 +151,7 @@ export class OperatorsManager {
           this.parseImageElement(fnReturn.data, images, pageNumber);
         }
         if (fnReturn && fnReturn.type === 'path') {
-          this.parsePathElement(fnReturn.data, drawings);
+          this.parsePathElement(fnReturn.data, shapes);
         }
       } else {
         if (!this.notImplementedFunctions.includes(operatorName)) {
@@ -159,10 +160,10 @@ export class OperatorsManager {
         }
       }
     });
-    return [...texts, ...images, ...drawings].filter(e => e.box && e.box.width > 0);
+    return [...texts, ...images, ...shapes].filter(e => e.box && e.box.width > 0);
   }
 
-  private parseTextElement(textElem: TextElement, parsedElements: Element[]) {
+  private parseTextElement(textElem: TextElement, parsedElements: Word[]) {
     const pageTransform = Util.transform(this.viewport.transform, OperationState.state.transformMatrix);
     const transform = matrixToCoords(Util.transform(pageTransform, textElem.transform.matrixArray));
     const scaleX = transform.scale.x;
@@ -191,17 +192,12 @@ export class OperatorsManager {
             }),
           );
 
-          const previousElement =
-            parsedElements.length > 0 &&
-            parsedElements[parsedElements.length - 1] &&
-            parsedElements.pop();
-
+          const previousElement = parsedElements.pop();
           const prevRight = previousElement && parseFloat(previousElement.right.toFixed(3));
           const currLeft = parseFloat(currentWord.left.toFixed(3));
 
           if (
             previousElement &&
-            previousElement instanceof Word &&
             Math.abs(prevRight - currLeft) * 10 <= previousElement.font.size &&
             Math.round(currentWord.top) === Math.round(previousElement.top)
           ) {
@@ -216,7 +212,7 @@ export class OperatorsManager {
     }
   }
 
-  private parseImageElement(imgElem: ImageElement, parsedElements: Element[], pageNumber: number) {
+  private parseImageElement(imgElem: ImageElement, parsedElements: Image[], pageNumber: number) {
     const transform = matrixToCoords(Util.transform(this.viewport.transform, imgElem.transform));
     const { x, y } = transform.position;
     const { x: width, y: height } = transform.scale;
@@ -238,7 +234,7 @@ export class OperatorsManager {
     parsedElements.push(image);
   }
 
-  private parsePathElement(pathElem: PathElement, parsedElements: Element[]) {
+  private parsePathElement(pathElem: PathElement, parsedElements: SvgShape[]) {
     const transform = matrixToCoords(Util.transform(this.viewport.transform, pathElem.transform));
     const { x: scaleX, y: scaleY } = transform.scale;
     const { x: posX, y: posY } = transform.position;
@@ -297,22 +293,23 @@ export class OperatorsManager {
         });
       }
     }
-    const left = Math.min(...lines.map(l => l.fromX));
-    const top = Math.min(...lines.map(l => l.fromY));
-    const right = Math.max(...lines.map(l => l.toX));
-    const bottom = Math.max(...lines.map(l => l.toY));
-    const drawingBox = new BoundingBox(left, top, Math.abs(right - left), Math.abs(top - bottom));
-    const drawing = new Drawing(drawingBox, lines);
 
-    // avoid pushing repeated drawings
-    if (parsedElements.filter(e => e instanceof Drawing).every(d => d.toString() !== drawing.toString())) {
-
-      // avoid pushing drawings that follow the perimeter of the page
-      if (Math.round(drawing.width) !== Math.round(this.viewport.width)
-        || Math.round(drawing.height) !== Math.round(this.viewport.height)
-      ) {
-        parsedElements.push(drawing);
+    // filter lines that follow the perimeter of the page
+    parsedElements.push(...lines.filter(l => {
+      const [x1, x2, y1, y2] = [l.fromX, l.toX, l.fromY, l.toY].map(n => Math.floor(n));
+      // vertical line
+      if (x1 === x2) {
+        if (x1 <= 0 || x1 >= this.viewport.width) {
+          return false;
+        }
+        // horizontal line
+      } else if (y1 === y2) {
+        if (y1 <= 0 || y1 >= this.viewport.height) {
+          return false;
+        }
       }
-    }
+      return true;
+    },
+    ));
   }
 }
