@@ -246,7 +246,7 @@ function getPage(pageObj: PdfminerPage): Page {
 }
 
 function filterPerimeterLines(l: SvgLine, pageBox: BoundingBox): boolean {
-  const [x, y] = [l.fromX, l.fromY];
+  const [x, y] = [l.fromX, l.fromY].map(n => Math.round(n));
   // vertical line
   if (l.isVertical() && (x <= 0 || x >= pageBox.width)) {
     return false;

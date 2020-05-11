@@ -299,7 +299,7 @@ export class OperatorsManager {
   }
 
   private filterPerimeterLines(l: SvgLine): boolean {
-    const [x, y] = [l.fromX, l.fromY];
+    const [x, y] = [l.fromX, l.fromY].map(n => Math.round(n));
     // vertical line
     if (l.isVertical() && (x <= 0 || x >= this.viewport.width)) {
       return false;
