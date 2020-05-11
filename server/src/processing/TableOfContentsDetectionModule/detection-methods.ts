@@ -15,19 +15,20 @@
  */
 
 import { BoundingBox, Paragraph, Word } from './../../types/DocumentRepresentation';
-// import logger from '../../utils/Logger';
+import logger from '../../utils/Logger';
 
 export const threshold = 0.4;
 
 export function TOCDetected(p: Paragraph, pageKeywords: string[]): boolean {
   return Object.values(detectionMethods).some(method => method(p, pageKeywords));
 }
-
+// let savedOnlyOneInt = null;
 const detectionMethods = {
   /*
     searches for text finishing in numbers in the right 10% width area of the BBox
   */
   startOrEndsWithNumber: (p: Paragraph): boolean => {
+    // logger.info(JSON.stringify(p));
     const w = p.width * 0.1;
     const intersectionBoxRight = new BoundingBox(p.right - w, p.top, w, p.height);
     const intersectionBoxLeft = new BoundingBox(p.left, p.top, w, p.height);
@@ -43,52 +44,50 @@ const detectionMethods = {
         word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
       )
       .filter(word => !isSeparator(word));
-    return checkNumbers(wordsInsideIntersectionRight, wordsInsideIntersectionLeft);
+    return checkNumbers(wordsInsideIntersectionRight) || checkNumbers(wordsInsideIntersectionLeft);
   },
   hasPageNKeyword: (p: Paragraph, pageKeywords: string[]): boolean => {
     const regexp = `^(${pageKeywords.join('|')}).* (\\d+) (.+)`;
     return new RegExp(regexp, 'gi').test(p.toString());
   },
 };
-function checkNumbers(wordsRight: Word[], wordsLeft: Word[]): boolean {
+function checkNumbers(words: Word[]): boolean {
   const integerNum = new RegExp(/^\d+$/);
   const romanNumbers = new RegExp(/^[ivxlcdm]+$/i);
-  let intLengthRight = 0;
-  let intLengthLeft = 0;
-  const integersStrRight = [];
-  const integersStrLeft = [];
-  wordsRight.forEach(word => {
+  let intLength = 0;
+  const integersStr = [];
+
+  // logger.info('wordsright.length= ' + words.length);
+  for (const word of words) {
     const wd = word.toString();
-    if (integerNum.test(wd)) {
-      integersStrRight.push(wd);
-      intLengthRight += 1;
+    // logger.info('wd= ' + wd);
+    if (integerNum.test(wd.toString())) {
+      logger.info('wd= ' + wd);
+      integersStr.push(wd);
+      intLength = intLength + 1;
     } else if (romanNumbers.test(wd)) {
-      intLengthRight += 1;
+      intLength = intLength + 1;
     }
-  });
-  if (intLengthRight > Math.floor(wordsRight.length * 0.5)) {
-    for (let j = 1; j < integersStrRight.length - 1; j++) {
-      if (Number(integersStrRight[j]) < Number(integersStrRight[j - 1])) {
-        return false;
-      }
-    }
-    return true;
   }
-  wordsLeft.forEach(word => {
-    const wd = word.toString();
-    if (integerNum.test(wd)) {
-      integersStrLeft.push(wd);
-      intLengthLeft += 1;
-    } else if (romanNumbers.test(wd)) {
-      intLengthLeft += 1;
-    }
-  });
-  if (intLengthLeft > Math.floor(wordsLeft.length * 0.5)) {
-    for (let j = 1; j < integersStrLeft.length - 1; j++) {
-      if (Number(integersStrLeft[j]) < Number(integersStrLeft[j - 1])) {
+  // logger.info('intLength= ' + intLength);
+  // logger.info('integersStr length= ' + integersStr.length);
+  if (intLength > Math.floor(words.length * 0.5)) {
+    for (let j = 1; j < integersStr.length - 1; j++) {
+      // logger.info('int[j]= ' + integersStr[j] + ' | ' + 'int[j-1]= ' + integersStr[j - 1]);
+      if (Number(integersStr[j]) < Number(integersStr[j - 1])) {
         return false;
       }
     }
+    // if (integersStr.length === 1) {
+    //   logger.info('savedOnlyOneInt ' + savedOnlyOneInt);
+    //   logger.info('integerStr[0]= ' + integersStr[0]);
+    //   if (savedOnlyOneInt && Number(integersStr[0]) < Number(savedOnlyOneInt)) {
+    //     logger.info('savedInt= ' + savedOnlyOneInt);
+    //     return false;
+    //   }
+    //   savedOnlyOneInt = integersStr[0];
+    // }
+    logger.info('trueee');
     return true;
   }
   return false;
