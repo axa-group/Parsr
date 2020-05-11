@@ -175,7 +175,44 @@ export class SvgLine extends SvgShape {
     this.toY = toY;
   }
 
-  public toString(): string {
-    return this.fromX + ',' + this.toX + ',' + this.fromY + ',' + this.toY + ',' + this.color + ';';
+  // https://stackoverflow.com/questions/9043805/test-if-two-lines-intersect-javascript-function
+  public intersects(line: SvgLine): boolean {
+    const a = this.fromX;
+    const b = this.fromY;
+    const c = this.toX;
+    const d = this.toY;
+
+    const p = line.fromX;
+    const q = line.fromY;
+    const r = line.toX;
+    const s = line.toY;
+
+    const det = (c - a) * (s - q) - (r - p) * (d - b);
+    if (det === 0) {
+      return false;
+    } else {
+      const lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det;
+      const gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det;
+      return (0 <= lambda && lambda <= 1) && (0 <= gamma && gamma <= 1);
+    }
+  }
+
+  public move(xDiff: number, yDiff: number) {
+    this.fromX += xDiff;
+    this.toX += xDiff;
+    this.fromY += yDiff;
+    this.toY += yDiff;
+  }
+
+  public isVertical(): boolean {
+    return Math.abs(this.rotationAngle()) === 90;
+  }
+
+  public isHorizontal(): boolean {
+    return this.rotationAngle() === 0 || this.rotationAngle() === 180;
+  }
+
+  private rotationAngle(): number {
+    return Math.atan2(this.toY - this.fromY, this.toX - this.fromX) * 180 / Math.PI;
   }
 }
