@@ -27,7 +27,6 @@ import {
 } from '../../types/DocumentRepresentation';
 import { Color } from '../../types/DocumentRepresentation/Color';
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
-import { SvgShape } from '../../types/DocumentRepresentation/SvgShape';
 import { PdfminerFigure } from '../../types/PdfminerFigure';
 import { PdfminerPage } from '../../types/PdfminerPage';
 import { PdfminerShape } from '../../types/PdfminerShape';
@@ -237,18 +236,33 @@ function getPage(pageObj: PdfminerPage): Page {
   // treat svg lines and rectangles
   if (pageObj.shapes !== undefined) {
     pageObj.shapes.forEach(shape => {
-      elements.push(...pdfminerShapeToSvgShapes(shape, pageBBox.height));
+      const shapes = pdfminerShapeToSvgShapes(shape, pageBBox.height)
+        .filter(l => filterPerimeterLines(l, pageBBox));
+      elements.push(...shapes);
     });
   }
 
   return new Page(parseFloat(pageObj._attr.id), elements, pageBBox);
 }
 
-function pdfminerShapeToSvgShapes(shape: PdfminerShape, pageHeight: number): SvgShape[] {
+function filterPerimeterLines(l: SvgLine, pageBox: BoundingBox): boolean {
+  const [x, y] = [l.fromX, l.fromY];
+  // vertical line
+  if (l.isVertical() && (x <= 0 || x >= pageBox.width)) {
+    return false;
+  }
+  // horizontal line
+  if (l.isHorizontal() && (y <= 0 || y >= pageBox.height)) {
+    return false;
+  }
+  return true;
+}
+
+function pdfminerShapeToSvgShapes(shape: PdfminerShape, pageHeight: number): SvgLine[] {
   const drawingBox: BoundingBox = getBoundingBox(shape._attr.bbox, ',', pageHeight);
 
   const thickness = parseFloat(shape._attr.linewidth) || 1;
-  const drawingContent: SvgShape[] = [];
+  const drawingContent: SvgLine[] = [];
   if (shape.type === 'rect') {
     drawingContent.push(
       new SvgLine(drawingBox, thickness, drawingBox.left, drawingBox.top, drawingBox.right, drawingBox.top),
