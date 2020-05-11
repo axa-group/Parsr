@@ -295,21 +295,19 @@ export class OperatorsManager {
     }
 
     // filter lines that follow the perimeter of the page
-    parsedElements.push(...lines.filter(l => {
-      const [x1, x2, y1, y2] = [l.fromX, l.toX, l.fromY, l.toY].map(n => Math.floor(n));
-      // vertical line
-      if (x1 === x2) {
-        if (x1 <= 0 || x1 >= this.viewport.width) {
-          return false;
-        }
-        // horizontal line
-      } else if (y1 === y2) {
-        if (y1 <= 0 || y1 >= this.viewport.height) {
-          return false;
-        }
-      }
-      return true;
-    },
-    ));
+    parsedElements.push(...lines.filter(this.filterPerimeterLines));
+  }
+
+  private filterPerimeterLines(l: SvgLine): boolean {
+    const [x, y] = [l.fromX, l.fromY];
+    // vertical line
+    if (l.isVertical() && (x <= 0 || x >= this.viewport.width)) {
+      return false;
+    }
+    // horizontal line
+    if (l.isHorizontal() && (y <= 0 || y >= this.viewport.height)) {
+      return false;
+    }
+    return true;
   }
 }
