@@ -4,12 +4,13 @@ from markdown import markdown
 import re
 
 def walk(node, fonts_ids):
+    elements_to_consider = {'paragraph', 'heading', 'list'}
     if node['type'] == 'line':
         for word in node['content']:
             fonts_ids.append(word['font'])
-    elif node['type'] == 'paragraph' or node['type'] == 'heading' or node['type'] == 'list':
-        for line in node['content']:
-            walk(line, fonts_ids)
+    elif node['type'] in elements_to_consider:
+        for elem in node['content']:
+            walk(elem, fonts_ids)
 
 def most_common_font(file):
     """Takes the most common font of a file"""

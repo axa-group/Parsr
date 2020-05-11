@@ -44,17 +44,18 @@ def walk_line(filename_line, node_line, acc_line):
                 
     acc_line.append([line.strip(), int(is_bold^(common_font['weight'] == 'bold')), int(line_font['size']>common_font['size']),
                 int(line_font['color']!=common_font['color']), int(len(set(fonts_ids))==1), text_case, len(node_line['content']),
-                int(line.strip().isdigit()), nb_verbs, nb_nouns, nb_cardinal,
+                int(bool(re.match('^\d*\.?\d*$', line.strip()))), nb_verbs, nb_nouns, nb_cardinal,
                 line_font['size'], int(is_bold), 0, 'paragraph', False
                ])
 
 def walk(filename, node, acc):
+    elements_to_consider = {'paragraph', 'heading', 'list'}
     if node['type'] == 'line':
         walk_line(filename, node, acc)
 
-    elif node['type'] == 'paragraph' or node['type'] == 'heading' or node['type'] == 'list':
-        for line in node['content']:
-            walk(filename, line, acc)
+    elif node['type'] in elements_to_consider:
+        for elem in node['content']:
+            walk(filename, elem, acc)
 
 
 def extract_lines(file):
