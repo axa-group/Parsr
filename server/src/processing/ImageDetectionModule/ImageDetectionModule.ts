@@ -47,6 +47,17 @@ export class ImageDetectionModule extends Module<Options> {
   }
 
   public async main(doc: Document, config: Config): Promise<Document> {
+
+    try {
+      if (!fs.existsSync(doc.inputFile)) {
+        logger.warn(`Input file ${doc.inputFile} cannot be found. Not performing image detection.`);
+        return doc;
+      }
+    } catch (err) {
+      logger.error(`Could not check if the input file ${doc.inputFile} exists: ${err}..`);
+      return doc;
+    }
+
     const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
     if (fileType === null || fileType.ext !== 'pdf') {
       logger.warn(

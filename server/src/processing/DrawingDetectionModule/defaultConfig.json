@@ -1,0 +1,4 @@
+{
+	"name": "drawing-detection-module",
+	"description": "groups svg Shapes that are visually part of a Drawing."
+}

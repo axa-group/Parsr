@@ -36,6 +36,7 @@ import {
   Paragraph,
   Table,
   TableCell,
+  TableOfContents,
   TableRow,
   Text,
   Word,
@@ -92,6 +93,8 @@ function elementsFromJson(elementJson: JsonElement, fonts: Font[]): Element | vo
     return drawingFromJson(elementJson);
   } else if (elementJson.type === 'barcode') {
     return barcodeFromJson(elementJson);
+  } else if (elementJson.type === 'table-of-contents') {
+    return tocFromJson(elementJson);
   } else if (
     elementJson.type === 'paragraph' ||
     elementJson.type === 'heading' ||
@@ -452,4 +455,11 @@ function buildCharacter(textObj: JsonElement, fonts: Font[]): Character {
   newChar.id = textObj.id;
   newChar.properties = propertiesFromJson(textObj.properties);
   return newChar;
+}
+
+function tocFromJson(json: any) {
+  const box = new BoundingBox(json.box.l, json.box.t, json.box.w, json.box.h);
+  const toc = new TableOfContents(box);
+  toc.content = json.content;
+  return toc;
 }

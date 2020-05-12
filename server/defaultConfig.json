@@ -6,6 +6,7 @@
     "language": ["eng", "fra"]
   },
   "cleaner": [
+    "drawing-detection",
     [
       "image-detection",
       {

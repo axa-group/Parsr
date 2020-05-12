@@ -34,9 +34,10 @@ export class LinkDetectionModule extends Module {
   public static moduleName = 'link-detection';
 
   public async main(doc: Document): Promise<Document> {
+
     let mdLinks: DumpPdfLinksResponse[] = [];
-    const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
-    if (fileType === null || fileType.ext !== 'pdf') {
+    const fileType: { ext: string; mime: string } = doc.inputFile && filetype(fs.readFileSync(doc.inputFile));
+    if (!fileType || fileType === null || (fileType && fileType.ext !== 'pdf')) {
       logger.warn(
         `Warning: Input file ${doc.inputFile} is not a PDF (${utils.prettifyObject(fileType)}); \
         not using meta info for link detection..`,
