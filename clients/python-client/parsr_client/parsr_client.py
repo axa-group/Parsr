@@ -35,8 +35,8 @@ from sxsdiff.generators.github import GitHubStyledGenerator
 
 
 class ParsrClient():
-	def __init__(self, server):
-		self.revision_history = {}
+	def __init__(self, server, revision_history:dict={}):
+		self.revision_history = revision_history
 		self.set_server(server)
 		self.set_current_request_id("")
 
