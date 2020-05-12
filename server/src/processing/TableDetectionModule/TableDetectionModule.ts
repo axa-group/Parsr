@@ -101,16 +101,6 @@ export class TableDetectionModule extends Module<Options> {
   }
 
   public async main(doc: Document): Promise<Document> {
-    const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
-    if (fileType === null || fileType.ext !== 'pdf') {
-      logger.warn(`Input file ${doc.inputFile} is not a PDF; Not performing table detection.`);
-      return doc;
-    }
-    if (doc.getElementsOfType<Table>(Table).length !== 0) {
-      logger.warn('Document already has tables. Not performing table detection.');
-      return doc;
-    }
-
     try {
       if (!fs.existsSync(doc.inputFile)) {
         logger.warn(`Input file ${doc.inputFile} cannot be found. Not performing table detection.`);
@@ -118,6 +108,16 @@ export class TableDetectionModule extends Module<Options> {
       }
     } catch (err) {
       logger.error(`Could not check if the input file ${doc.inputFile} exists: ${err}..`);
+      return doc;
+    }
+
+    const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
+    if (fileType === null || fileType.ext !== 'pdf') {
+      logger.warn(`Input file ${doc.inputFile} is not a PDF; Not performing table detection.`);
+      return doc;
+    }
+    if (doc.getElementsOfType<Table>(Table).length !== 0) {
+      logger.warn('Document already has tables. Not performing table detection.');
       return doc;
     }
 
