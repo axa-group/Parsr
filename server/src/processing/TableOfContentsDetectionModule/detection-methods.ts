@@ -15,7 +15,7 @@
  */
 
 import { BoundingBox, Paragraph, Word } from './../../types/DocumentRepresentation';
-import logger from '../../utils/Logger';
+// import logger from '../../utils/Logger';
 
 export const threshold = 0.4;
 
@@ -44,7 +44,19 @@ const detectionMethods = {
         word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
       )
       .filter(word => !isSeparator(word));
+<<<<<<< Updated upstream
     return checkNumbers(wordsInsideIntersectionRight) || checkNumbers(wordsInsideIntersectionLeft);
+=======
+    // logger.info('word right= ' + wordsInsideIntersectionRight.toString());
+    // logger.info('word left= ' + wordsInsideIntersectionLeft.toString());
+
+    return (
+      wordsInsideIntersectionRight.filter(isNumber).length >
+        Math.floor(wordsInsideIntersectionRight.length * 0.5) ||
+      wordsInsideIntersectionLeft.filter(isNumber).length >
+        Math.floor(wordsInsideIntersectionLeft.length * 0.5)
+    );
+>>>>>>> Stashed changes
   },
   hasPageNKeyword: (p: Paragraph, pageKeywords: string[]): boolean => {
     const regexp = `^(${pageKeywords.join('|')}).* (\\d+) (.+)`;

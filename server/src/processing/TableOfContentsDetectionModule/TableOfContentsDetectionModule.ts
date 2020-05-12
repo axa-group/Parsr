@@ -18,6 +18,7 @@ import { Document, Paragraph, TableOfContents } from '../../types/DocumentRepres
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
+import logger from '../../utils/Logger';
 
 interface Options {
   keywords?: string[];
@@ -34,6 +35,8 @@ export class TableOfContentsDetectionModule extends Module<Options> {
   }
 
   public main(doc: Document): Document {
+    const leftDigit = [];
+    const rightDigit = [];
     let foundTOC = false;
     let pagesSinceLastTOC = 0;
     for (let i = 0; i <= doc.pages.length - 1 && (!foundTOC || pagesSinceLastTOC < 5); i++) {
@@ -46,6 +49,23 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       const tocItemParagraphs = allParagraphs.filter(p =>
         detection.TOCDetected(p, this.options.pageKeywords),
       );
+      if (tocItemParagraphs.length > 0) {
+        for (const tocItemParagraph of tocItemParagraphs) {
+          logger.info('tocItemParagraph= ' + tocItemParagraph);
+          const strTocItem = tocItemParagraph.toString();
+          const lenTocItem = strTocItem.length;
+          const leftSideTocItem = strTocItem.substring(0, lenTocItem * 0.1);
+          const rightSideTocItem = strTocItem.substring(lenTocItem * 0.1 - 1, lenTocItem);
+          leftDigit.push(Number(leftSideTocItem.match(/(\d+)/)));
+          rightDigit.push(Number(rightSideTocItem.match(/(\d+)/)));
+        }
+        for (const lDigit of leftDigit) {
+          logger.info('lDigit= ' + lDigit);
+        }
+        for (const rDigit of rightDigit) {
+          logger.info('rDigit= ' + rDigit);
+        }
+      }
 
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
