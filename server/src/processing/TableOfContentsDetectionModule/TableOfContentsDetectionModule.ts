@@ -18,7 +18,7 @@ import { Document, Paragraph, TableOfContents } from '../../types/DocumentRepres
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
-import logger from '../../utils/Logger';
+// import logger from '../../utils/Logger';
 
 interface Options {
   keywords?: string[];
@@ -36,8 +36,11 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
   public main(doc: Document): Document {
     let storeNumbers = [];
+    let storeRomanNumbers = [];
     let numbersLen = 0;
+    let romanNumbersLen = 0;
     let nbInteger = 0;
+    // let scoreInOrder = 1;
     // let scoreInOrder = 0;
     // const decimalNum = new RegExp(/[0-9]+(\.[0-9]+)?/, 'g');
     let foundTOC = false;
@@ -56,23 +59,30 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
       if (tocItemParagraphs.length > 0) {
         for (const tocItemParagraph of tocItemParagraphs) {
-          logger.info('tocItemParagraph= ' + tocItemParagraph + '|');
+          // logger.info('tocItemParagraph= ' + tocItemParagraph + '|');
           const strTocItem = tocItemParagraph.toString();
           if (strTocItem.match(/[0-9]+(\.[0-9]+)?/g)) {
             storeNumbers.push(strTocItem.match(/[0-9]+(\.[0-9]+)?/g).map(Number));
             // for (const num of storeNumbers) {
             //   if (nu)
             // }
+          } else if (strTocItem.match(/[ivxlcdm]+$/i)) {
+            storeRomanNumbers.push(strTocItem.match(/[ivxlcdm]+$/i));
+            // logger.info('storeRomanNumber= ' + strTocItem.match(/[ivxlcdm]+$/i));
+
+            // for (const num of storeNumbers) {
+            //   if (nu)
+            // }
           }
           // logger.info('decimal regex= ' + strTocItem.match(/[0-9]+(\.[0-9]+)?/g));
-          // if (storeNumbers.length > 1) {
-          // for (let index = 0; index < storeNumbers.length - 1; index++) {
-          //   for (let j = index + 1; j < storeNumbers.length; j++) {
-          //     if (storeNumbers[j] > storeNumbers[index]) {
-          //       scoreInOrder = scoreInOrder + 1;
+          // if (storeNumbers.length > 3) {
+          //   for (let index = 0; index < storeNumbers.length - 1; index++) {
+          //     for (let j = index + 1; j < storeNumbers.length - 1; j++) {
+          //       if (storeNumbers[j] > storeNumbers[index]) {
+          //         scoreInOrder = scoreInOrder + 1;
+          //       }
           //     }
           //   }
-          // }
           // }
           // logger.info('numberslen= ' + storeNumbers.length);
           // if (decimalNum.exec(strTocItem) !== null) {
@@ -89,11 +99,18 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           // logger.info('number= ' + num);
         }
         storeNumbers = [];
+        for (const romanNumbers of storeRomanNumbers) {
+          romanNumbersLen = romanNumbersLen + romanNumbers.length;
+          // logger.info('lenNumber= ' + num.length);
+          // logger.info('number= ' + num);
+        }
+        storeNumbers = [];
+        storeRomanNumbers = [];
       }
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
-        numbersLen > 1 &&
-        nbInteger / numbersLen > 0.5 &&
+        (numbersLen > 3 || romanNumbersLen > 3) &&
+        (nbInteger / numbersLen > 0.5 || romanNumbersLen > 3) &&
         tocItemParagraphs.length > 0 &&
         tocItemParagraphs.length >=
           Math.floor(allParagraphs.length * detection.threshold * Math.pow(1.05, pagesSinceLastTOC))
@@ -110,6 +127,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       }
       numbersLen = 0;
       nbInteger = 0;
+      romanNumbersLen = 0;
     }
 
     return doc;

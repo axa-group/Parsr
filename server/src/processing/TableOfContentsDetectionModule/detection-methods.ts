@@ -71,9 +71,9 @@ function isNumberRight(word: Word): boolean {
 
 function isNumberLeft(word: Word): boolean {
   const decimalNumbers = new RegExp(/^[0-9]+/);
-  const romanNumbers = new RegExp(/^[ivxlcdm]+([.]+)?[ ]+/i);
+  // const romanNumbers = new RegExp(/^[ivxlcdm]+([.]+)?[ ]+/i);
   const w = word.toString();
-  return decimalNumbers.test(w) || romanNumbers.test(w);
+  return decimalNumbers.test(w); // || romanNumbers.test(w);
 }
 
 function isSeparator(word: Word): boolean {
