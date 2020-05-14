@@ -318,15 +318,15 @@ export class ApiServer {
       return;
     }
     const doc: Express.Multer.File = req.files.file[0];
-    let config: Express.Multer.File;
-    if (req.files.config) {
-      config = req.files.config[0];
-    }
+    let configPath = req.files.config
+      ? req.files.config[0].path
+      : '../../server/defaultConfig.json';
+
     const docName: string = doc.originalname.split('.')[0];
     const docId: string = this.getUUID();
     const outputPath = path.resolve(`${this.outputDir}/${docName}-${docId}`);
 
-    if (!this.isValidDocument(doc) || (!!config && !this.isValidConfig(config))) {
+    if (!this.isValidDocument(doc) || !this.isValidConfig(configPath)) {
       res.sendStatus(415);
       return;
     }
@@ -336,10 +336,6 @@ export class ApiServer {
     } catch (err) {
       res.status(500).send(err);
       return;
-    }
-    let configPath = '../../server/defaultConfig.json';
-    if (!!config) {
-      configPath = config.path;
     }
 
     this.fileManager.newBinder(docId, doc.path, configPath, outputPath, docName);
@@ -599,11 +595,8 @@ export class ApiServer {
     return true;
   }
 
-  private isValidConfig(config: Express.Multer.File): boolean {
-    if (config.mimetype !== 'application/json') {
-      return false;
-    }
-    return true;
+  private isValidConfig(configPath: string): boolean {
+    return path.extname(configPath).toLowerCase() === '.json';
   }
 
   private getRandomFolder(): string {
