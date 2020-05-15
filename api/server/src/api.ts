@@ -326,7 +326,7 @@ export class ApiServer {
     const docId: string = this.getUUID();
     const outputPath = path.resolve(`${this.outputDir}/${docName}-${docId}`);
 
-    if (!this.isValidDocument(doc) || !this.isValidConfig(configPath)) {
+    if (!this.isValidDocument(doc)) {
       res.sendStatus(415);
       return;
     }
@@ -588,15 +588,7 @@ export class ApiServer {
   }
 
   private isValidDocument(doc: Express.Multer.File): boolean {
-    if (!this.allowedMimetypes.includes(doc.mimetype)) {
-      return false;
-    }
-
-    return true;
-  }
-
-  private isValidConfig(configPath: string): boolean {
-    return path.extname(configPath).toLowerCase() === '.json';
+    return this.allowedMimetypes.includes(doc.mimetype);
   }
 
   private getRandomFolder(): string {
