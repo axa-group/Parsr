@@ -61,26 +61,22 @@ export class EmailExtractor extends Extractor {
       }
       </style>
     `;
-    try {
-      const data = readFileSync(inputFile);
-      const raw = await simpleParser(data);
-      const mainPDF = convertHTMLToPDF((raw.html || '').concat(styles));
-      const pdfFilesToJoin: Array<Promise<string>> = [
-        mainPDF,
-        ...(raw.attachments || []).map(this.attachmentToPDF.bind(this)(raw.html)),
-      ].filter(f => !!f);
+    const data = readFileSync(inputFile);
+    const raw = await simpleParser(data);
+    const mainPDF = convertHTMLToPDF((raw.html || '').concat(styles));
+    const pdfFilesToJoin: Array<Promise<string>> = [
+      mainPDF,
+      ...(raw.attachments || []).map(this.attachmentToPDF.bind(this)(raw.html)),
+    ].filter(f => !!f);
 
-      const files = (await Promise.all(pdfFilesToJoin)).filter(f => !!f);
-      const fullPDF = inputFile.replace('.eml', '-tmp.pdf');
-      await mergePDFs(files, fullPDF);
-      return fullPDF;
-    } catch (e) {
-      throw e;
-    }
+    const files = (await Promise.all(pdfFilesToJoin)).filter(f => !!f);
+    const fullPDF = inputFile.replace('.eml', '-tmp.pdf');
+    await mergePDFs(files, fullPDF);
+    return fullPDF;
   }
 
   private attachmentToPDF(rawHTML: string): (data: MailAttachmentData) => Promise<string> {
-    return async (attachment: MailAttachmentData): Promise<string> => {
+    return (attachment: MailAttachmentData): Promise<string> => {
       if (attachment.contentType === 'application/pdf') {
         return this.pdfAttachmentToPDF(attachment);
       }
