@@ -63,18 +63,15 @@ const detectionMethods = {
 
 function isNumberRight(word: Word): boolean {
   const decimalNumbers = new RegExp(/[0-9]+$/);
-  const romanNumbers = new RegExp(
-    /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
-  );
+  const romanNumbers = new RegExp(/[ivxlcdm]+$/i);
   const w = word.toString();
   return decimalNumbers.test(w) || romanNumbers.test(w);
 }
 
 function isNumberLeft(word: Word): boolean {
   const decimalNumbers = new RegExp(/^[0-9]+/);
-  // const romanNumbers = new RegExp(/^[ivxlcdm]+([.]+)?[ ]+/i);
   const w = word.toString();
-  return decimalNumbers.test(w); // || romanNumbers.test(w);
+  return decimalNumbers.test(w);
 }
 
 function isSeparator(word: Word): boolean {

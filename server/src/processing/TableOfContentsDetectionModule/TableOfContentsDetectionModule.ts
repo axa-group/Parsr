@@ -122,7 +122,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       }
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
-        ((numbersLen > 1 && nbInteger / numbersLen > 0.5) || romanNumbersLen > 2) &&
+        ((numbersLen > 2 && nbInteger / numbersLen > 0.5) || romanNumbersLen > 2) &&
         tocItemParagraphs.length > 0 &&
         tocItemParagraphs.length >=
           Math.floor(allParagraphs.length * detection.threshold * Math.pow(1.05, pagesSinceLastTOC))
