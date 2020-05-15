@@ -18,7 +18,7 @@ import { Document, Paragraph, TableOfContents } from '../../types/DocumentRepres
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
-// import logger from '../../utils/Logger';
+import logger from '../../utils/Logger';
 
 interface Options {
   keywords?: string[];
@@ -59,16 +59,28 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
       if (tocItemParagraphs.length > 0) {
         for (const tocItemParagraph of tocItemParagraphs) {
-          // logger.info('tocItemParagraph= ' + tocItemParagraph + '|');
+          logger.info('tocItemParagraph= ' + tocItemParagraph + '|');
           const strTocItem = tocItemParagraph.toString();
           if (strTocItem.match(/[0-9]+(\.[0-9]+)?/g)) {
             storeNumbers.push(strTocItem.match(/[0-9]+(\.[0-9]+)?/g).map(Number));
-            // for (const num of storeNumbers) {
-            //   if (nu)
-            // }
-          } else if (strTocItem.match(/[ivxlcdm]+$/i)) {
-            storeRomanNumbers.push(strTocItem.match(/[ivxlcdm]+$/i));
-            // logger.info('storeRomanNumber= ' + strTocItem.match(/[ivxlcdm]+$/i));
+            logger.info('detectNumber= ' + strTocItem.match(/[0-9]+(\.[0-9]+)?/g));
+          }
+          if (
+            strTocItem.match(
+              /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
+            )
+          ) {
+            storeRomanNumbers.push(
+              strTocItem.match(
+                /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
+              ),
+            );
+            logger.info(
+              'storeRomanNumber= ' +
+                strTocItem.match(
+                  /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
+                ),
+            );
 
             // for (const num of storeNumbers) {
             //   if (nu)
@@ -89,6 +101,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           // storeNumbers.push(decimalNum.exec(strTocItem));
         }
         for (const numbers of storeNumbers) {
+          logger.info('soreNumber= ' + numbers);
           for (const num of numbers) {
             if (Number.isInteger(num)) {
               nbInteger++;
@@ -109,8 +122,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       }
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
-        (numbersLen > 3 || romanNumbersLen > 3) &&
-        (nbInteger / numbersLen > 0.5 || romanNumbersLen > 3) &&
+        ((numbersLen > 1 && nbInteger / numbersLen > 0.5) || romanNumbersLen > 2) &&
         tocItemParagraphs.length > 0 &&
         tocItemParagraphs.length >=
           Math.floor(allParagraphs.length * detection.threshold * Math.pow(1.05, pagesSinceLastTOC))

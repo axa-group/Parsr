@@ -48,7 +48,6 @@ const detectionMethods = {
     // logger.info('word left= ' + wordsInsideIntersectionLeft.toString());
     // logger.info('wrd l= ' + wordsInsideIntersectionLeft.filter(isNumberLeft));
     // logger.info('word left= ' + wordsInsideIntersectionLeft.toString());
-
     return (
       wordsInsideIntersectionRight.filter(isNumberRight).length >
         Math.floor(wordsInsideIntersectionRight.length * 0.5) ||
@@ -64,7 +63,9 @@ const detectionMethods = {
 
 function isNumberRight(word: Word): boolean {
   const decimalNumbers = new RegExp(/[0-9]+$/);
-  const romanNumbers = new RegExp(/[ivxlcdm]+$/i);
+  const romanNumbers = new RegExp(
+    /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
+  );
   const w = word.toString();
   return decimalNumbers.test(w) || romanNumbers.test(w);
 }
