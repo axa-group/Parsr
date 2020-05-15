@@ -22,13 +22,12 @@ export const threshold = 0.4;
 export function TOCDetected(p: Paragraph, pageKeywords: string[]): boolean {
   return Object.values(detectionMethods).some(method => method(p, pageKeywords));
 }
-// let savedOnlyOneInt = null;
+
 const detectionMethods = {
   /*
     searches for text finishing in numbers in the right 10% width area of the BBox
   */
   startOrEndsWithNumber: (p: Paragraph): boolean => {
-    // logger.info(JSON.stringify(p));
     const w = p.width * 0.1;
     const intersectionBoxRight = new BoundingBox(p.right - w, p.top, w, p.height);
     const intersectionBoxLeft = new BoundingBox(p.left, p.top, w, p.height);
@@ -44,90 +43,42 @@ const detectionMethods = {
         word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
       )
       .filter(word => !isSeparator(word));
-<<<<<<< Updated upstream
-    return checkNumbers(wordsInsideIntersectionRight) || checkNumbers(wordsInsideIntersectionLeft);
-=======
     // logger.info('word right= ' + wordsInsideIntersectionRight.toString());
+    // logger.info('wrd r= ' + wordsInsideIntersectionRight.filter(isNumberRight));
     // logger.info('word left= ' + wordsInsideIntersectionLeft.toString());
-
+    // logger.info('wrd l= ' + wordsInsideIntersectionLeft.filter(isNumberLeft));
+    // logger.info('word left= ' + wordsInsideIntersectionLeft.toString());
     return (
-      wordsInsideIntersectionRight.filter(isNumber).length >
+      wordsInsideIntersectionRight.filter(isNumberRight).length >
         Math.floor(wordsInsideIntersectionRight.length * 0.5) ||
-      wordsInsideIntersectionLeft.filter(isNumber).length >
+      wordsInsideIntersectionLeft.filter(isNumberLeft).length >
         Math.floor(wordsInsideIntersectionLeft.length * 0.5)
     );
->>>>>>> Stashed changes
   },
   hasPageNKeyword: (p: Paragraph, pageKeywords: string[]): boolean => {
     const regexp = `^(${pageKeywords.join('|')}).* (\\d+) (.+)`;
     return new RegExp(regexp, 'gi').test(p.toString());
   },
 };
-function checkNumbers(words: Word[]): boolean {
-  const integerNum = new RegExp(/^\d+$/);
-  const romanNumbers = new RegExp(/^[ivxlcdm]+$/i);
-  let intLength = 0;
-  const integersStr = [];
 
-  // logger.info('wordsright.length= ' + words.length);
-  for (const word of words) {
-    const wd = word.toString();
-    // logger.info('wd= ' + wd);
-    if (integerNum.test(wd.toString())) {
-      logger.info('wd= ' + wd);
-      integersStr.push(wd);
-      intLength = intLength + 1;
-    } else if (romanNumbers.test(wd)) {
-      intLength = intLength + 1;
-    }
-  }
-  // logger.info('intLength= ' + intLength);
-  // logger.info('integersStr length= ' + integersStr.length);
-  if (intLength > Math.floor(words.length * 0.5)) {
-    for (let j = 1; j < integersStr.length - 1; j++) {
-      // logger.info('int[j]= ' + integersStr[j] + ' | ' + 'int[j-1]= ' + integersStr[j - 1]);
-      if (Number(integersStr[j]) < Number(integersStr[j - 1])) {
-        return false;
-      }
-    }
-    // if (integersStr.length === 1) {
-    //   logger.info('savedOnlyOneInt ' + savedOnlyOneInt);
-    //   logger.info('integerStr[0]= ' + integersStr[0]);
-    //   if (savedOnlyOneInt && Number(integersStr[0]) < Number(savedOnlyOneInt)) {
-    //     logger.info('savedInt= ' + savedOnlyOneInt);
-    //     return false;
-    //   }
-    //   savedOnlyOneInt = integersStr[0];
-    // }
-    logger.info('trueee');
-    return true;
-  }
-  return false;
+function isNumberRight(word: Word): boolean {
+  const decimalNumbers = new RegExp(/[0-9]+$/);
+  const romanNumbers = new RegExp(
+    /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
+  );
+  const w = word.toString();
+  return decimalNumbers.test(w) || romanNumbers.test(w);
 }
 
-// function enoughNumber(
-//   intLenRight: number,
-//   wdRight: Word[],
-//   intLenLeft: number,
-//   wdLeft: Word[],
-// ): boolean {
-//   return (
-//     intLenRight > Math.floor(wdRight.length * 0.5) || intLenLeft > Math.floor(wdLeft.length * 0.5)
-//   );
-// }
-
-// function isNumber(word: Word): boolean {
-//   const integerNumbers = new RegExp(/^\d+$/);
-//   const romanNumbers = new RegExp(/^[ivxlcdm]+$/i);
-//   const w = word.toString();
-//   logger.info('Word= ' + w + ' Is_number= ' + integerNumbers.test(w));
-
-//   return integerNumbers.test(w) || romanNumbers.test(w);
-// }
+function isNumberLeft(word: Word): boolean {
+  const decimalNumbers = new RegExp(/^[0-9]+/);
+  // const romanNumbers = new RegExp(/^[ivxlcdm]+([.]+)?[ ]+/i);
+  const w = word.toString();
+  return decimalNumbers.test(w); // || romanNumbers.test(w);
+}
 
 function isSeparator(word: Word): boolean {
   const separators = new RegExp(/^[-. ]+$/);
-
   return separators.test(word.toString().trim());
 }
 
