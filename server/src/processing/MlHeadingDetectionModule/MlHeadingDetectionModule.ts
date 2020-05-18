@@ -52,11 +52,7 @@ export class MlHeadingDetectionModule extends Module {
     const headingFonts = this.headingFonts(doc);
 
     doc.pages.forEach((page: Page) => {
-      const newContents = this.extractHeadings(
-        page,
-        mainCommonFont,
-        headingFonts,
-      );
+      const newContents = this.extractHeadings(page, mainCommonFont, headingFonts);
       const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
       const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
       page.elements = newContents.rootElements.concat([...headings, ...paras]);
@@ -83,11 +79,7 @@ export class MlHeadingDetectionModule extends Module {
     // get all paragraphs in page root
     const pageParagraphs = this.pageParagraphs(page);
     return {
-      ...this.extractHeadingsInParagraphs(
-        pageParagraphs,
-        commonFont,
-        headingFonts,
-      ),
+      ...this.extractHeadingsInParagraphs(pageParagraphs, commonFont, headingFonts),
       rootElements: this.createHeadingsInOtherElements(
         this.pageOtherElements(page),
         commonFont,
@@ -126,21 +118,27 @@ export class MlHeadingDetectionModule extends Module {
     const paragraphLines: Line[][] = [];
     const headingLines: Line[][] = [];
 
-    paragraphs.map(paragraph => paragraph.content)
+    paragraphs
+      .map(paragraph => paragraph.content)
       .forEach(linesInParagraph => {
         let initiatedHeading = false;
         if (commonFont instanceof Font) {
-          const headingIdx: number[] = linesInParagraph.map((line: Line, pos: number) => {
-            // const prevLine: Line = linesInParagraph[pos-1];
-            // const nextLine: Line = linesInParagraph[pos+1];
-            if ((pos === 0 || initiatedHeading) && this.isHeadingCandidate(line, commonFont, headingFonts)) {
-              initiatedHeading = true;
-              return pos;
-            } else {
-              initiatedHeading = false;
-              return undefined;
-            }
-          }).filter((i: number) => i !== undefined);
+          const headingIdx: number[] = linesInParagraph
+            .map((line: Line, pos: number) => {
+              // const prevLine: Line = linesInParagraph[pos-1];
+              // const nextLine: Line = linesInParagraph[pos+1];
+              if (
+                (pos === 0 || initiatedHeading) &&
+                this.isHeadingCandidate(line, commonFont, headingFonts)
+              ) {
+                initiatedHeading = true;
+                return pos;
+              } else {
+                initiatedHeading = false;
+                return undefined;
+              }
+            })
+            .filter((i: number) => i !== undefined);
           if (headingIdx.length > 0) {
             const lineIdx: number[] = [...Array(linesInParagraph.length).keys()].filter(
               x => !headingIdx.includes(x),
@@ -203,21 +201,32 @@ export class MlHeadingDetectionModule extends Module {
     const isNumber = !isNaN(lineStr as any);
     const textCase = this.textCase(lineStr);
 
-    const features = [isDifferentStyle, isFontBigger, isFontUnique, textCase, wordCount, differentColor, isNumber];
+    const features = [
+      isDifferentStyle,
+      isFontBigger,
+      isFontUnique,
+      textCase,
+      wordCount,
+      differentColor,
+      isNumber,
+    ];
     const clf = new RandomForestClassifier();
 
     return clf.predict(features) === 1;
   }
 
   private textCase(lineStr: string) {
-    const isTitleCase = lineStr.split(" ").map((word) => {
-      const lengthThreshold = 4;
-      if (word.length > lengthThreshold) {
-        return (/^[A-Z]\w+/.test(word) || /^(?:\W*\d+\W*)+\w+/.test(word));
-      } else {
-        return true;
-      }
-    }).reduce((acc, curr) => acc && curr);
+    const isTitleCase = lineStr
+      .split(' ')
+      .map(word => {
+        const lengthThreshold = 4;
+        if (word.length > lengthThreshold) {
+          return /^[A-Z]\w+/.test(word) || /^(?:\W*\d+\W*)+\w+/.test(word);
+        } else {
+          return true;
+        }
+      })
+      .reduce((acc, curr) => acc && curr);
     const isLowerCase = lineStr.toLowerCase() === lineStr;
     const isUpperCase = lineStr.toUpperCase() === lineStr;
 
