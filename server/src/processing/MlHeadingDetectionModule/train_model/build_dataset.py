@@ -6,13 +6,14 @@ import re
 import spacy
 import numpy as np
 from collections import Counter
-from utils import most_common_font, markdown_to_text
+from utils import ratios_and_most_common_font, markdown_to_text
+
 
 # Load English tokenizer, tagger, parser, NER and word vectors
 nlp = spacy.load("en_core_web_sm")
 
 def walk_line(filename_line, node_line, acc_line):
-    common_font = most_common_font(filename_line)
+    font_ratios, common_font = ratios_and_most_common_font(filename_line)
     line = ''
     fonts_ids = []
     is_title_case = True
@@ -27,6 +28,7 @@ def walk_line(filename_line, node_line, acc_line):
 
     line_font = filename_line['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]  # font ids start at 1
     is_bold = all(filename_line['fonts'][font_id - 1]['weight'] == 'bold' for font_id in fonts_ids)
+    line_font_ratio = font_ratios[line_font['id']]
 
     if line.islower():
         text_case = 0
@@ -45,7 +47,7 @@ def walk_line(filename_line, node_line, acc_line):
     acc_line.append([line.strip(), int(is_bold^(common_font['weight'] == 'bold')), int(line_font['size']>common_font['size']),
                 int(line_font['color']!=common_font['color']), int(len(set(fonts_ids))==1), text_case, len(node_line['content']),
                 int(bool(re.match('^\d*\.?\d*$', line.strip()))), nb_verbs, nb_nouns, nb_cardinal,
-                line_font['size'], int(is_bold), 0, 'paragraph', False
+                line_font['size'], int(is_bold), line_font_ratio, 0, 'paragraph', False
                ])
 
 def walk(filename, node, acc):
@@ -105,7 +107,7 @@ for path in paths:
         col_names = ['line', 'is_different_style', 'is_font_bigger', 
                      'different_color', 'is_font_unique', 'text_case', 'word_count',
                      'is_number', 'nb_of_verbs', 'nb_of_nouns', 'nb_of_cardinal_numbers',
-                     'font_size', 'is_bold', 'level', 'label']
+                     'font_size', 'is_bold', 'font_ratio', 'level', 'label']
 
         with open(os.path.join(args.out_dir, path.replace(END_JSON_PATH, '.csv')), newline='\n',  mode='w+', encoding='utf8') as f:
             writer = csv.writer(f, quoting=csv.QUOTE_ALL)

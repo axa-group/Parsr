@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from markdown import markdown
 import re
 
+
 def walk(node, fonts_ids):
     elements_to_consider = {'paragraph', 'heading', 'list'}
     if node['type'] == 'line':
@@ -12,10 +13,9 @@ def walk(node, fonts_ids):
         for elem in node['content']:
             walk(elem, fonts_ids)
 
-def most_common_font(file):
-    """Takes the most common font of a file"""
+def ratios_and_most_common_font(file):
+    """Gives the font ratios and the most common font of a file"""
     fonts_ids = []
-
     for page in file['pages']:
         # skip pages that have no elements
         if len(page['elements']) > 0:
@@ -23,7 +23,10 @@ def most_common_font(file):
                 walk(element, fonts_ids)
     
     if len(fonts_ids) > 0:
-        return file['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]
+        font_ratios = Counter()
+        for font in fonts_ids:
+            font_ratios[font] += 1/len(fonts_ids)
+        return font_ratios, file['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]
 
     # for pages that have no elements (i.e. no fonts) as "FLYER1.pdf.json"
     return {}

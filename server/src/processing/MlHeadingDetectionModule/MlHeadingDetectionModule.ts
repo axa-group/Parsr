@@ -30,7 +30,7 @@ import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagraphModule';
 import { Module } from '../Module';
-import { RandomForestClassifier } from './train_model/model';
+import { AdaBoostClassifier } from './train_model/model';
 import { DecisionTreeClassifier } from './train_model/model_level';
 
 export class MlHeadingDetectionModule extends Module {
@@ -56,6 +56,7 @@ export class MlHeadingDetectionModule extends Module {
         page,
         mainCommonFont,
         headingFonts,
+        doc,
       );
       const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
       const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
@@ -79,6 +80,7 @@ export class MlHeadingDetectionModule extends Module {
     page: Page,
     commonFont: Font,
     headingFonts: Font[],
+    doc: Document,
   ): { headingLines: Line[][]; paragraphLines: Line[][]; rootElements: Element[] } {
     // get all paragraphs in page root
     const pageParagraphs = this.pageParagraphs(page);
@@ -87,11 +89,13 @@ export class MlHeadingDetectionModule extends Module {
         pageParagraphs,
         commonFont,
         headingFonts,
+        doc,
       ),
       rootElements: this.createHeadingsInOtherElements(
         this.pageOtherElements(page),
         commonFont,
         headingFonts,
+        doc,
       ),
     };
   }
@@ -100,6 +104,7 @@ export class MlHeadingDetectionModule extends Module {
     elements: Element[],
     commonFont: Font,
     headingFonts: Font[],
+    doc: Document,
   ): Element[] {
     this.getElementsWithParagraphs(elements, [])
       // this is to avoid setting table content as headings
@@ -109,6 +114,7 @@ export class MlHeadingDetectionModule extends Module {
           this.getParagraphsInElement(element),
           commonFont,
           headingFonts,
+          doc,
         );
         const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
         const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
@@ -122,6 +128,7 @@ export class MlHeadingDetectionModule extends Module {
     paragraphs: Paragraph[],
     commonFont: Font,
     headingFonts: Font[],
+    doc: Document,
   ): { headingLines: Line[][]; paragraphLines: Line[][] } {
     const paragraphLines: Line[][] = [];
     const headingLines: Line[][] = [];
@@ -131,7 +138,7 @@ export class MlHeadingDetectionModule extends Module {
         let initiatedHeading = false;
         if (commonFont instanceof Font) {
           const headingIdx: number[] = linesInParagraph.map((line: Line, pos: number) => {
-            if ((pos === 0 || initiatedHeading) && this.isHeadingCandidate(line, commonFont, headingFonts)) {
+            if ((pos === 0 || initiatedHeading) && this.isHeadingCandidate(line, commonFont, headingFonts, doc)) {
               initiatedHeading = true;
               return pos;
             } else {
@@ -178,17 +185,17 @@ export class MlHeadingDetectionModule extends Module {
     return { headingLines: [], paragraphLines: paragraphs.map(paragraph => paragraph.content) };
   }
 
-  private isHeadingCandidate(line: Line, mostCommonFont: Font, headingFonts: Font[]): boolean {
+  private isHeadingCandidate(line: Line, mostCommonFont: Font, headingFonts: Font[], doc: Document): boolean {
     const serializedHeadingFonts = headingFonts.map(font => JSON.stringify(font));
 
     if (!serializedHeadingFonts.includes(JSON.stringify(this.noColourFont(line.getMainFont())))) {
       return false;
     }
 
-    return this.isHeadingLine(line, mostCommonFont);
+    return this.isHeadingLine(line, mostCommonFont, doc);
   }
 
-  private isHeadingLine(line: Line, commonFont: Font): boolean {
+  private isHeadingLine(line: Line, commonFont: Font, doc: Document): boolean {
     const lineStr = line.toString();
     if (lineStr.length === 1 || !isNaN(lineStr as any)) {
       return false;
@@ -201,8 +208,13 @@ export class MlHeadingDetectionModule extends Module {
     const isNumber = !isNaN(lineStr as any);
     const textCase = this.textCase(lineStr);
 
-    const features = [isDifferentStyle, isFontBigger, isFontUnique, textCase, wordCount, differentColor, isNumber];
-    const clf = new RandomForestClassifier();
+    const allWords = doc.getElementsOfType<Word>(Word, true);
+    const allFonts = [...allWords.map(w => w.font).filter(f => f !== undefined)];
+    const count = allFonts.filter(font => line.getMainFont()['_name'] === font['_name'] && line.getMainFont()['_size'] === font['_size'] && line.getMainFont()['_weight'] === font['_weight'] && line.getMainFont()['_isItalic'] === font['_isItalic'] && line.getMainFont()['_isUnderline'] === font['_isUnderline'] && line.getMainFont()['_color'] === font['_color']).length
+    const fontRatio = count / allFonts.length;
+   
+    const features = [isDifferentStyle, isFontBigger, isFontUnique, textCase, wordCount, differentColor, isNumber, fontRatio];
+    const clf = new AdaBoostClassifier();
 
     return clf.predict(features) === 1;
   }

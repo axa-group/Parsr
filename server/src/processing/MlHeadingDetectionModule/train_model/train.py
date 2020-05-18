@@ -37,9 +37,9 @@ def adaboost_model(parameters, X, y):
     clf = AdaBoostClassifier(base_estimator=estimator, n_estimators=100, random_state=0).fit(X, y)
     return clf
 
-def export_model_to_js(selector, filename):
+def export_model_to_js(estimator, filename):
     """Exports the trained model to JavaScript"""
-    porter = Porter(selector.estimator_, language='js')
+    porter = Porter(estimator, language='js')
     output = porter.export(embed_data=True)
     with open(os.path.join(args.out_dir, filename), mode='w+', encoding='utf8') as f:
         f.write('export ' + output)
@@ -63,12 +63,12 @@ for path in paths:
     dataset.append(df[['is_different_style', 'is_font_bigger', 'is_font_unique',
                        'text_case', 'word_count', 'different_color',
                        'is_number', 'font_size', 'is_bold',
-                       'level', 'label']])
+                       'font_ratio', 'level', 'label']])
 
 df_dataset = pd.concat(dataset)
 X_heading = df_dataset[['is_different_style', 'is_font_bigger', 'is_font_unique',
                         'text_case', 'word_count', 'different_color',
-                        'is_number']].to_numpy()
+                        'is_number', 'font_ratio']].to_numpy()
 y_heading = list(df_dataset['label'])
 
 # only taking the headings into account for the levels
@@ -82,11 +82,12 @@ X_train1, X_test1, y_train1, y_test1 = train_test_split(X_heading, y_heading, te
 X_train2, X_test2, y_train2, y_test2 = train_test_split(X_level, y_level, test_size=0.2)
 
 # these parameters are found through grid search
-parameters_heading = {'n_estimators': 48, 'min_samples_leaf':2, 'min_samples_split': 7, 'criterion': 'entropy'}
+# n_estimators is only used for the Random Forest Classifier
+parameters_heading = {'n_estimators': 48, 'min_samples_leaf':1, 'min_samples_split': 2, 'criterion': 'gini'}
 parameters_level = {'n_estimators': 80, 'min_samples_leaf': 1, 'min_samples_split': 2, 'criterion': 'entropy'}              
 
 # computing the models
-selector_heading = rf_model(parameters_heading, X_heading, y_heading, metrics.f1_score)
+selector_heading = adaboost_model(parameters_heading, X_heading, y_heading)
 selector_level = dt_model(parameters_level, X_level, y_level, metrics.accuracy_score)
 
 # evaluating the performance
@@ -99,4 +100,4 @@ print('accuracy (headings level):', metrics.accuracy_score(y_test2, y_pred_level
 
 # exporting the models
 export_model_to_js(selector_heading, 'model.js')
-export_model_to_js(selector_level, 'model_level.js')
+export_model_to_js(selector_level.estimator_, 'model_level.js')
