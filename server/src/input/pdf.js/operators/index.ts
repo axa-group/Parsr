@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2020 AXA Group Operations S.A.
  *
@@ -40,8 +39,8 @@ import setLineCap from './setLineCap';
 import setLineJoin from './setLineJoin';
 import setLineWidth from './setLineWidth';
 import setMiterLimit from './setMiterLimit';
-import setStrokeAlpha from "./setStrokeAlpha";
-import setStrokeRGBColor from "./setStrokeRGBColor";
+import setStrokeAlpha from './setStrokeAlpha';
+import setStrokeRGBColor from './setStrokeRGBColor';
 import setTextMatrix from './setTextMatrix';
 import setTextRise from './setTextRise';
 import setWordSpacing from './setWordSpacing';

@@ -18,7 +18,7 @@ import { readdirSync } from 'fs';
 import { Document, Image } from '../../../types/DocumentRepresentation';
 import logger from '../../../utils/Logger';
 import * as DumpPdf from './DumpPdfParsr';
-import { ImageExtractor } from "./ImageExtractor";
+import { ImageExtractor } from './ImageExtractor';
 
 export class PdfminerImageExtractor extends ImageExtractor {
   private linkedDumpPdfImages: number = 0;
@@ -57,9 +57,9 @@ export class PdfminerImageExtractor extends ImageExtractor {
 
       logger.info(
         `Images Detected ${this.extractorDetectedImages} Reconstructed ${this.linkedDumpPdfImages -
-        this.mutoolMissedImages -
-        this.missedDumpPdfImages} Mutool missed ${this.mutoolMissedImages} DumpPDF missed ${
-        this.missedDumpPdfImages
+          this.mutoolMissedImages -
+          this.missedDumpPdfImages} Mutool missed ${this.mutoolMissedImages} DumpPDF missed ${
+          this.missedDumpPdfImages
         }`,
       );
     }
@@ -101,8 +101,8 @@ export class PdfminerImageExtractor extends ImageExtractor {
         } else {
           this.mutoolMissedImages++;
           logger.warn(
-            `Page ${pageIndex + 1} \(nodeId ${pageNodeId}\) image ${
-            img.refId
+            `Page ${pageIndex + 1} (nodeId ${pageNodeId}) image ${
+              img.refId
             } no extension found for file ${img.xObjId}`,
           );
         }
