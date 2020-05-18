@@ -77,6 +77,7 @@ export interface JsonElement {
   strokeOpacity?: number;
   rowspan?: number;
   colspan?: number;
+  spanDirection?: string;
   isOrdered?: boolean;
   firstItemNumber?: number;
   properties?: JsonProperties;

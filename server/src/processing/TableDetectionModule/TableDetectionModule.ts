@@ -20,6 +20,7 @@ import {
   BoundingBox,
   Document,
   Page,
+  SpannedTableCell,
   Table,
   TableCell,
   TableRow,
@@ -45,6 +46,12 @@ export interface TableExtractorResult {
   status: number;
 }
 
+type SpannedCellPosition = {
+  x: number;
+  y: number;
+  direction: 'left' | 'top' | 'right';
+};
+
 export interface TableExtractor {
   readTables(inputFile: string, options: Options): Promise<TableExtractorResult>;
 }
@@ -53,7 +60,7 @@ const defaultExtractor: TableExtractor = {
   async readTables(inputFile: string, options: Options): Promise<TableExtractorResult> {
     let pages: string = 'all';
     let flavor: string = 'lattice';
-    const lineScale: string = '70';
+    const lineScale: string = '50';
     if (options.pages.length !== 0) {
       pages = options.pages.toString();
     }
@@ -293,44 +300,88 @@ export class TableDetectionModule extends Module<Options> {
 
   private createRows(tableData: any, page: Page): TableRow[] {
     const pageWords = page.getElementsOfType<Word>(Word);
-    return tableData.cells.map(row => {
-      const tableCells: TableCell[] = this.createRowCells(row, page.box.height, pageWords);
-      const rowWidth = tableCells.map(cell => cell.box.width).reduce((a, b) => a + b, 0);
+
+    // this is used to keep track of the position of cells that are merged into another
+    const spannedCells: SpannedCellPosition[] = [];
+    return tableData.cells.map((row, rowIndex) => {
+      const tableCells: TableCell[] =
+        this.createRowCells(row, rowIndex, page.box.height, pageWords, spannedCells, tableData.cols, tableData.rows);
+      const maxRight = Math.max(...tableCells.filter(tc => !!tc.box).map(tc => tc.right));
+      const minLeft = Math.min(...tableCells.filter(tc => !!tc.box).map(tc => tc.left));
+      const minTop = Math.min(...tableCells.filter(tc => !!tc.box).map(tc => tc.top));
+      const minBottom = Math.min(...tableCells.filter(tc => !!tc.box).map(tc => tc.bottom));
+      const rowWidth = maxRight - minLeft;
+      const rowHeight = minBottom - minTop;
       return new TableRow(
         tableCells,
         new BoundingBox(
-          tableCells[0].box.left,
-          tableCells[0].box.top,
+          minLeft,
+          minTop,
           rowWidth,
-          tableCells[0].box.height,
+          rowHeight,
         ),
       );
     });
   }
 
-  private createRowCells(row: any, pageHeight: number, pageWords: Word[]): TableCell[] {
-    return row.map(col => {
-      const cellBounds = new BoundingBox(
-        col.location.x,
-        pageHeight - col.location.y,
-        col.size.width,
-        col.size.height,
-      );
-      const cell: TableCell = new TableCell(cellBounds);
-      if (col.colSpan) {
-        cell.colspan = col.colSpan;
+  private createRowCells(
+    row: any,
+    rowIndex: number,
+    pageHeight: number,
+    pageWords: Word[],
+    spannedCells: SpannedCellPosition[],
+    cols: number[][],
+    rows: number[][],
+  ): TableCell[] {
+    const cells: TableCell[] = [];
+
+    for (let colIndex = 0; colIndex < cols.length; colIndex++) {
+      // cell at (colIndex,rowIndex) is spanned, push SpannedTableCell
+      const spannedCell = spannedCells.find(sc => sc.x === colIndex && sc.y === rowIndex);
+      if (spannedCell) {
+        const [x1, x2] = cols[colIndex];
+        const [y1, y2] = rows[rowIndex].map(y => pageHeight - y);
+        const box = new BoundingBox(x1, y1, x2 - x1, y2 - y1);
+        cells.push(new SpannedTableCell(box, spannedCell.direction));
+        if (row.length < cols.length) {
+          row.splice(colIndex, 0, null);
+        }
+
+      } else {
+        const cell = row[colIndex];
+
+        // detect spanned cells based on colSpan and rowSpan of the current cell
+        [...Array(cell && cell.colSpan || 1).keys()].forEach(x => {
+          [...Array(cell && cell.rowSpan || 1).keys()].forEach(y => {
+            if (x !== 0 || y !== 0) {
+              spannedCells.push({
+                x: x + colIndex,
+                y: y + rowIndex,
+                direction: x > 0 ? 'left' : 'top',
+              });
+            }
+          });
+        });
+
+        const cellBounds = new BoundingBox(
+          cell.location.x,
+          pageHeight - cell.location.y,
+          cell.size.width,
+          cell.size.height,
+        );
+        const tableCell: TableCell = new TableCell(cellBounds);
+        tableCell.colspan = cell.colSpan;
+        tableCell.rowspan = cell.rowSpan;
+        tableCell.content = this.wordsInCellBox(cellBounds, pageWords);
+        cells.push(tableCell);
       }
-      if (col.rowSpan) {
-        cell.rowspan = col.rowSpan;
-      }
-      cell.content = this.wordsInCellBox(cellBounds, pageWords);
-      return cell;
-    });
+    }
+    return cells;
   }
 
   private wordsInCellBox(cellBounds: BoundingBox, pageWords: Word[]): Word[] {
     return pageWords.filter(
-      w => BoundingBox.getOverlap(w.box, cellBounds).box1OverlapProportion > 0.8,
+      w => BoundingBox.getOverlap(w.box, cellBounds).box1OverlapProportion > 0.75,
     );
   }
 

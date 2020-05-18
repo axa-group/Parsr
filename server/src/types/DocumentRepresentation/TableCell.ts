@@ -120,21 +120,12 @@ export class TableCell extends Element {
   }
 
   public exportAsMD(): string {
-    let output: string = '';
-    for (let i = 1; i < this.colspan; i += 1) {
-      output += '>|';
-    }
-    this.content.forEach((element, index) => {
-      if (index === 0 && this.colspan > 1) {
-        output += ' ';
-      }
-      output += element.toMarkdown();
-    });
-    return output;
+    return ` ${this.content.map(c => c.toMarkdown()).join(' ')} `;
+
   }
 
   public toString(): string {
-    return this.content.map(c => c.toString()).join(' ');
+    return ` ${this.content.map(c => c.toString()).join(' ')} `;
   }
 
   private isCenterAligned(): boolean {
