@@ -1,0 +1,5881 @@
+{
+  "metadata": [],
+  "pages": [
+    {
+      "margins": {
+        "top": -1,
+        "left": -1,
+        "bottom": -1,
+        "right": -1
+      },
+      "box": {
+        "l": 0,
+        "t": 0,
+        "w": 612,
+        "h": 792
+      },
+      "rotation": {
+        "degrees": 0,
+        "origin": {
+          "x": 0,
+          "y": 0
+        },
+        "translation": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "pageNumber": 1,
+      "elements": [
+        {
+          "id": 67,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 111.96,
+            "t": 13.74,
+            "w": 21.79,
+            "h": 12.25
+          },
+          "content": "Rate",
+          "font": 1
+        },
+        {
+          "id": 68,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 136.5,
+            "t": 13.74,
+            "w": 9.46,
+            "h": 12.25
+          },
+          "content": "of",
+          "font": 1
+        },
+        {
+          "id": 69,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 148.74,
+            "t": 13.74,
+            "w": 50.73,
+            "h": 12.25
+          },
+          "content": "Accidental",
+          "font": 1
+        },
+        {
+          "id": 70,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 202.2,
+            "t": 13.74,
+            "w": 33.43,
+            "h": 12.25
+          },
+          "content": "Deaths",
+          "font": 1
+        },
+        {
+          "id": 71,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 238.44,
+            "t": 13.74,
+            "w": 7.25,
+            "h": 12.25
+          },
+          "content": "&",
+          "font": 1
+        },
+        {
+          "id": 72,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 248.52,
+            "t": 13.74,
+            "w": 41.22,
+            "h": 12.25
+          },
+          "content": "Suicides",
+          "font": 1
+        },
+        {
+          "id": 73,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 292.56,
+            "t": 13.74,
+            "w": 17.84,
+            "h": 12.25
+          },
+          "content": "and",
+          "font": 1
+        },
+        {
+          "id": 74,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 313.2,
+            "t": 13.74,
+            "w": 51.8,
+            "h": 12.25
+          },
+          "content": "Population",
+          "font": 1
+        },
+        {
+          "id": 75,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 367.8,
+            "t": 13.74,
+            "w": 35.12,
+            "h": 12.25
+          },
+          "content": "Growth",
+          "font": 1
+        },
+        {
+          "id": 76,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 405.72,
+            "t": 13.74,
+            "w": 32.3,
+            "h": 12.25
+          },
+          "content": "During",
+          "font": 1
+        },
+        {
+          "id": 77,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 440.76,
+            "t": 13.74,
+            "w": 22.39,
+            "h": 12.25
+          },
+          "content": "1967",
+          "font": 1
+        },
+        {
+          "id": 78,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 465.9,
+            "t": 13.74,
+            "w": 9.5,
+            "h": 12.25
+          },
+          "content": "to",
+          "font": 1
+        },
+        {
+          "id": 79,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 478.14,
+            "t": 13.74,
+            "w": 22.27,
+            "h": 12.25
+          },
+          "content": "2013",
+          "font": 1
+        },
+        {
+          "id": 90,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 460.92,
+            "t": 31,
+            "w": 37.38,
+            "h": 8.47
+          },
+          "content": "Percentage",
+          "font": 2
+        },
+        {
+          "id": 101,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 461.64,
+            "t": 40.66,
+            "w": 35.81,
+            "h": 8.47
+          },
+          "content": "Population",
+          "font": 2
+        },
+        {
+          "id": 108,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 468.06,
+            "t": 50.38,
+            "w": 23.08,
+            "h": 8.47
+          },
+          "content": "growth",
+          "font": 2
+        },
+        {
+          "id": 112,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 472.44,
+            "t": 62.8,
+            "w": 8.49,
+            "h": 8.47
+          },
+          "content": "(8)",
+          "font": 2
+        },
+        {
+          "id": 123,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 184.38,
+            "t": 35.8,
+            "w": 35.82,
+            "h": 8.47
+          },
+          "content": "Population",
+          "font": 2
+        },
+        {
+          "id": 132,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 187.8,
+            "t": 45.52,
+            "w": 8.42,
+            "h": 8.47
+          },
+          "content": "(in",
+          "font": 2
+        },
+        {
+          "id": 133,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 198.17,
+            "t": 45.52,
+            "w": 18.51,
+            "h": 8.47
+          },
+          "content": "Lakh)",
+          "font": 2
+        },
+        {
+          "id": 150,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 254.4,
+            "t": 33.76,
+            "w": 35.07,
+            "h": 8.47
+          },
+          "content": "Accidental",
+          "font": 2
+        },
+        {
+          "id": 151,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 291.46,
+            "t": 33.76,
+            "w": 23.07,
+            "h": 8.47
+          },
+          "content": "Deaths",
+          "font": 2
+        },
+        {
+          "id": 161,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 242.94,
+            "t": 48.52,
+            "w": 32,
+            "h": 8.47
+          },
+          "content": "Incidence",
+          "font": 2
+        },
+        {
+          "id": 171,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 354.76,
+            "t": 48.52,
+            "w": 32,
+            "h": 8.47
+          },
+          "content": "Incidence",
+          "font": 2
+        },
+        {
+          "id": 180,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 380.29,
+            "t": 33.76,
+            "w": 28.61,
+            "h": 8.47
+          },
+          "content": "Suicides",
+          "font": 2
+        },
+        {
+          "id": 184,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 113.22,
+            "t": 35.8,
+            "w": 8.47,
+            "h": 8.47
+          },
+          "content": "Sl.",
+          "font": 2
+        },
+        {
+          "id": 188,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 111.84,
+            "t": 45.52,
+            "w": 11.11,
+            "h": 8.47
+          },
+          "content": "No.",
+          "font": 2
+        },
+        {
+          "id": 193,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 306.12,
+            "t": 48.52,
+            "w": 15.06,
+            "h": 8.47
+          },
+          "content": "Rate",
+          "font": 2
+        },
+        {
+          "id": 198,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 418.66,
+            "t": 48.52,
+            "w": 15.06,
+            "h": 8.47
+          },
+          "content": "Rate",
+          "font": 2
+        },
+        {
+          "id": 203,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.98,
+            "t": 40.66,
+            "w": 15,
+            "h": 8.47
+          },
+          "content": "Year",
+          "font": 2
+        },
+        {
+          "id": 207,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 251.76,
+            "t": 62.8,
+            "w": 8.49,
+            "h": 8.47
+          },
+          "content": "(4)",
+          "font": 2
+        },
+        {
+          "id": 211,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 306.42,
+            "t": 62.8,
+            "w": 8.49,
+            "h": 8.47
+          },
+          "content": "(5)",
+          "font": 2
+        },
+        {
+          "id": 215,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.6,
+            "t": 62.8,
+            "w": 8.49,
+            "h": 8.47
+          },
+          "content": "(6)",
+          "font": 2
+        },
+        {
+          "id": 219,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 113.22,
+            "t": 62.8,
+            "w": 8.43,
+            "h": 8.47
+          },
+          "content": "(1)",
+          "font": 2
+        },
+        {
+          "id": 223,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 149.28,
+            "t": 62.8,
+            "w": 8.43,
+            "h": 8.47
+          },
+          "content": "(2)",
+          "font": 2
+        },
+        {
+          "id": 227,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 195.12,
+            "t": 62.8,
+            "w": 8.43,
+            "h": 8.47
+          },
+          "content": "(3)",
+          "font": 2
+        },
+        {
+          "id": 231,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 418.98,
+            "t": 62.8,
+            "w": 8.49,
+            "h": 8.47
+          },
+          "content": "(7)",
+          "font": 2
+        },
+        {
+          "id": 234,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 114.54,
+            "t": 77.56,
+            "w": 5.77,
+            "h": 8.47
+          },
+          "content": "1.",
+          "font": 3
+        },
+        {
+          "id": 237,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 114.54,
+            "t": 92.2,
+            "w": 5.77,
+            "h": 8.47
+          },
+          "content": "2.",
+          "font": 3
+        },
+        {
+          "id": 240,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 114.54,
+            "t": 106.96,
+            "w": 5.77,
+            "h": 8.47
+          },
+          "content": "3.",
+          "font": 3
+        },
+        {
+          "id": 243,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 114.54,
+            "t": 121.66,
+            "w": 5.77,
+            "h": 8.47
+          },
+          "content": "4.",
+          "font": 3
+        },
+        {
+          "id": 246,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 114.54,
+            "t": 136.3,
+            "w": 5.77,
+            "h": 8.47
+          },
+          "content": "5.",
+          "font": 3
+        },
+        {
+          "id": 249,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 114.54,
+            "t": 151.06,
+            "w": 5.77,
+            "h": 8.47
+          },
+          "content": "6.",
+          "font": 3
+        },
+        {
+          "id": 252,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 114.54,
+            "t": 165.7,
+            "w": 5.77,
+            "h": 8.47
+          },
+          "content": "7.",
+          "font": 3
+        },
+        {
+          "id": 255,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 114.54,
+            "t": 180.46,
+            "w": 5.77,
+            "h": 8.47
+          },
+          "content": "8.",
+          "font": 3
+        },
+        {
+          "id": 258,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 114.54,
+            "t": 195.16,
+            "w": 5.77,
+            "h": 8.47
+          },
+          "content": "9.",
+          "font": 3
+        },
+        {
+          "id": 262,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 209.8,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "10.",
+          "font": 3
+        },
+        {
+          "id": 266,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 224.56,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "11.",
+          "font": 3
+        },
+        {
+          "id": 270,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 239.2,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "12.",
+          "font": 3
+        },
+        {
+          "id": 274,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 253.9,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "13.",
+          "font": 3
+        },
+        {
+          "id": 278,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 268.6,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "14.",
+          "font": 3
+        },
+        {
+          "id": 282,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 283.3,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "15.",
+          "font": 4
+        },
+        {
+          "id": 286,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 298.06,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "16.",
+          "font": 4
+        },
+        {
+          "id": 290,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 312.7,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "17.",
+          "font": 4
+        },
+        {
+          "id": 294,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 327.4,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "18.",
+          "font": 4
+        },
+        {
+          "id": 298,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 342.1,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "19.",
+          "font": 4
+        },
+        {
+          "id": 302,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 356.8,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "20.",
+          "font": 4
+        },
+        {
+          "id": 306,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 371.5,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "21.",
+          "font": 4
+        },
+        {
+          "id": 310,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 386.2,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "22.",
+          "font": 4
+        },
+        {
+          "id": 314,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 400.9,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "23.",
+          "font": 4
+        },
+        {
+          "id": 318,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 415.6,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "24.",
+          "font": 4
+        },
+        {
+          "id": 322,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 430.3,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "25.",
+          "font": 4
+        },
+        {
+          "id": 326,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 445,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "26.",
+          "font": 4
+        },
+        {
+          "id": 330,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 459.7,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "27.",
+          "font": 4
+        },
+        {
+          "id": 334,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 474.4,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "28.",
+          "font": 4
+        },
+        {
+          "id": 338,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 489.1,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "29.",
+          "font": 4
+        },
+        {
+          "id": 342,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 503.8,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "30.",
+          "font": 4
+        },
+        {
+          "id": 346,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 518.5,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "31.",
+          "font": 4
+        },
+        {
+          "id": 350,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 533.2,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "32.",
+          "font": 3
+        },
+        {
+          "id": 354,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 547.9,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "33.",
+          "font": 4
+        },
+        {
+          "id": 358,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 562.54,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "34.",
+          "font": 4
+        },
+        {
+          "id": 362,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 577.3,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "35.",
+          "font": 4
+        },
+        {
+          "id": 366,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 592,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "36.",
+          "font": 4
+        },
+        {
+          "id": 370,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 606.7,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "37.",
+          "font": 4
+        },
+        {
+          "id": 374,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 621.4,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "38.",
+          "font": 4
+        },
+        {
+          "id": 378,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 636.04,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "39.",
+          "font": 4
+        },
+        {
+          "id": 382,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 650.8,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "40.",
+          "font": 4
+        },
+        {
+          "id": 386,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 665.5,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "41.",
+          "font": 4
+        },
+        {
+          "id": 390,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 680.14,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "42.",
+          "font": 4
+        },
+        {
+          "id": 394,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 694.9,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "43.",
+          "font": 4
+        },
+        {
+          "id": 398,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 709.54,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "44.",
+          "font": 4
+        },
+        {
+          "id": 402,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 724.3,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "45.",
+          "font": 4
+        },
+        {
+          "id": 406,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 738.94,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "46.",
+          "font": 4
+        },
+        {
+          "id": 410,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 112.62,
+            "t": 753.64,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "47.",
+          "font": 3
+        },
+        {
+          "id": 415,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 77.56,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1967",
+          "font": 3
+        },
+        {
+          "id": 420,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 92.2,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1968",
+          "font": 3
+        },
+        {
+          "id": 425,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 106.96,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1969",
+          "font": 3
+        },
+        {
+          "id": 430,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 121.66,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1970",
+          "font": 3
+        },
+        {
+          "id": 435,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 136.3,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1971",
+          "font": 3
+        },
+        {
+          "id": 440,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 151.06,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1972",
+          "font": 3
+        },
+        {
+          "id": 445,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 165.7,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1973",
+          "font": 3
+        },
+        {
+          "id": 450,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 180.46,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1974",
+          "font": 3
+        },
+        {
+          "id": 455,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 195.16,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1975",
+          "font": 3
+        },
+        {
+          "id": 460,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 209.8,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1976",
+          "font": 3
+        },
+        {
+          "id": 465,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 224.56,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1977",
+          "font": 3
+        },
+        {
+          "id": 470,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 239.2,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1978",
+          "font": 3
+        },
+        {
+          "id": 475,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 253.9,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1979",
+          "font": 3
+        },
+        {
+          "id": 480,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 268.6,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1980",
+          "font": 3
+        },
+        {
+          "id": 485,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 283.3,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1981",
+          "font": 4
+        },
+        {
+          "id": 490,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 298.06,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1982",
+          "font": 4
+        },
+        {
+          "id": 495,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 312.7,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1983",
+          "font": 4
+        },
+        {
+          "id": 500,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 327.4,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1984",
+          "font": 4
+        },
+        {
+          "id": 505,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 342.1,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1985",
+          "font": 4
+        },
+        {
+          "id": 510,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 356.8,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1986",
+          "font": 4
+        },
+        {
+          "id": 515,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 371.5,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1987",
+          "font": 4
+        },
+        {
+          "id": 520,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 386.2,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1988",
+          "font": 4
+        },
+        {
+          "id": 525,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 400.9,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1989",
+          "font": 4
+        },
+        {
+          "id": 530,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 415.6,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1990",
+          "font": 4
+        },
+        {
+          "id": 535,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 430.3,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1991",
+          "font": 4
+        },
+        {
+          "id": 540,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 445,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1992",
+          "font": 4
+        },
+        {
+          "id": 545,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 459.7,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1993",
+          "font": 4
+        },
+        {
+          "id": 550,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 474.4,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1994",
+          "font": 4
+        },
+        {
+          "id": 555,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 489.1,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1995",
+          "font": 4
+        },
+        {
+          "id": 560,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 503.8,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1996",
+          "font": 4
+        },
+        {
+          "id": 565,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 518.5,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1997",
+          "font": 4
+        },
+        {
+          "id": 570,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 533.2,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1998",
+          "font": 3
+        },
+        {
+          "id": 575,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 547.9,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "1999",
+          "font": 4
+        },
+        {
+          "id": 580,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 562.54,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2000",
+          "font": 4
+        },
+        {
+          "id": 585,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 577.3,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2001",
+          "font": 4
+        },
+        {
+          "id": 590,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 592,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2002",
+          "font": 4
+        },
+        {
+          "id": 595,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 606.7,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2003",
+          "font": 4
+        },
+        {
+          "id": 600,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 621.4,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2004",
+          "font": 4
+        },
+        {
+          "id": 605,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 636.04,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2005",
+          "font": 4
+        },
+        {
+          "id": 610,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 650.8,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2006",
+          "font": 4
+        },
+        {
+          "id": 615,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 665.5,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2007",
+          "font": 4
+        },
+        {
+          "id": 620,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 680.14,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2008",
+          "font": 4
+        },
+        {
+          "id": 625,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 694.9,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2009",
+          "font": 4
+        },
+        {
+          "id": 630,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 709.54,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2010",
+          "font": 4
+        },
+        {
+          "id": 635,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 724.3,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2011",
+          "font": 4
+        },
+        {
+          "id": 640,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 738.94,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2012",
+          "font": 4
+        },
+        {
+          "id": 645,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 145.74,
+            "t": 753.64,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "2013",
+          "font": 3
+        },
+        {
+          "id": 650,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 77.56,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "4999",
+          "font": 3
+        },
+        {
+          "id": 655,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 92.2,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "5111",
+          "font": 3
+        },
+        {
+          "id": 660,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 106.96,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "5225",
+          "font": 3
+        },
+        {
+          "id": 665,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 121.66,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "5343",
+          "font": 3
+        },
+        {
+          "id": 670,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 136.3,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "5512",
+          "font": 3
+        },
+        {
+          "id": 675,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 151.06,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "5635",
+          "font": 3
+        },
+        {
+          "id": 680,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 165.7,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "5759",
+          "font": 3
+        },
+        {
+          "id": 685,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 180.46,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "5883",
+          "font": 3
+        },
+        {
+          "id": 690,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 195.16,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "6008",
+          "font": 3
+        },
+        {
+          "id": 695,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 209.8,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "6136",
+          "font": 3
+        },
+        {
+          "id": 700,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 224.56,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "6258",
+          "font": 3
+        },
+        {
+          "id": 705,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 239.2,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "6384",
+          "font": 3
+        },
+        {
+          "id": 710,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 253.9,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "6510",
+          "font": 3
+        },
+        {
+          "id": 715,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 268.6,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "6636",
+          "font": 3
+        },
+        {
+          "id": 720,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 283.3,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "6840",
+          "font": 4
+        },
+        {
+          "id": 725,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 298.06,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "7052",
+          "font": 4
+        },
+        {
+          "id": 730,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 312.7,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "7204",
+          "font": 4
+        },
+        {
+          "id": 735,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 327.4,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "7356",
+          "font": 4
+        },
+        {
+          "id": 740,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 342.1,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "7509",
+          "font": 4
+        },
+        {
+          "id": 745,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 356.8,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "7661",
+          "font": 4
+        },
+        {
+          "id": 750,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 371.5,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "7814",
+          "font": 4
+        },
+        {
+          "id": 755,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 386.2,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "7966",
+          "font": 4
+        },
+        {
+          "id": 760,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 400.9,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "8118",
+          "font": 4
+        },
+        {
+          "id": 765,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 415.6,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "8270",
+          "font": 4
+        },
+        {
+          "id": 770,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 430.3,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "8496",
+          "font": 4
+        },
+        {
+          "id": 775,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 445,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "8677",
+          "font": 4
+        },
+        {
+          "id": 780,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 459.7,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "8838",
+          "font": 4
+        },
+        {
+          "id": 785,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 474.4,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "8997",
+          "font": 4
+        },
+        {
+          "id": 790,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 489.1,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "9160",
+          "font": 4
+        },
+        {
+          "id": 795,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 503.8,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "9319",
+          "font": 4
+        },
+        {
+          "id": 800,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 518.5,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "9552",
+          "font": 4
+        },
+        {
+          "id": 805,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 533.2,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "9709",
+          "font": 3
+        },
+        {
+          "id": 810,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 194.52,
+            "t": 547.9,
+            "w": 15.44,
+            "h": 8.47
+          },
+          "content": "9866",
+          "font": 4
+        },
+        {
+          "id": 816,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 562.54,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "10021",
+          "font": 4
+        },
+        {
+          "id": 822,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 577.3,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "10270",
+          "font": 4
+        },
+        {
+          "id": 828,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 592,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "10506",
+          "font": 4
+        },
+        {
+          "id": 834,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 606.7,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "10682",
+          "font": 4
+        },
+        {
+          "id": 840,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 621.4,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "10856",
+          "font": 4
+        },
+        {
+          "id": 846,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 636.04,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "11028",
+          "font": 4
+        },
+        {
+          "id": 852,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 650.8,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "11198",
+          "font": 4
+        },
+        {
+          "id": 858,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 665.5,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "11366",
+          "font": 4
+        },
+        {
+          "id": 864,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 680.14,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "11531",
+          "font": 4
+        },
+        {
+          "id": 870,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 694.9,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "11694",
+          "font": 4
+        },
+        {
+          "id": 876,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 709.54,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "11858",
+          "font": 4
+        },
+        {
+          "id": 882,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 724.3,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "12102",
+          "font": 4
+        },
+        {
+          "id": 888,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 738.94,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "12134",
+          "font": 4
+        },
+        {
+          "id": 894,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 192.6,
+            "t": 753.64,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "12288",
+          "font": 3
+        },
+        {
+          "id": 901,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 77.56,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "126762",
+          "font": 3
+        },
+        {
+          "id": 908,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 92.2,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "126232",
+          "font": 3
+        },
+        {
+          "id": 915,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 106.96,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "130755",
+          "font": 3
+        },
+        {
+          "id": 922,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 121.66,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "139752",
+          "font": 3
+        },
+        {
+          "id": 929,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 136.3,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "105601",
+          "font": 3
+        },
+        {
+          "id": 936,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 151.06,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "106184",
+          "font": 3
+        },
+        {
+          "id": 943,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 165.7,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "130654",
+          "font": 3
+        },
+        {
+          "id": 950,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 180.46,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "110624",
+          "font": 3
+        },
+        {
+          "id": 957,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 195.16,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "113016",
+          "font": 3
+        },
+        {
+          "id": 964,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 209.8,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "111611",
+          "font": 3
+        },
+        {
+          "id": 971,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 224.56,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "117338",
+          "font": 3
+        },
+        {
+          "id": 978,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 239.2,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "118594",
+          "font": 3
+        },
+        {
+          "id": 985,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 253.9,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "108987",
+          "font": 3
+        },
+        {
+          "id": 992,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 268.6,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "116912",
+          "font": 3
+        },
+        {
+          "id": 999,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 283.3,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "122221",
+          "font": 4
+        },
+        {
+          "id": 1006,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 298.06,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "125993",
+          "font": 4
+        },
+        {
+          "id": 1013,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 312.7,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "128576",
+          "font": 4
+        },
+        {
+          "id": 1020,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 327.4,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "134628",
+          "font": 4
+        },
+        {
+          "id": 1027,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 342.1,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "139657",
+          "font": 4
+        },
+        {
+          "id": 1034,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 356.8,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "147023",
+          "font": 4
+        },
+        {
+          "id": 1041,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 371.5,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "152314",
+          "font": 4
+        },
+        {
+          "id": 1048,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 386.2,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "163522",
+          "font": 4
+        },
+        {
+          "id": 1055,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 400.9,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "169066",
+          "font": 4
+        },
+        {
+          "id": 1062,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 415.6,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "174401",
+          "font": 4
+        },
+        {
+          "id": 1069,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 430.3,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "188003",
+          "font": 4
+        },
+        {
+          "id": 1076,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 445,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "194910",
+          "font": 4
+        },
+        {
+          "id": 1083,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 459.7,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "192357",
+          "font": 4
+        },
+        {
+          "id": 1090,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 474.4,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "190435",
+          "font": 4
+        },
+        {
+          "id": 1097,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 489.1,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "222487",
+          "font": 4
+        },
+        {
+          "id": 1104,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.9,
+            "t": 503.8,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "220094",
+          "font": 4
+        },
+        {
+          "id": 1111,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 518.5,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "233903",
+          "font": 4
+        },
+        {
+          "id": 1118,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 533.2,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "258409",
+          "font": 3
+        },
+        {
+          "id": 1125,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 547.9,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "271918",
+          "font": 4
+        },
+        {
+          "id": 1132,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 562.54,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "255883",
+          "font": 4
+        },
+        {
+          "id": 1139,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 577.3,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "271019",
+          "font": 4
+        },
+        {
+          "id": 1146,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 592,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "260122",
+          "font": 4
+        },
+        {
+          "id": 1153,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 606.7,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "259625",
+          "font": 4
+        },
+        {
+          "id": 1160,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 621.4,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "277263",
+          "font": 4
+        },
+        {
+          "id": 1167,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 636.04,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "294175",
+          "font": 4
+        },
+        {
+          "id": 1174,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 650.8,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "314704",
+          "font": 4
+        },
+        {
+          "id": 1181,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 665.5,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "340794",
+          "font": 4
+        },
+        {
+          "id": 1188,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 680.14,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "342309",
+          "font": 4
+        },
+        {
+          "id": 1195,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 249.91,
+            "t": 694.9,
+            "w": 23.12,
+            "h": 8.47
+          },
+          "content": "357021",
+          "font": 4
+        },
+        {
+          "id": 1202,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 247.39,
+            "t": 709.54,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "384649",
+          "font": 4
+        },
+        {
+          "id": 1209,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 247.39,
+            "t": 724.3,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "390884",
+          "font": 4
+        },
+        {
+          "id": 1216,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 247.39,
+            "t": 738.94,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "394982",
+          "font": 4
+        },
+        {
+          "id": 1223,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 247.39,
+            "t": 753.64,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "400517",
+          "font": 3
+        },
+        {
+          "id": 1228,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 77.56,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "25.4",
+          "font": 3
+        },
+        {
+          "id": 1233,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 92.2,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "24.7",
+          "font": 3
+        },
+        {
+          "id": 1238,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 106.96,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "25.0",
+          "font": 3
+        },
+        {
+          "id": 1243,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 121.66,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "26.2",
+          "font": 3
+        },
+        {
+          "id": 1248,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 136.3,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "19.2",
+          "font": 3
+        },
+        {
+          "id": 1253,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 151.06,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "18.8",
+          "font": 3
+        },
+        {
+          "id": 1258,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 165.7,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "22.7",
+          "font": 3
+        },
+        {
+          "id": 1263,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 180.46,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "18.8",
+          "font": 3
+        },
+        {
+          "id": 1268,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 195.16,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "18.8",
+          "font": 3
+        },
+        {
+          "id": 1273,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 209.8,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "18.2",
+          "font": 3
+        },
+        {
+          "id": 1278,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 224.56,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "18.8",
+          "font": 3
+        },
+        {
+          "id": 1283,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 239.2,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "18.6",
+          "font": 3
+        },
+        {
+          "id": 1288,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 253.9,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "16.7",
+          "font": 3
+        },
+        {
+          "id": 1293,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 268.6,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "17.6",
+          "font": 3
+        },
+        {
+          "id": 1298,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 283.3,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "17.9",
+          "font": 4
+        },
+        {
+          "id": 1303,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 298.06,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "17.9",
+          "font": 4
+        },
+        {
+          "id": 1308,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 312.7,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "17.8",
+          "font": 4
+        },
+        {
+          "id": 1313,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 327.4,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "18.3",
+          "font": 4
+        },
+        {
+          "id": 1318,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 342.1,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "18.6",
+          "font": 4
+        },
+        {
+          "id": 1323,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 356.8,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "19.2",
+          "font": 4
+        },
+        {
+          "id": 1328,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 371.5,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "19.5",
+          "font": 4
+        },
+        {
+          "id": 1333,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 386.2,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "20.5",
+          "font": 4
+        },
+        {
+          "id": 1338,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 400.9,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "20.8",
+          "font": 4
+        },
+        {
+          "id": 1343,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 415.6,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "21.1",
+          "font": 4
+        },
+        {
+          "id": 1348,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 430.3,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "22.1",
+          "font": 4
+        },
+        {
+          "id": 1353,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 445,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "22.5",
+          "font": 4
+        },
+        {
+          "id": 1358,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 459.7,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "21.8",
+          "font": 4
+        },
+        {
+          "id": 1363,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 474.4,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "21.2",
+          "font": 4
+        },
+        {
+          "id": 1368,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 489.1,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "24.3",
+          "font": 4
+        },
+        {
+          "id": 1373,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.42,
+            "t": 503.8,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "23.6",
+          "font": 4
+        },
+        {
+          "id": 1378,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 518.5,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "24.5",
+          "font": 4
+        },
+        {
+          "id": 1383,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 533.2,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "26.6",
+          "font": 3
+        },
+        {
+          "id": 1388,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 547.9,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "27.6",
+          "font": 4
+        },
+        {
+          "id": 1393,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 562.54,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "25.5",
+          "font": 4
+        },
+        {
+          "id": 1398,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 577.3,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "26.4",
+          "font": 4
+        },
+        {
+          "id": 1403,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 592,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "24.8",
+          "font": 4
+        },
+        {
+          "id": 1408,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 606.7,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "24.3",
+          "font": 4
+        },
+        {
+          "id": 1413,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 621.4,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "25.5",
+          "font": 4
+        },
+        {
+          "id": 1418,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 636.04,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "26.7",
+          "font": 4
+        },
+        {
+          "id": 1423,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 650.8,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "28.1",
+          "font": 4
+        },
+        {
+          "id": 1428,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 665.5,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "30.0",
+          "font": 4
+        },
+        {
+          "id": 1433,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 680.14,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "29.7",
+          "font": 4
+        },
+        {
+          "id": 1438,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 694.9,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "30.5",
+          "font": 4
+        },
+        {
+          "id": 1443,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 709.54,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "32.4",
+          "font": 4
+        },
+        {
+          "id": 1448,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 724.3,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "32.3",
+          "font": 4
+        },
+        {
+          "id": 1453,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 738.94,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "32.6",
+          "font": 4
+        },
+        {
+          "id": 1458,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 309.43,
+            "t": 753.64,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "32.6",
+          "font": 3
+        },
+        {
+          "id": 1463,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 287.1,
+            "t": 768.84,
+            "w": 18.51,
+            "h": 9.43
+          },
+          "content": "(xx)",
+          "font": 5
+        },
+        {
+          "id": 1469,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 77.56,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "38829",
+          "font": 3
+        },
+        {
+          "id": 1475,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 92.2,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "40688",
+          "font": 3
+        },
+        {
+          "id": 1481,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 106.96,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "43633",
+          "font": 3
+        },
+        {
+          "id": 1487,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 121.66,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "48428",
+          "font": 3
+        },
+        {
+          "id": 1493,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 136.3,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "43675",
+          "font": 3
+        },
+        {
+          "id": 1499,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 151.06,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "43601",
+          "font": 3
+        },
+        {
+          "id": 1505,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 165.7,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "40807",
+          "font": 3
+        },
+        {
+          "id": 1511,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 180.46,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "46008",
+          "font": 3
+        },
+        {
+          "id": 1517,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 195.16,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "42890",
+          "font": 3
+        },
+        {
+          "id": 1523,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 209.8,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "41415",
+          "font": 3
+        },
+        {
+          "id": 1529,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 224.56,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "39718",
+          "font": 3
+        },
+        {
+          "id": 1535,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 239.2,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "40207",
+          "font": 3
+        },
+        {
+          "id": 1541,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 253.9,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "38217",
+          "font": 3
+        },
+        {
+          "id": 1547,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 268.6,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "41663",
+          "font": 3
+        },
+        {
+          "id": 1553,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 283.3,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "40245",
+          "font": 4
+        },
+        {
+          "id": 1559,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 298.06,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "44732",
+          "font": 4
+        },
+        {
+          "id": 1565,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 312.7,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "46579",
+          "font": 4
+        },
+        {
+          "id": 1571,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 327.4,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "50571",
+          "font": 4
+        },
+        {
+          "id": 1577,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 342.1,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "52811",
+          "font": 4
+        },
+        {
+          "id": 1583,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 356.8,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "54357",
+          "font": 4
+        },
+        {
+          "id": 1589,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 371.5,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "58568",
+          "font": 4
+        },
+        {
+          "id": 1595,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 386.2,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "64270",
+          "font": 4
+        },
+        {
+          "id": 1601,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 400.9,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "68744",
+          "font": 4
+        },
+        {
+          "id": 1607,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 415.6,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "73911",
+          "font": 4
+        },
+        {
+          "id": 1613,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 430.3,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "78450",
+          "font": 4
+        },
+        {
+          "id": 1619,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 445,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "80149",
+          "font": 4
+        },
+        {
+          "id": 1625,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 459.7,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "84244",
+          "font": 4
+        },
+        {
+          "id": 1631,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 474.4,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "89195",
+          "font": 4
+        },
+        {
+          "id": 1637,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 489.1,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "89178",
+          "font": 4
+        },
+        {
+          "id": 1643,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.65,
+            "t": 503.8,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "88241",
+          "font": 4
+        },
+        {
+          "id": 1649,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 363.66,
+            "t": 518.5,
+            "w": 19.28,
+            "h": 8.47
+          },
+          "content": "95829",
+          "font": 4
+        },
+        {
+          "id": 1656,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 533.2,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "104713",
+          "font": 3
+        },
+        {
+          "id": 1663,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 547.9,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "110587",
+          "font": 4
+        },
+        {
+          "id": 1670,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 562.54,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "108593",
+          "font": 4
+        },
+        {
+          "id": 1677,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 577.3,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "108506",
+          "font": 4
+        },
+        {
+          "id": 1684,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 592,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "110417",
+          "font": 4
+        },
+        {
+          "id": 1691,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 606.7,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "110851",
+          "font": 4
+        },
+        {
+          "id": 1698,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 621.4,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "113697",
+          "font": 4
+        },
+        {
+          "id": 1705,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 636.04,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "113914",
+          "font": 4
+        },
+        {
+          "id": 1712,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 650.8,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "118112",
+          "font": 4
+        },
+        {
+          "id": 1719,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 665.5,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "122637",
+          "font": 4
+        },
+        {
+          "id": 1726,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 680.14,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "125017",
+          "font": 4
+        },
+        {
+          "id": 1733,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 694.9,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "127151",
+          "font": 4
+        },
+        {
+          "id": 1740,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 709.54,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "134599",
+          "font": 4
+        },
+        {
+          "id": 1747,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 724.3,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "135585",
+          "font": 4
+        },
+        {
+          "id": 1754,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 738.94,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "135445",
+          "font": 4
+        },
+        {
+          "id": 1761,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 361.74,
+            "t": 753.64,
+            "w": 23.13,
+            "h": 8.47
+          },
+          "content": "134799",
+          "font": 3
+        },
+        {
+          "id": 1765,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.89,
+            "t": 77.56,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "7.8",
+          "font": 3
+        },
+        {
+          "id": 1769,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.89,
+            "t": 92.2,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "8.0",
+          "font": 3
+        },
+        {
+          "id": 1773,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.89,
+            "t": 106.96,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "8.4",
+          "font": 3
+        },
+        {
+          "id": 1777,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.89,
+            "t": 121.66,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "9.1",
+          "font": 3
+        },
+        {
+          "id": 1781,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.89,
+            "t": 136.3,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "7.9",
+          "font": 3
+        },
+        {
+          "id": 1785,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.89,
+            "t": 151.06,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "7.7",
+          "font": 3
+        },
+        {
+          "id": 1789,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.89,
+            "t": 165.7,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "7.1",
+          "font": 3
+        },
+        {
+          "id": 1793,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.89,
+            "t": 180.46,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "7.8",
+          "font": 3
+        },
+        {
+          "id": 1797,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.89,
+            "t": 195.16,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "7.1",
+          "font": 3
+        },
+        {
+          "id": 1801,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 209.8,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "6.7",
+          "font": 3
+        },
+        {
+          "id": 1805,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 224.56,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "6.3",
+          "font": 3
+        },
+        {
+          "id": 1809,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 239.2,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "6.3",
+          "font": 3
+        },
+        {
+          "id": 1813,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 253.9,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "5.9",
+          "font": 3
+        },
+        {
+          "id": 1817,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 268.6,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "6.3",
+          "font": 3
+        },
+        {
+          "id": 1821,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 283.3,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "5.9",
+          "font": 4
+        },
+        {
+          "id": 1825,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 298.06,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "6.3",
+          "font": 4
+        },
+        {
+          "id": 1829,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 312.7,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "6.5",
+          "font": 4
+        },
+        {
+          "id": 1833,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 327.4,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "6.9",
+          "font": 4
+        },
+        {
+          "id": 1837,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 342.1,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "7.0",
+          "font": 4
+        },
+        {
+          "id": 1841,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 356.8,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "7.1",
+          "font": 4
+        },
+        {
+          "id": 1845,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 371.5,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "7.5",
+          "font": 4
+        },
+        {
+          "id": 1849,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 386.2,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "8.1",
+          "font": 4
+        },
+        {
+          "id": 1853,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 400.9,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "8.5",
+          "font": 4
+        },
+        {
+          "id": 1857,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 415.6,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "8.9",
+          "font": 4
+        },
+        {
+          "id": 1861,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 430.3,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "9.2",
+          "font": 4
+        },
+        {
+          "id": 1865,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 445,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "9.2",
+          "font": 4
+        },
+        {
+          "id": 1869,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 459.7,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "9.5",
+          "font": 4
+        },
+        {
+          "id": 1873,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 474.4,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "9.9",
+          "font": 4
+        },
+        {
+          "id": 1877,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 489.1,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "9.7",
+          "font": 4
+        },
+        {
+          "id": 1881,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 423.9,
+            "t": 503.8,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "9.5",
+          "font": 4
+        },
+        {
+          "id": 1886,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.98,
+            "t": 518.5,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "10.0",
+          "font": 4
+        },
+        {
+          "id": 1891,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 533.2,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "10.8",
+          "font": 3
+        },
+        {
+          "id": 1896,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 547.9,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "11.2",
+          "font": 4
+        },
+        {
+          "id": 1901,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 562.54,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "10.8",
+          "font": 4
+        },
+        {
+          "id": 1906,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 577.3,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "10.6",
+          "font": 4
+        },
+        {
+          "id": 1911,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 592,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "10.5",
+          "font": 4
+        },
+        {
+          "id": 1916,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 606.7,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "10.4",
+          "font": 4
+        },
+        {
+          "id": 1921,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 621.4,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "10.5",
+          "font": 4
+        },
+        {
+          "id": 1926,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 636.04,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "10.3",
+          "font": 4
+        },
+        {
+          "id": 1931,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 650.8,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "10.5",
+          "font": 4
+        },
+        {
+          "id": 1936,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 665.5,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "10.8",
+          "font": 4
+        },
+        {
+          "id": 1941,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 680.14,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "10.8",
+          "font": 4
+        },
+        {
+          "id": 1946,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 694.9,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "10.9",
+          "font": 4
+        },
+        {
+          "id": 1951,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 709.54,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "11.4",
+          "font": 4
+        },
+        {
+          "id": 1956,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 724.3,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "11.2",
+          "font": 4
+        },
+        {
+          "id": 1961,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 738.94,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "11.2",
+          "font": 4
+        },
+        {
+          "id": 1966,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 421.99,
+            "t": 753.64,
+            "w": 13.45,
+            "h": 8.47
+          },
+          "content": "11.0",
+          "font": 3
+        },
+        {
+          "id": 1970,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.28,
+            "t": 77.56,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.2",
+          "font": 3
+        },
+        {
+          "id": 1974,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.28,
+            "t": 92.2,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.2",
+          "font": 3
+        },
+        {
+          "id": 1978,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.28,
+            "t": 106.96,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.2",
+          "font": 3
+        },
+        {
+          "id": 1982,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.28,
+            "t": 121.66,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.3",
+          "font": 3
+        },
+        {
+          "id": 1986,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.28,
+            "t": 136.3,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "3.2",
+          "font": 3
+        },
+        {
+          "id": 1990,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.28,
+            "t": 151.06,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.2",
+          "font": 3
+        },
+        {
+          "id": 1994,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.28,
+            "t": 165.7,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.2",
+          "font": 3
+        },
+        {
+          "id": 1998,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.28,
+            "t": 180.46,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.2",
+          "font": 3
+        },
+        {
+          "id": 2002,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.28,
+            "t": 195.16,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.1",
+          "font": 3
+        },
+        {
+          "id": 2006,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 209.8,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.1",
+          "font": 3
+        },
+        {
+          "id": 2010,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 224.56,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.0",
+          "font": 3
+        },
+        {
+          "id": 2014,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 239.2,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.0",
+          "font": 3
+        },
+        {
+          "id": 2018,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 253.9,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.0",
+          "font": 3
+        },
+        {
+          "id": 2022,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 268.6,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.9",
+          "font": 3
+        },
+        {
+          "id": 2026,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 283.3,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "3.1",
+          "font": 4
+        },
+        {
+          "id": 2030,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 298.06,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "3.1",
+          "font": 4
+        },
+        {
+          "id": 2034,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 312.7,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.2",
+          "font": 4
+        },
+        {
+          "id": 2038,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 327.4,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.1",
+          "font": 4
+        },
+        {
+          "id": 2042,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 342.1,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.1",
+          "font": 4
+        },
+        {
+          "id": 2046,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 356.8,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.0",
+          "font": 4
+        },
+        {
+          "id": 2050,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 371.5,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.0",
+          "font": 4
+        },
+        {
+          "id": 2054,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 386.2,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.9",
+          "font": 4
+        },
+        {
+          "id": 2058,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 400.9,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.9",
+          "font": 4
+        },
+        {
+          "id": 2062,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 415.6,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.9",
+          "font": 4
+        },
+        {
+          "id": 2066,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 430.3,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.7",
+          "font": 4
+        },
+        {
+          "id": 2070,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 445,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.1",
+          "font": 4
+        },
+        {
+          "id": 2074,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 459.7,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.9",
+          "font": 4
+        },
+        {
+          "id": 2078,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 474.4,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.8",
+          "font": 4
+        },
+        {
+          "id": 2082,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 489.1,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.8",
+          "font": 4
+        },
+        {
+          "id": 2086,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.29,
+            "t": 503.8,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.7",
+          "font": 4
+        },
+        {
+          "id": 2090,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 518.5,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.5",
+          "font": 4
+        },
+        {
+          "id": 2094,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 533.2,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.6",
+          "font": 3
+        },
+        {
+          "id": 2098,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 547.9,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.6",
+          "font": 4
+        },
+        {
+          "id": 2102,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 562.54,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.6",
+          "font": 4
+        },
+        {
+          "id": 2106,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 577.3,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.5",
+          "font": 4
+        },
+        {
+          "id": 2110,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 592,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.3",
+          "font": 4
+        },
+        {
+          "id": 2114,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 606.7,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.7",
+          "font": 4
+        },
+        {
+          "id": 2118,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 621.4,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.6",
+          "font": 4
+        },
+        {
+          "id": 2122,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 636.04,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.6",
+          "font": 4
+        },
+        {
+          "id": 2126,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 650.8,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.5",
+          "font": 4
+        },
+        {
+          "id": 2130,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 665.5,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.5",
+          "font": 4
+        },
+        {
+          "id": 2134,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 680.14,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.4",
+          "font": 4
+        },
+        {
+          "id": 2138,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 694.9,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.4",
+          "font": 4
+        },
+        {
+          "id": 2142,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 709.54,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.4",
+          "font": 4
+        },
+        {
+          "id": 2146,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 724.3,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "2.1",
+          "font": 4
+        },
+        {
+          "id": 2150,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 738.94,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.0",
+          "font": 4
+        },
+        {
+          "id": 2154,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 477.3,
+            "t": 753.64,
+            "w": 9.61,
+            "h": 8.47
+          },
+          "content": "1.0",
+          "font": 3
+        }
+      ]
+    }
+  ],
+  "fonts": [
+    {
+      "id": 1,
+      "name": "ArialNarrow-Bold",
+      "size": 12.25,
+      "weight": "bold",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    },
+    {
+      "id": 2,
+      "name": "ArialNarrow-Bold",
+      "size": 8.467,
+      "weight": "bold",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#800080",
+      "sizeUnit": "px"
+    },
+    {
+      "id": 3,
+      "name": "ArialNarrow",
+      "size": 8.467,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000080",
+      "sizeUnit": "px"
+    },
+    {
+      "id": 4,
+      "name": "ArialNarrow",
+      "size": 8.468,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000080",
+      "sizeUnit": "px"
+    },
+    {
+      "id": 5,
+      "name": "ArialMT",
+      "size": 9.427,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    }
+  ]
+}
