@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2020 AXA Group Operations S.A.
  *
@@ -32,7 +31,6 @@ export default {
     const d = [];
     for (let i = 0, j = 0, ii = ops.length; i < ii; i++) {
       switch (ops[i] || 0) {
-
         case 13: // moveTo
           x = args[j++];
           y = args[j++];
@@ -75,11 +73,21 @@ export default {
         case 19: // rectangle
           x = args[j++];
           y = args[j++];
-          const width = args[j++];
-          const height = args[j++];
-          const xw = x + width;
-          const yh = y + height;
-          d.push('M', pf(x), pf(y), 'L', pf(xw), pf(y), 'L', pf(xw), pf(yh), 'L', pf(x), pf(yh), 'Z');
+          d.push(
+            'M',
+            pf(x),
+            pf(y),
+            'L',
+            pf(x + args[j++]),
+            pf(y),
+            'L',
+            pf(x + args[j++]),
+            pf(y + args[j++]),
+            'L',
+            pf(x),
+            pf(y + args[j++]),
+            'Z',
+          );
           break;
       }
     }

@@ -147,7 +147,7 @@ function constructFonts(inputFonts: JsonFont[], fonts: Font[]) {
 function constructMetadataObj(inputMetadata: JsonMetadata[], d: Document) {
   inputMetadata.forEach(m => {
     switch (m.type) {
-      case 'key-value':
+      case 'key-value': {
         const allElements1: Element[] = m.elements.map(e => d.getElementById(e));
         const md1: KeyValueMetadata = new KeyValueMetadata(allElements1, {
           keyName: m.data.keyName,
@@ -156,7 +156,8 @@ function constructMetadataObj(inputMetadata: JsonMetadata[], d: Document) {
         });
         allElements1.forEach(e => e.metadata.push(md1));
         break;
-      case 'regex':
+      }
+      case 'regex': {
         const allElements2: Element[] = m.elements.map(e => d.getElementById(e));
         const md2: RegexMetadata = new RegexMetadata(allElements2, {
           regex: m.data.regkeyElemex,
@@ -166,6 +167,7 @@ function constructMetadataObj(inputMetadata: JsonMetadata[], d: Document) {
         });
         allElements2.forEach(e => e.metadata.push(md2));
         break;
+      }
     }
   });
 }
