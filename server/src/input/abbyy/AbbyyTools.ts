@@ -120,7 +120,7 @@ export class AbbyyTools extends OcrExtractorFactory {
   }
 
   protected parseAbbyyPage(pageObject: any, pageNumber: number): Promise<Page> {
-    const promise = new Promise<Page>(async (resolve, reject) => {
+    const promise = new Promise<Page>((resolve, reject) => {
       let elements: Element[] = [];
       try {
         for (const blockKey in pageObject.block) {
