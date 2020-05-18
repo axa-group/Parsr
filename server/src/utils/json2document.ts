@@ -172,7 +172,7 @@ function constructMetadataObj(inputMetadata: JsonMetadata[], d: Document) {
 
 function propertiesFromJson(propertiesObj: JsonProperties): Properties {
   const prop: Properties = {};
-  if (propertiesObj.hasOwnProperty('titleScores')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'titleScores')) {
     prop.titleScores = {
       wordHeight: propertiesObj.titleScores.wordHeight,
       size: propertiesObj.titleScores.size,
@@ -185,26 +185,26 @@ function propertiesFromJson(propertiesObj: JsonProperties): Properties {
       titleCase: propertiesObj.titleScores.titleCase,
     };
   }
-  if (propertiesObj.hasOwnProperty('order')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'order')) {
     prop.order = propertiesObj.order;
   } else {
     logger.debug(
       `the properties obj inputted does not have the order key: ${prettifyObject(propertiesObj)}`,
     );
   }
-  if (propertiesObj.hasOwnProperty('isHeader')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'isHeader')) {
     prop.isHeader = propertiesObj.isHeader;
   }
-  if (propertiesObj.hasOwnProperty('isFooter')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'isFooter')) {
     prop.isFooter = propertiesObj.isFooter;
   }
-  if (propertiesObj.hasOwnProperty('isPageNumber')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'isPageNumber')) {
     prop.isPageNumber = propertiesObj.isPageNumber;
   }
-  if (propertiesObj.hasOwnProperty('bulletList')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'bulletList')) {
     prop.bulletList = propertiesObj.bulletList;
   }
-  if (propertiesObj.hasOwnProperty('targetURL')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'targetURL')) {
     prop.targetURL = propertiesObj.targetURL;
   }
   return prop;

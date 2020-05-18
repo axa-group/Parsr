@@ -119,9 +119,9 @@ export class OperatorsManager {
 
     OperationState.state.extractImages = options && options.extractImages;
     OperationState.state.extractText =
-      !options || !options.hasOwnProperty('extractText') || options.extractText;
+      !options || !{}.hasOwnProperty.call(options, 'extractText') || options.extractText;
     OperationState.state.extractShapes =
-      !options || !options.hasOwnProperty('extractShapes') || options.extractShapes;
+      !options || !{}.hasOwnProperty.call(options, 'extractShapes') || options.extractShapes;
   }
 
   public async processOperators(pageNumber: number): Promise<Element[]> {
@@ -295,11 +295,15 @@ export class OperatorsManager {
       }
       if (lines.length > 0) {
         lines.forEach(line => {
-          line.fillOpacity = pathElem.hasOwnProperty('fillOpacity') ? pathElem.fillOpacity : 1;
-          line.strokeOpacity = pathElem.hasOwnProperty('strokeOpacity')
+          line.fillOpacity = {}.hasOwnProperty.call(pathElem, 'fillOpacity')
+            ? pathElem.fillOpacity
+            : 1;
+          line.strokeOpacity = {}.hasOwnProperty.call(pathElem, 'strokeOpacity')
             ? pathElem.strokeOpacity
             : 1;
-          line.thickness = pathElem.hasOwnProperty('strokeWidth') ? pathElem.strokeWidth : 1;
+          line.thickness = {}.hasOwnProperty.call(pathElem, 'strokeWidth')
+            ? pathElem.strokeWidth
+            : 1;
         });
       }
     }
