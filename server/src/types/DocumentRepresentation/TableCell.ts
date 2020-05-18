@@ -120,7 +120,10 @@ export class TableCell extends Element {
   }
 
   public exportAsMD(): string {
-    return ` ${this.content.map(c => c.toMarkdown()).join(' ')} `;
+    if (this.content.length === 0) {
+      return '';
+    }
+    return ` ${this.content.map(c => c.toMarkdown()).join(' ').split('\n').join('')} `;
 
   }
 

@@ -60,7 +60,7 @@ const defaultExtractor: TableExtractor = {
   async readTables(inputFile: string, options: Options): Promise<TableExtractorResult> {
     let pages: string = 'all';
     let flavor: string = 'lattice';
-    const lineScale: string = '50';
+    const lineScale: string = '70';
     if (options.pages.length !== 0) {
       pages = options.pages.toString();
     }
@@ -349,31 +349,32 @@ export class TableDetectionModule extends Module<Options> {
 
       } else {
         const cell = row[colIndex];
-
-        // detect spanned cells based on colSpan and rowSpan of the current cell
-        [...Array(cell && cell.colSpan || 1).keys()].forEach(x => {
-          [...Array(cell && cell.rowSpan || 1).keys()].forEach(y => {
-            if (x !== 0 || y !== 0) {
-              spannedCells.push({
-                x: x + colIndex,
-                y: y + rowIndex,
-                direction: x > 0 ? 'left' : 'top',
-              });
-            }
+        if (cell) {
+          // detect spanned cells based on colSpan and rowSpan of the current cell
+          [...Array(cell.colSpan || 1).keys()].forEach(x => {
+            [...Array(cell.rowSpan || 1).keys()].forEach(y => {
+              if (x !== 0 || y !== 0) {
+                spannedCells.push({
+                  x: x + colIndex,
+                  y: y + rowIndex,
+                  direction: x > 0 ? 'left' : 'top',
+                });
+              }
+            });
           });
-        });
 
-        const cellBounds = new BoundingBox(
-          cell.location.x,
-          pageHeight - cell.location.y,
-          cell.size.width,
-          cell.size.height,
-        );
-        const tableCell: TableCell = new TableCell(cellBounds);
-        tableCell.colspan = cell.colSpan;
-        tableCell.rowspan = cell.rowSpan;
-        tableCell.content = this.wordsInCellBox(cellBounds, pageWords);
-        cells.push(tableCell);
+          const cellBounds = new BoundingBox(
+            cell.location.x,
+            pageHeight - cell.location.y,
+            cell.size.width,
+            cell.size.height,
+          );
+          const tableCell: TableCell = new TableCell(cellBounds);
+          tableCell.colspan = cell.colSpan;
+          tableCell.rowspan = cell.rowSpan;
+          tableCell.content = this.wordsInCellBox(cellBounds, pageWords);
+          cells.push(tableCell);
+        }
       }
     }
     return cells;
