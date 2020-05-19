@@ -26,7 +26,7 @@ export function extractImagesAndFonts(pdfInputFile: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     CommandExecuter.mutoolExtract(pdfInputFile)
       .then(assetsFolder => {
-        const ttfRegExp = /^[A-Z]{6}\+(.*)\-[0-9]+\.ttf$/;
+        const ttfRegExp = /^[A-Z]{6}\+(.*)-[0-9]+\.ttf$/;
         fs.readdirSync(assetsFolder).forEach(file => {
           const match = file.match(ttfRegExp);
           if (match) {

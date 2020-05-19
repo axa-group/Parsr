@@ -17,7 +17,7 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import * as pdfjsLib from 'pdfjs-dist';
-import { BoundingBox, Element, Font, Image, Word } from "../../types/DocumentRepresentation";
+import { BoundingBox, Element, Font, Image, Word } from '../../types/DocumentRepresentation';
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import { SvgShape } from '../../types/DocumentRepresentation/SvgShape';
 import logger from '../../utils/Logger';
@@ -52,19 +52,19 @@ type TextSpan = {
 };
 
 type TextElement = {
-  tspan: TextSpan,
+  tspan: TextSpan;
   transform: {
     position: {
       x: number;
       y: number;
-    },
+    };
     scale: {
       x: number;
       y: number;
-    },
+    };
     matrix: string;
     matrixArray: number[];
-  },
+  };
 };
 
 type ImageElement = {
@@ -118,8 +118,10 @@ export class OperatorsManager {
     this.assetsFolder = options && options.assetsFolder;
 
     OperationState.state.extractImages = options && options.extractImages;
-    OperationState.state.extractText = !options || !options.hasOwnProperty('extractText') || options.extractText;
-    OperationState.state.extractShapes = !options || !options.hasOwnProperty('extractShapes') || options.extractShapes;
+    OperationState.state.extractText =
+      !options || !{}.hasOwnProperty.call(options, 'extractText') || options.extractText;
+    OperationState.state.extractShapes =
+      !options || !{}.hasOwnProperty.call(options, 'extractShapes') || options.extractShapes;
   }
 
   public async processOperators(pageNumber: number): Promise<Element[]> {
@@ -164,7 +166,10 @@ export class OperatorsManager {
   }
 
   private parseTextElement(textElem: TextElement, parsedElements: Word[]) {
-    const pageTransform = Util.transform(this.viewport.transform, OperationState.state.transformMatrix);
+    const pageTransform = Util.transform(
+      this.viewport.transform,
+      OperationState.state.transformMatrix,
+    );
     const transform = matrixToCoords(Util.transform(pageTransform, textElem.transform.matrixArray));
     const scaleX = transform.scale.x;
     const scaleY = transform.scale.y;
@@ -202,7 +207,7 @@ export class OperatorsManager {
             Math.round(currentWord.top) === Math.round(previousElement.top)
           ) {
             parsedElements.push(previousElement.join(currentWord));
-          } else if (!!previousElement) {
+          } else if (previousElement !== undefined) {
             parsedElements.push(previousElement, currentWord);
           } else {
             parsedElements.push(currentWord);
@@ -218,7 +223,10 @@ export class OperatorsManager {
     const { x: width, y: height } = transform.scale;
 
     const imageCount = parsedElements.filter(e => e instanceof Image).length.toString();
-    const xObjId = pageNumber.toString().concat('_', imageCount).padStart(4, '0');
+    const xObjId = pageNumber
+      .toString()
+      .concat('_', imageCount)
+      .padStart(4, '0');
     const xObjExt = 'png';
 
     const imagePath = join(this.assetsFolder, `img-${xObjId}.${xObjExt}`);
@@ -251,7 +259,7 @@ export class OperatorsManager {
     let pathFirstX = posX + parseFloat(pathInstructions[1]) * scaleX;
     let pathFirstY = posY + parseFloat(pathInstructions[2]) * scaleY;
 
-    for (let i = 0; i < pathInstructions.length;) {
+    for (let i = 0; i < pathInstructions.length; ) {
       const cmd = pathInstructions[i++];
       switch (cmd) {
         case 'M':
@@ -287,9 +295,15 @@ export class OperatorsManager {
       }
       if (lines.length > 0) {
         lines.forEach(line => {
-          line.fillOpacity = pathElem.hasOwnProperty('fillOpacity') ? pathElem.fillOpacity : 1;
-          line.strokeOpacity = pathElem.hasOwnProperty('strokeOpacity') ? pathElem.strokeOpacity : 1;
-          line.thickness = pathElem.hasOwnProperty('strokeWidth') ? pathElem.strokeWidth : 1;
+          line.fillOpacity = {}.hasOwnProperty.call(pathElem, 'fillOpacity')
+            ? pathElem.fillOpacity
+            : 1;
+          line.strokeOpacity = {}.hasOwnProperty.call(pathElem, 'strokeOpacity')
+            ? pathElem.strokeOpacity
+            : 1;
+          line.thickness = {}.hasOwnProperty.call(pathElem, 'strokeWidth')
+            ? pathElem.strokeWidth
+            : 1;
         });
       }
     }

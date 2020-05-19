@@ -25,11 +25,10 @@ import { Module } from '../Module';
 export class DrawingDetectionModule extends Module {
   public static moduleName = 'drawing-detection';
 
-  public async main(doc: Document): Promise<Document> {
-
+  public main(doc: Document): Promise<Document> {
     if (doc.getElementsOfType<Drawing>(Drawing).length > 0) {
       logger.warn('Document already has Drawings. Skipping...');
-      return doc;
+      return Promise.resolve(doc);
     }
 
     doc.pages.forEach(page => {
@@ -43,11 +42,10 @@ export class DrawingDetectionModule extends Module {
       page.elements.push(...drawings);
     });
     logger.info(`${doc.getElementsOfType<Drawing>(Drawing).length} drawings found on document.`);
-    return doc;
+    return Promise.resolve(doc);
   }
 
   private groupShapesIntoDrawings(svgLines: SvgLine[], box: BoundingBox, foundDrawings: Drawing[]) {
-
     const { columns, rows } = this.groupLines(svgLines, box);
 
     if (columns.length > 1) {
@@ -71,8 +69,10 @@ export class DrawingDetectionModule extends Module {
     }
   }
 
-  private groupLines(svgLines: SvgLine[], box: BoundingBox): { columns: SvgLine[][], rows: SvgLine[][] } {
-
+  private groupLines(
+    svgLines: SvgLine[],
+    box: BoundingBox,
+  ): { columns: SvgLine[][]; rows: SvgLine[][] } {
     // vertical line
     const vControlLine = new SvgLine(null, 1, box.left, box.top, box.left, box.bottom);
     const groupedColumns = this.processGroup(svgLines, box, vControlLine);
@@ -107,10 +107,11 @@ export class DrawingDetectionModule extends Module {
     // if controlLine is horizontal, the sweep is done from top to bottom
     const type = controlLine.isVertical() ? 'h' : 'v';
     while (
-      (type === 'v' ? controlLine.toY : controlLine.toX)
-      < (type === 'v' ? box.height : box.width)
+      (type === 'v' ? controlLine.toY : controlLine.toX) < (type === 'v' ? box.height : box.width)
     ) {
-      const intersectingLines = lines.filter(l => controlLine.intersects(l) || this.controlLineIsOver(l, controlLine));
+      const intersectingLines = lines.filter(
+        l => controlLine.intersects(l) || this.controlLineIsOver(l, controlLine),
+      );
       if (intersectingLines.length > 0) {
         const unusedLines = intersectingLines.filter(l => !processedLineIds.includes(l.id));
         if (unusedLines.length > 0) {
@@ -127,10 +128,7 @@ export class DrawingDetectionModule extends Module {
       }
 
       // at the end of each iteration, move the control line
-      controlLine.move(
-        type === 'v' ? 0 : 1,
-        type === 'v' ? 1 : 0,
-      );
+      controlLine.move(type === 'v' ? 0 : 1, type === 'v' ? 1 : 0);
     }
 
     if (currentLineGroup.length > 0) {
@@ -145,8 +143,13 @@ export class DrawingDetectionModule extends Module {
    * this avoids controlLine to jump over the line without detecting it
    */
   private controlLineIsOver(line: SvgLine, controlLine: SvgLine): boolean {
-    const is1pxAroundLineX = controlLine.fromX + 0.5 >= line.fromX && controlLine.fromX - 0.5 <= line.fromX;
-    const is1pxAroundLineY = controlLine.fromY + 0.5 >= line.fromY && controlLine.fromY - 0.5 <= line.fromY;
-    return (controlLine.isVertical() && is1pxAroundLineX) || (controlLine.isHorizontal() && is1pxAroundLineY);
+    const is1pxAroundLineX =
+      controlLine.fromX + 0.5 >= line.fromX && controlLine.fromX - 0.5 <= line.fromX;
+    const is1pxAroundLineY =
+      controlLine.fromY + 0.5 >= line.fromY && controlLine.fromY - 0.5 <= line.fromY;
+    return (
+      (controlLine.isVertical() && is1pxAroundLineX) ||
+      (controlLine.isHorizontal() && is1pxAroundLineY)
+    );
   }
 }

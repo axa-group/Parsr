@@ -77,7 +77,7 @@ export abstract class OcrExtractorFactory extends OcrExtractor {
     return fileType !== null && fileType.ext.toLowerCase() === 'pdf';
   }
 
-  protected async correctImageForRotation(srcImg: string): Promise<RotationCorrection> {
+  protected correctImageForRotation(srcImg: string): Promise<RotationCorrection> {
     const correctionInfo: RotationCorrection = {
       fileName: srcImg,
       degrees: 0,

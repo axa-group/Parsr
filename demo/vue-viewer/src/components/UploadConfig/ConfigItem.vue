@@ -113,8 +113,8 @@ export default {
     optionIsSlider(option) {
       return (
         this.itemOptions[option].range &&
-        this.itemOptions[option].range.hasOwnProperty('min') &&
-        this.itemOptions[option].range.hasOwnProperty('max')
+        {}.hasOwnProperty.call(this.itemOptions[option].range, 'min') &&
+        {}.hasOwnProperty.call(this.itemOptions[option].range, 'max')
       );
     },
     readmeLink(module) {

@@ -72,8 +72,8 @@ export class Paragraph extends Text {
 
   public toSimpleJSON(): any {
     return {
-      type : 'paragraph',
-      content : this.export('simple'),
+      type: 'paragraph',
+      content: this.export('simple'),
     };
   }
 

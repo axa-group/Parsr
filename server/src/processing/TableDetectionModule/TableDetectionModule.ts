@@ -57,7 +57,7 @@ export interface TableExtractor {
 }
 
 const defaultExtractor: TableExtractor = {
-  async readTables(inputFile: string, options: Options): Promise<TableExtractorResult> {
+  readTables(inputFile: string, options: Options): Promise<TableExtractorResult> {
     let pages: string = 'all';
     let flavor: string = 'lattice';
     const lineScale: string = '64';
@@ -156,7 +156,7 @@ export class TableDetectionModule extends Module<Options> {
       table.content = this.joinCellsByContent(table.content, tableData.content);
     }
 
-    if (!this.isFalseTable(table, page)) {
+    if (!this.isFalseTable(table)) {
       page.elements = page.elements.concat(table);
     }
   }
@@ -253,7 +253,7 @@ export class TableDetectionModule extends Module<Options> {
     return mergeCandidateCells;
   }
 
-  private isFalseTable(table: Table, _page: Page): boolean {
+  private isFalseTable(table: Table): boolean {
     const isFalse = table.content.some((_, index) => !this.existAdjacentRow(index, table));
     const only1Row = table.content.length === 1;
 

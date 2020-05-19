@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2020 AXA Group Operations S.A.
  *
@@ -69,7 +68,7 @@ export default {
         case 'FL':
           break;
         default:
-          logger.debug("WARN ==> Unimplemented graphic state operator ".concat(key));
+          logger.debug('WARN ==> Unimplemented graphic state operator '.concat(key));
           break;
       }
     });

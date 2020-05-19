@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Document } from "../../../types/DocumentRepresentation";
+import { Document } from '../../../types/DocumentRepresentation';
 
 export abstract class ImageExtractor {
   public abstract async run(doc: Document): Promise<void>;

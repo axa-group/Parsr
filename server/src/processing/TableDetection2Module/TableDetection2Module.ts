@@ -19,7 +19,7 @@ import * as CommandExecuter from '../../utils/CommandExecuter';
 import { Options, TableDetectionModule, TableExtractor, TableExtractorResult } from '../TableDetectionModule/TableDetectionModule';
 
 const tabulaExtractor: TableExtractor = {
-  async readTables(inputFile: string, options: Options): Promise<TableExtractorResult> {
+  readTables(inputFile: string, options: Options): Promise<TableExtractorResult> {
     let pages: string = 'all';
     if (options.pages.length !== 0) {
       pages = options.pages.toString();
@@ -47,7 +47,7 @@ export class TableDetection2Module extends TableDetectionModule {
     super(options);
   }
 
-  public async main(doc: Document): Promise<Document> {
+  public main(doc: Document): Promise<Document> {
     super.setExtractor(tabulaExtractor);
     return super.main(doc);
   }
