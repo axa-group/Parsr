@@ -191,7 +191,7 @@ export class Cleaner {
           this.modules[i].options,
         )}`,
       );
-      console.log('Server');
+
       const startTime: number = Date.now();
       return this.modules[i].run(document, config).then((doc: Document) => {
         const endTime: number = (Date.now() - startTime) / 1000;

@@ -41,7 +41,6 @@ export class FileManager {
   }
 
   public getCsvFilePath(docId: string, page: number, table: number) {
-    console.log('API');
     const binder: Binder = this.getBinder(docId);
 
     const absPath: string = path.resolve(
