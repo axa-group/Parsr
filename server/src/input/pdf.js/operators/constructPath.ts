@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+/* eslint-disable no-case-declarations */
 import logger from '../../../utils/Logger';
 import { OperationState } from '../OperationState';
 import { pf } from './helper';
@@ -73,21 +74,22 @@ export default {
         case 19: // rectangle
           x = args[j++];
           y = args[j++];
+          const w = args[j++];
+          const h = args[j++];
           d.push(
             'M',
             pf(x),
             pf(y),
             'L',
-            pf(x + args[j++]),
+            pf(x + w),
             pf(y),
             'L',
-            pf(x + args[j++]),
-            pf(y + args[j++]),
+            pf(x + w),
+            pf(y + h),
             'L',
             pf(x),
-            pf(y + args[j++]),
-            'Z',
-          );
+            pf(y + h), 'Z');
+
           break;
       }
     }
