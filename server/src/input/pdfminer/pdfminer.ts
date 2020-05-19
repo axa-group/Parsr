@@ -236,8 +236,9 @@ function getPage(pageObj: PdfminerPage): Page {
   // treat svg lines and rectangles
   if (pageObj.shapes !== undefined) {
     pageObj.shapes.forEach(shape => {
-      const shapes = pdfminerShapeToSvgShapes(shape, pageBBox.height)
-        .filter(l => filterPerimeterLines(l, pageBBox));
+      const shapes = pdfminerShapeToSvgShapes(shape, pageBBox.height).filter(l =>
+        filterPerimeterLines(l, pageBBox),
+      );
       elements.push(...shapes);
     });
   }
@@ -265,10 +266,38 @@ function pdfminerShapeToSvgShapes(shape: PdfminerShape, pageHeight: number): Svg
   const drawingContent: SvgLine[] = [];
   if (shape.type === 'rect') {
     drawingContent.push(
-      new SvgLine(drawingBox, thickness, drawingBox.left, drawingBox.top, drawingBox.right, drawingBox.top),
-      new SvgLine(drawingBox, thickness, drawingBox.right, drawingBox.top, drawingBox.right, drawingBox.bottom),
-      new SvgLine(drawingBox, thickness, drawingBox.right, drawingBox.bottom, drawingBox.left, drawingBox.bottom),
-      new SvgLine(drawingBox, thickness, drawingBox.left, drawingBox.bottom, drawingBox.left, drawingBox.top),
+      new SvgLine(
+        drawingBox,
+        thickness,
+        drawingBox.left,
+        drawingBox.top,
+        drawingBox.right,
+        drawingBox.top,
+      ),
+      new SvgLine(
+        drawingBox,
+        thickness,
+        drawingBox.right,
+        drawingBox.top,
+        drawingBox.right,
+        drawingBox.bottom,
+      ),
+      new SvgLine(
+        drawingBox,
+        thickness,
+        drawingBox.right,
+        drawingBox.bottom,
+        drawingBox.left,
+        drawingBox.bottom,
+      ),
+      new SvgLine(
+        drawingBox,
+        thickness,
+        drawingBox.left,
+        drawingBox.bottom,
+        drawingBox.left,
+        drawingBox.top,
+      ),
     );
   }
 
@@ -303,7 +332,9 @@ function pdfminerShapeToSvgShapes(shape: PdfminerShape, pageHeight: number): Svg
     const lastToY = pageHeight - pts[pts.length - 1];
 
     if (firstFromX !== lastToX || firstFromY !== lastToY) {
-      drawingContent.push(new SvgLine(drawingBox, thickness, lastToX, lastToY, firstFromX, firstFromY));
+      drawingContent.push(
+        new SvgLine(drawingBox, thickness, lastToX, lastToY, firstFromX, firstFromY),
+      );
     }
   }
 
@@ -530,9 +561,9 @@ function breakLineIntoWords(
 
   return wMode
     ? words.map(w => {
-      w.properties.writeMode = wMode;
-      return w;
-    })
+        w.properties.writeMode = wMode;
+        return w;
+      })
     : words;
 }
 
