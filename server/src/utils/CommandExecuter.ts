@@ -231,7 +231,7 @@ export function dumpPdf(filePath: string): Promise<string> {
   const dumpAarguments = ['-a', '-o', xmlOutputFile, filePath];
   const key = `dumppdf -a -o <outfile> ${filePath}`;
   if (Cache.has(key)) {
-    return Cache.get(key);
+    return Promise.resolve(Cache.get(key));
   }
   return run(COMMANDS.DUMPPDF, dumpAarguments).then(() => {
     logger.info(`PdfMiner dumppdf.py succeed --> ${xmlOutputFile}`);
