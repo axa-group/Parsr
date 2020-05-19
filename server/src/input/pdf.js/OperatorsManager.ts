@@ -207,7 +207,7 @@ export class OperatorsManager {
             Math.round(currentWord.top) === Math.round(previousElement.top)
           ) {
             parsedElements.push(previousElement.join(currentWord));
-          } else if (!!previousElement) {
+          } else if (previousElement !== undefined) {
             parsedElements.push(previousElement, currentWord);
           } else {
             parsedElements.push(currentWord);
