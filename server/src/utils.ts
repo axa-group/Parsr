@@ -326,7 +326,7 @@ export function removeNull(page: Page): Page {
   if (page.elements.length - newElements.length !== 0) {
     logger.debug(
       `Null elements removed for page #${page.pageNumber}: ${page.elements.length -
-      newElements.length}`,
+        newElements.length}`,
     );
     page.elements = newElements;
   }
@@ -360,11 +360,11 @@ export function getPageRegex(): RegExp {
 
   const pageRegex = new RegExp(
     `^(?:` +
-    `(?:${pagePrefix}${pageNumber})|` +
-    `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
-    `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
-    `(?:${before}${pageNumber}${after})` +
-    `)$`,
+      `(?:${pagePrefix}${pageNumber})|` +
+      `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
+      `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
+      `(?:${before}${pageNumber}${after})` +
+      `)$`,
     'i',
   );
 
@@ -760,8 +760,9 @@ export function sanitizeXML(xmlPath: string): Promise<string> {
   const startTime: number = Date.now();
   return new Promise<any>((resolve, _reject) => {
     try {
-      // repplace with empty char everything forbidden by XML 1.0 specifications,
+      // replace with empty char everything forbidden by XML 1.0 specifications,
       // plus the unicode replacement character U+FFFD
+      // eslint-disable-next-line no-control-regex
       const regex = /((?:[\0-\x08\x0B\f\x0E-\x1F\uFFFD\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]|(?:&#\d*;)))/g;
       const xml: string = fs.readFileSync(xmlPath, 'utf-8');
       const outputFilePath = getTemporaryFile('.xml');
@@ -777,11 +778,13 @@ export function sanitizeXML(xmlPath: string): Promise<string> {
 
 // each value should be a number between 0 and 255
 export function rgbToHex(r: number, g: number, b: number) {
-  return '#' +
+  return (
+    '#' +
     [r, g, b]
       .map(x => {
         const hex = Math.ceil(x).toString(16);
         return hex.length === 1 ? '0' + hex : hex;
       })
-      .join('');
+      .join('')
+  );
 }
