@@ -33,7 +33,7 @@ export class Module<T = undefined> {
     const specsKeys = [];
     const optKeys = [];
 
-    if (defaultOptions && defaultOptions.hasOwnProperty('specs')) {
+    if (defaultOptions && {}.hasOwnProperty.call(defaultOptions, 'specs')) {
       const spec = 'specs';
       Object.keys(defaultOptions[spec]).forEach(key => {
         specsKeys.push(key);
@@ -61,7 +61,7 @@ export class Module<T = undefined> {
         if (i < optKeys.length && !specsKeys.includes(optKeys[i])) {
           logger.info("The key '" + optKeys[i] + "' is misspelled or unknown.");
         }
-        if (options && options.hasOwnProperty(key)) {
+        if (options && {}.hasOwnProperty.call(options, key)) {
           mergedOptions[key] = options[key];
         } else {
           logger.info(

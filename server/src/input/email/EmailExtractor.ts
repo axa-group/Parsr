@@ -61,28 +61,24 @@ export class EmailExtractor extends Extractor {
       }
       </style>
     `;
-    try {
-      const data = readFileSync(inputFile);
-      const raw = await simpleParser(data);
-      const mainPDF = convertHTMLToPDF((raw.html || '').concat(styles));
-      const pdfFilesToJoin: Array<Promise<string>> = [
-        mainPDF,
-        ...(raw.attachments || []).map(this.attachmentToPDF.bind(this)(raw.html)),
-      ].filter(f => !!f);
+    const data = readFileSync(inputFile);
+    const raw = await simpleParser(data);
+    const mainPDF = convertHTMLToPDF((raw.html || '').concat(styles));
+    const pdfFilesToJoin: Array<Promise<string>> = [
+      mainPDF,
+      ...(raw.attachments || []).map(this.attachmentToPDF.bind(this)(raw.html)),
+    ].filter(f => !!f);
 
-      const files = (await Promise.all(pdfFilesToJoin)).filter(f => !!f);
-      const fullPDF = inputFile.replace('.eml', '-tmp.pdf');
-      await mergePDFs(files, fullPDF);
-      return fullPDF;
-    } catch (e) {
-      throw e;
-    }
+    const files = (await Promise.all(pdfFilesToJoin)).filter(f => !!f);
+    const fullPDF = inputFile.replace('.eml', '-tmp.pdf');
+    await mergePDFs(files, fullPDF);
+    return fullPDF;
   }
 
   private attachmentToPDF(rawHTML: string): (data: MailAttachmentData) => Promise<string> {
-    return async (attachment: MailAttachmentData): Promise<string> => {
+    return (attachment: MailAttachmentData): Promise<string> => {
       if (attachment.contentType === 'application/pdf') {
-        return this.pdfAttachmentToPDF(attachment);
+        return Promise.resolve(this.pdfAttachmentToPDF(attachment));
       }
 
       if (attachment.contentType.startsWith('image/')) {
@@ -93,16 +89,13 @@ export class EmailExtractor extends Extractor {
     };
   }
 
-  private async pdfAttachmentToPDF(attachment: MailAttachmentData): Promise<string> {
+  private pdfAttachmentToPDF(attachment: MailAttachmentData): string {
     const outputFilePath = getTemporaryFile('.pdf');
     writeFileSync(outputFilePath, attachment.content);
     return outputFilePath;
   }
 
-  private async imageAttachmentToPDF(
-    attachment: MailAttachmentData,
-    rawHTML: string,
-  ): Promise<string> {
+  private imageAttachmentToPDF(attachment: MailAttachmentData, rawHTML: string): Promise<string> {
     // const outputFilePath = getTemporaryFile('.pdf');
     /*
       if the attached image is represented in the HTML body as a base64-encoded img

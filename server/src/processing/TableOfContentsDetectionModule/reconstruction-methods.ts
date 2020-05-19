@@ -16,7 +16,11 @@
 
 import { BoundingBox, TableOfContentsItem } from './../../types/DocumentRepresentation';
 
-export function reconstructTOCItem(text: string, bbox: BoundingBox, pageKeywords: string[]): TableOfContentsItem {
+export function reconstructTOCItem(
+  text: string,
+  bbox: BoundingBox,
+  pageKeywords: string[],
+): TableOfContentsItem {
   return Object.values(reconstructionMethods)
     .map(method => method(text, bbox, pageKeywords))
     .filter(r => !!r)[0];
@@ -29,22 +33,21 @@ const reconstructionMethods = {
     const matches = new RegExp(regexp, 'gi').exec(text);
     if (matches) {
       const [, pageNum, description] = matches;
-      return new TableOfContentsItem(
-        bbox,
-        description ? description.trim() : '',
-        pageNum,
-      );
+      return new TableOfContentsItem(bbox, description ? description.trim() : '', pageNum);
     }
     return null;
   },
   // <section?> <description> <page as roman numbers?>
   method_2: (text: string, bbox: BoundingBox): TableOfContentsItem => {
-    const matches = new RegExp(/^([\d\.]*)(.*) ([ivxlcdm]*)$/i).exec(text);
+    const matches = new RegExp(/^([\d.]*)(.*) ([ivxlcdm]*)$/i).exec(text);
     if (matches) {
       const [, section, description, pageNum] = matches;
       return new TableOfContentsItem(
         bbox,
-        [section, description].filter(c => !!c).map(c => c.trim()).join(' '),
+        [section, description]
+          .filter(c => !!c)
+          .map(c => c.trim())
+          .join(' '),
         pageNum,
         // TOC item level is based on the amount of dots in the section number
         section ? (section.match(/\./g) || []).length : 0,
@@ -54,12 +57,15 @@ const reconstructionMethods = {
   },
   // <section?> <description> <page number?>
   method_3: (text: string, bbox: BoundingBox): TableOfContentsItem => {
-    const matches = new RegExp(/^([\d\.]*)(.*) ([\d\-]*)$/).exec(text);
+    const matches = new RegExp(/^([\d.]*)(.*) ([\d-]*)$/).exec(text);
     if (matches) {
       const [, section, description, pageNum] = matches;
       return new TableOfContentsItem(
         bbox,
-        [section, description].filter(c => !!c).map(c => c.trim()).join(' '),
+        [section, description]
+          .filter(c => !!c)
+          .map(c => c.trim())
+          .join(' '),
         pageNum,
         // TOC item level is based on the amount of dots in the section number
         section ? (section.match(/\./g) || []).length : 0,

@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2020 AXA Group Operations S.A.
  *
@@ -15,6 +14,7 @@
  * limitations under the License.
  */
 
+/* eslint-disable no-case-declarations */
 import logger from '../../../utils/Logger';
 import { OperationState } from '../OperationState';
 import { pf } from './helper';
@@ -32,7 +32,6 @@ export default {
     const d = [];
     for (let i = 0, j = 0, ii = ops.length; i < ii; i++) {
       switch (ops[i] || 0) {
-
         case 13: // moveTo
           x = args[j++];
           y = args[j++];
@@ -75,11 +74,22 @@ export default {
         case 19: // rectangle
           x = args[j++];
           y = args[j++];
-          const width = args[j++];
-          const height = args[j++];
-          const xw = x + width;
-          const yh = y + height;
-          d.push('M', pf(x), pf(y), 'L', pf(xw), pf(y), 'L', pf(xw), pf(yh), 'L', pf(x), pf(yh), 'Z');
+          const w = args[j++];
+          const h = args[j++];
+          d.push(
+            'M',
+            pf(x),
+            pf(y),
+            'L',
+            pf(x + w),
+            pf(y),
+            'L',
+            pf(x + w),
+            pf(y + h),
+            'L',
+            pf(x),
+            pf(y + h), 'Z');
+
           break;
       }
     }

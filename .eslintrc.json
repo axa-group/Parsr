@@ -1,0 +1,45 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": ["plugin:vue/essential", "eslint:recommended"],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "parser": "@typescript-eslint/parser",
+    "sourceType": "module"
+  },
+  "plugins": ["vue", "@typescript-eslint"],
+  "rules": {
+    "semi": [2, "always"],
+    "space-before-function-paren": [2, "never"],
+    "comma-style": [2, "last"],
+    "comma-dangle": [2, "always-multiline"],
+    "quotes": [2, "single", { "allowTemplateLiterals": true, "avoidEscape": true }],
+    "no-unused-vars": [2, { "varsIgnorePattern": "^[A-Z]", "argsIgnorePattern": "^_" }],
+    "no-return-await": "error",
+    "no-constant-condition": "off",
+    "require-await": "error"
+  },
+  "overrides": [
+    {
+      "files": ["*.json"],
+      "rules": {
+        "comma-dangle": [2, { "objects": "never" }],
+        "semi": [2, "never"],
+        "quotes": [2, "double", { "avoidEscape": true }]
+      }
+    }
+  ],
+  "ignorePatterns": [
+    "dist",
+    "api/dist",
+    "server/src/processing/HeadingDetectionDTModule/model.js",
+    "server/src/processing/MLHeadingDetectionModule/train_model/model.js"
+  ]
+}

@@ -39,7 +39,7 @@ function promisifySpawn(cmd, args = []) {
 
 function install() {
   const osPlatform = platform();
-  if (commands.hasOwnProperty(osPlatform)) {
+  if ({}.hasOwnProperty.call(commands, osPlatform)) {
     const [cmd, ...args] = commands[osPlatform];
     if (cmd) {
       return promisifySpawn(cmd, args)

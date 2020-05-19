@@ -18,7 +18,7 @@ import { readdirSync } from 'fs';
 import { Document, Image } from '../../../types/DocumentRepresentation';
 import logger from '../../../utils/Logger';
 import * as DumpPdf from './DumpPdfParsr';
-import { ImageExtractor } from "./ImageExtractor";
+import { ImageExtractor } from './ImageExtractor';
 
 export class PdfminerImageExtractor extends ImageExtractor {
   private linkedDumpPdfImages: number = 0;
@@ -26,16 +26,16 @@ export class PdfminerImageExtractor extends ImageExtractor {
   private mutoolMissedImages: number = 0;
   private extractorDetectedImages: number = 0;
 
-  public async run(doc: Document): Promise<void> {
+  public run(doc: Document): Promise<void> {
     if (!doc.assetsFolder) {
       logger.warn('MuPDF not installed !! Skip image detection.');
-      return;
+      return Promise.resolve();
     }
 
     this.extractorDetectedImages = this.totalDocumentImages(doc);
     if (this.extractorDetectedImages === 0) {
       logger.info('No images detected !! Skip image extraction.');
-      return;
+      return Promise.resolve();
     }
 
     return this.extractImages(doc);
@@ -57,9 +57,9 @@ export class PdfminerImageExtractor extends ImageExtractor {
 
       logger.info(
         `Images Detected ${this.extractorDetectedImages} Reconstructed ${this.linkedDumpPdfImages -
-        this.mutoolMissedImages -
-        this.missedDumpPdfImages} Mutool missed ${this.mutoolMissedImages} DumpPDF missed ${
-        this.missedDumpPdfImages
+          this.mutoolMissedImages -
+          this.missedDumpPdfImages} Mutool missed ${this.mutoolMissedImages} DumpPDF missed ${
+          this.missedDumpPdfImages
         }`,
       );
     }
@@ -101,8 +101,8 @@ export class PdfminerImageExtractor extends ImageExtractor {
         } else {
           this.mutoolMissedImages++;
           logger.warn(
-            `Page ${pageIndex + 1} \(nodeId ${pageNodeId}\) image ${
-            img.refId
+            `Page ${pageIndex + 1} (nodeId ${pageNodeId}) image ${
+              img.refId
             } no extension found for file ${img.xObjId}`,
           );
         }

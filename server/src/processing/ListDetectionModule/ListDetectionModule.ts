@@ -67,7 +67,7 @@ export class ListDetectionModule extends Module {
    * @returns true/false representing the result of the check.
    */
   public static isNumbering(text: Text): boolean {
-    const regex = /^\d+([\.\:\)])\ /;
+    const regex = /^\d+([.:)]) /;
     return regex.test(text.toString().trim());
   }
 
