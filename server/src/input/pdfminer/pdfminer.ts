@@ -592,7 +592,7 @@ function ncolourToHex(color: string): Color {
     };
   };
 
-  const colors = color.replace(/[\(\)\[\]\s]/g, '').split(',');
+  const colors = color.replace(/[()[\]\s]/g, '').split(',');
 
   if (colors.length === 3) {
     finalColor = rgbToHex(colors[0], colors[1], colors[2]);

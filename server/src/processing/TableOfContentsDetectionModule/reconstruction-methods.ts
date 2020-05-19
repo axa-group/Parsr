@@ -54,7 +54,7 @@ const reconstructionMethods = {
   },
   // <section?> <description> <page number?>
   method_3: (text: string, bbox: BoundingBox): TableOfContentsItem => {
-    const matches = new RegExp(/^([\d\.]*)(.*) ([\d\-]*)$/).exec(text);
+    const matches = new RegExp(/^([\d.]*)(.*) ([\d-]*)$/).exec(text);
     if (matches) {
       const [, section, description, pageNum] = matches;
       return new TableOfContentsItem(
