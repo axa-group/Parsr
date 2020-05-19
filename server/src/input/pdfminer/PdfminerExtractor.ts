@@ -152,7 +152,7 @@ export class PdfminerExtractor extends Extractor {
 
   private detectAndFixPageRotation(inputFile: string): (doc: Document) => Promise<Document> {
     const limiter = limit(1);
-    return async (doc: Document): Promise<Document> => {
+    return (doc: Document): Promise<Document> => {
       doc.inputFile = inputFile;
       const startTime: number = Date.now();
       const pageRotations = doc.pages
@@ -164,11 +164,12 @@ export class PdfminerExtractor extends Extractor {
           limiter(this.rotatePages)(doc, pageRotations[rotation], parseInt(rotation, 10)),
         );
 
-      await Promise.all(promises);
-      logger.info(
-        `Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000}s`,
-      );
-      return doc;
+      return Promise.all(promises).then(() => {
+        logger.info(
+          `Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000}s`,
+        );
+        return doc;
+      });
     };
   }
 
