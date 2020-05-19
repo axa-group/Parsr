@@ -18,7 +18,7 @@ import { Document, Paragraph, TableOfContents } from '../../types/DocumentRepres
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
-import logger from '../../utils/Logger';
+// import logger from '../../utils/Logger';
 
 interface Options {
   keywords?: string[];
@@ -36,18 +36,18 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
   public main(doc: Document): Document {
     let storeNumbers = [];
+    let allStoredNumbers = [];
+    let allStoredInteger = [];
+    let mostIntegerInOrder = 0;
     let storeRomanNumbers = [];
-    let numbersLen = 0;
-    let romanNumbersLen = 0;
+    let nbNumber = 0;
+    let nbRomanNumbers = 0;
     let nbInteger = 0;
-    // let scoreInOrder = 1;
-    // let scoreInOrder = 0;
-    // const decimalNum = new RegExp(/[0-9]+(\.[0-9]+)?/, 'g');
+    const nbIntegerInOrderIndex = [];
     let foundTOC = false;
     let pagesSinceLastTOC = 0;
     for (let i = 0; i <= doc.pages.length - 1 && (!foundTOC || pagesSinceLastTOC < 5); i++) {
       const page = doc.pages[i];
-
       const allParagraphs = page
         .getElementsOfType<Paragraph>(Paragraph, false)
         .filter(this.isNotHeaderFooter);
@@ -55,15 +55,12 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       const tocItemParagraphs = allParagraphs.filter(p =>
         detection.TOCDetected(p, this.options.pageKeywords),
       );
-      // logger.info('tocItemParagraphs= ' + tocItemParagraphs[0] + '|' + tocItemParagraphs[1]);
 
       if (tocItemParagraphs.length > 0) {
         for (const tocItemParagraph of tocItemParagraphs) {
-          logger.info('tocItemParagraph= ' + tocItemParagraph + '|');
           const strTocItem = tocItemParagraph.toString();
-          if (strTocItem.match(/[0-9]+(\.[0-9]+)?/g)) {
-            storeNumbers.push(strTocItem.match(/[0-9]+(\.[0-9]+)?/g).map(Number));
-            logger.info('detectNumber= ' + strTocItem.match(/[0-9]+(\.[0-9]+)?/g));
+          if (strTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
+            storeNumbers.push(strTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g).map(Number));
           }
           if (
             strTocItem.match(
@@ -75,54 +72,84 @@ export class TableOfContentsDetectionModule extends Module<Options> {
                 /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
               ),
             );
-            logger.info(
-              'storeRomanNumber= ' +
-                strTocItem.match(
-                  /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
-                ),
-            );
-
-            // for (const num of storeNumbers) {
-            //   if (nu)
-            // }
           }
-          // logger.info('decimal regex= ' + strTocItem.match(/[0-9]+(\.[0-9]+)?/g));
-          // if (storeNumbers.length > 3) {
-          //   for (let index = 0; index < storeNumbers.length - 1; index++) {
-          //     for (let j = index + 1; j < storeNumbers.length - 1; j++) {
-          //       if (storeNumbers[j] > storeNumbers[index]) {
-          //         scoreInOrder = scoreInOrder + 1;
-          //       }
-          //     }
-          //   }
-          // }
-          // logger.info('numberslen= ' + storeNumbers.length);
-          // if (decimalNum.exec(strTocItem) !== null) {
-          // storeNumbers.push(decimalNum.exec(strTocItem));
         }
         for (const numbers of storeNumbers) {
-          logger.info('soreNumber= ' + numbers);
-          for (const num of numbers) {
-            if (Number.isInteger(num)) {
-              nbInteger++;
-            }
-            numbersLen++;
-          }
-          // logger.info('lenNumber= ' + num.length);
-          // logger.info('number= ' + num);
+          allStoredNumbers = allStoredNumbers.concat(numbers);
         }
+
+        for (const num of allStoredNumbers) {
+          if (Number.isInteger(num)) {
+            allStoredInteger.push(num);
+          }
+        }
+        nbNumber = allStoredNumbers.length;
+        nbInteger = allStoredInteger.length;
+
+        const allIntegerParam = [];
+
+        // Find for each stored integer in array how many of integer in the followings indexes are >=
+        // then it is stored in an array integerParam [integer, integerSup, indexOfarray]
+        if (nbInteger > 2) {
+          let j = 0;
+          while (j < nbInteger) {
+            let k = j + 1;
+            let integerSup = 1;
+            while (k < nbInteger) {
+              if (allStoredInteger[j] <= allStoredInteger[k]) {
+                integerSup++;
+              }
+              k++;
+            }
+            const integerParam = [allStoredInteger[j], integerSup, j];
+            allIntegerParam.push(integerParam);
+            j++;
+          }
+
+          // Sort integerParam [integer, integerSup, indexOfarray] based on index 01 integerSup
+          allIntegerParam.sort(this.sortFunction);
+
+          // find number of integer in order
+          for (let iStart = 0; iStart < nbInteger / 2; iStart++) {
+            let step = 1;
+            let iLastInOrder = iStart;
+            let iTest = iLastInOrder + step;
+            let nbIntegerInOrder = 1;
+
+            while (iTest < nbInteger) {
+              if (
+                allIntegerParam[iTest][0] >= allIntegerParam[iLastInOrder][0] &&
+                allIntegerParam[iTest][2] > allIntegerParam[iLastInOrder][2] &&
+                nbIntegerInOrder + allIntegerParam[iTest][1] > 0.7 * nbInteger
+              ) {
+                nbIntegerInOrder++;
+                iLastInOrder = iTest;
+                step = 0;
+              }
+              step++;
+              iTest = iLastInOrder + step;
+            }
+            nbIntegerInOrderIndex[iStart] = [nbIntegerInOrder, iLastInOrder];
+            if (nbIntegerInOrderIndex[iStart][0] > mostIntegerInOrder) {
+              mostIntegerInOrder = nbIntegerInOrderIndex[iStart][0];
+            }
+          }
+        }
+
         storeNumbers = [];
+        allStoredNumbers = [];
+        allStoredInteger = [];
         for (const romanNumbers of storeRomanNumbers) {
-          romanNumbersLen = romanNumbersLen + romanNumbers.length;
-          // logger.info('lenNumber= ' + num.length);
-          // logger.info('number= ' + num);
+          nbRomanNumbers = nbRomanNumbers + romanNumbers.length;
         }
         storeNumbers = [];
         storeRomanNumbers = [];
       }
+
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
-        ((numbersLen > 2 && nbInteger / numbersLen > 0.5) || romanNumbersLen > 2) &&
+        ((nbNumber > 2 && nbInteger / nbNumber > 0.5 && mostIntegerInOrder / nbInteger > 0.7) ||
+          (nbRomanNumbers > 2 && nbInteger < nbRomanNumbers)) &&
         tocItemParagraphs.length > 0 &&
         tocItemParagraphs.length >=
           Math.floor(allParagraphs.length * detection.threshold * Math.pow(1.05, pagesSinceLastTOC))
@@ -137,12 +164,21 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       } else {
         pagesSinceLastTOC++;
       }
-      numbersLen = 0;
-      nbInteger = 0;
-      romanNumbersLen = 0;
     }
+    nbNumber = 0;
+    nbInteger = 0;
+    nbRomanNumbers = 0;
+    mostIntegerInOrder = 0;
 
     return doc;
+  }
+
+  private sortFunction(a, b) {
+    if (a[1] === b[1]) {
+      return 0;
+    } else {
+      return a[0] < b[0] ? -1 : 1;
+    }
   }
 
   private isNotHeaderFooter(paragraph: Paragraph): boolean {
