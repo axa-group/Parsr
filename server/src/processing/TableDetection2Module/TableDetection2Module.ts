@@ -49,7 +49,7 @@ export interface TableExtractor {
 }
 
 const defaultExtractor: TableExtractor = {
-  async readTables(inputFile: string, options: Options): Promise<TableExtractorResult> {
+  readTables(inputFile: string, options: Options): Promise<TableExtractorResult> {
     let pages: string = 'all';
     if (options.pages.length !== 0) {
       pages = options.pages.toString();
@@ -139,9 +139,9 @@ export class TableDetection2Module extends Module<Options> {
   private isFalseTable(table: Table): boolean {
     // this detects 1x1 tables with no content
     const is1x1 =
-      table.content.length === 1
-      && table.content[0].content.length === 1
-      && table.content[0].content[0].content.length === 0;
+      table.content.length === 1 &&
+      table.content[0].content.length === 1 &&
+      table.content[0].content[0].content.length === 0;
 
     const isFalse = table.content.some((_, index) => !this.existAdjacentRow(index, table));
 

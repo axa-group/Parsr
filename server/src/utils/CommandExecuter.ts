@@ -103,7 +103,7 @@ export async function repairPdf(filePath: string): Promise<string> {
   }
 }
 
-export async function mutoolExtract(filePath: string): Promise<string> {
+export function mutoolExtract(filePath: string): Promise<string> {
   const outputFolder = getMutoolExtractionFolder();
   return run(COMMANDS.MUTOOL, ['extract', '-r', filePath], {
     cwd: outputFolder,
@@ -113,7 +113,7 @@ export async function mutoolExtract(filePath: string): Promise<string> {
   });
 }
 
-export async function pandocDocxToHtml(filePath: string): Promise<string> {
+export function pandocDocxToHtml(filePath: string): Promise<string> {
   const assetsFolder = path.dirname(filePath);
   return run(COMMANDS.PANDOC, [filePath, '--extract-media', assetsFolder, '-t', 'html5']).then(
     html => {
@@ -123,7 +123,7 @@ export async function pandocDocxToHtml(filePath: string): Promise<string> {
   );
 }
 
-export async function imageCorrection(filePath: string): Promise<string> {
+export function imageCorrection(filePath: string): Promise<string> {
   const args: string[] = [path.join(__dirname, '../../assets/ImageCorrection.py'), filePath];
   return run(COMMANDS.PYTHON, args).then(transformation => {
     logger.info(`Image optimisation succeed`);
@@ -131,7 +131,7 @@ export async function imageCorrection(filePath: string): Promise<string> {
   });
 }
 
-export async function pdfPagesNumber(filePath: string): Promise<string> {
+export function pdfPagesNumber(filePath: string): Promise<string> {
   const args: string[] = [path.join(__dirname, '../../assets/PdfPageNumber.py'), filePath];
   return run(COMMANDS.PYTHON, args).then(transformation => {
     logger.info(`Pages number extraction succeed`);
@@ -139,7 +139,7 @@ export async function pdfPagesNumber(filePath: string): Promise<string> {
   });
 }
 
-export async function pandocMdToPdf(mdFilePath: string, pdfOutputPath: string): Promise<string> {
+export function pandocMdToPdf(mdFilePath: string, pdfOutputPath: string): Promise<string> {
   const args: string[] = [
     '-f',
     'markdown_github+all_symbols_escapable',
@@ -158,7 +158,7 @@ export async function pandocMdToPdf(mdFilePath: string, pdfOutputPath: string): 
   });
 }
 
-export async function detectTables(
+export function detectTables(
   filePath: string,
   flavor: string,
   lineScale: string,
@@ -181,10 +181,7 @@ export async function detectTables(
   });
 }
 
-export async function detectTables2(
-  filePath: string,
-  pages: string,
-): Promise<string> {
+export function detectTables2(filePath: string, pages: string): Promise<string> {
   const args: string[] = [
     path.join(__dirname, '../../assets/TableDetection2Script.py'),
     filePath,
@@ -196,15 +193,24 @@ export async function detectTables2(
   });
 }
 
-export async function pdfMinerExtract(filePath: string, pages: string, rotationDegrees: number = 0): Promise<string> {
+export function pdfMinerExtract(
+  filePath: string,
+  pages: string,
+  rotationDegrees: number = 0,
+): Promise<string> {
   const xmlOutputFile: string = getTemporaryFile('.xml');
   let pdf2txtArguments: string[] = [
     '--detect-vertical',
-    '-R', rotationDegrees.toString(),
-    '-c', 'utf-8',
-    '-t', 'xml',
-    '--word-margin', '0.2',
-    '-o', xmlOutputFile,
+    '-R',
+    rotationDegrees.toString(),
+    '-c',
+    'utf-8',
+    '-t',
+    'xml',
+    '--word-margin',
+    '0.2',
+    '-o',
+    xmlOutputFile,
     filePath,
   ];
 
@@ -220,7 +226,7 @@ export async function pdfMinerExtract(filePath: string, pages: string, rotationD
   });
 }
 
-export async function dumpPdf(filePath: string): Promise<string> {
+export function dumpPdf(filePath: string): Promise<string> {
   const xmlOutputFile: string = getTemporaryFile('.xml');
   const dumpAarguments = ['-a', '-o', xmlOutputFile, filePath];
   const key = `dumppdf -a -o <outfile> ${filePath}`;
@@ -234,7 +240,7 @@ export async function dumpPdf(filePath: string): Promise<string> {
   });
 }
 
-export async function magickImageDimensions(filePath: string): Promise<Dimensions[]> {
+export function magickImageDimensions(filePath: string): Promise<Dimensions[]> {
   const args = ['-format', '%[fx:w]x%[fx:h],', filePath];
   return run(COMMANDS.IDENTIFY, magickRetroCompatibility(COMMANDS.IDENTIFY, args)).then(data => {
     const dimensions = data.split(',');
@@ -247,7 +253,7 @@ export async function magickImageDimensions(filePath: string): Promise<Dimension
   });
 }
 
-export async function magickImageToPdf(filePath: string): Promise<string> {
+export function magickImageToPdf(filePath: string): Promise<string> {
   const outputFilePath = getTemporaryFile('.pdf');
   const args = [filePath, '-units', 'PixelsPerInch', '-density', '96', outputFilePath];
   return run(COMMANDS.CONVERT, magickRetroCompatibility(COMMANDS.CONVERT, args)).then(() => {
@@ -256,7 +262,7 @@ export async function magickImageToPdf(filePath: string): Promise<string> {
   });
 }
 
-export async function magickPdfToImages(filePath: string): Promise<string[]> {
+export function magickPdfToImages(filePath: string): Promise<string[]> {
   const folder = path.dirname(filePath).concat('/samples');
   try {
     if (!fs.existsSync(folder)) {
@@ -316,7 +322,7 @@ function qpdfDecrypt(filePath: string): Promise<string> {
   });
 }
 
-async function mutoolClean(filePath: string): Promise<string> {
+function mutoolClean(filePath: string): Promise<string> {
   const outputFilePath = getTemporaryFile('.pdf');
   return run(COMMANDS.MUTOOL, ['clean', '-g', filePath, outputFilePath]).then(() => {
     logger.info(`Mutool clean succeed --> ${outputFilePath}`);

@@ -26,16 +26,16 @@ export class PdfminerImageExtractor extends ImageExtractor {
   private mutoolMissedImages: number = 0;
   private extractorDetectedImages: number = 0;
 
-  public async run(doc: Document): Promise<void> {
+  public run(doc: Document): Promise<void> {
     if (!doc.assetsFolder) {
       logger.warn('MuPDF not installed !! Skip image detection.');
-      return;
+      return Promise.resolve();
     }
 
     this.extractorDetectedImages = this.totalDocumentImages(doc);
     if (this.extractorDetectedImages === 0) {
       logger.info('No images detected !! Skip image extraction.');
-      return;
+      return Promise.resolve();
     }
 
     return this.extractImages(doc);

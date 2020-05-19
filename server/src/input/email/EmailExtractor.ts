@@ -78,7 +78,7 @@ export class EmailExtractor extends Extractor {
   private attachmentToPDF(rawHTML: string): (data: MailAttachmentData) => Promise<string> {
     return (attachment: MailAttachmentData): Promise<string> => {
       if (attachment.contentType === 'application/pdf') {
-        return this.pdfAttachmentToPDF(attachment);
+        return Promise.resolve(this.pdfAttachmentToPDF(attachment));
       }
 
       if (attachment.contentType.startsWith('image/')) {
@@ -89,16 +89,13 @@ export class EmailExtractor extends Extractor {
     };
   }
 
-  private async pdfAttachmentToPDF(attachment: MailAttachmentData): Promise<string> {
+  private pdfAttachmentToPDF(attachment: MailAttachmentData): string {
     const outputFilePath = getTemporaryFile('.pdf');
     writeFileSync(outputFilePath, attachment.content);
     return outputFilePath;
   }
 
-  private async imageAttachmentToPDF(
-    attachment: MailAttachmentData,
-    rawHTML: string,
-  ): Promise<string> {
+  private imageAttachmentToPDF(attachment: MailAttachmentData, rawHTML: string): Promise<string> {
     // const outputFilePath = getTemporaryFile('.pdf');
     /*
       if the attached image is represented in the HTML body as a base64-encoded img
