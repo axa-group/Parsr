@@ -19,7 +19,6 @@ import * as fs from 'fs';
 import {
   BoundingBox,
   Document,
-  Image,
   Page,
   SpannedTableCell,
   Table,
@@ -61,7 +60,7 @@ const defaultExtractor: TableExtractor = {
   async readTables(inputFile: string, options: Options): Promise<TableExtractorResult> {
     let pages: string = 'all';
     let flavor: string = 'lattice';
-    const lineScale: string = '60';
+    const lineScale: string = '64';
     if (options.pages.length !== 0) {
       pages = options.pages.toString();
     }
@@ -254,15 +253,11 @@ export class TableDetectionModule extends Module<Options> {
     return mergeCandidateCells;
   }
 
-  private isFalseTable(table: Table, page: Page): boolean {
+  private isFalseTable(table: Table, _page: Page): boolean {
     const isFalse = table.content.some((_, index) => !this.existAdjacentRow(index, table));
     const only1Row = table.content.length === 1;
 
-    const isOverAnImage = page.getElementsOfType<Image>(Image).some(i =>
-      BoundingBox.getOverlap(table.box, i.box).box1OverlapProportion > 0.9,
-    );
-
-    return only1Row || isOverAnImage || isFalse;
+    return only1Row || isFalse;
   }
 
   private existAdjacentRow(rowIndex: number, table: Table): TableRow {
