@@ -26,8 +26,10 @@
     "install:api": "npm install --prefix  api/server",
     "start:web:vue": "npm run start:api:background && cd demo/vue-viewer && npm install && npm run serve",
     "run:debug": "ts-node server/bin/index.ts",
-    "lint": "tslint --project . && tslint --project ./api/server",
-    "lint:fix": "tslint --fix --project . && tslint --fix --project ./api/server",
+    "lint": "npm run eslint:api && npm run eslint:vue && npm run eslint:core",
+    "eslint:api": "eslint api/server/src/*",
+    "eslint:vue": "eslint \"demo/vue-viewer/**/*.{vue,js}\"",
+    "eslint:core": "eslint \"server/**/*.{ts,json}\"",
     "start:api": "npm run build:ts && npm run install:api && npm run --prefix api/server start",
     "start:api:background": "npm run start:api&",
     "format": "prettier --write --list-different \"{,!(dist)/**/}*.{js,md,ts,css,scss}\"",
@@ -40,7 +42,7 @@
     }
   },
   "lint-staged": {
-    "!(dist|-viewer/public)/**/*.ts, !train_model/*": "tslint"
+    "!(dist|-viewer/public)/**/*.ts, !train_model/*": "eslint"
   },
   "dependencies": {
     "@google-cloud/vision": "1.11.0",
@@ -63,7 +65,6 @@
     "pino-pretty": "^2.6.1",
     "shelljs": "^0.8.4",
     "string-similarity": "^1.2.1",
-    "tslint": "^5.19.0",
     "xml-stream": "^0.4.5",
     "xml2js": "^0.4.23"
   },

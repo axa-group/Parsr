@@ -21,7 +21,10 @@
     "comma-style": [2, "last"],
     "comma-dangle": [2, "always-multiline"],
     "quotes": [2, "single", { "allowTemplateLiterals": true, "avoidEscape": true }],
-    "no-unused-vars": [2, { "varsIgnorePattern": "^[A-Z]", "argsIgnorePattern": "^_" }]
+    "no-unused-vars": [2, { "varsIgnorePattern": "^[A-Z]", "argsIgnorePattern": "^_" }],
+    "no-return-await": "error",
+    "no-constant-condition": "off",
+    "require-await": "error"
   },
   "overrides": [
     {
