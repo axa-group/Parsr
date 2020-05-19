@@ -145,12 +145,13 @@ export class Page {
   }
 
   /**
-   * Return the subset of all the elements completely inside a rectangle defining a subset of the given page.
+   * Return the subset of all the elements inside a rectangle defining a subset of the given page.
    * @param box Elements of the subset should be inside this bounding box.
    * @param textOnly Elements of the subset should only be the textual elements.
+   * @param strict if true, returned elements will be fully inside the box.
    */
-  public getElementsSubset(box: BoundingBox, textOnly: boolean = false): Element[] {
-    return this.elements.filter(e => e instanceof Text || textOnly).filter(e => isInBox(e, box));
+  public getElementsSubset(box: BoundingBox, textOnly: boolean = true, strict: boolean = true): Element[] {
+    return this.elements.filter(e => e instanceof Text || !textOnly).filter(e => isInBox(e, box, strict));
   }
 
   /**

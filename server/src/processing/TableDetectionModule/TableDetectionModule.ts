@@ -19,6 +19,7 @@ import * as fs from 'fs';
 import {
   BoundingBox,
   Document,
+  Image,
   Page,
   SpannedTableCell,
   Table,
@@ -60,11 +61,11 @@ const defaultExtractor: TableExtractor = {
   async readTables(inputFile: string, options: Options): Promise<TableExtractorResult> {
     let pages: string = 'all';
     let flavor: string = 'lattice';
-    const lineScale: string = '70';
+    const lineScale: string = '60';
     if (options.pages.length !== 0) {
       pages = options.pages.toString();
     }
-    if (!options.flavor.includes(options.flavor)) {
+    if (!['lattice', 'stream'].includes(options.flavor)) {
       logger.warn(
         `table detection flavor asked for: ${options.flavor} is not a possibility. defaulting to 'lattice'`,
       );
@@ -156,7 +157,7 @@ export class TableDetectionModule extends Module<Options> {
       table.content = this.joinCellsByContent(table.content, tableData.content);
     }
 
-    if (!this.isFalseTable(table)) {
+    if (!this.isFalseTable(table, page)) {
       page.elements = page.elements.concat(table);
     }
   }
@@ -253,16 +254,15 @@ export class TableDetectionModule extends Module<Options> {
     return mergeCandidateCells;
   }
 
-  private isFalseTable(table: Table): boolean {
-    // this detects 1x1 tables with no content
-    const is1x1 =
-      table.content.length === 1
-      && table.content[0].content.length === 1
-      && table.content[0].content[0].content.length === 0;
-
+  private isFalseTable(table: Table, page: Page): boolean {
     const isFalse = table.content.some((_, index) => !this.existAdjacentRow(index, table));
+    const only1Row = table.content.length === 1;
 
-    return is1x1 || isFalse;
+    const isOverAnImage = page.getElementsOfType<Image>(Image).some(i =>
+      BoundingBox.getOverlap(table.box, i.box).box1OverlapProportion > 0.9,
+    );
+
+    return only1Row || isOverAnImage || isFalse;
   }
 
   private existAdjacentRow(rowIndex: number, table: Table): TableRow {
