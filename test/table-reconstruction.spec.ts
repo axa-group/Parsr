@@ -227,6 +227,17 @@ describe('Table Reconstruction Module', () => {
           '|^| 2400 | Women (≥ 18 yrs) | - | - | - | 1728 |',
         ],
       ],
+      'sncfTicket.pdf': [
+        'camelot-sncfTicket.json',
+        'sncfTicket.json',
+        'sncfTicket.pdf',
+        [
+          '| Departure / Arrival | Date / Time | TGV LYRIA | STANDARD 1st Class - Ticket can be exchanged and refunded before departure subject to a fee of € 30 per person and per journey and subject to the fare applicable on that day. Tickets will not be exchangeable or refundable after departure. More spacious seats, Electrical socket. RIn-seat restaurant service (subject to charge). CARRIERS 1185 1187 |',
+          '|---|---|---|---|',
+          '| VALLORBE | 25/09 at 19:01 | TRAIN NUMBER 9272 COACH 11 - SEAT 035 1\. CLASS DUAL SIDE BY SIDE |^|',
+          '| PARIS GARE LYON | 25/09 at 22:03 |^|^|',
+        ],
+      ],
     },
       (camelotJson, parsrJson, pdfFile, expectedMarkdownRows) => {
         let table: Table;
