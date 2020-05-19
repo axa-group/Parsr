@@ -207,11 +207,7 @@ export class MlHeadingDetectionModule extends Module {
     const differentColor = line.getMainFont().color !== commonFont.color;
     const isNumber = !isNaN(lineStr as any);
     const textCase = this.textCase(lineStr);
-
-    const allWords = doc.getElementsOfType<Word>(Word, true);
-    const allFonts = [...allWords.map(w => w.font).filter(f => f !== undefined)];
-    const count = allFonts.filter(font => line.getMainFont()['_name'] === font['_name'] && line.getMainFont()['_size'] === font['_size'] && line.getMainFont()['_weight'] === font['_weight'] && line.getMainFont()['_isItalic'] === font['_isItalic'] && line.getMainFont()['_isUnderline'] === font['_isUnderline'] && line.getMainFont()['_color'] === font['_color']).length
-    const fontRatio = count / allFonts.length;
+    const fontRatio = this.fontRatio(doc, line.getMainFont());
    
     const features = [isDifferentStyle, isFontBigger, isFontUnique, textCase, wordCount, differentColor, isNumber, fontRatio];
     const clf = new AdaBoostClassifier();
@@ -241,6 +237,14 @@ export class MlHeadingDetectionModule extends Module {
     }
 
     return textCase;
+  }
+
+  private fontRatio(document: Document, font: Font) {
+    const allWords = document.getElementsOfType<Word>(Word, true);
+    const allFonts = [...allWords.map(w => w.font).filter(f => f !== undefined)];
+    const count = allFonts.filter(f => f.name === font.name && f.size === font.size && f.weight === font.weight && f.isItalic === font.isItalic && f.isUnderline === font.isUnderline && f.color === font.color).length
+
+    return count / allFonts.length;
   }
 
   private groupHeadingsByFont(headingIndexes: number[], lines: Line[]): number[][] {
