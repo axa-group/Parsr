@@ -10,7 +10,7 @@
     />
     <component
       :is="props.components.TableCell"
-      v-for="element in props.element.content"
+      v-for="element in props.element.content.filter(c => c.type === 'table-cell')"
       :key="element.id"
       :element="element"
       :fonts="props.fonts"

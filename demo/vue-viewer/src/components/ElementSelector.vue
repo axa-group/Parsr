@@ -76,6 +76,7 @@ export default {
       return this.pageElements
         .map(this.flatten)
         .reduce((prev, curr) => prev.concat(curr), [])
+        .filter(e => e.value.type !== 'spanned-table-cell')
         .sort(this.sortFunction);
     },
   },

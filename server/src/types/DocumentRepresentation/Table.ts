@@ -348,21 +348,11 @@ export class Table extends Element {
   }
 
   public exportAsMD(): string {
-    const tableArray = this.toArray();
     let output: string = '';
-    tableArray.forEach((row, index) => {
-      row.forEach(cellMDCode => {
-        if (cellMDCode != null) {
-          if (cellMDCode.startsWith('>')) {
-            output += `|${cellMDCode} `;
-          } else {
-            output += cellMDCode === '' ? '|' : `| ${cellMDCode} `;
-          }
-        }
-      });
-      output += '|  \n';
+    this.content.forEach((row, index) => {
+      output += row.toMarkdown() + '  \n';
       if (index === 0) {
-        output += '|---'.repeat(row.length) + '|  \n';
+        output += '|---'.repeat(row.content.length) + '|  \n';
       }
     });
     return output;

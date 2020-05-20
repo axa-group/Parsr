@@ -98,7 +98,7 @@ describe('Link Detection Module', () => {
         const links = docAfter.pages[0]
           .getElementsOfType<Word>(Word)
           .filter(w => !!w.properties.targetURL);
-        expect(links.map((link: Word) => mdLinkRegExp.test(link.toMarkDown())))
+        expect(links.map((link: Word) => mdLinkRegExp.test(link.toMarkdown())))
           .to.be.an('array')
           .that.does.not.include(false);
       });

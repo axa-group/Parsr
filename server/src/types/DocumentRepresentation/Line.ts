@@ -121,7 +121,7 @@ export class Line extends Text {
 
   public toMarkdown(): string {
     return this.content
-      .map(w => w.toMarkDown())
+      .map(w => w.toMarkdown())
       .join(' ');
   }
 
