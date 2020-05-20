@@ -42,7 +42,7 @@
     }
   },
   "lint-staged": {
-    "!(package-lock.json)*": "eslint"
+    "*": "eslint"
   },
   "dependencies": {
     "@google-cloud/vision": "1.11.0",
