@@ -30,6 +30,7 @@
     {
       "files": ["*.json"],
       "rules": {
+        "key-spacing": [2, { "beforeColon": false }],
         "comma-dangle": [2, { "objects": "never" }],
         "semi": [2, "never"],
         "quotes": [2, "double", { "avoidEscape": true }]
@@ -40,6 +41,7 @@
     "dist",
     "api/dist",
     "server/src/processing/HeadingDetectionDTModule/model.js",
-    "server/src/processing/MLHeadingDetectionModule/train_model/model.js"
+    "server/src/processing/MLHeadingDetectionModule/train_model/model.js",
+    "*.py"
   ]
 }

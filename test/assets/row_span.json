@@ -1,0 +1,2245 @@
+{
+  "metadata": [],
+  "pages": [
+    {
+      "margins": {
+        "top": -1,
+        "left": -1,
+        "bottom": -1,
+        "right": -1
+      },
+      "box": {
+        "l": 0,
+        "t": 0,
+        "w": 792,
+        "h": 612
+      },
+      "rotation": {
+        "degrees": 0,
+        "origin": {
+          "x": 0,
+          "y": 0
+        },
+        "translation": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "pageNumber": 1,
+      "elements": [
+        {
+          "id": 9,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 66.83,
+            "t": 45.2,
+            "w": 21.59,
+            "h": 10.2
+          },
+          "content": "Plan",
+          "font": 1
+        },
+        {
+          "id": 10,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 91.31,
+            "t": 45.2,
+            "w": 23.8,
+            "h": 10.2
+          },
+          "content": "Type",
+          "font": 1
+        },
+        {
+          "id": 17,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 201.59,
+            "t": 45.2,
+            "w": 35.08,
+            "h": 10.2
+          },
+          "content": "County",
+          "font": 1
+        },
+        {
+          "id": 26,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 382.91,
+            "t": 45.2,
+            "w": 21.59,
+            "h": 10.2
+          },
+          "content": "Plan",
+          "font": 1
+        },
+        {
+          "id": 27,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 407.39,
+            "t": 45.2,
+            "w": 27.75,
+            "h": 10.2
+          },
+          "content": "Name",
+          "font": 1
+        },
+        {
+          "id": 34,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 560.51,
+            "t": 45.2,
+            "w": 30.04,
+            "h": 10.2
+          },
+          "content": "Totals",
+          "font": 1
+        },
+        {
+          "id": 45,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 80.65,
+            "w": 50.31,
+            "h": 9.36
+          },
+          "content": "Sacramento",
+          "font": 2
+        },
+        {
+          "id": 49,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 80.03,
+            "t": 117.6,
+            "w": 21.87,
+            "h": 9.36
+          },
+          "content": "GMC",
+          "font": 3
+        },
+        {
+          "id": 58,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 134.77,
+            "w": 16.6,
+            "h": 9.36
+          },
+          "content": "San",
+          "font": 2
+        },
+        {
+          "id": 59,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 166.19,
+            "t": 134.77,
+            "w": 24.28,
+            "h": 9.36
+          },
+          "content": "Diego",
+          "font": 2
+        },
+        {
+          "id": 75,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 62.88,
+            "w": 32.15,
+            "h": 9.36
+          },
+          "content": "Anthem",
+          "font": 2
+        },
+        {
+          "id": 76,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 329.5,
+            "t": 62.88,
+            "w": 18.64,
+            "h": 9.36
+          },
+          "content": "Blue",
+          "font": 2
+        },
+        {
+          "id": 77,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 350.74,
+            "t": 62.88,
+            "w": 24.36,
+            "h": 9.36
+          },
+          "content": "Cross",
+          "font": 2
+        },
+        {
+          "id": 87,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 74.76,
+            "w": 26.92,
+            "h": 9.36
+          },
+          "content": "Health",
+          "font": 2
+        },
+        {
+          "id": 88,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 324.22,
+            "t": 74.76,
+            "w": 14.48,
+            "h": 9.36
+          },
+          "content": "Net",
+          "font": 2
+        },
+        {
+          "id": 105,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 86.64,
+            "w": 26.39,
+            "h": 9.36
+          },
+          "content": "Kaiser",
+          "font": 2
+        },
+        {
+          "id": 106,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 323.74,
+            "t": 86.64,
+            "w": 46.59,
+            "h": 9.36
+          },
+          "content": "Foundation",
+          "font": 2
+        },
+        {
+          "id": 123,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 98.4,
+            "w": 27.4,
+            "h": 9.36
+          },
+          "content": "Molina",
+          "font": 2
+        },
+        {
+          "id": 124,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 324.7,
+            "t": 98.4,
+            "w": 45.03,
+            "h": 9.36
+          },
+          "content": "Healthcare",
+          "font": 2
+        },
+        {
+          "id": 142,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 111,
+            "w": 20.2,
+            "h": 9.36
+          },
+          "content": "Care",
+          "font": 2
+        },
+        {
+          "id": 143,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 317.51,
+            "t": 111,
+            "w": 12.44,
+            "h": 9.36
+          },
+          "content": "1st",
+          "font": 2
+        },
+        {
+          "id": 144,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 332.62,
+            "t": 111,
+            "w": 26.92,
+            "h": 9.36
+          },
+          "content": "Health",
+          "font": 2
+        },
+        {
+          "id": 145,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 362.14,
+            "t": 111,
+            "w": 18.64,
+            "h": 9.36
+          },
+          "content": "Plan",
+          "font": 2
+        },
+        {
+          "id": 166,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 122.88,
+            "w": 47.15,
+            "h": 9.36
+          },
+          "content": "Community",
+          "font": 2
+        },
+        {
+          "id": 167,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 344.26,
+            "t": 122.88,
+            "w": 26.92,
+            "h": 9.36
+          },
+          "content": "Health",
+          "font": 2
+        },
+        {
+          "id": 168,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 373.78,
+            "t": 122.88,
+            "w": 25.96,
+            "h": 9.36
+          },
+          "content": "Group",
+          "font": 2
+        },
+        {
+          "id": 178,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 134.75,
+            "w": 26.92,
+            "h": 9.36
+          },
+          "content": "Health",
+          "font": 2
+        },
+        {
+          "id": 179,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 324.22,
+            "t": 134.75,
+            "w": 14.48,
+            "h": 9.36
+          },
+          "content": "Net",
+          "font": 2
+        },
+        {
+          "id": 186,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 146.63,
+            "w": 26.39,
+            "h": 9.36
+          },
+          "content": "Kaiser",
+          "font": 2
+        },
+        {
+          "id": 203,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 158.39,
+            "w": 27.4,
+            "h": 9.36
+          },
+          "content": "Molina",
+          "font": 2
+        },
+        {
+          "id": 204,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 324.7,
+            "t": 158.39,
+            "w": 45.03,
+            "h": 9.36
+          },
+          "content": "Healthcare",
+          "font": 2
+        },
+        {
+          "id": 223,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 424.67,
+            "t": 171.36,
+            "w": 22.28,
+            "h": 9.36
+          },
+          "content": "Total",
+          "font": 3
+        },
+        {
+          "id": 224,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 449.63,
+            "t": 171.36,
+            "w": 21.88,
+            "h": 9.36
+          },
+          "content": "GMC",
+          "font": 3
+        },
+        {
+          "id": 225,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 474.11,
+            "t": 171.36,
+            "w": 48.94,
+            "h": 9.36
+          },
+          "content": "Enrollment",
+          "font": 3
+        },
+        {
+          "id": 230,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 77.75,
+            "t": 316.56,
+            "w": 27,
+            "h": 9.36
+          },
+          "content": "COHS",
+          "font": 3
+        },
+        {
+          "id": 236,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 183.48,
+            "w": 23.32,
+            "h": 9.36
+          },
+          "content": "Marin",
+          "font": 2
+        },
+        {
+          "id": 246,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 195.36,
+            "w": 45.51,
+            "h": 9.36
+          },
+          "content": "Mendocino",
+          "font": 2
+        },
+        {
+          "id": 251,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 207.24,
+            "w": 22.24,
+            "h": 9.36
+          },
+          "content": "Napa",
+          "font": 2
+        },
+        {
+          "id": 258,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 219.12,
+            "w": 28.96,
+            "h": 9.36
+          },
+          "content": "Solano",
+          "font": 2
+        },
+        {
+          "id": 265,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 231,
+            "w": 34.72,
+            "h": 9.36
+          },
+          "content": "Sonoma",
+          "font": 2
+        },
+        {
+          "id": 270,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 242.88,
+            "w": 18.52,
+            "h": 9.36
+          },
+          "content": "Yolo",
+          "font": 2
+        },
+        {
+          "id": 279,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 254.76,
+            "w": 13.96,
+            "h": 9.36
+          },
+          "content": "Del",
+          "font": 2
+        },
+        {
+          "id": 280,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 163.55,
+            "t": 254.76,
+            "w": 22.84,
+            "h": 9.36
+          },
+          "content": "Norte",
+          "font": 2
+        },
+        {
+          "id": 289,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 266.63,
+            "w": 39.79,
+            "h": 9.36
+          },
+          "content": "Humboldt",
+          "font": 2
+        },
+        {
+          "id": 294,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 278.51,
+            "w": 20.32,
+            "h": 9.36
+          },
+          "content": "Lake",
+          "font": 2
+        },
+        {
+          "id": 301,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 290.39,
+            "w": 30.04,
+            "h": 9.36
+          },
+          "content": "Lassen",
+          "font": 2
+        },
+        {
+          "id": 307,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 302.27,
+            "w": 27.95,
+            "h": 9.36
+          },
+          "content": "Modoc",
+          "font": 2
+        },
+        {
+          "id": 314,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 314.15,
+            "w": 29.08,
+            "h": 9.36
+          },
+          "content": "Shasta",
+          "font": 2
+        },
+        {
+          "id": 323,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 326.02,
+            "w": 34.6,
+            "h": 9.36
+          },
+          "content": "Siskiyou",
+          "font": 2
+        },
+        {
+          "id": 331,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 337.78,
+            "w": 25.32,
+            "h": 9.36
+          },
+          "content": "Trinity",
+          "font": 2
+        },
+        {
+          "id": 338,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 350.38,
+            "w": 31.12,
+            "h": 9.36
+          },
+          "content": "Merced",
+          "font": 2
+        },
+        {
+          "id": 347,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 362.28,
+            "w": 38.87,
+            "h": 9.36
+          },
+          "content": "Monterey",
+          "font": 2
+        },
+        {
+          "id": 357,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 374.04,
+            "w": 24.4,
+            "h": 9.36
+          },
+          "content": "Santa",
+          "font": 2
+        },
+        {
+          "id": 358,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 173.98,
+            "t": 374.04,
+            "w": 19.68,
+            "h": 9.36
+          },
+          "content": "Cruz",
+          "font": 2
+        },
+        {
+          "id": 371,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 386.64,
+            "w": 24.4,
+            "h": 9.36
+          },
+          "content": "Santa",
+          "font": 2
+        },
+        {
+          "id": 372,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 173.98,
+            "t": 386.64,
+            "w": 33.16,
+            "h": 9.36
+          },
+          "content": "Barbara",
+          "font": 2
+        },
+        {
+          "id": 386,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 398.4,
+            "w": 16.6,
+            "h": 9.36
+          },
+          "content": "San",
+          "font": 2
+        },
+        {
+          "id": 387,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 166.19,
+            "t": 398.4,
+            "w": 17.03,
+            "h": 9.36
+          },
+          "content": "Luis",
+          "font": 2
+        },
+        {
+          "id": 388,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 185.86,
+            "t": 398.4,
+            "w": 29.56,
+            "h": 9.36
+          },
+          "content": "Obispo",
+          "font": 2
+        },
+        {
+          "id": 395,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 410.88,
+            "w": 31.12,
+            "h": 9.36
+          },
+          "content": "Orange",
+          "font": 2
+        },
+        {
+          "id": 404,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 423.35,
+            "w": 16.6,
+            "h": 9.36
+          },
+          "content": "San",
+          "font": 2
+        },
+        {
+          "id": 405,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 166.19,
+            "t": 423.35,
+            "w": 25.96,
+            "h": 9.36
+          },
+          "content": "Mateo",
+          "font": 2
+        },
+        {
+          "id": 413,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 435.83,
+            "w": 32.68,
+            "h": 9.36
+          },
+          "content": "Ventura",
+          "font": 2
+        },
+        {
+          "id": 439,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 266.75,
+            "w": 47.67,
+            "h": 9.36
+          },
+          "content": "Partnership",
+          "font": 2
+        },
+        {
+          "id": 440,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 344.97,
+            "t": 266.75,
+            "w": 26.92,
+            "h": 9.36
+          },
+          "content": "Health",
+          "font": 2
+        },
+        {
+          "id": 441,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 374.48,
+            "t": 266.75,
+            "w": 18.64,
+            "h": 9.36
+          },
+          "content": "Plan",
+          "font": 2
+        },
+        {
+          "id": 442,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 395.72,
+            "t": 266.75,
+            "w": 7.76,
+            "h": 9.36
+          },
+          "content": "of",
+          "font": 2
+        },
+        {
+          "id": 443,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 406.16,
+            "t": 266.75,
+            "w": 12.96,
+            "h": 9.36
+          },
+          "content": "CA",
+          "font": 2
+        },
+        {
+          "id": 478,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 362.41,
+            "w": 30.03,
+            "h": 9.36
+          },
+          "content": "Central",
+          "font": 2
+        },
+        {
+          "id": 479,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 327.34,
+            "t": 362.41,
+            "w": 39.28,
+            "h": 9.36
+          },
+          "content": "California",
+          "font": 2
+        },
+        {
+          "id": 480,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 369.21,
+            "t": 362.41,
+            "w": 32.56,
+            "h": 9.36
+          },
+          "content": "Alliance",
+          "font": 2
+        },
+        {
+          "id": 481,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 404.36,
+            "t": 362.41,
+            "w": 10.91,
+            "h": 9.36
+          },
+          "content": "for",
+          "font": 2
+        },
+        {
+          "id": 482,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 417.92,
+            "t": 362.41,
+            "w": 26.92,
+            "h": 9.36
+          },
+          "content": "Health",
+          "font": 2
+        },
+        {
+          "id": 489,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 392.53,
+            "w": 30.99,
+            "h": 9.36
+          },
+          "content": "CenCal",
+          "font": 2
+        },
+        {
+          "id": 499,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 410.88,
+            "w": 44.09,
+            "h": 9.36
+          },
+          "content": "CalOptima",
+          "font": 2
+        },
+        {
+          "id": 520,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 423.35,
+            "w": 26.92,
+            "h": 9.36
+          },
+          "content": "Health",
+          "font": 2
+        },
+        {
+          "id": 521,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 324.22,
+            "t": 423.35,
+            "w": 18.64,
+            "h": 9.36
+          },
+          "content": "Plan",
+          "font": 2
+        },
+        {
+          "id": 522,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 345.46,
+            "t": 423.35,
+            "w": 7.76,
+            "h": 9.36
+          },
+          "content": "of",
+          "font": 2
+        },
+        {
+          "id": 523,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 355.89,
+            "t": 423.35,
+            "w": 16.6,
+            "h": 9.36
+          },
+          "content": "San",
+          "font": 2
+        },
+        {
+          "id": 524,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 375.09,
+            "t": 423.35,
+            "w": 25.96,
+            "h": 9.36
+          },
+          "content": "Mateo",
+          "font": 2
+        },
+        {
+          "id": 544,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 435.83,
+            "w": 19.72,
+            "h": 9.36
+          },
+          "content": "Gold",
+          "font": 2
+        },
+        {
+          "id": 545,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 317.02,
+            "t": 435.83,
+            "w": 24.32,
+            "h": 9.36
+          },
+          "content": "Coast",
+          "font": 2
+        },
+        {
+          "id": 546,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 344.02,
+            "t": 435.83,
+            "w": 26.92,
+            "h": 9.36
+          },
+          "content": "Health",
+          "font": 2
+        },
+        {
+          "id": 547,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 373.53,
+            "t": 435.83,
+            "w": 18.64,
+            "h": 9.36
+          },
+          "content": "Plan",
+          "font": 2
+        },
+        {
+          "id": 552,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 77.51,
+            "t": 486.48,
+            "w": 27.48,
+            "h": 9.36
+          },
+          "content": "PCCM",
+          "font": 3
+        },
+        {
+          "id": 563,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 473.28,
+            "w": 15,
+            "h": 9.36
+          },
+          "content": "Los",
+          "font": 2
+        },
+        {
+          "id": 564,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 164.62,
+            "t": 473.28,
+            "w": 33.59,
+            "h": 9.36
+          },
+          "content": "Angeles",
+          "font": 2
+        },
+        {
+          "id": 577,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 146.99,
+            "t": 485.76,
+            "w": 16.6,
+            "h": 9.36
+          },
+          "content": "San",
+          "font": 2
+        },
+        {
+          "id": 578,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 166.18,
+            "t": 485.76,
+            "w": 40.48,
+            "h": 9.36
+          },
+          "content": "Francisco",
+          "font": 2
+        },
+        {
+          "id": 603,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 473.28,
+            "w": 21.84,
+            "h": 9.36
+          },
+          "content": "AIDS",
+          "font": 2
+        },
+        {
+          "id": 604,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 319.19,
+            "t": 473.28,
+            "w": 45.04,
+            "h": 9.36
+          },
+          "content": "Healthcare",
+          "font": 2
+        },
+        {
+          "id": 605,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 366.82,
+            "t": 473.28,
+            "w": 46.59,
+            "h": 9.36
+          },
+          "content": "Foundation",
+          "font": 2
+        },
+        {
+          "id": 618,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 294.71,
+            "t": 485.76,
+            "w": 27.48,
+            "h": 9.36
+          },
+          "content": "Family",
+          "font": 2
+        },
+        {
+          "id": 619,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 324.59,
+            "t": 485.76,
+            "w": 29.51,
+            "h": 9.36
+          },
+          "content": "Mosaic",
+          "font": 2
+        },
+        {
+          "id": 639,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 419.51,
+            "t": 448.8,
+            "w": 22.28,
+            "h": 9.36
+          },
+          "content": "Total",
+          "font": 3
+        },
+        {
+          "id": 640,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 444.47,
+            "t": 448.8,
+            "w": 27,
+            "h": 9.36
+          },
+          "content": "COHS",
+          "font": 3
+        },
+        {
+          "id": 641,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 474.11,
+            "t": 448.8,
+            "w": 48.94,
+            "h": 9.36
+          },
+          "content": "Enrollment",
+          "font": 3
+        },
+        {
+          "id": 686,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 272.39,
+            "t": 461.52,
+            "w": 37.52,
+            "h": 9.36
+          },
+          "content": "Subtotal",
+          "font": 3
+        },
+        {
+          "id": 687,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 312.59,
+            "t": 461.52,
+            "w": 12.52,
+            "h": 9.36
+          },
+          "content": "for",
+          "font": 3
+        },
+        {
+          "id": 688,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 327.71,
+            "t": 461.52,
+            "w": 44.6,
+            "h": 9.36
+          },
+          "content": "Two-Plan,",
+          "font": 3
+        },
+        {
+          "id": 689,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 374.99,
+            "t": 461.52,
+            "w": 39.56,
+            "h": 9.36
+          },
+          "content": "Regional",
+          "font": 3
+        },
+        {
+          "id": 690,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 417.23,
+            "t": 461.52,
+            "w": 29.72,
+            "h": 9.36
+          },
+          "content": "Model,",
+          "font": 3
+        },
+        {
+          "id": 691,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 449.63,
+            "t": 461.52,
+            "w": 21.88,
+            "h": 9.36
+          },
+          "content": "GMC",
+          "font": 3
+        },
+        {
+          "id": 692,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 474.11,
+            "t": 461.52,
+            "w": 16.64,
+            "h": 9.36
+          },
+          "content": "and",
+          "font": 3
+        },
+        {
+          "id": 693,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 493.43,
+            "t": 461.52,
+            "w": 27,
+            "h": 9.36
+          },
+          "content": "COHS",
+          "font": 3
+        },
+        {
+          "id": 712,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 427.31,
+            "t": 498.72,
+            "w": 22.28,
+            "h": 9.36
+          },
+          "content": "Total",
+          "font": 3
+        },
+        {
+          "id": 713,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 452.27,
+            "t": 498.72,
+            "w": 19.21,
+            "h": 9.36
+          },
+          "content": "PHP",
+          "font": 3
+        },
+        {
+          "id": 714,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 474.11,
+            "t": 498.72,
+            "w": 48.96,
+            "h": 9.36
+          },
+          "content": "Enrollment",
+          "font": 3
+        },
+        {
+          "id": 740,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 394.79,
+            "t": 511.2,
+            "w": 11.6,
+            "h": 9.36
+          },
+          "content": "All",
+          "font": 3
+        },
+        {
+          "id": 741,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 409.07,
+            "t": 511.2,
+            "w": 32.32,
+            "h": 9.36
+          },
+          "content": "Models",
+          "font": 3
+        },
+        {
+          "id": 742,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 443.98,
+            "t": 511.2,
+            "w": 22.28,
+            "h": 9.36
+          },
+          "content": "Total",
+          "font": 3
+        },
+        {
+          "id": 743,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 468.94,
+            "t": 511.2,
+            "w": 54.15,
+            "h": 9.36
+          },
+          "content": "Enrollments",
+          "font": 3
+        },
+        {
+          "id": 764,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 38.27,
+            "t": 535.08,
+            "w": 32.11,
+            "h": 9.36
+          },
+          "content": "Source:",
+          "font": 2
+        },
+        {
+          "id": 765,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 78.34,
+            "t": 535.08,
+            "w": 19.72,
+            "h": 9.36
+          },
+          "content": "Data",
+          "font": 2
+        },
+        {
+          "id": 766,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 100.66,
+            "t": 535.08,
+            "w": 48.03,
+            "h": 9.36
+          },
+          "content": "Warehouse",
+          "font": 2
+        },
+        {
+          "id": 774,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 590.63,
+            "t": 62.88,
+            "w": 33.63,
+            "h": 9.36
+          },
+          "content": "164,380",
+          "font": 2
+        },
+        {
+          "id": 782,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 590.63,
+            "t": 74.76,
+            "w": 33.63,
+            "h": 9.36
+          },
+          "content": "126,547",
+          "font": 2
+        },
+        {
+          "id": 789,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 86.64,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "74,620",
+          "font": 2
+        },
+        {
+          "id": 796,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 98.4,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "59,989",
+          "font": 2
+        },
+        {
+          "id": 803,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 111,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "71,831",
+          "font": 2
+        },
+        {
+          "id": 811,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 590.63,
+            "t": 122.88,
+            "w": 33.63,
+            "h": 9.36
+          },
+          "content": "264,639",
+          "font": 2
+        },
+        {
+          "id": 818,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 134.75,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "72,404",
+          "font": 2
+        },
+        {
+          "id": 825,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 146.63,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "50,415",
+          "font": 2
+        },
+        {
+          "id": 833,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 590.63,
+            "t": 158.39,
+            "w": 33.63,
+            "h": 9.36
+          },
+          "content": "206,430",
+          "font": 2
+        },
+        {
+          "id": 843,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 582.83,
+            "t": 171.36,
+            "w": 41.43,
+            "h": 9.36
+          },
+          "content": "1,091,255",
+          "font": 3
+        },
+        {
+          "id": 850,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 183.48,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "36,006",
+          "font": 2
+        },
+        {
+          "id": 857,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 596.02,
+            "t": 195.48,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "37,243",
+          "font": 2
+        },
+        {
+          "id": 864,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 207.24,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "28,398",
+          "font": 2
+        },
+        {
+          "id": 872,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 590.63,
+            "t": 219.12,
+            "w": 33.63,
+            "h": 9.36
+          },
+          "content": "113,220",
+          "font": 2
+        },
+        {
+          "id": 880,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 590.63,
+            "t": 231,
+            "w": 33.63,
+            "h": 9.36
+          },
+          "content": "112,271",
+          "font": 2
+        },
+        {
+          "id": 887,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 242.88,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "52,674",
+          "font": 2
+        },
+        {
+          "id": 894,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 254.76,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "11,242",
+          "font": 2
+        },
+        {
+          "id": 901,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 266.63,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "49,911",
+          "font": 2
+        },
+        {
+          "id": 908,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 278.51,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "29,149",
+          "font": 2
+        },
+        {
+          "id": 914,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 600.95,
+            "t": 290.39,
+            "w": 23.31,
+            "h": 9.36
+          },
+          "content": "7,360",
+          "font": 2
+        },
+        {
+          "id": 920,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 600.95,
+            "t": 302.27,
+            "w": 23.31,
+            "h": 9.36
+          },
+          "content": "2,940",
+          "font": 2
+        },
+        {
+          "id": 927,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 314.15,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "61,763",
+          "font": 2
+        },
+        {
+          "id": 934,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 326.02,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "16,715",
+          "font": 2
+        },
+        {
+          "id": 940,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 600.95,
+            "t": 337.78,
+            "w": 23.31,
+            "h": 9.36
+          },
+          "content": "4,542",
+          "font": 2
+        },
+        {
+          "id": 948,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 590.86,
+            "t": 350.52,
+            "w": 33.63,
+            "h": 9.36
+          },
+          "content": "123,907",
+          "font": 2
+        },
+        {
+          "id": 956,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 590.86,
+            "t": 362.4,
+            "w": 33.63,
+            "h": 9.36
+          },
+          "content": "147,397",
+          "font": 2
+        },
+        {
+          "id": 963,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 596.02,
+            "t": 374.28,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "69,458",
+          "font": 2
+        },
+        {
+          "id": 971,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 590.63,
+            "t": 386.64,
+            "w": 33.63,
+            "h": 9.36
+          },
+          "content": "117,609",
+          "font": 2
+        },
+        {
+          "id": 978,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 595.79,
+            "t": 398.4,
+            "w": 28.47,
+            "h": 9.36
+          },
+          "content": "55,761",
+          "font": 2
+        },
+        {
+          "id": 986,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 590.63,
+            "t": 410.88,
+            "w": 33.63,
+            "h": 9.36
+          },
+          "content": "783,079",
+          "font": 2
+        },
+        {
+          "id": 994,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 590.63,
+            "t": 423.35,
+            "w": 33.63,
+            "h": 9.36
+          },
+          "content": "113,202",
+          "font": 2
+        },
+        {
+          "id": 1002,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 590.63,
+            "t": 435.83,
+            "w": 33.63,
+            "h": 9.36
+          },
+          "content": "202,217",
+          "font": 2
+        },
+        {
+          "id": 1012,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 582.83,
+            "t": 448.8,
+            "w": 41.43,
+            "h": 9.36
+          },
+          "content": "2,176,064",
+          "font": 3
+        },
+        {
+          "id": 1023,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 577.67,
+            "t": 461.28,
+            "w": 46.58,
+            "h": 9.36
+          },
+          "content": "10,132,022",
+          "font": 3
+        },
+        {
+          "id": 1027,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 608.75,
+            "t": 473.28,
+            "w": 15.52,
+            "h": 9.36
+          },
+          "content": "828",
+          "font": 2
+        },
+        {
+          "id": 1030,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 613.91,
+            "t": 485.76,
+            "w": 10.36,
+            "h": 9.36
+          },
+          "content": "25",
+          "font": 2
+        },
+        {
+          "id": 1034,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 608.75,
+            "t": 498.72,
+            "w": 15.52,
+            "h": 9.36
+          },
+          "content": "853",
+          "font": 3
+        },
+        {
+          "id": 1045,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 577.67,
+            "t": 511.2,
+            "w": 46.58,
+            "h": 9.36
+          },
+          "content": "10,132,875",
+          "font": 3
+        },
+        {
+          "id": 1054,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 587.99,
+            "t": 535.08,
+            "w": 36.27,
+            "h": 9.36
+          },
+          "content": "12/14/15",
+          "font": 2
+        },
+        {
+          "id": 1056,
+          "type": "word",
+          "properties": {},
+          "metadata": [],
+          "box": {
+            "l": 627.71,
+            "t": 448.66,
+            "w": 2.18,
+            "h": 8.64
+          },
+          "content": ".",
+          "font": 4
+        }
+      ]
+    }
+  ],
+  "fonts": [
+    {
+      "id": 1,
+      "name": "Arial-BoldMT",
+      "size": 10.2,
+      "weight": "bold",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    },
+    {
+      "id": 2,
+      "name": "ArialMT",
+      "size": 9.36,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    },
+    {
+      "id": 3,
+      "name": "Arial-BoldMT",
+      "size": 9.36,
+      "weight": "bold",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    },
+    {
+      "id": 4,
+      "name": "LJQIKX+Calibri",
+      "size": 8.64,
+      "weight": "medium",
+      "isItalic": false,
+      "isUnderline": false,
+      "color": "#000000",
+      "sizeUnit": "px"
+    }
+  ]
+}

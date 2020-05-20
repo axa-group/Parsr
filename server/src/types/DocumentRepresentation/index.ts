@@ -26,6 +26,7 @@ export * from './Page';
 export * from './Paragraph';
 export * from './Table';
 export * from './TableCell';
+export * from './SpannedTableCell';
 export * from './TableRow';
 export * from './Text';
 export * from './Word';

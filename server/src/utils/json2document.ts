@@ -34,6 +34,7 @@ import {
   List,
   Page,
   Paragraph,
+  SpannedTableCell,
   Table,
   TableCell,
   TableOfContents,
@@ -221,20 +222,32 @@ function tableFromJson(tableObj: JsonElement, fonts: Font[]): Table {
 
       if (Array.isArray(rowObj.content)) {
         rowObj.content.forEach(cellObj => {
-          if (Array.isArray(cellObj.content)) {
-            const content: Element[] = cellObj.content
-              .map(e => elementsFromJson(e, fonts))
-              .filter(e => e instanceof Element) as Element[];
-            const newCell: TableCell = new TableCell(
-              new BoundingBox(cellObj.box.l, cellObj.box.t, cellObj.box.w, cellObj.box.h),
-              content,
-              cellObj.rowspan,
-              cellObj.colspan,
-            );
+          if (cellObj.type === 'table-cell') {
+            if (Array.isArray(cellObj.content)) {
+              const content: Element[] = cellObj.content
+                .map(e => elementsFromJson(e, fonts))
+                .filter(e => e instanceof Element) as Element[];
+              const newCell: TableCell = new TableCell(
+                new BoundingBox(cellObj.box.l, cellObj.box.t, cellObj.box.w, cellObj.box.h),
+                content,
+                cellObj.rowspan,
+                cellObj.colspan,
+              );
 
-            newCell.id = cellObj.id;
-            newCell.properties = propertiesFromJson(cellObj.properties);
-            cellsDS.push(newCell);
+              newCell.id = cellObj.id;
+              newCell.properties = propertiesFromJson(cellObj.properties);
+              cellsDS.push(newCell);
+            }
+          } else if (cellObj.type === 'spanned-table-cell') {
+            const spannedCell: SpannedTableCell = new SpannedTableCell(
+              new BoundingBox(cellObj.box.l, cellObj.box.t, cellObj.box.w, cellObj.box.h),
+              cellObj.spanDirection,
+            );
+            spannedCell.colspan = cellObj.colspan;
+            spannedCell.rowspan = cellObj.rowspan;
+            spannedCell.id = cellObj.id;
+            spannedCell.properties = propertiesFromJson(cellObj.properties);
+            cellsDS.push(spannedCell);
           }
         });
       }

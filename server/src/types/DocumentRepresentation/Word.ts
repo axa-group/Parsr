@@ -43,7 +43,7 @@ export class Word extends Text {
     return this;
   }
 
-  public toMarkDown(): string {
+  public toMarkdown(): string {
     let mdString: string;
 
     if (this.properties.targetURL) {

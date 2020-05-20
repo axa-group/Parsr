@@ -224,7 +224,7 @@ function xmlNodeToLink(node: any): DumpPdfLink {
 function xmlToLinkingNode(node: any): DumpPdfLinkingNode {
   return {
     nodeId: node.$.id,
-    children: node.list.ref.map(r => r.$.id),
+    children: (node.list.ref || []).map(r => r.$.id),
   };
 }
 
