@@ -30,6 +30,7 @@
     {
       "files": ["*.json"],
       "rules": {
+        "key-spacing": [2, { "beforeColon": false }],
         "comma-dangle": [2, { "objects": "never" }],
         "semi": [2, "never"],
         "quotes": [2, "double", { "avoidEscape": true }]
