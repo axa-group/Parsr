@@ -60,7 +60,7 @@ const defaultExtractor: TableExtractor = {
   readTables(inputFile: string, options: Options): Promise<TableExtractorResult> {
     let pages: string = 'all';
     let flavor: string = 'lattice';
-    const lineScale: string = '64';
+    const lineScale: string = '45';
     if (options.pages.length !== 0) {
       pages = options.pages.toString();
     }
