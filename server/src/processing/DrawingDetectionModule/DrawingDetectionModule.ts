@@ -51,12 +51,16 @@ export class DrawingDetectionModule extends Module {
     if (columns.length > 1) {
       // divide the box into columns.length cols and recall function for each one
       columns.forEach(svgColumn => {
-        this.groupShapesIntoDrawings(svgColumn, box, foundDrawings);
+        const d = new Drawing(null, svgColumn);
+        d.updateBoundingBox();
+        this.groupShapesIntoDrawings(svgColumn, d.box, foundDrawings);
       });
     } else if (rows.length > 1) {
       // divide the box into rows.length rows and recall function for each one
       rows.forEach(svgRow => {
-        this.groupShapesIntoDrawings(svgRow, box, foundDrawings);
+        const d = new Drawing(null, svgRow);
+        d.updateBoundingBox();
+        this.groupShapesIntoDrawings(svgRow, d.box, foundDrawings);
       });
     } else {
       const lines = columns[0];
@@ -78,7 +82,7 @@ export class DrawingDetectionModule extends Module {
     const groupedColumns = this.processGroup(svgLines, box, vControlLine);
 
     // horizontal line
-    const hControlLine = new SvgLine(null, 1, box.left, box.top, box.width, box.top);
+    const hControlLine = new SvgLine(null, 1, box.left, box.top, box.right, box.top);
     const groupedRows = this.processGroup(svgLines, box, hControlLine);
 
     return {
@@ -102,12 +106,12 @@ export class DrawingDetectionModule extends Module {
     const processedLineIds: number[] = [];
     let currentLineGroup: SvgLine[] = [];
 
-    // until controlLine reaches the v/h end of the page
+    // until controlLine reaches the v/h end of the box
     // if controlLine is vertical, the sweep is done from left to right
     // if controlLine is horizontal, the sweep is done from top to bottom
     const type = controlLine.isVertical() ? 'h' : 'v';
     while (
-      (type === 'v' ? controlLine.toY : controlLine.toX) < (type === 'v' ? box.height : box.width)
+      (type === 'v' ? controlLine.toY : controlLine.toX) < (type === 'v' ? box.bottom : box.right)
     ) {
       const intersectingLines = lines.filter(
         l => controlLine.intersects(l) || this.controlLineIsOver(l, controlLine),
@@ -144,9 +148,9 @@ export class DrawingDetectionModule extends Module {
    */
   private controlLineIsOver(line: SvgLine, controlLine: SvgLine): boolean {
     const is1pxAroundLineX =
-      controlLine.fromX + 0.5 >= line.fromX && controlLine.fromX - 0.5 <= line.fromX;
+      controlLine.fromX + 1 >= line.fromX && controlLine.fromX - 1 <= line.fromX;
     const is1pxAroundLineY =
-      controlLine.fromY + 0.5 >= line.fromY && controlLine.fromY - 0.5 <= line.fromY;
+      controlLine.fromY + 1 >= line.fromY && controlLine.fromY - 1 <= line.fromY;
     return (
       (controlLine.isVertical() && is1pxAroundLineX) ||
       (controlLine.isHorizontal() && is1pxAroundLineY)
