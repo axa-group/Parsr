@@ -327,7 +327,7 @@ export function removeNull(page: Page): Page {
   if (page.elements.length - newElements.length !== 0) {
     logger.debug(
       `Null elements removed for page #${page.pageNumber}: ${page.elements.length -
-        newElements.length}`,
+      newElements.length}`,
     );
     page.elements = newElements;
   }
@@ -361,11 +361,11 @@ export function getPageRegex(): RegExp {
 
   const pageRegex = new RegExp(
     `^(?:` +
-      `(?:${pagePrefix}${pageNumber})|` +
-      `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
-      `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
-      `(?:${before}${pageNumber}${after})` +
-      `)$`,
+    `(?:${pagePrefix}${pageNumber})|` +
+    `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
+    `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
+    `(?:${before}${pageNumber}${after})` +
+    `)$`,
     'i',
   );
 
@@ -801,4 +801,10 @@ export function isPerimeterLine(l: SvgLine, box: BoundingBox): boolean {
 
   return (l.isVertical() && (xMin <= 0 || xMax >= Math.floor(box.width)))
     || (l.isHorizontal() && (yMin <= 0 || yMax >= Math.floor(box.height)));
+}
+
+export function isPixelLine(l: SvgLine): boolean {
+  const w = Math.abs(l.fromX - l.toX);
+  const h = Math.abs(l.fromY - l.toY);
+  return w < 0.5 && h < 0.5;
 }

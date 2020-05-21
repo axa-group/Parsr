@@ -20,7 +20,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import { BoundingBox, Element, Font, Image, Word } from '../../types/DocumentRepresentation';
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import { SvgShape } from '../../types/DocumentRepresentation/SvgShape';
-import { isPerimeterLine } from '../../utils';
+import { isPerimeterLine, isPixelLine } from '../../utils';
 import logger from '../../utils/Logger';
 import { OperationState } from './OperationState';
 import { matrixToCoords } from './operators/helper';
@@ -311,6 +311,6 @@ export class OperatorsManager {
 
     // filter lines that follow the perimeter of the page
     const pageBox = new BoundingBox(0, 0, this.viewport.width, this.viewport.height);
-    parsedElements.push(...lines.filter(l => !isPerimeterLine(l, pageBox)));
+    parsedElements.push(...lines.filter(l => !isPerimeterLine(l, pageBox) && !isPixelLine(l)));
   }
 }

@@ -31,7 +31,7 @@ import { PdfminerFigure } from '../../types/PdfminerFigure';
 import { PdfminerPage } from '../../types/PdfminerPage';
 import { PdfminerShape } from '../../types/PdfminerShape';
 import { PdfminerText } from '../../types/PdfminerText';
-import { isPerimeterLine } from '../../utils';
+import { isPerimeterLine, isPixelLine } from '../../utils';
 import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 
@@ -238,7 +238,7 @@ function getPage(pageObj: PdfminerPage): Page {
   if (pageObj.shapes !== undefined) {
     pageObj.shapes.forEach(shape => {
       const shapes = pdfminerShapeToSvgShapes(shape, pageBBox.height)
-        .filter(l => !isPerimeterLine(l, pageBBox));
+        .filter(l => !isPerimeterLine(l, pageBBox) && !isPixelLine(l));
       elements.push(...shapes);
     });
   }
@@ -548,9 +548,9 @@ function breakLineIntoWords(
 
   return wMode
     ? words.map(w => {
-        w.properties.writeMode = wMode;
-        return w;
-      })
+      w.properties.writeMode = wMode;
+      return w;
+    })
     : words;
 }
 
