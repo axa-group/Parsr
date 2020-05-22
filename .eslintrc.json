@@ -43,6 +43,7 @@
     "server/src/processing/HeadingDetectionDTModule/model.js",
     "server/src/processing/MLHeadingDetectionModule/train_model/model.js",
     "*.py",
-    "test/**/*.pdf"
+    "test/**/*.pdf",
+    "*.md"
   ]
 }

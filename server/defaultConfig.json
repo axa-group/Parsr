@@ -6,7 +6,13 @@
     "language": ["eng", "fra"]
   },
   "cleaner": [
-    "drawing-detection",
+    [
+      "drawing-detection",
+      {
+        "mergeCloseLines": true,
+        "tolerance": 4
+      }
+    ],
     [
       "image-detection",
       {
@@ -24,27 +30,6 @@
       "redundancy-detection",
       {
         "minOverlap": 0.5
-      }
-    ],
-    [
-      "table-detection",
-      {
-        "runConfig": [
-          {
-            "pages": [],
-            "flavor": "lattice"
-          }
-        ]
-      }
-    ],
-    [
-      "table-detection-2",
-      {
-        "runConfig": [
-          {
-            "pages": []
-          }
-        ]
       }
     ],
     [

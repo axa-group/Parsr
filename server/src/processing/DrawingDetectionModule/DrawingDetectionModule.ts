@@ -18,12 +18,24 @@ import { BoundingBox, Document, Drawing } from '../../types/DocumentRepresentati
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
+import * as defaultConfig from './defaultConfig.json';
+
+interface Options {
+  mergeCloseLines?: boolean;
+  tolerance?: number;
+}
+
+const defaultOptions = (defaultConfig as any) as Options;
 
 /**
  * groups together SvgLines that are visually connected
  */
-export class DrawingDetectionModule extends Module {
+export class DrawingDetectionModule extends Module<Options> {
   public static moduleName = 'drawing-detection';
+
+  constructor(options?: Options) {
+    super(options, defaultOptions);
+  }
 
   public main(doc: Document): Promise<Document> {
     if (doc.getElementsOfType<Drawing>(Drawing).length > 0) {
@@ -66,8 +78,11 @@ export class DrawingDetectionModule extends Module {
       const lines = columns[0];
       if (lines) {
         // a Drawing was found, the content in columns and rows is the same
-        const drawing = new Drawing(null, lines);
+        let drawing = new Drawing(null, lines);
         drawing.updateBoundingBox();
+        if (this.options.mergeCloseLines) {
+          drawing = this.mergeCloseLines(drawing);
+        }
         foundDrawings.push(drawing);
       }
     }
@@ -147,13 +162,109 @@ export class DrawingDetectionModule extends Module {
    * this avoids controlLine to jump over the line without detecting it
    */
   private controlLineIsOver(line: SvgLine, controlLine: SvgLine): boolean {
-    const is1pxAroundLineX =
-      controlLine.fromX + 1 >= line.fromX && controlLine.fromX - 1 <= line.fromX;
-    const is1pxAroundLineY =
-      controlLine.fromY + 1 >= line.fromY && controlLine.fromY - 1 <= line.fromY;
+    const isAroundLineX = controlLine.fromX + 1 >= line.fromX && controlLine.fromX - 1 <= line.fromX;
+    const isAroundLineY = controlLine.fromY + 1 >= line.fromY && controlLine.fromY - 1 <= line.fromY;
     return (
-      (controlLine.isVertical() && is1pxAroundLineX) ||
-      (controlLine.isHorizontal() && is1pxAroundLineY)
+      (controlLine.isVertical() && line.isVertical() && isAroundLineX) ||
+      (controlLine.isHorizontal() && line.isHorizontal() && isAroundLineY)
     );
+  }
+
+  private mergeCloseLines(d: Drawing): Drawing {
+    const hControlLine = new SvgLine(null, 1, d.left, d.top, d.right, d.top);
+    const newHLines = this.groupAndMerge((d.content as SvgLine[]).filter(l => l.isHorizontal()), hControlLine, d.bottom);
+
+    const vControlLine = new SvgLine(null, 1, d.left, d.top, d.left, d.bottom);
+    const newVLines = this.groupAndMerge((d.content as SvgLine[]).filter(l => l.isVertical()), vControlLine, d.right);
+
+    const otherLines = (d.content as SvgLine[]).filter(l => !l.isHorizontal() && !l.isVertical());
+    d.content = [...newHLines, ...newVLines, ...otherLines];
+    return d;
+  }
+
+  private groupAndMerge(lines: SvgLine[], controlLine: SvgLine, maxValue: number): SvgLine[] {
+    const type = controlLine.isVertical() ? 'v' : 'h';
+
+    const ret = [];
+    while ((type === 'h' ? controlLine.toY : controlLine.toX) <= maxValue) {
+      const mergeLineGroup = lines.filter(l => this.controlLineIsOver(l, controlLine));
+      let newLines = mergeLineGroup;
+      let length;
+
+      /* each iteration, the reduce function is applied to newLines array,
+        resulting on a new array that could be reduced again. 
+        This do-while reduces the array until it starts giving the same result,
+        meaning all lines in the array are disconnected and cannot be merged.
+       */
+      do {
+        length = newLines.length;
+        newLines = newLines.reduce(this.mergeLines.bind(this), []);
+      } while (newLines.length < length);
+
+      ret.push(...newLines.filter(l => {
+        return !ret.map(l => l.id).includes(l.id) &&
+          ret.every(hLine => !this.linesAreConnected(hLine, l));
+      }));
+
+      controlLine.move(type === 'h' ? 0 : 1, type === 'h' ? 1 : 0);
+    }
+
+    return ret;
+  }
+
+  private linesAreConnected(l1: SvgLine, l2: SvgLine): boolean {
+    if (l1.isVertical() && l2.isVertical()) {
+      const maxY = Math.max(l1.fromY, l1.toY, l2.fromY, l2.toY);
+      const minY = Math.min(l1.fromY, l1.toY, l2.fromY, l2.toY);
+      const maxX = Math.max(l1.fromX, l1.toX, l2.fromX, l2.toX);
+      const minX = Math.min(l1.fromX, l1.toX, l2.fromX, l2.toX);
+      const l1H = Math.abs(l1.fromY - l1.toY);
+      const l2H = Math.abs(l2.fromY - l2.toY);
+      return maxY - minY <= l1H + l2H + this.options.tolerance &&
+        maxX - minX <= this.options.tolerance;
+    } else if (l1.isHorizontal() && l2.isHorizontal()) {
+      const maxY = Math.max(l1.fromY, l1.toY, l2.fromY, l2.toY);
+      const minY = Math.min(l1.fromY, l1.toY, l2.fromY, l2.toY);
+      const maxX = Math.max(l1.fromX, l1.toX, l2.fromX, l2.toX);
+      const minX = Math.min(l1.fromX, l1.toX, l2.fromX, l2.toX);
+      const l1W = Math.abs(l1.fromX - l1.toX);
+      const l2W = Math.abs(l2.fromX - l2.toX);
+      return maxX - minX <= l1W + l2W + this.options.tolerance &&
+        maxY - minY <= this.options.tolerance;
+    }
+
+    return false;
+  }
+
+  /**
+   * reduce function used to merge lines together.
+   * @param disconnectedLines array of disconnected lines. return value of the reduce function.
+   * @param line current line of the reduce function
+   */
+  private mergeLines(disconnectedLines: SvgLine[], line: SvgLine, _, _originalArray: SvgLine[]): SvgLine[] {
+    let foundMatch = false;
+    const ret = disconnectedLines.map(dl => {
+      if (line.isVertical() && this.linesAreConnected(line, dl)) {
+        const minY = Math.min(line.fromY, line.toY, dl.fromY, dl.toY);
+        const maxY = Math.max(line.fromY, line.toY, dl.fromY, dl.toY);
+        foundMatch = true;
+        dl.fromY = minY;
+        dl.toY = maxY;
+      } else if (line.isHorizontal() && this.linesAreConnected(line, dl)) {
+        const minX = Math.min(line.fromX, line.toX, dl.fromX, dl.toX);
+        const maxX = Math.max(line.fromX, line.toX, dl.fromX, dl.toX);
+        foundMatch = true;
+        dl.fromX = minX;
+        dl.toX = maxX;
+
+      }
+      return dl;
+    });
+
+    if (!foundMatch) {
+      ret.push(line);
+    }
+
+    return ret;
   }
 }
