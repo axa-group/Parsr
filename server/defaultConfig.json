@@ -33,6 +33,27 @@
       }
     ],
     [
+      "table-detection",
+      {
+        "runConfig": [
+          {
+            "pages": [],
+            "flavor": "lattice"
+          }
+        ]
+      }
+    ],
+    [
+      "table-detection-2",
+      {
+        "runConfig": [
+          {
+            "pages": []
+          }
+        ]
+      }
+    ],
+    [
       "header-footer-detection",
       {
         "ignorePages": [],
