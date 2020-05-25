@@ -185,7 +185,7 @@ export class DrawingDetectionModule extends Module<Options> {
   private groupAndMerge(lines: SvgLine[], controlLine: SvgLine, maxValue: number): SvgLine[] {
     const type = controlLine.isVertical() ? 'v' : 'h';
 
-    const ret = [];
+    const mergedLines = [];
     while ((type === 'h' ? controlLine.toY : controlLine.toX) <= maxValue) {
       const mergeLineGroup = lines.filter(l => this.controlLineIsOver(l, controlLine));
       let newLines = mergeLineGroup;
@@ -201,15 +201,15 @@ export class DrawingDetectionModule extends Module<Options> {
         newLines = newLines.reduce(this.mergeLines.bind(this), []);
       } while (newLines.length < length);
 
-      ret.push(...newLines.filter(l => {
-        return !ret.map(l => l.id).includes(l.id) &&
-          ret.every(hLine => !this.linesAreConnected(hLine, l));
+      mergedLines.push(...newLines.filter(l => {
+        return !mergedLines.map(l => l.id).includes(l.id) &&
+        mergedLines.every(hLine => !this.linesAreConnected(hLine, l));
       }));
 
       controlLine.move(type === 'h' ? 0 : 1, type === 'h' ? 1 : 0);
     }
 
-    return ret;
+    return mergedLines;
   }
 
   private linesAreConnected(l1: SvgLine, l2: SvgLine): boolean {
