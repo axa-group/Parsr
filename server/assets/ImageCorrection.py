@@ -48,8 +48,8 @@ def detect_rotation(image):
     image_y[:, :] = img_gray[:, :, 0]
 
     image_blurred = cv.GaussianBlur(image_y, (3, 3), 0)
-    img_edges = cv.Canny(image_blurred, 250, 250, aperture_size=3)
-    lines = cv.HoughLinesP(img_edges, 1, math.pi / 180.0, 100, min_line_length=100, max_line_gap=20)
+    img_edges = cv.Canny(image_blurred, 250, 250, apertureSize=3)
+    lines = cv.HoughLinesP(img_edges, 1, math.pi / 180.0, 100, minLineLength=100, maxLineGap=20)
 
     test_image = image.copy()
     angles = []
@@ -79,7 +79,7 @@ def rotate_image(mat, angle):
   rotation_mat[0, 2] += bound_w/2 - image_center[0]
   rotation_mat[1, 2] += bound_h/2 - image_center[1]
 
-  rotated_mat = cv.warpAffine(mat, rotation_mat, (bound_w, bound_h), border_value=(255,255,255))
+  rotated_mat = cv.warpAffine(mat, rotation_mat, (bound_w, bound_h), borderValue=(255,255,255))
   return rotated_mat
 
 def get_rotation_data(original_image, rotated_image, angle, output_file):
@@ -87,14 +87,14 @@ def get_rotation_data(original_image, rotated_image, angle, output_file):
     (rh, rw) = rotated_image.shape[:2]
     output_data = dict()
     origin = dict()
-    origin['x'] = str(int(rw/2))
-    origin['y'] = str(int(rh/2))
+    origin['x'] = int(rw/2)
+    origin['y'] = int(rh/2)
     output_data['origin'] = origin
     translation = dict()
-    translation['x'] = str(int((ow-rw)/2))
-    translation['y'] = str(int((oh-rh)/2))
+    translation['x'] = int((ow-rw)/2)
+    translation['y'] = int((oh-rh)/2)
     output_data['translation'] = translation
-    output_data['degrees'] = str(int(angle))
+    output_data['degrees'] = int(angle)
     output_data['filename'] = output_file
 
     return json.dumps(output_data)
