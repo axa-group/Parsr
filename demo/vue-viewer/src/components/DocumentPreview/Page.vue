@@ -207,7 +207,7 @@ export default {
           this.page.rotation.translation.x +
           'px) translateY(' +
           this.page.rotation.translation.y +
-          'px) rotate(-' +
+          'px) rotate(' +
           this.page.rotation.degrees +
           'deg)'
         );
