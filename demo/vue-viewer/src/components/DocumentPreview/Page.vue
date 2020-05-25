@@ -390,4 +390,7 @@ svg.Drawing {
 svg.Drawing.highlighted {
   display: block;
 }
+svg.Drawing.highlighted line {
+  stroke: lightsalmon;
+}
 </style>
