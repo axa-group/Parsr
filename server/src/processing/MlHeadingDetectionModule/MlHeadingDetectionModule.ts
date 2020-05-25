@@ -247,6 +247,18 @@ export class MlHeadingDetectionModule extends Module {
     return textCase;
   }
 
+  /*
+  🤔 Maybe we should also use 'page font ratio' as feature because I really think 
+  that it could help a lot to decrease false positives. For instance think about 
+  one document with a lot of pages with too much text but first page only contains one
+  H1 and two or three or four lines in the bottom part with some annotation text.
+  Font ratio for H1 could be like 0.0001 (for instance) and for bottom paragraph could be 
+  0.002.
+  But if we take care of page ratio then we could have:
+  - H1 ratio 0.01
+  - Bottom paragraph 0.99
+  Having this ratios I really think that bottom paragraph should not be considered as header
+  */
   private fontRatio(document: Document, font: Font) {
     const allWords = document.getElementsOfType<Word>(Word, true);
     const allFonts = [...allWords.map(w => w.font).filter(f => f !== undefined)];
@@ -310,6 +322,9 @@ export class MlHeadingDetectionModule extends Module {
   /**
    * Returns most used font in document
    * @param doc The document to extract heading fonts
+   * 🤔 I'm not sure if having only one 'main font' is enought because a 
+   * normal document should have only one main font for texts but there 
+   * are a lot of cases that one document uses 'main font' and 'secodnary font'
    */
   private commonFont(doc: Document): Font {
     return utils.findMostCommonFont(
@@ -358,6 +373,8 @@ export class MlHeadingDetectionModule extends Module {
   /**
    * Returns an array of fonts to be used for heading detection
    * @param doc The document to extract heading fonts
+   * 🤔 Should this func renamed to allFonts ? or maybe instead of retunring all fonts
+   * we should filter the list with ones detected by 'commonFont'
    */
   private headingFonts(doc: Document): Font[] {
     const allWords = doc.getElementsOfType<Word>(Word, true);
