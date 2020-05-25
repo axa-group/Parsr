@@ -10,7 +10,7 @@
       "drawing-detection",
       {
         "mergeCloseLines": true,
-        "tolerance": 4
+        "tolerance": 2
       }
     ],
     [
