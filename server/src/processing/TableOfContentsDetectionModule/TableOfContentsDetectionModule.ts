@@ -62,12 +62,12 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         nbInteger = allStoredInteger.length;
         logger.info('nbNumber: ' + nbNumber);
         logger.info('nbInteger: ' + nbInteger);
-        const allIntegerParam = [];
+        let allIntegerParam = [];
 
         // Find for each stored integer in array how many of integer in the followings indexes are >=
         // then it is stored in an array integerParam [integer, integerSup, indexOfarray]
         if (nbInteger > 2) {
-          this.setAndStoreIntegerParam(allStoredInteger, allIntegerParam);
+          allIntegerParam = this.setAndStoreIntegerParam(allStoredInteger);
           logger.info('allIntegerParam= ' + allIntegerParam.toString());
           allIntegerParam.sort(this.sortFunction);
           logger.info('allIntegerParamSorted= ' + allIntegerParam.toString());
@@ -81,7 +81,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
-        ((nbNumber > 2 && nbInteger / nbNumber > 0.5 && mostIntegerInOrder / nbInteger > 0.7) ||
+        ((nbNumber > 2 && nbInteger / nbNumber > 0.5 && mostIntegerInOrder / nbInteger >= 0.7) ||
           (nbRomanNumbers > 2 && nbInteger < nbRomanNumbers)) &&
         tocItemParagraphs.length > 0 &&
         tocItemParagraphs.length >=
@@ -159,7 +159,8 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     return allStoredInteger;
   }
 
-  private setAndStoreIntegerParam(allStoredInteger: number[], allIntegerParam: any[]) {
+  private setAndStoreIntegerParam(allStoredInteger: number[]): any[] {
+    let allIntegerParam: any[] = [];
     let indexValue = 0;
     while (indexValue < allStoredInteger.length) {
       let indexToCompare = indexValue + 1;
@@ -174,41 +175,53 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       allIntegerParam.push(integerParam);
       indexValue++;
     }
+    return allIntegerParam;
   }
 
   private sortFunction(a, b) {
     if (a[1] === b[1]) {
       return 0;
     } else {
-      return a[0] < b[0] ? -1 : 1;
+      return a[1] > b[1] ? -1 : 1;
     }
   }
 
   private findNumberOfIntegerAscendingOrder(allIntegerParam): number {
     let maxIntegerInOrder = 0;
-    for (let iStart = 0; iStart < allIntegerParam.length / 2; iStart++) {
+    let iStart = 0;
+    let nbIntegerInOrder = 1;
+    while (iStart < allIntegerParam.length / 2 && allIntegerParam[iStart][1] >= nbIntegerInOrder) {
+      logger.info('maxIntegerInOrder= ' + maxIntegerInOrder);
       let step = 1;
       let iLastInOrder = iStart;
       let iTest = iLastInOrder + step;
-      let nbIntegerInOrder = 1;
 
       while (iTest < allIntegerParam.length) {
+        logger.info('iStart= ' + iStart + 'value= ' + allIntegerParam[iStart][0]);
+        logger.info('iLastInOrder= ' + iLastInOrder + 'value= ' + allIntegerParam[iLastInOrder][0]);
+        logger.info('itest= ' + iTest + 'value= ' + allIntegerParam[iTest][0]);
         if (
           allIntegerParam[iTest][0] >= allIntegerParam[iLastInOrder][0] &&
-          allIntegerParam[iTest][2] > allIntegerParam[iLastInOrder][2] &&
-          nbIntegerInOrder + allIntegerParam[iTest][1] > 0.7 * allIntegerParam.length
+          allIntegerParam[iTest][2] > allIntegerParam[iLastInOrder][2]
+          // nbIntegerInOrder + allIntegerParam[iTest][1] > 0.7 * allIntegerParam.length
         ) {
           nbIntegerInOrder++;
           iLastInOrder = iTest;
           step = 0;
+          logger.info('in order');
         }
+        // logger.info('NOT in order');
+
         step++;
         iTest = iLastInOrder + step;
       }
       if (nbIntegerInOrder > maxIntegerInOrder) {
         maxIntegerInOrder = nbIntegerInOrder;
       }
+      iStart++;
+      nbIntegerInOrder = 1;
     }
+    logger.info('maxInteger in order= ' + maxIntegerInOrder);
     return maxIntegerInOrder;
   }
 }
