@@ -23,6 +23,10 @@ class ParsrOutputInterpreter(object):
     """
 
     def __init__(self, object=None):
+        """Constructor for the class
+
+        - object: the Parsr JSON file to be loaded
+        """
         logging.basicConfig(level=logging.DEBUG,
                             format='%(name)s - %(levelname)s - %(message)s')
         self.object = None
@@ -30,6 +34,8 @@ class ParsrOutputInterpreter(object):
             self.load_object(object)
 
     def __get_text_types(self):
+        """Internal function returning the types of text structures
+        """
         return ['word', 'line', 'character', 'paragraph', 'heading']
 
     def __text_objects_none_page(self, txts, page_number_none):
@@ -75,7 +81,11 @@ class ParsrOutputInterpreter(object):
     def load_object(self, object):
         self.object = object
 
-    def get_page(self, page_number):
+    def get_page(self, page_number: int):
+        """Get a particular page in a document
+
+        - page_number: The number of the page to be searched
+        """
         for p in self.object['pages']:
             if p['pageNumber'] == page_number:
                 return p
@@ -83,6 +93,11 @@ class ParsrOutputInterpreter(object):
         return None
 
     def get_text(self, page_number: int = None) -> str:
+        """Get the entire text from a particular page
+
+        - page_number: The page number from which all the text is to be
+        extracted
+        """
         final_text = ""
         for text_obj in self.__get_text_objects(page_number):
             final_text += self.__text_from_text_object(text_obj)
