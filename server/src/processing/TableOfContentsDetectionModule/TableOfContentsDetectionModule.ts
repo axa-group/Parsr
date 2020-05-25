@@ -18,7 +18,6 @@ import { Document, Paragraph, TableOfContents } from '../../types/DocumentRepres
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
-import logger from '../../utils/Logger';
 
 interface Options {
   keywords?: string[];
@@ -54,27 +53,17 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
       if (tocItemParagraphs.length > 0) {
         this.storeNumAndRomanNum(tocItemParagraphs);
-        logger.info('allStoredNumber: ' + allStoredNumbers);
-        logger.info('nbRomanNumber: ' + nbRomanNumbers);
 
         let allStoredInteger = this.storeIntegerFromNumbers();
         nbNumber = allStoredNumbers.length;
         nbInteger = allStoredInteger.length;
-        logger.info('nbNumber: ' + nbNumber);
-        logger.info('nbInteger: ' + nbInteger);
         let allIntegerParam = [];
 
-        // Find for each stored integer in array how many of integer in the followings indexes are >=
-        // then it is stored in an array integerParam [integer, integerSup, indexOfarray]
         if (nbInteger > 2) {
           allIntegerParam = this.setAndStoreIntegerParam(allStoredInteger);
-          logger.info('allIntegerParam= ' + allIntegerParam.toString());
           allIntegerParam.sort(this.sortFunction);
-          logger.info('allIntegerParamSorted= ' + allIntegerParam.toString());
           mostIntegerInOrder = this.findNumberOfIntegerAscendingOrder(allIntegerParam);
-          logger.info('mostIntegerOrder= ' + mostIntegerInOrder);
         }
-
         allStoredNumbers = [];
         allStoredInteger = [];
       }
@@ -119,7 +108,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
     for (const tocItemParagraph of tocItemParagraphs) {
       const strTocItem = tocItemParagraph.toString();
-      logger.info('strTocItem: ' + strTocItem);
 
       if (strTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
         storeNumbers.push(strTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g).map(Number));
@@ -143,8 +131,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     for (const romanNumbers of storeRomanNumbers) {
       nbRomanNumbers = nbRomanNumbers + romanNumbers.length;
     }
-    logger.info('allStoredNumberInside: ' + allStoredNumbers);
-    logger.info('nbRomanNumberInside: ' + nbRomanNumbers);
     storeRomanNumbers = [];
     storeNumbers = [];
   }
@@ -190,28 +176,24 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     let maxIntegerInOrder = 0;
     let iStart = 0;
     let nbIntegerInOrder = 1;
-    while (iStart < allIntegerParam.length / 2 && allIntegerParam[iStart][1] >= nbIntegerInOrder) {
-      logger.info('maxIntegerInOrder= ' + maxIntegerInOrder);
+    while (
+      iStart < allIntegerParam.length / 2 &&
+      allIntegerParam[iStart][1] >= nbIntegerInOrder &&
+      maxIntegerInOrder < allIntegerParam.length * 0.7
+    ) {
       let step = 1;
       let iLastInOrder = iStart;
       let iTest = iLastInOrder + step;
 
       while (iTest < allIntegerParam.length) {
-        logger.info('iStart= ' + iStart + 'value= ' + allIntegerParam[iStart][0]);
-        logger.info('iLastInOrder= ' + iLastInOrder + 'value= ' + allIntegerParam[iLastInOrder][0]);
-        logger.info('itest= ' + iTest + 'value= ' + allIntegerParam[iTest][0]);
         if (
           allIntegerParam[iTest][0] >= allIntegerParam[iLastInOrder][0] &&
           allIntegerParam[iTest][2] > allIntegerParam[iLastInOrder][2]
-          // nbIntegerInOrder + allIntegerParam[iTest][1] > 0.7 * allIntegerParam.length
         ) {
           nbIntegerInOrder++;
           iLastInOrder = iTest;
           step = 0;
-          logger.info('in order');
         }
-        // logger.info('NOT in order');
-
         step++;
         iTest = iLastInOrder + step;
       }
@@ -221,7 +203,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       iStart++;
       nbIntegerInOrder = 1;
     }
-    logger.info('maxInteger in order= ' + maxIntegerInOrder);
     return maxIntegerInOrder;
   }
 }

@@ -15,7 +15,6 @@
  */
 
 import { BoundingBox, Paragraph, Word } from './../../types/DocumentRepresentation';
-// import logger from '../../utils/Logger';
 
 export const threshold = 0.4;
 
@@ -43,11 +42,6 @@ const detectionMethods = {
         word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
       )
       .filter(word => !isSeparator(word));
-    // logger.info('word right= ' + wordsInsideIntersectionRight.toString());
-    // logger.info('wrd r= ' + wordsInsideIntersectionRight.filter(isNumberRight));
-    // logger.info('word left= ' + wordsInsideIntersectionLeft.toString());
-    // logger.info('wrd l= ' + wordsInsideIntersectionLeft.filter(isNumberLeft));
-    // logger.info('word left= ' + wordsInsideIntersectionLeft.toString());
     return (
       wordsInsideIntersectionRight.filter(isNumberRight).length >
         Math.floor(wordsInsideIntersectionRight.length * 0.5) ||
