@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2020 AXA Group Operations S.A.
  *
@@ -28,14 +27,7 @@ export default {
   value: (glyphs: any[]) => {
     logger.debug(`==> showText(${glyphs.map(g => g.unicode).join('')})`);
     const { current, extractText } = OperationState.state;
-    const {
-      font,
-      fontSize,
-      charSpacing,
-      wordSpacing,
-      fontDirection,
-      fontMatrix,
-    } = current;
+    const { font, fontSize, charSpacing, wordSpacing, fontDirection, fontMatrix } = current;
 
     OperationState.state.current.tspan = {
       textContent: '',
@@ -89,7 +81,7 @@ export default {
     current.tspan.y = pf(-current.y);
     current.tspan.fontFamily = current.fontFamily;
     current.tspan.fontName = (current.font && current.font.name) || current.fontFamily;
-    current.tspan.fontSize = "".concat(pf(current.fontSize), "px");
+    current.tspan.fontSize = ''.concat(pf(current.fontSize), 'px');
     current.tspan.fontStyle = current.fontStyle;
     current.tspan.fontWeight = current.fontWeight;
     current.tspan.fill = current.fillColor;

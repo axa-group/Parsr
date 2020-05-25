@@ -87,8 +87,8 @@ export class ServerManager {
       if (
         Array.isArray(specs[key].value) &&
         typeof specs[key].value[0] === 'object' &&
-        specs[key].value[0].hasOwnProperty('pages') &&
-        specs[key].value[0].hasOwnProperty('flavor')
+        {}.hasOwnProperty.call(specs[key].value[0], 'pages') &&
+        {}.hasOwnProperty.call(specs[key].value[0], 'flavor')
       ) {
         specs[key].value = specs[key].value.map((v: any) => ({
           ...v,

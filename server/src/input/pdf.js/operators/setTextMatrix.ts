@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2020 AXA Group Operations S.A.
  *
@@ -39,7 +38,7 @@ export default {
     OperationState.state.current.tspan = {
       textContent: '',
       fontFamily: current.fontFamily,
-      fontSize: "".concat(pf(current.fontSize), "px"),
+      fontSize: ''.concat(pf(current.fontSize), 'px'),
       y: pf(-current.y),
     };
   },

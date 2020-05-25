@@ -34,6 +34,7 @@ import {
   List,
   Page,
   Paragraph,
+  SpannedTableCell,
   Table,
   TableCell,
   TableOfContents,
@@ -147,7 +148,7 @@ function constructFonts(inputFonts: JsonFont[], fonts: Font[]) {
 function constructMetadataObj(inputMetadata: JsonMetadata[], d: Document) {
   inputMetadata.forEach(m => {
     switch (m.type) {
-      case 'key-value':
+      case 'key-value': {
         const allElements1: Element[] = m.elements.map(e => d.getElementById(e));
         const md1: KeyValueMetadata = new KeyValueMetadata(allElements1, {
           keyName: m.data.keyName,
@@ -156,7 +157,8 @@ function constructMetadataObj(inputMetadata: JsonMetadata[], d: Document) {
         });
         allElements1.forEach(e => e.metadata.push(md1));
         break;
-      case 'regex':
+      }
+      case 'regex': {
         const allElements2: Element[] = m.elements.map(e => d.getElementById(e));
         const md2: RegexMetadata = new RegexMetadata(allElements2, {
           regex: m.data.regkeyElemex,
@@ -166,13 +168,14 @@ function constructMetadataObj(inputMetadata: JsonMetadata[], d: Document) {
         });
         allElements2.forEach(e => e.metadata.push(md2));
         break;
+      }
     }
   });
 }
 
 function propertiesFromJson(propertiesObj: JsonProperties): Properties {
   const prop: Properties = {};
-  if (propertiesObj.hasOwnProperty('titleScores')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'titleScores')) {
     prop.titleScores = {
       wordHeight: propertiesObj.titleScores.wordHeight,
       size: propertiesObj.titleScores.size,
@@ -185,26 +188,26 @@ function propertiesFromJson(propertiesObj: JsonProperties): Properties {
       titleCase: propertiesObj.titleScores.titleCase,
     };
   }
-  if (propertiesObj.hasOwnProperty('order')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'order')) {
     prop.order = propertiesObj.order;
   } else {
     logger.debug(
       `the properties obj inputted does not have the order key: ${prettifyObject(propertiesObj)}`,
     );
   }
-  if (propertiesObj.hasOwnProperty('isHeader')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'isHeader')) {
     prop.isHeader = propertiesObj.isHeader;
   }
-  if (propertiesObj.hasOwnProperty('isFooter')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'isFooter')) {
     prop.isFooter = propertiesObj.isFooter;
   }
-  if (propertiesObj.hasOwnProperty('isPageNumber')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'isPageNumber')) {
     prop.isPageNumber = propertiesObj.isPageNumber;
   }
-  if (propertiesObj.hasOwnProperty('bulletList')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'bulletList')) {
     prop.bulletList = propertiesObj.bulletList;
   }
-  if (propertiesObj.hasOwnProperty('targetURL')) {
+  if ({}.hasOwnProperty.call(propertiesObj, 'targetURL')) {
     prop.targetURL = propertiesObj.targetURL;
   }
   return prop;
@@ -219,20 +222,32 @@ function tableFromJson(tableObj: JsonElement, fonts: Font[]): Table {
 
       if (Array.isArray(rowObj.content)) {
         rowObj.content.forEach(cellObj => {
-          if (Array.isArray(cellObj.content)) {
-            const content: Element[] = cellObj.content
-              .map(e => elementsFromJson(e, fonts))
-              .filter(e => e instanceof Element) as Element[];
-            const newCell: TableCell = new TableCell(
-              new BoundingBox(cellObj.box.l, cellObj.box.t, cellObj.box.w, cellObj.box.h),
-              content,
-              cellObj.rowspan,
-              cellObj.colspan,
-            );
+          if (cellObj.type === 'table-cell') {
+            if (Array.isArray(cellObj.content)) {
+              const content: Element[] = cellObj.content
+                .map(e => elementsFromJson(e, fonts))
+                .filter(e => e instanceof Element) as Element[];
+              const newCell: TableCell = new TableCell(
+                new BoundingBox(cellObj.box.l, cellObj.box.t, cellObj.box.w, cellObj.box.h),
+                content,
+                cellObj.rowspan,
+                cellObj.colspan,
+              );
 
-            newCell.id = cellObj.id;
-            newCell.properties = propertiesFromJson(cellObj.properties);
-            cellsDS.push(newCell);
+              newCell.id = cellObj.id;
+              newCell.properties = propertiesFromJson(cellObj.properties);
+              cellsDS.push(newCell);
+            }
+          } else if (cellObj.type === 'spanned-table-cell') {
+            const spannedCell: SpannedTableCell = new SpannedTableCell(
+              new BoundingBox(cellObj.box.l, cellObj.box.t, cellObj.box.w, cellObj.box.h),
+              cellObj.spanDirection,
+            );
+            spannedCell.colspan = cellObj.colspan;
+            spannedCell.rowspan = cellObj.rowspan;
+            spannedCell.id = cellObj.id;
+            spannedCell.properties = propertiesFromJson(cellObj.properties);
+            cellsDS.push(spannedCell);
           }
         });
       }

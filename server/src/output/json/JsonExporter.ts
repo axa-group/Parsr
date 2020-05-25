@@ -34,6 +34,7 @@ import {
   JsonPageRotation,
   List,
   Page,
+  SpannedTableCell,
   Table,
   TableCell,
   TableRow,
@@ -243,6 +244,11 @@ export class JsonExporter extends Exporter {
       jsonElement.content = element.content.map(elem => this.elementToJsonElement(elem));
     } else if (element instanceof TableRow) {
       jsonElement.content = element.content.map(elem => this.elementToJsonElement(elem));
+    } else if (element instanceof SpannedTableCell) {
+      jsonElement.spanDirection = element.spanDirection;
+      jsonElement.colspan = element.colspan;
+      jsonElement.rowspan = element.rowspan;
+      jsonElement.content = [];
     } else if (element instanceof TableCell) {
       jsonElement.rowspan = element.rowspan;
       jsonElement.colspan = element.colspan;

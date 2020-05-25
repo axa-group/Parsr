@@ -75,7 +75,7 @@ export class MicrosoftCognitiveExtractor extends OcrExtractorFactory {
     }
   }
 
-  private async awaitForCompletion(url: string): Promise<MSCognitiveServicesResponse> {
+  private awaitForCompletion(url: string): Promise<MSCognitiveServicesResponse> {
     return this.apiClient.get(url).then(({ data }) => {
       const response: MSCognitiveServicesResponse = data;
       return new Promise((resolve, reject) => {

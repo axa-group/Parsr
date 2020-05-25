@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import logger from "./Logger";
+import logger from './Logger';
 
 export default class CacheLayer {
-
   public static set(key: string, value: string) {
     logger.info(`Saving response for key: "${key}"`);
     this.simpleMemCache.set(key, value);
