@@ -250,7 +250,7 @@ export class MlHeadingDetectionModule extends Module {
   private fontRatio(document: Document, font: Font) {
     const allWords = document.getElementsOfType<Word>(Word, true);
     const allFonts = [...allWords.map(w => w.font).filter(f => f !== undefined)];
-    const count = allFonts.filter(f => f.name === font.name && f.size === font.size && f.weight === font.weight && f.isItalic === font.isItalic && f.isUnderline === font.isUnderline && f.color === font.color).length
+    const count = allFonts.filter(f => f.name === font.name && f.size === font.size && f.weight === font.weight && f.isItalic === font.isItalic && f.isUnderline === font.isUnderline && f.color === font.color).length;
 
     return count / allFonts.length;
   }
