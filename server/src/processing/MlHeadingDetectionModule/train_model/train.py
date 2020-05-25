@@ -83,12 +83,12 @@ X_train2, X_test2, y_train2, y_test2 = train_test_split(X_level, y_level, test_s
 
 # these parameters are found through grid search
 # n_estimators is only used for the Random Forest Classifier
-parameters_heading = {'n_estimators': 48, 'min_samples_leaf':1, 'min_samples_split': 2, 'criterion': 'gini'}
+parameters_heading = {'n_estimators': 50, 'min_samples_leaf':1, 'min_samples_split': 2, 'criterion': 'gini'}
 parameters_level = {'n_estimators': 80, 'min_samples_leaf': 1, 'min_samples_split': 2, 'criterion': 'entropy'}              
 
 # computing the models
-selector_heading = adaboost_model(parameters_heading, X_heading, y_heading)
-selector_level = dt_model(parameters_level, X_level, y_level, metrics.accuracy_score)
+selector_heading = rf_model(parameters_heading, X_train1, y_train1, metrics.f1_score)
+selector_level = dt_model(parameters_level, X_train2, y_train2, metrics.accuracy_score)
 
 # evaluating the performance
 y_pred_heading = selector_heading.predict(X_test1)
@@ -99,5 +99,5 @@ print('f1-score (heading detection):', metrics.f1_score(y_test1, y_pred_heading)
 print('accuracy (headings level):', metrics.accuracy_score(y_test2, y_pred_level))
 
 # exporting the models
-export_model_to_js(selector_heading, 'model.js')
+export_model_to_js(selector_heading.estimator_, 'model.js')
 export_model_to_js(selector_level.estimator_, 'model_level.js')

@@ -30,7 +30,7 @@ import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagraphModule';
 import { Module } from '../Module';
-import { AdaBoostClassifier } from './train_model/model';
+import { RandomForestClassifier } from './train_model/model';
 import { DecisionTreeClassifier } from './train_model/model_level';
 
 export class MlHeadingDetectionModule extends Module {
@@ -215,7 +215,7 @@ export class MlHeadingDetectionModule extends Module {
       isNumber,
       fontRatio,
     ];
-    const clf = new AdaBoostClassifier();
+    const clf = new RandomForestClassifier();
 
     return clf.predict(features) === 1;
   }
