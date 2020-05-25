@@ -87,8 +87,8 @@ parameters_heading = {'n_estimators': 50, 'min_samples_leaf':1, 'min_samples_spl
 parameters_level = {'n_estimators': 80, 'min_samples_leaf': 1, 'min_samples_split': 2, 'criterion': 'entropy'}              
 
 # computing the models
-selector_heading = rf_model(parameters_heading, X_train1, y_train1, metrics.f1_score)
-selector_level = dt_model(parameters_level, X_train2, y_train2, metrics.accuracy_score)
+selector_heading = rf_model(parameters_heading, X_heading, y_heading, metrics.f1_score)
+selector_level = dt_model(parameters_level, X_level, y_level, metrics.accuracy_score)
 
 # evaluating the performance
 y_pred_heading = selector_heading.predict(X_test1)
