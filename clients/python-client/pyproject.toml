@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "parsr-client"
-version = "3.2.0"
+version = "3.2.2"
 description = "Python client for Parsr - Transforms PDF, Documents and Images into Enriched Structured Data"
 authors = ["AXA Group Operations S.A."]
 readme = 'README.md'
