@@ -72,8 +72,8 @@ class ParsrClient():
 
     def send_document(
             self,
-            file: str,
-            config: str,
+            file_path: str,
+            config_path: str,
             server: str = "",
             document_name: str = None,
             revision: str = 'major',
@@ -100,15 +100,20 @@ class ParsrClient():
             else:
                 server = self.server
                 packet = {
-                    'file': (file, open(file, 'rb'), 'application/pdf'),
-                    'config': (config, open(config, 'rb'), 'application/json'),
+                    'file': (
+                        file_path,
+                        open(file_path, 'rb'),
+                        'application/pdf'),
+                    'config': (config_path,
+                               open(config_path, 'rb'),
+                               'application/json'),
                 }
                 r = post(
                     'http://' + server + '/api/v1/document',
                     files=packet)
                 jobId = r.text
         if not document_name:
-            document_name = path.splitext(path.basename(file))[0]
+            document_name = path.splitext(path.basename(file_path))[0]
         if document_name not in self.revision_history:
             self.revision_history[document_name] = {
                 str(VersionInfo.parse('1.0.0')): jobId
@@ -125,8 +130,8 @@ class ParsrClient():
             self.set_current_request_id(jobId)
         if not wait_till_finished:
             return {
-                'file': file,
-                'config': config,
+                'file': file_path,
+                'config': config_path,
                 'status_code': r.status_code,
                 'server_response': r.text}
         else:
