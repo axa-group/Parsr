@@ -13,24 +13,47 @@ def walk(node, fonts_ids):
         for elem in node['content']:
             walk(elem, fonts_ids)
 
-def ratios_and_most_common_font(file):
-    """Gives the font ratios and the most common font of a file"""
+def most_common_font(file):
+    """Gives the most common font of a file"""
     fonts_ids = []
     for page in file['pages']:
         # skip pages that have no elements
         if len(page['elements']) > 0:
             for element in page['elements']:
                 walk(element, fonts_ids)
-    
     if len(fonts_ids) > 0:
-        font_ratios = Counter()
-        for font in fonts_ids:
-            font_ratios[font] += 1/len(fonts_ids)
-        return font_ratios, file['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]
+        return file['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]
 
     # for pages that have no elements (i.e. no fonts) as "FLYER1.pdf.json"
     return {}
 
+def font_ratios(file):
+    """Gives the font ratios of the entire file"""
+    fonts_ids = []
+    font_ratios = Counter()
+    for page in file['pages']:
+        if len(page['elements']) > 0:
+            for element in page['elements']:
+                walk(element, fonts_ids)
+    if len(fonts_ids) > 0:
+        for font in fonts_ids:
+            font_ratios[font] += 1/len(fonts_ids)
+
+    return font_ratios
+
+def font_ratios_by_page(file, page_number):
+    """Gives the font ratios by page"""
+    fonts_ids = []
+    font_ratios = Counter()
+    for page in file['pages']:
+        if page['pageNumber'] == page_number and len(page['elements']) > 0:
+            for element in page['elements']:
+                walk(element, fonts_ids)
+    if len(fonts_ids) > 0:
+        for font in fonts_ids:
+            font_ratios[str(font) + '_' + str(page_number)] += 1/len(fonts_ids)
+
+    return font_ratios
 
 def markdown_to_text(markdown_string):
     """ Converts a markdown string to plaintext """
@@ -47,22 +70,3 @@ def markdown_to_text(markdown_string):
     text = ''.join(soup.findAll(text=True))
 
     return text
-
-
-def text_case(line):
-    """Return the text case (lower case, upper case, title case or none of them)"""
-    is_title_case = True
-    for word in line.split():
-        if len(word) > 4 and not word.startswith('(') and not word.startswith('['):
-            is_title_case = is_title_case and (bool(re.match(r'^[A-Z]\w+', word)) or bool(re.match(r'^(?:\W*\d+\W*)+\w+', word)))
-
-    if line.islower():
-        text_case = 0
-    elif line.isupper():
-        text_case = 1
-    elif is_title_case:
-        text_case = 2
-    else:
-        text_case = 3
-
-    return text_case

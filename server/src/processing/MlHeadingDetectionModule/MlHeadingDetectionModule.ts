@@ -48,11 +48,8 @@ export class MlHeadingDetectionModule extends Module {
     // get the main body font from all the words in document
     const mainCommonFont = this.commonFont(doc);
 
-    // get all the fonts to use for heading
-    const headingFonts = this.headingFonts(doc);
-
     doc.pages.forEach((page: Page) => {
-      const newContents = this.extractHeadings(page, mainCommonFont, headingFonts, doc);
+      const newContents = this.extractHeadings(page, mainCommonFont, doc);
       const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
       const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
       page.elements = newContents.rootElements.concat([...headings, ...paras]);
@@ -74,17 +71,15 @@ export class MlHeadingDetectionModule extends Module {
   private extractHeadings(
     page: Page,
     commonFont: Font,
-    headingFonts: Font[],
     doc: Document,
   ): { headingLines: Line[][]; paragraphLines: Line[][]; rootElements: Element[] } {
     // get all paragraphs in page root
     const pageParagraphs = this.pageParagraphs(page);
     return {
-      ...this.extractHeadingsInParagraphs(pageParagraphs, commonFont, headingFonts, doc),
+      ...this.extractHeadingsInParagraphs(pageParagraphs, commonFont, doc),
       rootElements: this.createHeadingsInOtherElements(
         this.pageOtherElements(page),
         commonFont,
-        headingFonts,
         doc,
       ),
     };
@@ -93,7 +88,6 @@ export class MlHeadingDetectionModule extends Module {
   private createHeadingsInOtherElements(
     elements: Element[],
     commonFont: Font,
-    headingFonts: Font[],
     doc: Document,
   ): Element[] {
     this.getElementsWithParagraphs(elements, [])
@@ -103,7 +97,6 @@ export class MlHeadingDetectionModule extends Module {
         const newContents = this.extractHeadingsInParagraphs(
           this.getParagraphsInElement(element),
           commonFont,
-          headingFonts,
           doc,
         );
         const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
@@ -117,7 +110,6 @@ export class MlHeadingDetectionModule extends Module {
   private extractHeadingsInParagraphs(
     paragraphs: Paragraph[],
     commonFont: Font,
-    headingFonts: Font[],
     doc: Document,
   ): { headingLines: Line[][]; paragraphLines: Line[][] } {
     const paragraphLines: Line[][] = [];
@@ -132,7 +124,7 @@ export class MlHeadingDetectionModule extends Module {
             .map((line: Line, pos: number) => {
               if (
                 (pos === 0 || initiatedHeading) &&
-                this.isHeadingCandidate(line, commonFont, headingFonts, doc)
+                this.isHeadingLine(line, commonFont, doc)
               ) {
                 initiatedHeading = true;
                 return pos;
@@ -181,16 +173,6 @@ export class MlHeadingDetectionModule extends Module {
     return { headingLines: [], paragraphLines: paragraphs.map(paragraph => paragraph.content) };
   }
 
-  private isHeadingCandidate(line: Line, mostCommonFont: Font, headingFonts: Font[], doc: Document): boolean {
-    const serializedHeadingFonts = headingFonts.map(font => JSON.stringify(font));
-
-    if (!serializedHeadingFonts.includes(JSON.stringify(this.noColourFont(line.getMainFont())))) {
-      return false;
-    }
-
-    return this.isHeadingLine(line, mostCommonFont, doc);
-  }
-
   private isHeadingLine(line: Line, commonFont: Font, doc: Document): boolean {
     const lineStr = line.toString();
     if (lineStr.length === 1 || !isNaN(lineStr as any)) {
@@ -204,7 +186,7 @@ export class MlHeadingDetectionModule extends Module {
     const isNumber = !isNaN(lineStr as any);
     const textCase = this.textCase(lineStr);
     const fontRatio = this.fontRatio(doc, line.getMainFont());
-   
+
     const features = [
       isDifferentStyle,
       isFontBigger,
@@ -259,6 +241,7 @@ export class MlHeadingDetectionModule extends Module {
   - Bottom paragraph 0.99
   Having this ratios I really think that bottom paragraph should not be considered as header
   */
+ // Currently making tests to verify this ('fontRatiosByPage')
   private fontRatio(document: Document, font: Font) {
     const allWords = document.getElementsOfType<Word>(Word, true);
     const allFonts = [...allWords.map(w => w.font).filter(f => f !== undefined)];
@@ -266,6 +249,13 @@ export class MlHeadingDetectionModule extends Module {
 
     return count / allFonts.length;
   }
+  // private fontRatiosByPage(page: Page, font: Font) {
+  //   const wordsInPage = page.getElementsOfType<Word>(Word, true);
+  //   const fontsInPage = [...wordsInPage.map(w => w.font).filter(f => f !== undefined)];
+  //   const count = fontsInPage.filter(f => f.name === font.name && f.size === font.size && f.weight === font.weight && f.isItalic === font.isItalic && f.isUnderline === font.isUnderline && f.color === font.color).length;
+
+  //   return count / fontsInPage.length;
+  // }
 
   private groupHeadingsByFont(headingIndexes: number[], lines: Line[]): number[][] {
     // Skip join heading lines if they doesn't have same font
@@ -310,15 +300,6 @@ export class MlHeadingDetectionModule extends Module {
     });
   }
 
-  private noColourFont(font: Font): Font {
-    const newFont = new Font(font.name, font.size);
-    newFont.weight = font.weight;
-    newFont.isItalic = font.isItalic;
-    newFont.isUnderline = font.isUnderline;
-    newFont.color = null;
-    return newFont;
-  }
-
   /**
    * Returns most used font in document
    * @param doc The document to extract heading fonts
@@ -326,6 +307,7 @@ export class MlHeadingDetectionModule extends Module {
    * normal document should have only one main font for texts but there 
    * are a lot of cases that one document uses 'main font' and 'secodnary font'
    */
+  // TODO: consider multiple common fonts, criteria: the font ratio is > threshold (to be determined)
   private commonFont(doc: Document): Font {
     return utils.findMostCommonFont(
       doc
@@ -368,26 +350,6 @@ export class MlHeadingDetectionModule extends Module {
 
   private pageParagraphs(page: Page): Paragraph[] {
     return page.getElementsOfType<Paragraph>(Paragraph, false);
-  }
-
-  /**
-   * Returns an array of fonts to be used for heading detection
-   * @param doc The document to extract heading fonts
-   * 🤔 Should this func renamed to allFonts ? or maybe instead of retunring all fonts
-   * we should filter the list with ones detected by 'commonFont'
-   */
-  private headingFonts(doc: Document): Font[] {
-    const allWords = doc.getElementsOfType<Word>(Word, true);
-    const allFonts = [...allWords.map(w => this.noColourFont(w.font)).filter(f => f !== undefined)];
-
-    const uniqueFonts: Font[] = [];
-    allFonts.forEach(font => {
-      if (uniqueFonts.filter(f => f.isEqual(font)).length === 0) {
-        uniqueFonts.push(font);
-      }
-    });
-
-    return uniqueFonts;
   }
 
   private headingsDetected(doc: Document): boolean {
