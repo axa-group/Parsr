@@ -6,13 +6,13 @@ import re
 import spacy
 import numpy as np
 from collections import Counter
-from utils import most_common_font, font_ratios, markdown_to_text
+from utils import most_common_fonts, font_ratios, markdown_to_text
 
 
 # Load English tokenizer, tagger, parser, NER and word vectors
 nlp = spacy.load("en_core_web_sm")
 
-def walk_line(filename_line, node_line, acc_line, common_font, font_ratios):
+def walk_line(filename_line, node_line, acc_line, common_fonts, font_ratios):
     line = ''
     fonts_ids = []
     is_title_case = True
@@ -42,32 +42,36 @@ def walk_line(filename_line, node_line, acc_line, common_font, font_ratios):
     nb_verbs = len([token.lemma_ for token in doc if token.pos_=="VERB"])
     nb_nouns = len([chunk.text for chunk in doc.noun_chunks])
     nb_cardinal = len([entity.text for entity in doc.ents if entity.label_=="CARDINAL"])
+
+    is_different_style = int(all([is_bold ^ (common_fonts[i]['weight'] == 'bold') for i in range(len(common_fonts))]))
+    is_font_bigger = int(all([line_font['size'] > common_fonts[i]['size'] for i in range(len(common_fonts))]))
+    different_color = int(all([line_font['color'] != common_fonts[i]['color'] for i in range(len(common_fonts))]))
                 
-    acc_line.append([line.strip(), int(is_bold^(common_font['weight'] == 'bold')), int(line_font['size']>common_font['size']),
-                int(line_font['color']!=common_font['color']), int(len(set(fonts_ids))==1), text_case,
+    acc_line.append([line.strip(), is_different_style, is_font_bigger,
+                different_color, int(len(set(fonts_ids))==1), text_case,
                 len(node_line['content']), int(bool(re.match(r'^\d*\.?\d*$', line.strip()))),
                 nb_verbs, nb_nouns, nb_cardinal,
                 line_font['size'], int(is_bold), line_font_ratio,
                 0, 'paragraph', False
                ])
 
-def walk(filename, node, acc, common_font, font_ratios):
+def walk(filename, node, acc, common_fonts, font_ratios):
     elements_to_consider = {'paragraph', 'heading', 'list'}
     if node['type'] == 'line':
-        walk_line(filename, node, acc, common_font, font_ratios)
+        walk_line(filename, node, acc, common_fonts, font_ratios)
 
     elif node['type'] in elements_to_consider:
         for elem in node['content']:
-            walk(filename, elem, acc, common_font, font_ratios)
+            walk(filename, elem, acc, common_fonts, font_ratios)
 
 
 def extract_lines(file):
     lines = []
-    common_font = most_common_font(file)
+    common_fonts = most_common_fonts(file)
     font_ratios_dict = font_ratios(file)
     for page in file['pages']:
         for element in page['elements']:
-            walk(file, element, lines, common_font, font_ratios_dict)
+            walk(file, element, lines, common_fonts, font_ratios_dict)
     return lines
 
 
