@@ -45,7 +45,7 @@ export class MlHeadingDetectionModule extends Module {
       return doc;
     }
 
-    // get the main body font from all the words in document
+    // get the main fonts from all the words in document
     const mainCommonFonts = this.commonFonts(doc);
 
     doc.pages.forEach((page: Page) => {

@@ -12,7 +12,7 @@ from utils import most_common_fonts, font_ratios, markdown_to_text
 # Load English tokenizer, tagger, parser, NER and word vectors
 nlp = spacy.load("en_core_web_sm")
 
-def walk_line(filename_line, node_line, acc_line, common_fonts, font_ratios):
+def walk_line(filename_line, page_number, node_line, acc_line, common_fonts, font_ratios):
     line = ''
     fonts_ids = []
     is_title_case = True
@@ -27,7 +27,7 @@ def walk_line(filename_line, node_line, acc_line, common_fonts, font_ratios):
 
     line_font = filename_line['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]  # font ids start at 1
     is_bold = all(filename_line['fonts'][font_id - 1]['weight'] == 'bold' for font_id in fonts_ids)
-    line_font_ratio = font_ratios[line_font['id']]
+    line_font_ratio = font_ratios[str(line_font['id']) + '_' + str(page_number)]
 
     if line.islower():
         text_case = 0
@@ -55,23 +55,28 @@ def walk_line(filename_line, node_line, acc_line, common_fonts, font_ratios):
                 0, 'paragraph', False
                ])
 
-def walk(filename, node, acc, common_fonts, font_ratios):
+def walk(filename, page_number, node, acc, common_fonts, font_ratios):
     elements_to_consider = {'paragraph', 'heading', 'list'}
     if node['type'] == 'line':
-        walk_line(filename, node, acc, common_fonts, font_ratios)
+        walk_line(filename, page_number, node, acc, common_fonts, font_ratios)
 
     elif node['type'] in elements_to_consider:
         for elem in node['content']:
-            walk(filename, elem, acc, common_fonts, font_ratios)
+            walk(filename, page_number, elem, acc, common_fonts, font_ratios)
 
 
 def extract_lines(file):
     lines = []
-    common_fonts = most_common_fonts(file)
-    font_ratios_dict = font_ratios(file)
+    page_number = 0
+    threshold = 1
+    common_fonts = most_common_fonts(file, page_number, threshold)
+    font_ratios_dict = font_ratios(file, page_number)
     for page in file['pages']:
+        # page_number = page['pageNumber']
+        # common_fonts = most_common_fonts(file, page_number, threshold)
+        # font_ratios_dict = font_ratios(file, page_number)
         for element in page['elements']:
-            walk(file, element, lines, common_fonts, font_ratios_dict)
+            walk(file, page_number, element, lines, common_fonts, font_ratios_dict)
     return lines
 
 
