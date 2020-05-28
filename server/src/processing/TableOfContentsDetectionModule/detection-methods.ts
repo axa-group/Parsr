@@ -15,18 +15,30 @@
  */
 
 import { BoundingBox, Paragraph, Word } from './../../types/DocumentRepresentation';
+// import logger from '../../utils/Logger';
 
 export const threshold = 0.4;
 
-export function TOCDetected(p: Paragraph, pageKeywords: string[]): boolean {
-  return Object.values(detectionMethods).some(method => method(p, pageKeywords));
+export function TOCDetected(p: Paragraph, pageKeywords: string[], storeLines: any[]): boolean {
+  return Object.values(detectionMethods).some(method => method(p, pageKeywords, storeLines));
 }
 
 const detectionMethods = {
+
+  // reconstructLine: ()
   /*
     searches for text finishing in numbers in the right 10% width area of the BBox
   */
   startOrEndsWithNumber: (p: Paragraph): boolean => {
+    // for (let cont of p){
+    // console.log(storeLines);  
+    // }
+    // logger.info('p.length= ' + p.content);
+    // logger.info('p.content= ' + p.content);
+    // for (let aContent of p.content){
+    //   logger.info('aContent= ' + aContent + ' | aContent.top= ' + aContent.top);
+    // }
+    // logger.info('p.content.length= ' + p.content.length);
     const w = p.width * 0.1;
     const intersectionBoxRight = new BoundingBox(p.right - w, p.top, w, p.height);
     const intersectionBoxLeft = new BoundingBox(p.left, p.top, w, p.height);
@@ -49,7 +61,9 @@ const detectionMethods = {
         Math.floor(wordsInsideIntersectionLeft.length * 0.5)
     );
   },
-  hasPageNKeyword: (p: Paragraph, pageKeywords: string[]): boolean => {
+  hasPageNKeyword: (p: Paragraph, pageKeywords: string[], storeLines: any[]): boolean => {
+    console.log(storeLines.toString());
+    console.log('----------------------------------------------------------');
     const regexp = `^(${pageKeywords.join('|')}).* (\\d+) (.+)`;
     return new RegExp(regexp, 'gi').test(p.toString());
   },

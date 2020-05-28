@@ -18,6 +18,7 @@ import { Document, Paragraph, TableOfContents } from '../../types/DocumentRepres
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
+// import logger from '../../utils/Logger';
 
 interface Options {
   keywords?: string[];
@@ -46,9 +47,16 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       const allParagraphs = page
         .getElementsOfType<Paragraph>(Paragraph, false)
         .filter(this.isNotHeaderFooter);
+      let storeLines: any[] = [];
 
-      const tocItemParagraphs = allParagraphs.filter(p =>
-        detection.TOCDetected(p, this.options.pageKeywords),
+      for (let para of allParagraphs) {
+        for (let line of para.content) {
+          this.addWordToLine(storeLines, line);
+        }
+      }
+
+      const tocItemParagraphs = allParagraphs.filter((p) =>
+        detection.TOCDetected(p, this.options.pageKeywords, storeLines),
       );
 
       if (tocItemParagraphs.length > 0) {
@@ -204,5 +212,18 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       nbIntegerInOrder = 1;
     }
     return maxIntegerInOrder;
+  }
+
+  private addWordToLine(storeLines, line) {
+   
+    const indexTopExist = storeLines.findIndex(bounding => bounding[0] === Math.floor(line.box.top));
+    if (indexTopExist !== -1) {
+      storeLines[indexTopExist][1].push.apply(storeLines[indexTopExist][1], line.content);
+      // console.log(storeLines[indexTopExist][2].toString());
+    }
+    else {
+      // console.log('not found yet: ' +  Math.floor(line.box.top));
+      storeLines.push([Math.floor(line.box.top), line.content]);
+    }
   }
 }
