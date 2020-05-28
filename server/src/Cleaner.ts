@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { DrawingDetectionModule } from './processing/DrawingDetectionModule/DrawingDetectionModule';
 import { HeaderFooterDetectionModule } from './processing/HeaderFooterDetectionModule/HeaderFooterDetectionModule';
 import { HeadingDetectionDTModule } from './processing/HeadingDetectionDtModule/HeadingDetectionDtModule';
 import { HeadingDetectionModule } from './processing/HeadingDetectionModule/HeadingDetectionModule';
@@ -76,6 +77,7 @@ export class Cleaner {
     RemoteModule,
     SeparateWordsModule,
     TableOfContentsDetectionModule,
+    DrawingDetectionModule,
     // Add your own module here!
   ];
 

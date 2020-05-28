@@ -29,7 +29,7 @@ import * as pdfminer from './pdfminer';
  * information in a clever way.
  */
 export class PdfminerExtractor extends Extractor {
-  public async run(inputFile: string): Promise<Document> {
+  public run(inputFile: string): Promise<Document> {
     return CommandExecuter.repairPdf(inputFile).then((repairedPdf: string) => {
       return this.pageNumber(repairedPdf).then(totalPages => {
         let loggerMsg = "Extracting contents with pdfminer's pdf2txt.py tool...";
@@ -57,7 +57,7 @@ export class PdfminerExtractor extends Extractor {
     });
   }
 
-  private async pageNumber(inputFile: string): Promise<number> {
+  private pageNumber(inputFile: string): Promise<number> {
     return CommandExecuter.pdfPagesNumber(inputFile)
       .then(pages => {
         return parseInt(pages, 10);
@@ -68,7 +68,7 @@ export class PdfminerExtractor extends Extractor {
       });
   }
 
-  private async extractFile(
+  private extractFile(
     inputFile: string,
     pageIndex: number,
     maxPages: number,
@@ -125,7 +125,7 @@ export class PdfminerExtractor extends Extractor {
     This algo finds every 'vertical' word (data given by pdf2txt)  and tries to find
     and join the rest of the content based on the BBox positions
   */
-  private async detectAndFixFalseVerticalWords(doc: Document): Promise<Document> {
+  private detectAndFixFalseVerticalWords(doc: Document): Document {
     let count = 0;
     doc.pages.forEach(page => {
       const pageWords = page.getElementsOfType<Word>(Word, false);
@@ -152,7 +152,7 @@ export class PdfminerExtractor extends Extractor {
 
   private detectAndFixPageRotation(inputFile: string): (doc: Document) => Promise<Document> {
     const limiter = limit(1);
-    return async (doc: Document): Promise<Document> => {
+    return (doc: Document): Promise<Document> => {
       doc.inputFile = inputFile;
       const startTime: number = Date.now();
       const pageRotations = doc.pages
@@ -164,11 +164,12 @@ export class PdfminerExtractor extends Extractor {
           limiter(this.rotatePages)(doc, pageRotations[rotation], parseInt(rotation, 10)),
         );
 
-      await Promise.all(promises);
-      logger.info(
-        `Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000}s`,
-      );
-      return doc;
+      return Promise.all(promises).then(() => {
+        logger.info(
+          `Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000}s`,
+        );
+        return doc;
+      });
     };
   }
 

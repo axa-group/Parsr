@@ -208,7 +208,6 @@ export default {
           !(this.ABBYY_SERVER_URL && this.ABBYY_SERVER_VER && this.ABBYY_WORKFLOW))
       );
     },
-   
     keyValueConfig() {
       // i have to make sure to clone the values and not the references of the configs
       const config = JSON.parse(JSON.stringify({ ...this.defaultConfig, ...this.customConfig }));
@@ -266,7 +265,7 @@ export default {
           if (Array.isArray(confItem)) {
             return confItem[0];
           }
-          return configItem;
+          return confItem;
         };
         const correctOrder = this.modulesOrder;
         this.customConfig.cleaner.sort((a, b) => {

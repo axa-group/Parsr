@@ -1,6 +1,7 @@
 <template functional>
   <g>
     <line
+      class="textLine"
       :id="'Line_' + props.element.id"
       :x1="props.element.box.l"
       :y1="props.element.box.t + props.element.box.h"

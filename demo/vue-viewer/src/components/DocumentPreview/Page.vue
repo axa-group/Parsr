@@ -96,6 +96,7 @@
           :fonts="fonts"
           @custom-event="elementSelected"
         />
+        <svg-shape v-for="element in shapes" :key="`toc_${element.id}`" :element="element" />
       </g>
     </svg>
   </div>
@@ -110,9 +111,10 @@ import TableData from '@/components/DocumentPreview/Table';
 import TableOfContents from '@/components/DocumentPreview/TableOfContents';
 import List from '@/components/DocumentPreview/List';
 import ImageData from '@/components/DocumentPreview/Image';
+import SvgShape from '@/components/DocumentPreview/SvgShape';
 import { mapState, mapGetters } from 'vuex';
 export default {
-  components: { Paragraph, Heading, TableData, List, ImageData, TableOfContents },
+  components: { Paragraph, Heading, TableData, List, ImageData, TableOfContents, SvgShape },
   mixins: [scrollItemMixin],
   data() {
     return {
@@ -160,6 +162,9 @@ export default {
     toc() {
       return this.elementsOfType['table-of-contents'] || [];
     },
+    shapes() {
+      return this.elementsOfType['drawing'] || [];
+    },
     pageElements() {
       if (!this.appeared) {
         return [];
@@ -202,7 +207,7 @@ export default {
           this.page.rotation.translation.x +
           'px) translateY(' +
           this.page.rotation.translation.y +
-          'px) rotate(-' +
+          'px) rotate(' +
           this.page.rotation.degrees +
           'deg)'
         );
@@ -347,8 +352,8 @@ export default {
   stroke: fuchsia;
   stroke-width: 1;
 }
-.VisibleLines line,
-.Page line.highlighted {
+.VisibleLines line.textLine,
+.Page line.textLine.highlighted {
   stroke: rgb(0, 0, 255);
   stroke-width: 1;
 }
@@ -375,5 +380,13 @@ g.TableContainer text {
 .VisibleTOC rect.TOC {
   stroke: purple;
   stroke-width: 1;
+}
+
+svg line.drawing {
+  display: none;
+}
+
+.VisibleShapes svg line.drawing {
+  display: block;
 }
 </style>

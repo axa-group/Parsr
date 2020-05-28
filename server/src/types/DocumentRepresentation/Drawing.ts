@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 AXA Group Operations S.A.
+ * Copyright 2020 AXA Group Operations S.A.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
+import { SvgLine } from './SvgLine';
 import { SvgShape } from './SvgShape';
 
 /**
@@ -44,5 +45,18 @@ export class Drawing extends Element {
    */
   public set content(value: SvgShape[]) {
     this._content = value;
+  }
+
+  public updateBoundingBox() {
+    const lines: SvgLine[] = (this.content.filter(c => c instanceof SvgLine) as SvgLine[]);
+    const minY = Math.min(...lines.map(l => l.fromY), ...lines.map(l => l.toY));
+    const maxY = Math.max(...lines.map(l => l.fromY), ...lines.map(l => l.toY));
+    const minX = Math.min(...lines.map(l => l.fromX), ...lines.map(l => l.toX));
+    const maxX = Math.max(...lines.map(l => l.fromX), ...lines.map(l => l.toX));
+    this.box = new BoundingBox(minX, minY, maxX - minX, maxY - minY);
+  }
+
+  public toString(): string {
+    return this.content.map(c => c.toString()).join('');
   }
 }

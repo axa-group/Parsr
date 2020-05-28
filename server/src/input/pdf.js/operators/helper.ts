@@ -16,6 +16,8 @@
 
 const IDENTITY_MATRIX = [1, 0, 0, 1, 0, 0];
 const FONT_IDENTITY_MATRIX = [0.001, 0, 0, 0.001, 0, 0];
+const LINE_CAP_STYLES = ['butt', 'round', 'square'];
+const LINE_JOIN_STYLES = ['miter', 'round', 'bevel'];
 
 // this is a slightly different parseFloat algo
 const pf = value => {
@@ -47,13 +49,13 @@ const matrixToCoords = m => {
       x: parseFloat(pf(m[0])) || 1,
       y: parseFloat(pf(m[3])) || 1,
     },
-    matrix: "matrix("
-      .concat(pf(m[0]), " ")
-      .concat(pf(m[1]), " ")
-      .concat(pf(m[2]), " ")
-      .concat(pf(m[3]), " ")
-      .concat(pf(m[4]), " ")
-      .concat(pf(m[5]), ")"),
+    matrix: 'matrix('
+      .concat(pf(m[0]), ' ')
+      .concat(pf(m[1]), ' ')
+      .concat(pf(m[2]), ' ')
+      .concat(pf(m[3]), ' ')
+      .concat(pf(m[4]), ' ')
+      .concat(pf(m[5]), ')'),
     matrixArray: m,
   };
 };
@@ -67,7 +69,7 @@ const convertImgDataToPng = (imgData, isMask) => {
   const ImageKind = {
     GRAYSCALE_1BPP: 1,
     RGB_24BPP: 2,
-    RGBA_32BPP: 3
+    RGBA_32BPP: 3,
   };
 
   for (let i = 0; i < 256; i++) {
@@ -75,9 +77,9 @@ const convertImgDataToPng = (imgData, isMask) => {
 
     for (let h = 0; h < 8; h++) {
       if (c & 1) {
-        c = 0xedB88320 ^ c >> 1 & 0x7fffffff;
+        c = 0xedb88320 ^ ((c >> 1) & 0x7fffffff);
       } else {
-        c = c >> 1 & 0x7fffffff;
+        c = (c >> 1) & 0x7fffffff;
       }
     }
 
@@ -90,7 +92,7 @@ const convertImgDataToPng = (imgData, isMask) => {
     for (let _i = start; _i < end; _i++) {
       const a = (crc ^ data[_i]) & 0xff;
       const b = crcTable[a];
-      crc = crc >>> 8 ^ b;
+      crc = (crc >>> 8) ^ b;
     }
 
     return crc ^ -1;
@@ -99,9 +101,9 @@ const convertImgDataToPng = (imgData, isMask) => {
   function writePngChunk(type, body, data, offset) {
     let p = offset;
     const len = body.length;
-    data[p] = len >> 24 & 0xff;
-    data[p + 1] = len >> 16 & 0xff;
-    data[p + 2] = len >> 8 & 0xff;
+    data[p] = (len >> 24) & 0xff;
+    data[p + 1] = (len >> 16) & 0xff;
+    data[p + 2] = (len >> 8) & 0xff;
     data[p + 3] = len & 0xff;
     p += 4;
     data[p] = type.charCodeAt(0) & 0xff;
@@ -112,9 +114,9 @@ const convertImgDataToPng = (imgData, isMask) => {
     data.set(body, p);
     p += body.length;
     const crc = crc32(data, offset + 4, p);
-    data[p] = crc >> 24 & 0xff;
-    data[p + 1] = crc >> 16 & 0xff;
-    data[p + 2] = crc >> 8 & 0xff;
+    data[p] = (crc >> 24) & 0xff;
+    data[p + 1] = (crc >> 16) & 0xff;
+    data[p + 2] = (crc >> 8) & 0xff;
     data[p + 3] = crc & 0xff;
   }
 
@@ -144,7 +146,7 @@ const convertImgDataToPng = (imgData, isMask) => {
       case ImageKind.GRAYSCALE_1BPP:
         colorType = 0;
         bitDepth = 1;
-        lineSize = width + 7 >> 3;
+        lineSize = (width + 7) >> 3;
         break;
 
       case ImageKind.RGB_24BPP:
@@ -181,19 +183,19 @@ const convertImgDataToPng = (imgData, isMask) => {
         offsetLiterals++;
 
         for (let _i3 = 0; _i3 < lineSize; _i3++) {
-          literals[offsetLiterals++] ^= 0xFF;
+          literals[offsetLiterals++] ^= 0xff;
         }
       }
     }
 
     const ihdr = new Uint8Array([
-      width >> 24 & 0xff,
-      width >> 16 & 0xff,
-      width >> 8 & 0xff,
+      (width >> 24) & 0xff,
+      (width >> 16) & 0xff,
+      (width >> 8) & 0xff,
       width & 0xff,
-      height >> 24 & 0xff,
-      height >> 16 & 0xff,
-      height >> 8 & 0xff,
+      (height >> 24) & 0xff,
+      (height >> 16) & 0xff,
+      (height >> 8) & 0xff,
       height & 0xff,
       bitDepth,
       colorType,
@@ -225,4 +227,6 @@ export {
   convertImgDataToPng,
   IDENTITY_MATRIX,
   FONT_IDENTITY_MATRIX,
+  LINE_CAP_STYLES,
+  LINE_JOIN_STYLES,
 };

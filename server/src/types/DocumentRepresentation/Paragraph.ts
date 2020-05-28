@@ -72,8 +72,8 @@ export class Paragraph extends Text {
 
   public toSimpleJSON(): any {
     return {
-      type : 'paragraph',
-      content : this.export('simple'),
+      type: 'paragraph',
+      content: this.export('simple'),
     };
   }
 
@@ -247,7 +247,7 @@ export class Paragraph extends Text {
     });
 
     // prepare the result
-    const result: string[] = words.map(w => w.toMarkDown());
+    const result: string[] = words.map(w => w.toMarkdown());
 
     biWordsIdx.forEach(idGroup => {
       result[idGroup[0]] = '***' + result[idGroup[0]];
@@ -332,7 +332,7 @@ export class Paragraph extends Text {
     });
 
     // prepare the result
-    const result: string[] = words.map(w => w.toMarkDown());
+    const result: string[] = words.map(w => w.toMarkdown());
 
     biWordsIdx.forEach(idGroup => {
       result[idGroup[0]] = '<b><i>' + result[idGroup[0]];
@@ -379,7 +379,7 @@ export class Paragraph extends Text {
   public lineToSimple(line: Line) {
     const words: Word[] = line.content;
     // prepare the result
-    const result: string[] = words.map(w => w.toMarkDown());
+    const result: string[] = words.map(w => w.toMarkdown());
 
     return result
       .filter(w => !!w)

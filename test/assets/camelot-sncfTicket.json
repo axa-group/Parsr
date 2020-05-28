@@ -1,0 +1,222 @@
+[
+  {
+    "page": 1,
+    "tables": [
+      {
+        "size": {
+          "width": 526.4753933037515,
+          "height": 69.26908138540477
+        },
+        "location": {
+          "x": 29.40197660346914,
+          "y": 640.4033459236032
+        },
+        "content": [
+          [
+            "Departure / Arrival",
+            "Date / Time",
+            "TGV LYRIA",
+            "STANDARD 1st Class - Ticket can be exchanged and\nrefunded before departure subject to a fee of  \u20ac 30 per person\nand per journey and subject to the fare applicable on that\nday.  Tickets will not be exchangeable or refundable after\ndeparture.  More spacious seats, Electrical socket.  RIn-seat\nrestaurant service (subject to charge).\nCARRIERS 1185 1187"
+          ],
+          [
+            "VALLORBE",
+            "25/09 at 19:01",
+            "TRAIN NUMBER 9272\nCOACH 11 - SEAT 035\n1. CLASS\nDUAL SIDE BY SIDE",
+            ""
+          ],
+          [
+            "PARIS GARE LYON",
+            "25/09 at 22:03",
+            "",
+            ""
+          ]
+        ],
+        "flavor": "lattice",
+        "rows": [
+          [
+            640.4033459236032,
+            628.6272270524514
+          ],
+          [
+            628.6272270524514,
+            599.3369441277081
+          ],
+          [
+            599.3369441277081,
+            571.1342645381984
+          ]
+        ],
+        "cols": [
+          [
+            29.40197660346914,
+            179.08203912868092
+          ],
+          [
+            179.08203912868092,
+            256.96727511093184
+          ],
+          [
+            256.96727511093184,
+            381.9856797095603
+          ],
+          [
+            381.9856797095603,
+            555.8773699072207
+          ]
+        ],
+        "cells": [
+          [
+            {
+              "location": {
+                "x": 29.40197660346914,
+                "y": 640.4033459236032
+              },
+              "size": {
+                "width": 149.68006252521178,
+                "height": 11.776118871151766
+              },
+              "colSpan": 1,
+              "rowSpan": 1
+            },
+            {
+              "location": {
+                "x": 179.08203912868092,
+                "y": 640.4033459236032
+              },
+              "size": {
+                "width": 77.88523598225092,
+                "height": 11.776118871151766
+              },
+              "colSpan": 1,
+              "rowSpan": 1
+            },
+            {
+              "location": {
+                "x": 256.96727511093184,
+                "y": 640.4033459236032
+              },
+              "size": {
+                "width": 125.01840459862848,
+                "height": 11.776118871151766
+              },
+              "colSpan": 1,
+              "rowSpan": 1
+            },
+            {
+              "location": {
+                "x": 381.9856797095603,
+                "y": 640.4033459236032
+              },
+              "size": {
+                "width": 173.89169019766035,
+                "height": 69.26908138540477
+              },
+              "colSpan": 1,
+              "rowSpan": 3
+            }
+          ],
+          [
+            {
+              "location": {
+                "x": 29.40197660346914,
+                "y": 628.6272270524514
+              },
+              "size": {
+                "width": 149.68006252521178,
+                "height": 29.290282924743337
+              },
+              "colSpan": 1,
+              "rowSpan": 1
+            },
+            {
+              "location": {
+                "x": 179.08203912868092,
+                "y": 628.6272270524514
+              },
+              "size": {
+                "width": 77.88523598225092,
+                "height": 29.290282924743337
+              },
+              "colSpan": 1,
+              "rowSpan": 1
+            },
+            {
+              "location": {
+                "x": 256.96727511093184,
+                "y": 628.6272270524514
+              },
+              "size": {
+                "width": 125.01840459862848,
+                "height": 57.49296251425301
+              },
+              "colSpan": 1,
+              "rowSpan": 2
+            },
+            {
+              "location": {
+                "x": 381.9856797095603,
+                "y": 628.6272270524514
+              },
+              "size": {
+                "width": 173.89169019766035,
+                "height": 29.290282924743337
+              },
+              "colSpan": 1,
+              "rowSpan": 1
+            }
+          ],
+          [
+            {
+              "location": {
+                "x": 29.40197660346914,
+                "y": 599.3369441277081
+              },
+              "size": {
+                "width": 149.68006252521178,
+                "height": 28.20267958950967
+              },
+              "colSpan": 1,
+              "rowSpan": 1
+            },
+            {
+              "location": {
+                "x": 179.08203912868092,
+                "y": 599.3369441277081
+              },
+              "size": {
+                "width": 77.88523598225092,
+                "height": 28.20267958950967
+              },
+              "colSpan": 1,
+              "rowSpan": 1
+            },
+            {
+              "location": {
+                "x": 256.96727511093184,
+                "y": 599.3369441277081
+              },
+              "size": {
+                "width": 125.01840459862848,
+                "height": 28.20267958950967
+              },
+              "colSpan": 1,
+              "rowSpan": 1
+            },
+            {
+              "location": {
+                "x": 381.9856797095603,
+                "y": 599.3369441277081
+              },
+              "size": {
+                "width": 173.89169019766035,
+                "height": 28.20267958950967
+              },
+              "colSpan": 1,
+              "rowSpan": 1
+            }
+          ]
+        ]
+      }
+    ]
+  }
+]

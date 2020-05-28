@@ -26,8 +26,10 @@ import {
   Word,
 } from '../../types/DocumentRepresentation';
 import { Color } from '../../types/DocumentRepresentation/Color';
+import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import { PdfminerFigure } from '../../types/PdfminerFigure';
 import { PdfminerPage } from '../../types/PdfminerPage';
+import { PdfminerShape } from '../../types/PdfminerShape';
 import { PdfminerText } from '../../types/PdfminerText';
 import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
@@ -75,6 +77,7 @@ export function xmlParser(xmlPath: string): Promise<any> {
     let textLines: any[] = [];
     let texts: any[] = [];
     let figures: Figure[] = [];
+    let shapes: any[] = [];
 
     type Figure = {
       _attr: {};
@@ -145,9 +148,23 @@ export function xmlParser(xmlPath: string): Promise<any> {
     });
 
     xml.on('updateElement: page', pageElement => {
-      pushElement({ _attr: pageElement.$, textbox: textBoxes, figure: figures }, allPages);
+      pushElement({ _attr: pageElement.$, textbox: textBoxes, figure: figures, shapes }, allPages);
       textBoxes = [];
       figures = [];
+      shapes = [];
+    });
+
+    xml.on('endElement: rect', rect => {
+      pushElement({ _attr: rect.$, type: 'rect' }, shapes);
+    });
+
+    // for now, curves are treated as polygons
+    xml.on('endElement: curve', poly => {
+      pushElement({ _attr: poly.$, type: 'poly' }, shapes);
+    });
+
+    xml.on('endElement: line', line => {
+      pushElement({ _attr: line.$, type: 'line' }, shapes);
     });
 
     xml.on('end', () => {
@@ -216,7 +233,112 @@ function getPage(pageObj: PdfminerPage): Page {
     });
   }
 
+  // treat svg lines and rectangles
+  if (pageObj.shapes !== undefined) {
+    pageObj.shapes.forEach(shape => {
+      const shapes = pdfminerShapeToSvgShapes(shape, pageBBox.height).filter(l =>
+        filterPerimeterLines(l, pageBBox),
+      );
+      elements.push(...shapes);
+    });
+  }
+
   return new Page(parseFloat(pageObj._attr.id), elements, pageBBox);
+}
+
+function filterPerimeterLines(l: SvgLine, pageBox: BoundingBox): boolean {
+  const [x, y] = [l.fromX, l.fromY].map(n => Math.round(n));
+  // vertical line
+  if (l.isVertical() && (x <= 0 || x >= pageBox.width)) {
+    return false;
+  }
+  // horizontal line
+  if (l.isHorizontal() && (y <= 0 || y >= pageBox.height)) {
+    return false;
+  }
+  return true;
+}
+
+function pdfminerShapeToSvgShapes(shape: PdfminerShape, pageHeight: number): SvgLine[] {
+  const drawingBox: BoundingBox = getBoundingBox(shape._attr.bbox, ',', pageHeight);
+
+  const thickness = parseFloat(shape._attr.linewidth) || 1;
+  const drawingContent: SvgLine[] = [];
+  if (shape.type === 'rect') {
+    drawingContent.push(
+      new SvgLine(
+        drawingBox,
+        thickness,
+        drawingBox.left,
+        drawingBox.top,
+        drawingBox.right,
+        drawingBox.top,
+      ),
+      new SvgLine(
+        drawingBox,
+        thickness,
+        drawingBox.right,
+        drawingBox.top,
+        drawingBox.right,
+        drawingBox.bottom,
+      ),
+      new SvgLine(
+        drawingBox,
+        thickness,
+        drawingBox.right,
+        drawingBox.bottom,
+        drawingBox.left,
+        drawingBox.bottom,
+      ),
+      new SvgLine(
+        drawingBox,
+        thickness,
+        drawingBox.left,
+        drawingBox.bottom,
+        drawingBox.left,
+        drawingBox.top,
+      ),
+    );
+  }
+
+  if (shape.type === 'line') {
+    drawingContent.push(
+      new SvgLine(
+        drawingBox,
+        thickness,
+        drawingBox.left,
+        drawingBox.top,
+        drawingBox.right,
+        drawingBox.bottom,
+      ),
+    );
+  }
+
+  if (shape.type === 'poly') {
+    const pts = shape._attr.pts.split(',').map(v => parseFloat(v));
+    for (let i = 0; i < pts.length; i += 2) {
+      const x1 = pts[i];
+      const y1 = pageHeight - pts[i + 1];
+      const x2 = pts[i + 2];
+      const y2 = pageHeight - pts[i + 3];
+      if ([x1, x2, y1, y2].every(num => typeof num === 'number')) {
+        drawingContent.push(new SvgLine(drawingBox, thickness, x1, y1, x2, y2));
+      }
+    }
+
+    const firstFromX = pts[0];
+    const firstFromY = pageHeight - pts[1];
+    const lastToX = pts[pts.length - 2];
+    const lastToY = pageHeight - pts[pts.length - 1];
+
+    if (firstFromX !== lastToX || firstFromY !== lastToY) {
+      drawingContent.push(
+        new SvgLine(drawingBox, thickness, lastToX, lastToY, firstFromX, firstFromY),
+      );
+    }
+  }
+
+  return drawingContent;
 }
 
 function hasTexts(figure: PdfminerFigure): boolean {
@@ -501,7 +623,7 @@ function ncolourToHex(color: string): Color {
     };
   };
 
-  const colors = color.replace(/[\(\)\[\]\s]/g, '').split(',');
+  const colors = color.replace(/[()[\]\s]/g, '').split(',');
 
   if (colors.length === 3) {
     finalColor = rgbToHex(colors[0], colors[1], colors[2]);

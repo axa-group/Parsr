@@ -16,6 +16,7 @@
 
 import {
   Document,
+  Element,
   Heading,
   Image,
   List,
@@ -45,10 +46,7 @@ export class MarkdownExporter extends Exporter {
     let output: string = '';
     this.doc.pages.forEach((page, pageN) => {
       page.elements.forEach(element => {
-        if (
-          (element.properties.isHeader || element.properties.isFooter) &&
-          !this.includeHeaderFooter
-        ) {
+        if (this.excludeHeadersFooters(element) || !this.isExportable(element)) {
           return;
         }
         if (element instanceof Heading) {
@@ -65,12 +63,25 @@ export class MarkdownExporter extends Exporter {
           output += element.toMarkdownImage(this.docName);
         }
         output += '\n'.repeat(2);
-      });
+      }, this);
       // end of page
       if (this.doc.pages.length > pageN + 1) {
         output += '---\n\n';
       }
-    });
+    }, this);
     return output;
+  }
+
+  private isExportable(element: Element): boolean {
+    return (
+      [Heading, Paragraph, List, Table, TableOfContents, Image]
+        .map(type => element instanceof type)
+        .filter(value => value).length > 0
+    );
+  }
+  private excludeHeadersFooters(element: Element): boolean {
+    return (
+      (element.properties.isHeader || element.properties.isFooter) && !this.includeHeaderFooter
+    );
   }
 }

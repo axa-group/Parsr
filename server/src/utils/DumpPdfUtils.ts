@@ -22,13 +22,13 @@ export type DumpPdfLink = {
   anchor: {
     type: 'URI' | 'GoTo';
     target: string;
-  },
+  };
   box: {
     left: number;
     top: number;
     width: number;
     height: number;
-  }
+  };
 };
 
 export type DumpPdfLinksResponse = {
@@ -109,9 +109,9 @@ export function extractLinks(xmlPath: string): Promise<DumpPdfLinksResponse[]> {
       }
 
       if (
-        nodesToDeepSearch.includes(node.$.id)
-        && !foundNodeType
-        && !hasNestedKeys(node, ['dict', 'value'])
+        nodesToDeepSearch.includes(node.$.id) &&
+        !foundNodeType &&
+        !hasNestedKeys(node, ['dict', 'value'])
       ) {
         linkNodes.push(node);
       }
@@ -149,7 +149,7 @@ export function extractLinks(xmlPath: string): Promise<DumpPdfLinksResponse[]> {
 function hasNestedKeys(node: any, keys: string[]): boolean {
   let search = Object.assign({}, node);
   return keys.every(k => {
-    if (search.hasOwnProperty(k)) {
+    if ({}.hasOwnProperty.call(search, k)) {
       search = search[k];
       return true;
     }
@@ -172,13 +172,17 @@ function xmlNodeToLink(node: any): DumpPdfLink {
   if (!rect || !hasNestedKeys(rect, ['list', 'number'])) {
     return null;
   }
-  const [x1, y1, x2, y2] = node.dict.value[node.dict.key.findIndex(k => k === 'Rect')].list.number
-    .map(x => parseInt(x, 10));
+  const [x1, y1, x2, y2] = node.dict.value[
+    node.dict.key.findIndex(k => k === 'Rect')
+  ].list.number.map(x => parseInt(x, 10));
   const annotInfo = node.dict.value[node.dict.key.findIndex(k => k === 'A')];
   if (annotInfo) {
     if (hasNestedKeys(annotInfo, ['dict', 'key']) && hasNestedKeys(annotInfo, ['dict', 'value'])) {
       const type = annotInfo.dict.value[annotInfo.dict.key.findIndex(k => k === 'S')].literal;
-      const target = annotInfo.dict.value[annotInfo.dict.key.findIndex(k => k === (type === 'URI' ? 'URI' : 'D'))];
+      const target =
+        annotInfo.dict.value[
+          annotInfo.dict.key.findIndex(k => k === (type === 'URI' ? 'URI' : 'D'))
+        ];
       if (!target || !hasNestedKeys(target, ['string', '$text'])) {
         return null;
       }
@@ -220,12 +224,14 @@ function xmlNodeToLink(node: any): DumpPdfLink {
 function xmlToLinkingNode(node: any): DumpPdfLinkingNode {
   return {
     nodeId: node.$.id,
-    children: node.list.ref.map(r => r.$.id),
+    children: (node.list.ref || []).map(r => r.$.id),
   };
 }
 
-function matchLinks(links: DumpPdfLink[], linkingNodes: DumpPdfLinkingNode[]):
-  (nodeId) => DumpPdfLink[] {
+function matchLinks(
+  links: DumpPdfLink[],
+  linkingNodes: DumpPdfLinkingNode[],
+): (nodeId) => DumpPdfLink[] {
   return (nodeId: string): DumpPdfLink[] => {
     const linkingNode = linkingNodes.find(n => n.nodeId === nodeId);
     if (linkingNode) {

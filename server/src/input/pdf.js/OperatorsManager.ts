@@ -17,7 +17,9 @@
 import { writeFileSync } from 'fs';
 import { join } from 'path';
 import * as pdfjsLib from 'pdfjs-dist';
-import { BoundingBox, Element, Font, Image, Word } from "../../types/DocumentRepresentation";
+import { BoundingBox, Element, Font, Image, Word } from '../../types/DocumentRepresentation';
+import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
+import { SvgShape } from '../../types/DocumentRepresentation/SvgShape';
 import logger from '../../utils/Logger';
 import { OperationState } from './OperationState';
 import { matrixToCoords } from './operators/helper';
@@ -33,6 +35,7 @@ type OpList = {
 type ManagerOptions = {
   extractImages?: boolean;
   extractText?: boolean;
+  extractShapes?: boolean;
   assetsFolder?: string;
 };
 
@@ -49,19 +52,19 @@ type TextSpan = {
 };
 
 type TextElement = {
-  tspan: TextSpan,
+  tspan: TextSpan;
   transform: {
     position: {
       x: number;
       y: number;
-    },
+    };
     scale: {
       x: number;
       y: number;
-    },
+    };
     matrix: string;
     matrixArray: number[];
-  },
+  };
 };
 
 type ImageElement = {
@@ -72,8 +75,25 @@ type ImageElement = {
   transform: number[];
 };
 
+type PathElement = {
+  transform: number[];
+  d: string;
+  fill?: string;
+  clipRule?: string;
+  fillRule?: string;
+  fillOpacity?: number;
+  stroke?: string;
+  strokeOpacity?: number;
+  strokeMiterlimit?: string;
+  strokeLinecap?: string;
+  strokeLinejoin?: string;
+  strokeWidth?: number;
+  strokeDasharray?: string;
+  strokeDashoffset?: string;
+};
+
 export type OperatorResponse = {
-  type: 'text' | 'image';
+  type: 'text' | 'image' | 'path';
   data: any;
 };
 
@@ -98,11 +118,17 @@ export class OperatorsManager {
     this.assetsFolder = options && options.assetsFolder;
 
     OperationState.state.extractImages = options && options.extractImages;
-    OperationState.state.extractText = !options || !options.hasOwnProperty('extractText') || options.extractText;
+    OperationState.state.extractText =
+      !options || !{}.hasOwnProperty.call(options, 'extractText') || options.extractText;
+    OperationState.state.extractShapes =
+      !options || !{}.hasOwnProperty.call(options, 'extractShapes') || options.extractShapes;
   }
 
   public async processOperators(pageNumber: number): Promise<Element[]> {
-    const elements: Element[] = [];
+    const texts: Word[] = [];
+    const images: Image[] = [];
+    const shapes: SvgShape[] = [];
+
     const opList = await this.opList;
     opList.fnArray.forEach((opNumber, i) => {
       const operatorName = Object.keys((pdfjsLib as any).OPS)[opNumber - 1];
@@ -121,23 +147,29 @@ export class OperatorsManager {
           });
         }
         if (fnReturn && fnReturn.type === 'text') {
-          this.parseTextElement(fnReturn.data, elements);
+          this.parseTextElement(fnReturn.data, texts);
         }
         if (this.assetsFolder && fnReturn && fnReturn.type === 'image') {
-          this.parseImageElement(fnReturn.data, elements, pageNumber);
+          this.parseImageElement(fnReturn.data, images, pageNumber);
+        }
+        if (fnReturn && fnReturn.type === 'path') {
+          this.parsePathElement(fnReturn.data, shapes);
         }
       } else {
         if (!this.notImplementedFunctions.includes(operatorName)) {
           this.notImplementedFunctions.push(operatorName);
-          logger.debug(`==> WARN: ${operatorName} operator is not implemented`);
+          logger.debug(`WARN ==> ${operatorName} operator is not implemented`);
         }
       }
     });
-    return elements.filter(e => e.box && e.box.width > 0);
+    return [...texts, ...images, ...shapes].filter(e => e.box && e.box.width > 0);
   }
 
-  private parseTextElement(textElem: TextElement, parsedElements: Element[]) {
-    const pageTransform = Util.transform(this.viewport.transform, OperationState.state.transformMatrix);
+  private parseTextElement(textElem: TextElement, parsedElements: Word[]) {
+    const pageTransform = Util.transform(
+      this.viewport.transform,
+      OperationState.state.transformMatrix,
+    );
     const transform = matrixToCoords(Util.transform(pageTransform, textElem.transform.matrixArray));
     const scaleX = transform.scale.x;
     const scaleY = transform.scale.y;
@@ -165,22 +197,17 @@ export class OperatorsManager {
             }),
           );
 
-          const previousElement =
-            parsedElements.length > 0 &&
-            parsedElements[parsedElements.length - 1] &&
-            parsedElements.pop();
-
+          const previousElement = parsedElements.pop();
           const prevRight = previousElement && parseFloat(previousElement.right.toFixed(3));
           const currLeft = parseFloat(currentWord.left.toFixed(3));
 
           if (
             previousElement &&
-            previousElement instanceof Word &&
             Math.abs(prevRight - currLeft) * 10 <= previousElement.font.size &&
             Math.round(currentWord.top) === Math.round(previousElement.top)
           ) {
             parsedElements.push(previousElement.join(currentWord));
-          } else if (!!previousElement) {
+          } else if (previousElement !== undefined) {
             parsedElements.push(previousElement, currentWord);
           } else {
             parsedElements.push(currentWord);
@@ -190,13 +217,16 @@ export class OperatorsManager {
     }
   }
 
-  private parseImageElement(imgElem: ImageElement, parsedElements: Element[], pageNumber: number) {
+  private parseImageElement(imgElem: ImageElement, parsedElements: Image[], pageNumber: number) {
     const transform = matrixToCoords(Util.transform(this.viewport.transform, imgElem.transform));
     const { x, y } = transform.position;
     const { x: width, y: height } = transform.scale;
 
     const imageCount = parsedElements.filter(e => e instanceof Image).length.toString();
-    const xObjId = pageNumber.toString().concat('_', imageCount).padStart(4, '0');
+    const xObjId = pageNumber
+      .toString()
+      .concat('_', imageCount)
+      .padStart(4, '0');
     const xObjExt = 'png';
 
     const imagePath = join(this.assetsFolder, `img-${xObjId}.${xObjExt}`);
@@ -210,5 +240,88 @@ export class OperatorsManager {
     image.xObjExt = xObjExt;
     image.enabled = true;
     parsedElements.push(image);
+  }
+
+  private parsePathElement(pathElem: PathElement, parsedElements: SvgShape[]) {
+    const transform = matrixToCoords(Util.transform(this.viewport.transform, pathElem.transform));
+    const { x: scaleX, y: scaleY } = transform.scale;
+    const { x: posX, y: posY } = transform.position;
+
+    const color = pathElem.stroke || '#000000';
+    const pathInstructions = pathElem.d.split(' ');
+    let fromX = 0;
+    let fromY = 0;
+    let toX = 0;
+    let toY = 0;
+    const lines: SvgLine[] = [];
+    const box = new BoundingBox(1, 1, 1, 1);
+
+    let pathFirstX = posX + parseFloat(pathInstructions[1]) * scaleX;
+    let pathFirstY = posY + parseFloat(pathInstructions[2]) * scaleY;
+
+    for (let i = 0; i < pathInstructions.length; ) {
+      const cmd = pathInstructions[i++];
+      switch (cmd) {
+        case 'M':
+          fromX = posX + parseFloat(pathInstructions[i++]) * scaleX;
+          fromY = posY + parseFloat(pathInstructions[i++]) * scaleY;
+          break;
+        case 'L':
+          toX = posX + parseFloat(pathInstructions[i++]) * scaleX;
+          toY = posY + parseFloat(pathInstructions[i++]) * scaleY;
+          lines.push(new SvgLine(box, 1, fromX, fromY, toX, toY, color));
+          fromX = toX;
+          fromY = toY;
+          break;
+        case 'C':
+          i += 4;
+          toX = posX + parseFloat(pathInstructions[i++]) * scaleX;
+          toY = posY + parseFloat(pathInstructions[i++]) * scaleY;
+          lines.push(new SvgLine(box, 1, fromX, fromY, toX, toY, color));
+          fromX = toX;
+          fromY = toY;
+          break;
+        case 'Z':
+          lines.push(new SvgLine(box, 1, fromX, fromY, pathFirstX, pathFirstY, color));
+          fromX = pathFirstX;
+          fromY = pathFirstY;
+          if (pathInstructions[i + 2]) {
+            pathFirstX = posX + parseFloat(pathInstructions[i + 1]) * scaleX;
+            pathFirstY = posY + parseFloat(pathInstructions[i + 2]) * scaleY;
+          }
+          break;
+        default:
+          break;
+      }
+      if (lines.length > 0) {
+        lines.forEach(line => {
+          line.fillOpacity = {}.hasOwnProperty.call(pathElem, 'fillOpacity')
+            ? pathElem.fillOpacity
+            : 1;
+          line.strokeOpacity = {}.hasOwnProperty.call(pathElem, 'strokeOpacity')
+            ? pathElem.strokeOpacity
+            : 1;
+          line.thickness = {}.hasOwnProperty.call(pathElem, 'strokeWidth')
+            ? pathElem.strokeWidth
+            : 1;
+        });
+      }
+    }
+
+    // filter lines that follow the perimeter of the page
+    parsedElements.push(...lines.filter(this.filterPerimeterLines, this));
+  }
+
+  private filterPerimeterLines(l: SvgLine): boolean {
+    const [x, y] = [l.fromX, l.fromY].map(n => Math.round(n));
+    // vertical line
+    if (l.isVertical() && (x <= 0 || x >= this.viewport.width)) {
+      return false;
+    }
+    // horizontal line
+    if (l.isHorizontal() && (y <= 0 || y >= this.viewport.height)) {
+      return false;
+    }
+    return true;
   }
 }

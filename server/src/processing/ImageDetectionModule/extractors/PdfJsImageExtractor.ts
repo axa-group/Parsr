@@ -20,7 +20,7 @@ import { getDocument } from 'pdfjs-dist';
 import { OperatorsManager } from '../../../input/pdf.js/OperatorsManager';
 import { Document, Element, Image } from '../../../types/DocumentRepresentation';
 import logger from '../../../utils/Logger';
-import { ImageExtractor } from "./ImageExtractor";
+import { ImageExtractor } from './ImageExtractor';
 
 type PageElements = {
   pageNumber: number;
@@ -52,9 +52,14 @@ export class PdfJsImageExtractor extends ImageExtractor {
     });
   }
 
-  private async loadImagesFromPage(pdfjsDoc: any, pageNumber: number, assetsFolder: string): Promise<PageElements> {
+  private async loadImagesFromPage(
+    pdfjsDoc: any,
+    pageNumber: number,
+    assetsFolder: string,
+  ): Promise<PageElements> {
     const pdfjsPage = await pdfjsDoc.getPage(pageNumber);
     const opManager = new OperatorsManager(pdfjsPage, {
+      extractShapes: false,
       extractText: false,
       extractImages: true,
       assetsFolder,

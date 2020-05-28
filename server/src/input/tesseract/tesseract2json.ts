@@ -29,7 +29,7 @@ import logger from '../../utils/Logger';
  * @returns The promise of a valid Document (as in the Document Representation data structure).
  */
 export function execute(imageInputFile: string, config: Config): Promise<Document> {
-  return new Promise<Document>(async (resolve, reject) => {
+  return new Promise<Document>((resolve, reject) => {
     const tsvOutputFile: string = utils.getTemporaryFile('.json');
 
     let configLanguages: string[];

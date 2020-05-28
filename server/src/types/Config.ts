@@ -27,10 +27,10 @@ export class Config {
       throw new Error(`The Json config file is not valid`);
     }
     if (
-      config.hasOwnProperty('version') &&
-      config.hasOwnProperty('extractor') &&
-      config.hasOwnProperty('cleaner') &&
-      config.hasOwnProperty('output')
+      {}.hasOwnProperty.call(config, 'version') &&
+      {}.hasOwnProperty.call(config, 'extractor') &&
+      {}.hasOwnProperty.call(config, 'cleaner') &&
+      {}.hasOwnProperty.call(config, 'output')
     ) {
       this.version = config.version;
       this.cleaner = config.cleaner;

@@ -6,6 +6,7 @@
     "language": ["eng", "fra"]
   },
   "cleaner": [
+    "drawing-detection",
     [
       "image-detection",
       {
@@ -118,7 +119,7 @@
       "csv": true,
       "markdown": true,
       "pdf": false,
-      "simpleJson" : true
+      "simpleJson": true
     }
   }
 }

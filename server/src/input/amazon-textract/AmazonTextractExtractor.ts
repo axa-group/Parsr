@@ -66,7 +66,7 @@ export class AmazonTextractExtractor extends OcrExtractorFactory {
     });
   }
 
-  public async scanFile(inputFile: string) {
+  public scanFile(inputFile: string) {
     return new Promise<Document>((resolve, reject) => {
       this.textract.detectDocumentText(
         {

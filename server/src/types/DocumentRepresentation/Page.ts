@@ -19,6 +19,7 @@ import { findMostCommonFont, isInBox } from '../../utils';
 import logger from '../../utils/Logger';
 import { BoundingBox } from './BoundingBox';
 import { Character } from './Character';
+import { Drawing } from './Drawing';
 import { Element } from './Element';
 import { Font } from './Font';
 import { Image } from './Image';
@@ -144,12 +145,13 @@ export class Page {
   }
 
   /**
-   * Return the subset of all the elements completely inside a rectangle defining a subset of the given page.
+   * Return the subset of all the elements inside a rectangle defining a subset of the given page.
    * @param box Elements of the subset should be inside this bounding box.
    * @param textOnly Elements of the subset should only be the textual elements.
+   * @param strict if true, returned elements will be fully inside the box.
    */
-  public getElementsSubset(box: BoundingBox, textOnly: boolean = false): Element[] {
-    return this.elements.filter(e => e instanceof Text || textOnly).filter(e => isInBox(e, box));
+  public getElementsSubset(box: BoundingBox, textOnly: boolean = true, strict: boolean = true): Element[] {
+    return this.elements.filter(e => e instanceof Text || !textOnly).filter(e => isInBox(e, box, strict));
   }
 
   /**
@@ -358,7 +360,7 @@ export class Page {
     let barriers: number[][] = [];
     if (direction === 'horizontal') {
       barriers = this.elements
-        .filter((elem: Element) => elem instanceof Image === false)
+        .filter((elem: Element) => !(elem instanceof Image) && !(elem instanceof Drawing))
         .map((elem: Element) => elem.box)
         .map((b: BoundingBox) => {
           const start: number = b.top;
@@ -367,7 +369,7 @@ export class Page {
         });
     } else {
       barriers = this.elements
-        .filter((elem: Element) => elem instanceof Image === false)
+        .filter((elem: Element) => !(elem instanceof Image) && !(elem instanceof Drawing))
         .map((elem: Element) => elem.box)
         .map((b: BoundingBox) => {
           const start: number = b.left;

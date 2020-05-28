@@ -47,6 +47,16 @@ export class ImageDetectionModule extends Module<Options> {
   }
 
   public async main(doc: Document, config: Config): Promise<Document> {
+    try {
+      if (!fs.existsSync(doc.inputFile)) {
+        logger.warn(`Input file ${doc.inputFile} cannot be found. Not performing image detection.`);
+        return doc;
+      }
+    } catch (err) {
+      logger.error(`Could not check if the input file ${doc.inputFile} exists: ${err}..`);
+      return doc;
+    }
+
     const fileType: { ext: string; mime: string } = filetype(fs.readFileSync(doc.inputFile));
     if (fileType === null || fileType.ext !== 'pdf') {
       logger.warn(
@@ -74,7 +84,7 @@ export class ImageDetectionModule extends Module<Options> {
       .catch(() => doc);
   }
 
-  private async ocrImages(doc: Document, config: Config): Promise<Document> {
+  private ocrImages(doc: Document, config: Config): Promise<Document> {
     if (!this.options.ocrImages) {
       return Promise.resolve(doc);
     }
@@ -96,7 +106,7 @@ export class ImageDetectionModule extends Module<Options> {
     return this.scanImages(doc, imagesToScan, utils.getOcrExtractor(config));
   }
 
-  private async scanImages(
+  private scanImages(
     doc: Document,
     imagesToScan: DocumentImages[],
     ocr: OcrExtractor,
@@ -106,22 +116,26 @@ export class ImageDetectionModule extends Module<Options> {
       return Promise.resolve(doc);
     }
     logger.info(`Running OCR in image ${index + 1} of ${imagesToScan.length}`);
-    return ocr.run(imagesToScan[index].path)
-      .then(document => {
-        if (document && document.pages.length > 0) {
-          const pageIndex = imagesToScan[index].pageNumber - 1;
-          const resizedWords = this.scaleWordsToFitImageBox(document, imagesToScan[index].image);
-          this.removeImage(doc, imagesToScan[index]);
-          doc.pages[pageIndex].elements = doc.pages[pageIndex].elements.concat(resizedWords);
-        }
-        return this.scanImages(doc, imagesToScan, ocr, index + 1);
-      })
-      // if the current image throws an error when OCR'ing, continue with the next
-      .catch((error: Error) => {
-        logger.error(error.stack);
-        logger.error('An error was found while OCR\'ing image. Skipping...');
-        return this.scanImages(doc, imagesToScan, ocr, index + 1);
-      });
+    return (
+      ocr
+        .run(imagesToScan[index].path)
+        .then(document => {
+          if (document && document.pages.length > 0) {
+            const pageIndex = imagesToScan[index].pageNumber - 1;
+            const resizedWords = this.scaleWordsToFitImageBox(document, imagesToScan[index].image);
+            this.removeImage(doc, imagesToScan[index]);
+            doc.pages[pageIndex].elements = doc.pages[pageIndex].elements.concat(resizedWords);
+            doc.pages[pageIndex].pageRotation = document.pages[pageIndex].pageRotation;
+          }
+          return this.scanImages(doc, imagesToScan, ocr, index + 1);
+        })
+        // if the current image throws an error when OCR'ing, continue with the next
+        .catch((error: Error) => {
+          logger.error(error.stack);
+          logger.error("An error was found while OCR'ing image. Skipping...");
+          return this.scanImages(doc, imagesToScan, ocr, index + 1);
+        })
+    );
   }
 
   private removeImage(document: Document, imageDetected: DocumentImages) {
@@ -155,12 +169,12 @@ export class ImageDetectionModule extends Module<Options> {
     const assets: string[] = fs.readdirSync(doc.assetsFolder);
     return path.resolve(
       doc.assetsFolder +
-      '/' +
-      assets
-        .filter(
-          fileName => fileName === 'img-' + image.xObjId.padStart(4, '0') + '.' + image.xObjExt,
-        )
-        .pop(),
+        '/' +
+        assets
+          .filter(
+            fileName => fileName === 'img-' + image.xObjId.padStart(4, '0') + '.' + image.xObjExt,
+          )
+          .pop(),
     );
   }
 }
