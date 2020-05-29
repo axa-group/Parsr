@@ -48,7 +48,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         .getElementsOfType<Paragraph>(Paragraph, false)
         .filter(this.isNotHeaderFooter);
       let storeLines: any[] = [];
-
       for (let para of allParagraphs) {
         for (let line of para.content) {
           this.addWordToLine(storeLines, line);
@@ -58,7 +57,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       const tocItemParagraphs = allParagraphs.filter((p) =>
         detection.TOCDetected(p, this.options.pageKeywords, storeLines),
       );
-
+      
       if (tocItemParagraphs.length > 0) {
         this.storeNumAndRomanNum(tocItemParagraphs);
 
@@ -216,14 +215,22 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
   private addWordToLine(storeLines, line) {
    
-    const indexTopExist = storeLines.findIndex(bounding => bounding[0] === Math.floor(line.box.top));
+    // const indexTopExist = storeLines.findIndex(bounding => bounding[0] === Math.floor(line.box.top));
+    const indexTopExist = storeLines.findIndex(aLine => Math.floor(aLine.box.top) === Math.floor(line.box.top));
+    console.log('index= ' + indexTopExist);
     if (indexTopExist !== -1) {
-      storeLines[indexTopExist][1].push.apply(storeLines[indexTopExist][1], line.content);
-      // console.log(storeLines[indexTopExist][2].toString());
+      console.log(storeLines[indexTopExist].toString() + '------->');
+      // storeLines[indexTopExist][1].push.apply(storeLines[indexTopExist][1], line.content);
+      storeLines[indexTopExist].content.push.apply(storeLines[indexTopExist].content, line.content);
+      console.log(storeLines[indexTopExist].toString() + '<-------');
+      // console.log(storeLines[indexTopExist][1].toString());
     }
     else {
       // console.log('not found yet: ' +  Math.floor(line.box.top));
-      storeLines.push([Math.floor(line.box.top), line.content]);
+      // storeLines.push([Math.floor(line.box.top), line.content]);
+      storeLines.push(line);
     }
+      console.log(storeLines.toString());
+
   }
 }
