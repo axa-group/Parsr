@@ -130,9 +130,9 @@ def extract_rows_data(table, flavor):
 
     # if the table starts with an empty cell, camelot will ignore
     # so this is to ensure it is available on the output
-    first_cell_x = rows_data[0][0]['location']['x']
-    if first_cell_x > table.cells[0][0].x1:
-        rows_data = add_first_cell(rows_data, table.cells[0][0])
+    if rows_data[0]:
+        if rows_data[0][0]['location']['x'] > table.cells[0][0].x1:
+            rows_data = add_first_cell(rows_data, table.cells[0][0])
 
     no_empty_rows_data = list(filter(lambda x: len(x) > 0, rows_data))
     if len(no_empty_rows_data) == 0:

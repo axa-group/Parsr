@@ -2,18 +2,25 @@ import { Drawing, BoundingBox } from './../../types/DocumentRepresentation';
 import { JsonTable, JsonTableCell } from './TableDetectionModule';
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 
+// when calculating rows, the minimum separation between lines for them to be considered as a row/col
+const MIN_ROW_HEIGHT = 10;
+const MIN_COL_WIDTH = 10;
+
 export default (drawing: Drawing, pageHeight: number): JsonTable => {
   const cols = getColsData(drawing);
   const rows = getRowsData(drawing, pageHeight);
 
+  const height = getTableHeight(rows);
+  const width = getTableWidth(cols);
+
   return {
     location: {
-      x: drawing.left,
-      y: pageHeight - drawing.top,
+      x: cols[0][0],
+      y: rows[0][0],
     },
     size: {
-      height: drawing.height,
-      width: drawing.width,
+      height,
+      width,
     },
     cols,
     rows,
@@ -21,16 +28,24 @@ export default (drawing: Drawing, pageHeight: number): JsonTable => {
   };
 };
 
+function getTableHeight(rows: number[][]): number {
+  return getCellHeight(rows, 0, rows.length);
+}
+
+function getTableWidth(cols: number[][]): number {
+  return getCellWidth(cols, 0, cols.length);
+}
+
 function getColsData(d: Drawing): number[][] {
   const xPositions = d.content
     .filter(c => c instanceof SvgLine && c.isVertical())
-    .map((l: SvgLine) => l.fromX);
+    .map((l: SvgLine) => l.fromX)
+    .sort()
+    .reduce(byMinimum(MIN_COL_WIDTH), []);
 
   const cols = [];
   for (let i = 0; i < xPositions.length - 1; i++) {
-    if (xPositions[i] !== xPositions[i + 1]) {
-      cols.push([xPositions[i], xPositions[i + 1]]);
-    }
+    cols.push([xPositions[i], xPositions[i + 1]]);
   }
 
   return cols;
@@ -40,16 +55,26 @@ function getRowsData(d: Drawing, pageHeight: number): number[][] {
   const yPositions = d.content
     .filter(c => c instanceof SvgLine && c.isHorizontal())
     .map((l: SvgLine) => pageHeight - l.fromY)
-    .sort((a, b) => b - a);
+    .sort((a, b) => b - a)
+    .reduce(byMinimum(MIN_ROW_HEIGHT), []);
 
   const rows = [];
   for (let i = 0; i < yPositions.length - 1; i++) {
-    if (yPositions[i] !== yPositions[i + 1]) {
-      rows.push([yPositions[i], yPositions[i + 1]]);
-    }
+    rows.push([yPositions[i], yPositions[i + 1]]);
   }
 
   return rows;
+}
+
+// reduce function used to detect when 2 lines are too close to be considered a row/column
+function byMinimum(min: number) {
+  return (accumulator, value, index, array) => {
+    const nextValue = array[index + 1];
+    if (!nextValue || (nextValue && Math.abs(value - nextValue) > min)) {
+      return accumulator.concat(value);
+    }
+    return accumulator;
+  };
 }
 
 function getTableCells(d: Drawing, cols: number[][], rows: number[][], pageHeight: number): JsonTableCell[][] {
