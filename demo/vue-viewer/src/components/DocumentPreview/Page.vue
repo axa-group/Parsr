@@ -391,6 +391,6 @@ svg.Drawing.highlighted {
   display: block;
 }
 svg.Drawing.highlighted line {
-  stroke: lightsalmon;
+  stroke: #03e3aa;
 }
 </style>
