@@ -25,17 +25,55 @@ import {
   TableCell,
   TableRow,
   Word,
+  Drawing,
+  Text,
 } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
+import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
+import drawingToTable from './DrawingToTableHelper';
 
 export interface Options {
   pages?: number[];
   flavor?: string;
   table_areas?: string[];
+}
+
+export type JsonTableCell = {
+  size: {
+    width: number;
+    height: number;
+  },
+  location: {
+    x: number;
+    y: number;
+  },
+  colSpan: number,
+  rowSpan: number,
+}
+
+export type JsonTable = {
+  size: {
+    width: number;
+    height: number;
+  },
+  location: {
+    x: number;
+    y: number;
+  },
+  rows: number[][],
+  cols: number[][],
+  cells: JsonTableCell[][],
+  content?: string[][],
+  flavor?: string,
+}
+
+type JsonTablePage = {
+  page: number;
+  tables: JsonTable[];
 }
 
 const defaultOptions = (defaultConfig as any) as Options;
@@ -133,13 +171,24 @@ export class TableDetectionModule extends Module<Options> {
       if (tableExtractor.status === 0) {
         const tablesData = JSON.parse(tableExtractor.stdout);
         this.addTables(tablesData, doc);
-        this.removeWordsUsedInCells(doc);
       }
     }
+    const camelotCount = doc.getElementsOfType<Table>(Table).length;
+    logger.info(`${camelotCount} tables found with Camelot.`);
+
+    if (this.options.checkDrawings) {
+      logger.info('Looking for table candidates on Drawings...');
+      const drawingTablesData = this.findTablesOnDrawings(doc);
+      this.addTables(drawingTablesData, doc);
+    }
+
+    this.removeWordsUsedInCells(doc);
+    const tableCount = doc.getElementsOfType<Table>(Table).length;
+    logger.info(`${tableCount} tables found on document.`);
     return doc;
   }
 
-  private addTables(tablesData: any, doc: Document) {
+  private addTables(tablesData: JsonTablePage[], doc: Document) {
     tablesData.map(pageData => {
       pageData.tables.map(table => {
         this.addTable(table, doc.pages[pageData.page - 1]);
@@ -147,7 +196,7 @@ export class TableDetectionModule extends Module<Options> {
     });
   }
 
-  private addTable(tableData: any, page: Page) {
+  private addTable(tableData: JsonTable, page: Page) {
     const pageHeight = page.box.height;
     const table: Table = this.createTable(tableData, pageHeight);
     table.content = this.createRows(tableData, page);
@@ -257,7 +306,8 @@ export class TableDetectionModule extends Module<Options> {
     const isFalse = table.content.some((_, index) => !this.existAdjacentRow(index, table));
     const only1Row = table.content.length === 1;
 
-    return only1Row || isFalse;
+    const rowsHeightSum = table.content.reduce((total, row) => total + row.height, 0);
+    return only1Row || isFalse || Math.ceil(rowsHeightSum) < Math.floor(table.height);
   }
 
   private existAdjacentRow(rowIndex: number, table: Table): TableRow {
@@ -283,7 +333,7 @@ export class TableDetectionModule extends Module<Options> {
       .shift();
   }
 
-  private createTable(tableData: any, pageHeight: number): Table {
+  private createTable(tableData: JsonTable, pageHeight: number): Table {
     const tableBounds = new BoundingBox(
       tableData.location.x,
       pageHeight - tableData.location.y,
@@ -293,7 +343,7 @@ export class TableDetectionModule extends Module<Options> {
     return new Table([], tableBounds);
   }
 
-  private createRows(tableData: any, page: Page): TableRow[] {
+  private createRows(tableData: JsonTable, page: Page): TableRow[] {
     const pageWords = page.getElementsOfType<Word>(Word);
 
     // this is used to keep track of the position of cells that are merged into another
@@ -320,7 +370,7 @@ export class TableDetectionModule extends Module<Options> {
   }
 
   private createRowCells(
-    row: any,
+    row: JsonTableCell[],
     rowIndex: number,
     pageHeight: number,
     pageWords: Word[],
@@ -395,5 +445,79 @@ export class TableDetectionModule extends Module<Options> {
         return (isWord && !isUsedInCell) || !isWord;
       });
     });
+  }
+
+  private findTablesOnDrawings(doc: Document): JsonTablePage[] {
+    const jsonResult: JsonTablePage[] = [];
+    doc.pages.forEach((page, pageIndex) => {
+      const pageDrawings = page.getElementsOfType<Drawing>(Drawing);
+      const tables = pageDrawings
+        .filter(d => this.drawingIsTable(d, page))
+        .map(d => drawingToTable(d, page.height));
+      jsonResult.push({ page: pageIndex + 1, tables });
+    });
+    return jsonResult;
+  }
+
+  private drawingIsTable(d: Drawing, p: Page): boolean {
+    // if there is already a Table in the position of the drawing, skips.
+    if (p.getElementsOfType<Table>(Table).some(table => BoundingBox.getOverlap(table.box, d.box).box1OverlapProportion > 0.9)) {
+      return false;
+    }
+    const totalLines = d.content.length;
+    const vhLines = (d.content as SvgLine[]).filter(l => l.isVertical() || l.isHorizontal());
+
+    // percentage of lines that are Horizontal or Vertical
+    const vhLinesPercentage = totalLines > 0 ? vhLines.length / totalLines : 0;
+
+    // Text elements strictly inside the bounding box of the drawing
+    const textInsideDrawing = (p.getElementsSubset(d.box) as Text[]);
+
+    // subset of `textInsideDrawing` elements that are overlapping with any h/v SvgLine of the Drawing.
+    const overLappingTextInsideDrawing = textInsideDrawing.filter(t =>
+      vhLines.some(line => this.lineOverlapsText(line, t)),
+    );
+
+    // percentage of text elements inside drawing that are overlapping with any h/v drawing line.
+    const overlappingTextPercentage = textInsideDrawing.length > 0 ? overLappingTextInsideDrawing.length / textInsideDrawing.length : 0;
+
+    // horizontal lines that have (almost) the same width than the box of the drawing
+    const fullWidthHorizontalLines = (d.content as SvgLine[]).filter(l => {
+      const lineW = Math.abs(l.fromX - l.toX);
+      // TODO replace 2 with tolerance value
+      return l.isHorizontal() && lineW + 2 >= d.width && lineW - 2 <= d.width;
+    });
+
+    // vertical lines that have (almost) the same height than the box of the drawing
+    const fullHeightVerticalLines = (d.content as SvgLine[]).filter(l => {
+      const lineH = Math.abs(l.fromY - l.toY);
+      return l.isVertical() && lineH + 1 >= d.height && lineH - 1 <= d.height;
+    });
+
+    const verticalLinesInMiddle = (d.content as SvgLine[]).filter(l => {
+      const minL = Math.min(l.fromX, l.toX);
+      const maxL = Math.max(l.fromX, l.toX);
+      return l.isVertical() &&
+        Math.floor(minL) > d.left &&
+        Math.ceil(maxL) < d.right &&
+        Math.abs(l.fromY - l.toY) >= d.height / 3.1;
+    });
+
+    // at least a couple of "main" lines have to intersect 
+    const mainLinesIntersect = fullWidthHorizontalLines.some(hl =>
+      verticalLinesInMiddle.some(vl => vl.intersects(hl)));
+
+    return vhLinesPercentage > 0.4 &&
+      overlappingTextPercentage < 0.25 &&
+      textInsideDrawing.length > 0 &&
+      fullWidthHorizontalLines.length >= 3 &&
+      fullHeightVerticalLines.length >= 2 &&
+      verticalLinesInMiddle.length >= 1 &&
+      mainLinesIntersect;
+  }
+
+  private lineOverlapsText(line: SvgLine, e: Text): boolean {
+    if (!e.box) return false;
+    return e.box.toSvgLines().some(boxLine => line.intersects(boxLine));
   }
 }

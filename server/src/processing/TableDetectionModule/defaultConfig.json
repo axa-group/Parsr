@@ -2,6 +2,10 @@
   "name": "table-detection",
   "description": "Table extraction from the PDF file",
   "specs": {
+    "checkDrawings": {
+      "value": true,
+      "range": [true, false]
+    },
     "runConfig": {
       "value": [
         {
