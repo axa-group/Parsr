@@ -53,9 +53,9 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           this.addWordToLine(storeLines, line);
         }
       }
-
+      const parameters = {'pageKeywords' : this.options.pageKeywords, 'allLines' : storeLines};
       const tocItemParagraphs = allParagraphs.filter((p) =>
-        detection.TOCDetected(p, this.options.pageKeywords, storeLines),
+        detection.TOCDetected(p, parameters),
       );
       
       if (tocItemParagraphs.length > 0) {
