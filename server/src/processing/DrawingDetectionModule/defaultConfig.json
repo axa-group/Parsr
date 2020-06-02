@@ -1,16 +1,4 @@
 {
 	"name": "drawing-detection-module",
-	"description": "groups svg Shapes that are visually part of a Drawing.",
-	"specs": {
-		"mergeCloseLines": {
-			"value": true,
-			"range": [
-				true,
-				false
-			]
-		},
-		"tolerance": {
-			"value": 1
-		}
-	}
+	"description": "groups svg Shapes that are visually part of a Drawing."
 }

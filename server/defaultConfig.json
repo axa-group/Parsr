@@ -6,13 +6,7 @@
     "language": ["eng", "fra"]
   },
   "cleaner": [
-    [
-      "drawing-detection",
-      {
-        "mergeCloseLines": true,
-        "tolerance": 2
-      }
-    ],
+    "drawing-detection",
     [
       "image-detection",
       {

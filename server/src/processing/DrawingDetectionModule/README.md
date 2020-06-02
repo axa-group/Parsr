@@ -10,9 +10,7 @@ Converts all SvgShapes given by the extractor to a group of Drawings. Each Drawi
 
 ## Parameters
 
-`mergeCloseLines`: When grouping lines into Drawings, this parameter tells the module to merge the vertical and horizontal lines that are visually close, with a tolerance defined in the next parameter.
-
-`tolerance`: In pixels, the max separation value between 2 lines (in every direction) for them to be considered as one line when detecting/merging close lines. Only takes effect when mergeCloseLines is set to true.
+None
 
 ## Dependencies
 

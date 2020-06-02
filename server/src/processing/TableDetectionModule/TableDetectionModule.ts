@@ -35,6 +35,7 @@ import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import drawingToTable from './DrawingToTableHelper';
+import drawingLineMerge from './DrawingLineMergeHelper';
 
 export interface Options {
   pages?: number[];
@@ -307,7 +308,12 @@ export class TableDetectionModule extends Module<Options> {
     const only1Row = table.content.length === 1;
 
     const rowsHeightSum = table.content.reduce((total, row) => total + row.height, 0);
-    return only1Row || isFalse || Math.ceil(rowsHeightSum) < Math.floor(table.height);
+
+    const rowWidths = table.content.map(row => row.width).sort((a, b) => a - b);
+    return isFalse ||
+      only1Row ||
+      Math.ceil(rowsHeightSum) < Math.floor(table.height) ||
+      rowWidths[rowWidths.length - 1] - rowWidths[0] > 5;
   }
 
   private existAdjacentRow(rowIndex: number, table: Table): TableRow {
@@ -451,7 +457,15 @@ export class TableDetectionModule extends Module<Options> {
     const jsonResult: JsonTablePage[] = [];
     doc.pages.forEach((page, pageIndex) => {
       const pageDrawings = page.getElementsOfType<Drawing>(Drawing);
-      const tables = pageDrawings
+      const improvedDrawings = pageDrawings
+        .filter(d => this.drawingIsTableCandidate(d, page))
+        .map(drawingLineMerge);
+
+      improvedDrawings.forEach(d => {
+        page.elements.find(e => e.id === d.id).content = d.content;
+      });
+
+      const tables = improvedDrawings
         .filter(d => this.drawingIsTable(d, page))
         .map(d => drawingToTable(d, page.height));
       jsonResult.push({ page: pageIndex + 1, tables });
@@ -459,7 +473,7 @@ export class TableDetectionModule extends Module<Options> {
     return jsonResult;
   }
 
-  private drawingIsTable(d: Drawing, p: Page): boolean {
+  private drawingIsTableCandidate(d: Drawing, p: Page): boolean {
     // if there is already a Table in the position of the drawing, skips.
     if (p.getElementsOfType<Table>(Table).some(table => BoundingBox.getOverlap(table.box, d.box).box1OverlapProportion > 0.9)) {
       return false;
@@ -469,6 +483,15 @@ export class TableDetectionModule extends Module<Options> {
 
     // percentage of lines that are Horizontal or Vertical
     const vhLinesPercentage = totalLines > 0 ? vhLines.length / totalLines : 0;
+
+    // Text elements strictly inside the bounding box of the drawing
+    const textInsideDrawing = (p.getElementsSubset(d.box) as Text[]);
+
+    return vhLinesPercentage > 0.4 && textInsideDrawing.length > 0;
+  }
+
+  private drawingIsTable(d: Drawing, p: Page): boolean {
+    const vhLines = (d.content as SvgLine[]).filter(l => l.isVertical() || l.isHorizontal());
 
     // Text elements strictly inside the bounding box of the drawing
     const textInsideDrawing = (p.getElementsSubset(d.box) as Text[]);
@@ -507,9 +530,7 @@ export class TableDetectionModule extends Module<Options> {
     const mainLinesIntersect = fullWidthHorizontalLines.some(hl =>
       verticalLinesInMiddle.some(vl => vl.intersects(hl)));
 
-    return vhLinesPercentage > 0.4 &&
-      overlappingTextPercentage < 0.25 &&
-      textInsideDrawing.length > 0 &&
+    return overlappingTextPercentage < 0.25 &&
       fullWidthHorizontalLines.length >= 3 &&
       fullHeightVerticalLines.length >= 2 &&
       verticalLinesInMiddle.length >= 1 &&

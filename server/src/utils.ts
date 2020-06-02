@@ -808,3 +808,16 @@ export function isPixelLine(l: SvgLine): boolean {
   const h = Math.abs(l.fromY - l.toY);
   return w < 0.5 && h < 0.5;
 }
+
+/**
+ * As lines position are floating poing values,
+ * this avoids controlLine to jump over the line without detecting it
+ */
+export function controlLineIsOver(line: SvgLine, controlLine: SvgLine): boolean {
+  const isAroundLineX = controlLine.fromX + 1 >= line.fromX && controlLine.fromX - 1 <= line.fromX;
+  const isAroundLineY = controlLine.fromY + 1 >= line.fromY && controlLine.fromY - 1 <= line.fromY;
+  return (
+    (controlLine.isVertical() && line.isVertical() && isAroundLineX) ||
+    (controlLine.isHorizontal() && line.isHorizontal() && isAroundLineY)
+  );
+}
