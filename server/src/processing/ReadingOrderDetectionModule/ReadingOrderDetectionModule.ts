@@ -19,6 +19,7 @@ import * as utils from '../../utils';
 import { HeaderFooterDetectionModule } from '../HeaderFooterDetectionModule/HeaderFooterDetectionModule';
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
+import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 
 // TODO Handle rtl (right-to-left) languages
 /**
@@ -49,7 +50,7 @@ export class ReadingOrderDetectionModule extends Module<Options> {
     doc.pages = doc.pages.map((page: Page) => {
       // FIXME Hotfix because this algorithm bugs with floating point number
       const sortableElements: Element[] =
-        page.elements.filter(e => Element.hasBoundingBox(e) && !(e instanceof Drawing));
+        page.elements.filter(e => Element.hasBoundingBox(e) && !(e instanceof Drawing) && !(e instanceof SvgLine));
 
       const drawings: Element[] = page.elements.filter(e => e instanceof Drawing);
 
