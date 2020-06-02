@@ -255,7 +255,6 @@ export class MlHeadingDetectionModule extends Module {
   - Bottom paragraph 0.99
   Having this ratios I really think that bottom paragraph should not be considered as header
   */
- // Currently making tests to verify this ('fontRatiosByPage')
   private fontRatio(document: Document, font: Font) {
     const allWords = document.getElementsOfType<Word>(Word, true);
     const allFonts = [...allWords.map(w => w.font).filter(f => f !== undefined)];
@@ -263,14 +262,7 @@ export class MlHeadingDetectionModule extends Module {
 
     return count / allFonts.length;
   }
-  // private fontRatiosByPage(page: Page, font: Font) {
-  //   const wordsInPage = page.getElementsOfType<Word>(Word, true);
-  //   const fontsInPage = [...wordsInPage.map(w => w.font).filter(f => f !== undefined)];
-  //   const count = fontsInPage.filter(f => f.name === font.name && f.size === font.size && f.weight === font.weight && f.isItalic === font.isItalic && f.isUnderline === font.isUnderline && f.color === font.color).length;
-
-  //   return count / fontsInPage.length;
-  // }
-
+  
   private groupHeadingsByFont(headingIndexes: number[], lines: Line[]): number[][] {
     // Skip join heading lines if they doesn't have same font
     const fontGroupedHeadings: number[][] = [];

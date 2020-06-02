@@ -24,7 +24,7 @@ def get_fonts_ids(file, page_number):
     return fonts_ids
 
 def most_common_fonts(file, page_number, threshold):
-    """Gives the most common fonts of a file or by page if specified"""
+    """Gives the most common fonts of the entire file or by page if specified"""
     fonts_ids = get_fonts_ids(file, page_number)
     if len(fonts_ids) > 0:
         most_common_list = Counter(fonts_ids).most_common(threshold)
