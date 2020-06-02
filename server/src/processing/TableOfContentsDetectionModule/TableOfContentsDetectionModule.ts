@@ -62,14 +62,24 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         this.storeNumAndRomanNum(tocItemParagraphs);
 
         let allStoredInteger = this.storeIntegerFromNumbers();
+        
         nbNumber = allStoredNumbers.length;
         nbInteger = allStoredInteger.length;
-        let allIntegerParam = [];
+        let integers = [];
+        for (let index = 0; index < nbInteger; index++) {
+          integers[index]= Number(allStoredInteger[index].map(a => a.content).join().replace(/,/g,''));
+          // console.log(Object.values());
+          // for (let charact of allStoredInteger[index]) {
+          //   console.log(charact.box);
+          // }
+        }
+        // let allIntegerParam = [];
 
         if (nbInteger > 2) {
-          allIntegerParam = this.setAndStoreIntegerParam(allStoredInteger);
-          allIntegerParam.sort(this.sortFunction);
-          mostIntegerInOrder = this.findNumberOfIntegerAscendingOrder(allIntegerParam);
+
+          // allIntegerParam = this.setAndStoreIntegerParam(allStoredInteger);
+          // allIntegerParam.sort(this.sortFunction);
+          // mostIntegerInOrder = this.findNumberOfIntegerAscendingOrder(allIntegerParam);
         }
         allStoredNumbers = [];
         allStoredInteger = [];
@@ -115,26 +125,44 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
     for (const tocItemParagraph of tocItemParagraphs) {
       const strTocItem = tocItemParagraph.toString();
-
+      
       if (strTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
-        storeNumbers.push(strTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g).map(Number));
+        tocItemParagraph.content.forEach(line => {
+          line.content.forEach(word => {
+            if (word.content.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
+              let index = word.content.length - 1;
+              let detectedNumber = [];
+              while (index >= 0) {
+                if (word.content[index].toString().match(/[0-9]/) ||
+                (index > 0 && word.content[index].toString().match(/[.,]/) &&
+                word.content[index - 1].toString().match(/[0-9]/))) {
+                  detectedNumber.unshift(word.content[index]);
+                  index--;
+                } else if (detectedNumber.length > 0) {
+                  break;
+                } else {
+                  index--;
+                }
+              }
+              storeNumbers.push(detectedNumber);
+            }
+          }); 
+        });
+        // for (let num of storeNumbers) console.log(num);
       }
-      if (
-        strTocItem.match(
-          /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
-        )
-      ) {
-        storeRomanNumbers.push(
-          strTocItem.match(
-            /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
-          ),
-        );
+      if (strTocItem.match(/[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)) {
+        tocItemParagraph.content.forEach(line => {
+          line.content.forEach(word => {
+            if (word.content.toString().match(/[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)) {
+              storeRomanNumbers.push(word);
+            }
+          }); 
+        });
       }
     }
 
-    for (const numbers of storeNumbers) {
-      allStoredNumbers = allStoredNumbers.concat(numbers);
-    }
+    allStoredNumbers = storeNumbers;
+
     for (const romanNumbers of storeRomanNumbers) {
       nbRomanNumbers = nbRomanNumbers + romanNumbers.length;
     }
@@ -142,95 +170,91 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     storeNumbers = [];
   }
 
-  private storeIntegerFromNumbers(): number[] {
-    let allStoredInteger: number[] = [];
+  private storeIntegerFromNumbers(): any[] {
+    let allStoredInteger: any[] = [];
     for (const num of allStoredNumbers) {
-      if (Number.isInteger(num)) {
+      if (!num.some(char => char.content === '.') && !num.some(char => char.content === ',')) {
         allStoredInteger.push(num);
       }
     }
     return allStoredInteger;
   }
 
-  private setAndStoreIntegerParam(allStoredInteger: number[]): any[] {
-    let allIntegerParam: any[] = [];
-    let indexValue = 0;
-    while (indexValue < allStoredInteger.length) {
-      let indexToCompare = indexValue + 1;
-      let numberOfHigherInteger = 1;
-      while (indexToCompare < allStoredInteger.length) {
-        if (allStoredInteger[indexValue] <= allStoredInteger[indexToCompare]) {
-          numberOfHigherInteger++;
-        }
-        indexToCompare++;
-      }
-      const integerParam = [allStoredInteger[indexValue], numberOfHigherInteger, indexValue];
-      allIntegerParam.push(integerParam);
-      indexValue++;
-    }
-    return allIntegerParam;
-  }
+  // private setAndStoreIntegerParam(allStoredInteger: number[]): any[] {
+  //   let allIntegerParam: any[] = [];
+  //   let indexValue = 0;
+  //   while (indexValue < allStoredInteger.length) {
+  //     let indexToCompare = indexValue + 1;
+  //     let numberOfHigherInteger = 1;
+  //     while (indexToCompare < allStoredInteger.length) {
+  //       if (allStoredInteger[indexValue] <= allStoredInteger[indexToCompare]) {
+  //         numberOfHigherInteger++;
+  //       }
+  //       indexToCompare++;
+  //     }
+  //     const integerParam = [allStoredInteger[indexValue], numberOfHigherInteger, indexValue];
+  //     allIntegerParam.push(integerParam);
+  //     indexValue++;
+  //   }
+  //   return allIntegerParam;
+  // }
 
-  private sortFunction(a, b) {
-    if (a[1] === b[1]) {
-      return 0;
-    } else {
-      return a[1] > b[1] ? -1 : 1;
-    }
-  }
+  // private sortFunction(a, b) {
+  //   if (a[1] === b[1]) {
+  //     return 0;
+  //   } else {
+  //     return a[1] > b[1] ? -1 : 1;
+  //   }
+  // }
 
-  private findNumberOfIntegerAscendingOrder(allIntegerParam): number {
-    let maxIntegerInOrder = 0;
-    let iStart = 0;
-    let nbIntegerInOrder = 1;
-    while (
-      iStart < allIntegerParam.length / 2 &&
-      allIntegerParam[iStart][1] >= nbIntegerInOrder &&
-      maxIntegerInOrder < allIntegerParam.length * 0.7
-    ) {
-      let step = 1;
-      let iLastInOrder = iStart;
-      let iTest = iLastInOrder + step;
+  // private findNumberOfIntegerAscendingOrder(allIntegerParam): number {
+  //   let maxIntegerInOrder = 0;
+  //   let iStart = 0;
+  //   let nbIntegerInOrder = 1;
+  //   while (
+  //     iStart < allIntegerParam.length / 2 &&
+  //     allIntegerParam[iStart][1] >= nbIntegerInOrder &&
+  //     maxIntegerInOrder < allIntegerParam.length * 0.7
+  //   ) {
+  //     let step = 1;
+  //     let iLastInOrder = iStart;
+  //     let iTest = iLastInOrder + step;
 
-      while (iTest < allIntegerParam.length) {
-        if (
-          allIntegerParam[iTest][0] >= allIntegerParam[iLastInOrder][0] &&
-          allIntegerParam[iTest][2] > allIntegerParam[iLastInOrder][2]
-        ) {
-          nbIntegerInOrder++;
-          iLastInOrder = iTest;
-          step = 0;
-        }
-        step++;
-        iTest = iLastInOrder + step;
-      }
-      if (nbIntegerInOrder > maxIntegerInOrder) {
-        maxIntegerInOrder = nbIntegerInOrder;
-      }
-      iStart++;
-      nbIntegerInOrder = 1;
-    }
-    return maxIntegerInOrder;
-  }
+  //     while (iTest < allIntegerParam.length) {
+  //       if (
+  //         allIntegerParam[iTest][0] >= allIntegerParam[iLastInOrder][0] &&
+  //         allIntegerParam[iTest][2] > allIntegerParam[iLastInOrder][2]
+  //       ) {
+  //         nbIntegerInOrder++;
+  //         iLastInOrder = iTest;
+  //         step = 0;
+  //       }
+  //       step++;
+  //       iTest = iLastInOrder + step;
+  //     }
+  //     if (nbIntegerInOrder > maxIntegerInOrder) {
+  //       maxIntegerInOrder = nbIntegerInOrder;
+  //     }
+  //     iStart++;
+  //     nbIntegerInOrder = 1;
+  //   }
+  //   return maxIntegerInOrder;
+  // }
 
   private addWordToLine(storeLines, line) {
    
-    // const indexTopExist = storeLines.findIndex(bounding => bounding[0] === Math.floor(line.box.top));
     const indexTopExist = storeLines.findIndex(aLine => Math.floor(aLine.box.top) === Math.floor(line.box.top));
-    console.log('index= ' + indexTopExist);
+    // console.log('index= ' + indexTopExist);
     if (indexTopExist !== -1) {
-      console.log(storeLines[indexTopExist].toString() + '------->');
-      // storeLines[indexTopExist][1].push.apply(storeLines[indexTopExist][1], line.content);
+      // console.log(storeLines[indexTopExist].toString() + '------->');
       storeLines[indexTopExist].content.push.apply(storeLines[indexTopExist].content, line.content);
-      console.log(storeLines[indexTopExist].toString() + '<-------');
-      // console.log(storeLines[indexTopExist][1].toString());
+      // console.log(storeLines[indexTopExist].toString() + '<-------');
     }
     else {
       // console.log('not found yet: ' +  Math.floor(line.box.top));
-      // storeLines.push([Math.floor(line.box.top), line.content]);
       storeLines.push(line);
     }
-      console.log(storeLines.toString());
+      // console.log(storeLines.toString());
 
   }
 }
