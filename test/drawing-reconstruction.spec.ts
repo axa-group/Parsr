@@ -19,7 +19,9 @@ import { withData } from 'leche';
 import 'mocha';
 import { DrawingDetectionModule } from '../server/src/processing/DrawingDetectionModule/DrawingDetectionModule';
 import { Drawing } from '../server/src/types/DocumentRepresentation';
-import { getDocFromJson, runModules } from './helpers';
+import { getDocFromJson, runModules, TableExtractorStub } from './helpers';
+import { TableDetectionModule } from '../server/src/processing/TableDetectionModule/TableDetectionModule';
+import { readFileSync } from 'fs';
 
 /* global describe, before, it */
 describe('Drawing Detection and Reconstruction', () => {
@@ -66,8 +68,14 @@ describe('Drawing Detection and Reconstruction', () => {
       (fileName, drawingCount, linesCount) => {
         let drawings;
         before(done => {
+          const camelotOutput = readFileSync(`${__dirname}/assets/camelot-fuel-saving-opportunities.json`, { encoding: 'utf8' });
+          
+          const tableExtractor = new TableExtractorStub(0, '', camelotOutput);
+          const td = new TableDetectionModule();
+          td.setExtractor(tableExtractor);
+
           getDocFromJson(
-            doc => runModules(doc, [new DrawingDetectionModule()]),
+            doc => runModules(doc, [new DrawingDetectionModule(), td]),
             fileName,
             fileName.replace('.json', '.pdf'),
           ).then(after => {
