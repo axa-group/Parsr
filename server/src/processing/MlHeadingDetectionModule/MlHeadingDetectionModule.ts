@@ -199,7 +199,7 @@ export class MlHeadingDetectionModule extends Module {
     const isFontUnique = line.isUniqueFont();
     const isNumber = !isNaN(lineStr as any);
     const textCase = this.textCase(lineStr);
-    const fontRatio = this.fontRatio(doc, line.getMainFont());
+    const fontRatio = this.fontRatio(doc, lineFont);
 
     const features = [
       isDifferentStyle,
@@ -391,7 +391,9 @@ export class MlHeadingDetectionModule extends Module {
         return headingFont.color !== font.color;
       })
       .reduce((acc, curr) => acc && curr);
-      const features = [size, weight, textCase, isFontBigger, differentColor];
+      const wordCount = h.content.length;
+      const fontRatio = this.fontRatio(document, headingFont);
+      const features = [size, weight, textCase, isFontBigger, differentColor, wordCount, fontRatio];
       h.level = clf.predict(features) + 1;
     });
   }

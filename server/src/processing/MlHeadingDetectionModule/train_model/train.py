@@ -3,7 +3,7 @@ import os
 import pandas as pd
 from sklearn import metrics
 from sklearn.feature_selection import RFECV
-from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn_porter import Porter
@@ -74,7 +74,8 @@ y_heading = list(df_dataset['label'])
 # only taking the headings into account for the levels
 df_level = df_dataset.loc[df_dataset['label']==1].reset_index()
 X_level = df_level[['font_size', 'is_bold', 'text_case',
-                    'is_font_bigger', 'different_color']].to_numpy()
+                    'is_font_bigger', 'different_color', 'word_count',
+                    'font_ratio']].to_numpy()
 y_level = list(df_level['level'])
 
 # splitting the dataset into training and test sets
@@ -84,7 +85,7 @@ X_train2, X_test2, y_train2, y_test2 = train_test_split(X_level, y_level, test_s
 # these parameters are found through grid search
 # n_estimators is only used for the Random Forest Classifier
 parameters_heading = {'n_estimators': 50, 'min_samples_leaf':1, 'min_samples_split': 2, 'criterion': 'gini'}
-parameters_level = {'n_estimators': 80, 'min_samples_leaf': 1, 'min_samples_split': 2, 'criterion': 'entropy'}              
+parameters_level = {'n_estimators': 70, 'min_samples_leaf': 1, 'min_samples_split': 2, 'criterion': 'entropy'}              
 
 # computing the models
 selector_heading = rf_model(parameters_heading, X_heading, y_heading, metrics.f1_score)
