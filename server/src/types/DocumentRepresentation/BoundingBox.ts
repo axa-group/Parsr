@@ -19,6 +19,10 @@
  * element, using the elements height, width, left and top. Other than a regular constructor,
  * the bounding box can also be constructed using a merge of multiple existing bounding box types.
  */
+
+import { maxValue, minValue } from './../../utils';
+import { SvgLine } from './SvgLine';
+
 export class BoundingBox {
   /**
    * Getter left
@@ -136,11 +140,11 @@ export class BoundingBox {
   public static getOverlap(
     box1: BoundingBox,
     box2: BoundingBox,
-    ): {
-      jaccardIndex: number,
-      box1OverlapProportion: number,
-      box2OverlapProportion: number,
-    } {
+  ): {
+    jaccardIndex: number,
+    box1OverlapProportion: number,
+    box2OverlapProportion: number,
+  } {
     const result = {
       jaccardIndex: 0.0,
       box1OverlapProportion: 0.0,
@@ -210,5 +214,16 @@ export class BoundingBox {
    */
   public areaIsEmpty(): boolean {
     return this.height === 0 || this.width === 0;
+  }
+
+  public static fromLines(lines: SvgLine[]): BoundingBox {
+    const xValues = lines.map(l => l.fromX).concat(lines.map(l => l.toX));
+    const yValues = lines.map(l => l.fromY).concat(lines.map(l => l.toY));
+
+    const minX = minValue(xValues);
+    const maxX = maxValue(xValues);
+    const minY = minValue(yValues);
+    const maxY = maxValue(yValues);
+    return new BoundingBox(minX, minY, maxX - minX, maxY - minY);
   }
 }

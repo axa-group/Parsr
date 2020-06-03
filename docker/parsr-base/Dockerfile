@@ -16,8 +16,8 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 
 RUN apt-get update && \
     apt-get install -y imagemagick mupdf mupdf-tools qpdf pandoc tesseract-ocr-all nodejs npm python-pdfminer python-pip python3-pip python-tk python3-pdfminer python3-opencv && \
-    pip install ghostscript PyPDF2 camelot-py[cv]==0.7.2 numpy pillow && \
-    pip3 install ghostscript PyPDF2 camelot-py[cv]==0.7.2 numpy pillow
+    pip install PyPDF2 && \
+    pip3 install ghostscript PyPDF2 camelot-py[cv] numpy pillow
     
 WORKDIR /opt/app-root/src
 RUN chown 1001:0 /opt/app-root/src
