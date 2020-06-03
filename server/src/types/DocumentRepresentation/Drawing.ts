@@ -18,7 +18,7 @@ import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
 import { SvgLine } from './SvgLine';
 import { SvgShape } from './SvgShape';
-
+import { maxValue, minValue } from './../../utils';
 /**
  * The Drawing element for the Document Representation structure, which contains an SVG shape,
  * along with its bounding box.
@@ -49,10 +49,17 @@ export class Drawing extends Element {
 
   public updateBoundingBox() {
     const lines: SvgLine[] = (this.content.filter(c => c instanceof SvgLine) as SvgLine[]);
-    const minY = Math.min(...lines.map(l => l.fromY), ...lines.map(l => l.toY));
-    const maxY = Math.max(...lines.map(l => l.fromY), ...lines.map(l => l.toY));
-    const minX = Math.min(...lines.map(l => l.fromX), ...lines.map(l => l.toX));
-    const maxX = Math.max(...lines.map(l => l.fromX), ...lines.map(l => l.toX));
+
+    const yValues = lines.map(l => l.fromY).concat(lines.map(l => l.toY));
+    const xValues = lines.map(l => l.fromX).concat(lines.map(l => l.toX));
+
+    // array of values could be very big, so I need to avoid calling Math.max and Math.min
+    // https://stackoverflow.com/questions/42623071/maximum-call-stack-size-exceeded-with-math-min-and-math-max
+    const minY = minValue(yValues);
+    const maxY = maxValue(yValues);
+    const minX = minValue(xValues);
+    const maxX = maxValue(xValues);
+
     this.box = new BoundingBox(minX, minY, maxX - minX, maxY - minY);
   }
 
