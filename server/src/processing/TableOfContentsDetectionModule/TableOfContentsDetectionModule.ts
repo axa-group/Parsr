@@ -66,9 +66,16 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         nbNumber = allStoredNumbers.length;
         nbInteger = allStoredInteger.length;
         let integers = [];
+        let storeBoxValues = [];
         for (let index = 0; index < nbInteger; index++) {
           integers[index]= Number(allStoredInteger[index].map(a => a.content).join().replace(/,/g,''));
-          // console.log(Object.values());
+          storeBoxValues[index] = Object.values(allStoredInteger[index][0].box);
+          console.log(storeBoxValues[index].toString());
+
+          // console.log('====');
+          // console.log('integers= ' + integers[index].toString());
+          // console.log('====');
+
           // for (let charact of allStoredInteger[index]) {
           //   console.log(charact.box);
           // }
@@ -76,7 +83,8 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         // let allIntegerParam = [];
 
         if (nbInteger > 2) {
-
+          this.findValidTocInteger(storeLines, allStoredInteger, integers);
+          
           // allIntegerParam = this.setAndStoreIntegerParam(allStoredInteger);
           // allIntegerParam.sort(this.sortFunction);
           // mostIntegerInOrder = this.findNumberOfIntegerAscendingOrder(allIntegerParam);
@@ -136,6 +144,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
                 if (word.content[index].toString().match(/[0-9]/) ||
                 (index > 0 && word.content[index].toString().match(/[.,]/) &&
                 word.content[index - 1].toString().match(/[0-9]/))) {
+                  console.log(word.content.toString());
                   detectedNumber.unshift(word.content[index]);
                   index--;
                 } else if (detectedNumber.length > 0) {
@@ -256,5 +265,23 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     }
       // console.log(storeLines.toString());
 
+  }
+
+  private findValidTocInteger(storeLines, allStoredInteger, integers) {
+    console.log('storeLine= ' + storeLines.length);
+    console.log('allstoredInt= ' + allStoredInteger.length);
+    console.log('integers= ' + integers.length);
+    for (let i = 0; i < allStoredInteger.length; i++) {
+      // console.log(storeBoxValues[i].toString());
+      // console.log(allStoredInteger[i][0].box);
+      // const integerBox = new BoundingBox(Object.values(allStoredInteger[i].box.left), );
+      //   console.log('------->');
+    //   console.log(integers[i].toString());
+    //   console.log('---');
+    //   console.log(allStoredInteger[i]);
+    //   console.log('---');
+    //   console.log(storeLines[i].toString());
+    //   console.log('<------');
+    }
   }
 }
