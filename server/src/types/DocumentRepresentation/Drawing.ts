@@ -49,9 +49,9 @@ export class Drawing extends Element {
 
   public updateBoundingBox() {
     const lines: SvgLine[] = (this.content.filter(c => c instanceof SvgLine) as SvgLine[]);
-    const minY = Math.min(...lines.map(l => l.fromY), ...lines.map(l => l.toY));
+    const minY = Math.max(Math.min(...lines.map(l => l.fromY), ...lines.map(l => l.toY)), 0);
     const maxY = Math.max(...lines.map(l => l.fromY), ...lines.map(l => l.toY));
-    const minX = Math.min(...lines.map(l => l.fromX), ...lines.map(l => l.toX));
+    const minX = Math.max(Math.min(...lines.map(l => l.fromX), ...lines.map(l => l.toX)), 0);
     const maxX = Math.max(...lines.map(l => l.fromX), ...lines.map(l => l.toX));
     this.box = new BoundingBox(minX, minY, maxX - minX, maxY - minY);
   }

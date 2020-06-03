@@ -16,9 +16,8 @@
 
 import { Drawing } from './../../types/DocumentRepresentation';
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
-import { controlLineIsOver } from '../../utils';
 
-const TOLERANCE = 2;
+const TOLERANCE = 4;
 
 export default (d: Drawing): Drawing => {
 
@@ -38,7 +37,7 @@ function groupAndMerge(lines: SvgLine[], controlLine: SvgLine, maxValue: number)
 
   const mergedLines = [];
   while ((type === 'h' ? controlLine.toY : controlLine.toX) <= maxValue) {
-    const mergeLineGroup = lines.filter(l => controlLineIsOver(l, controlLine));
+    const mergeLineGroup = lines.filter(controlLine.isOnTop, controlLine);
     let newLines = mergeLineGroup;
     let length;
 

@@ -18,7 +18,6 @@ import { BoundingBox, Document, Drawing } from '../../types/DocumentRepresentati
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
-import { controlLineIsOver } from '../../utils';
 
 /**
  * groups together SvgLines that are visually connected
@@ -35,7 +34,7 @@ export class DrawingDetectionModule extends Module {
     doc.pages.forEach(page => {
       const lines = page.getElementsOfType<SvgLine>(SvgLine, true);
       const drawings: Drawing[] = [];
-      this.groupShapesIntoDrawings(lines, page.box, drawings);
+      this.groupShapesIntoDrawings(lines, drawings);
 
       // filter all SvgLine type elements and push Drawings containing those Lines
       const lineIds = lines.map(l => l.id);
@@ -46,22 +45,20 @@ export class DrawingDetectionModule extends Module {
     return Promise.resolve(doc);
   }
 
-  private groupShapesIntoDrawings(svgLines: SvgLine[], box: BoundingBox, foundDrawings: Drawing[]) {
-    const { columns, rows } = this.groupLines(svgLines, box);
+  private groupShapesIntoDrawings(svgLines: SvgLine[], foundDrawings: Drawing[]) {
+    const tmpD = new Drawing(null, svgLines);
+    tmpD.updateBoundingBox();
+    const { columns, rows } = this.groupLines(svgLines, tmpD.box);
 
     if (columns.length > 1) {
       // divide the box into columns.length cols and recall function for each one
       columns.forEach(svgColumn => {
-        const d = new Drawing(null, svgColumn);
-        d.updateBoundingBox();
-        this.groupShapesIntoDrawings(svgColumn, d.box, foundDrawings);
+        this.groupShapesIntoDrawings(svgColumn, foundDrawings);
       });
     } else if (rows.length > 1) {
       // divide the box into rows.length rows and recall function for each one
       rows.forEach(svgRow => {
-        const d = new Drawing(null, svgRow);
-        d.updateBoundingBox();
-        this.groupShapesIntoDrawings(svgRow, d.box, foundDrawings);
+        this.groupShapesIntoDrawings(svgRow, foundDrawings);
       });
     } else {
       const lines = columns[0];
@@ -115,7 +112,8 @@ export class DrawingDetectionModule extends Module {
       (type === 'v' ? controlLine.toY : controlLine.toX) < (type === 'v' ? box.bottom : box.right)
     ) {
       const intersectingLines = lines.filter(
-        l => controlLine.intersects(l) || controlLineIsOver(l, controlLine),
+        l => controlLine.intersects(l) || controlLine.isOnTop(l),
+        controlLine,
       );
       if (intersectingLines.length > 0) {
         const unusedLines = intersectingLines.filter(l => !processedLineIds.includes(l.id));
