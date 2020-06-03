@@ -788,3 +788,23 @@ export function rgbToHex(r: number, g: number, b: number) {
       .join('')
   );
 }
+
+export function minValue(arr: number[]) {
+  let len = arr.length;
+  let min = Infinity;
+
+  while (len--) {
+    min = arr[len] < min ? arr[len] : min;
+  }
+  return min;
+}
+
+export function maxValue(arr: number[]) {
+  let len = arr.length;
+  let max = -Infinity;
+
+  while (len--) {
+    max = arr[len] > max ? arr[len] : max;
+  }
+  return max;
+}
