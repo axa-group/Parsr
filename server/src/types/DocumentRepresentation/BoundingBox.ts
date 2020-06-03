@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+
+
+import { maxValue, minValue } from './../../utils';
 import { SvgLine } from './SvgLine';
 
 /**
@@ -224,5 +227,16 @@ export class BoundingBox {
       new SvgLine(null, 1, this.right, this.bottom, this.left, this.bottom),
       new SvgLine(null, 1, this.left, this.bottom, this.left, this.top),
     ];
+  }
+
+  public static fromLines(lines: SvgLine[]): BoundingBox {
+    const xValues = lines.map(l => l.fromX).concat(lines.map(l => l.toX));
+    const yValues = lines.map(l => l.fromY).concat(lines.map(l => l.toY));
+
+    const minX = minValue(xValues);
+    const maxX = maxValue(xValues);
+    const minY = minValue(yValues);
+    const maxY = maxValue(yValues);
+    return new BoundingBox(minX, minY, maxX - minX, maxY - minY);
   }
 }

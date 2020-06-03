@@ -46,9 +46,7 @@ export class DrawingDetectionModule extends Module {
   }
 
   private groupShapesIntoDrawings(svgLines: SvgLine[], foundDrawings: Drawing[]) {
-    const tmpD = new Drawing(null, svgLines);
-    tmpD.updateBoundingBox();
-    const { columns, rows } = this.groupLines(svgLines, tmpD.box);
+    const { columns, rows } = this.groupLines(svgLines);
 
     if (columns.length > 1) {
       // divide the box into columns.length cols and recall function for each one
@@ -73,8 +71,10 @@ export class DrawingDetectionModule extends Module {
 
   private groupLines(
     svgLines: SvgLine[],
-    box: BoundingBox,
   ): { columns: SvgLine[][]; rows: SvgLine[][] } {
+
+    const box = BoundingBox.fromLines(svgLines);
+
     // vertical line
     const vControlLine = new SvgLine(null, 1, box.left, box.top, box.left, box.bottom);
     const groupedColumns = this.processGroup(svgLines, box, vControlLine);
@@ -109,7 +109,7 @@ export class DrawingDetectionModule extends Module {
     // if controlLine is horizontal, the sweep is done from top to bottom
     const type = controlLine.isVertical() ? 'h' : 'v';
     while (
-      (type === 'v' ? controlLine.toY : controlLine.toX) < (type === 'v' ? box.bottom : box.right)
+      (type === 'v' ? controlLine.toY : controlLine.toX) <= (type === 'v' ? box.bottom + 5 : box.right + 5)
     ) {
       const intersectingLines = lines.filter(
         l => controlLine.intersects(l) || controlLine.isOnTop(l),
