@@ -34,7 +34,7 @@ export class DrawingDetectionModule extends Module {
     doc.pages.forEach(page => {
       const lines = page.getElementsOfType<SvgLine>(SvgLine, true);
       const drawings: Drawing[] = [];
-      this.groupShapesIntoDrawings(lines, page.box, drawings);
+      this.groupShapesIntoDrawings(lines, drawings);
 
       // filter all SvgLine type elements and push Drawings containing those Lines
       const lineIds = lines.map(l => l.id);
@@ -45,18 +45,18 @@ export class DrawingDetectionModule extends Module {
     return Promise.resolve(doc);
   }
 
-  private groupShapesIntoDrawings(svgLines: SvgLine[], box: BoundingBox, foundDrawings: Drawing[]) {
-    const { columns, rows } = this.groupLines(svgLines, box);
+  private groupShapesIntoDrawings(svgLines: SvgLine[], foundDrawings: Drawing[]) {
+    const { columns, rows } = this.groupLines(svgLines);
 
     if (columns.length > 1) {
       // divide the box into columns.length cols and recall function for each one
       columns.forEach(svgColumn => {
-        this.groupShapesIntoDrawings(svgColumn, box, foundDrawings);
+        this.groupShapesIntoDrawings(svgColumn, foundDrawings);
       });
     } else if (rows.length > 1) {
       // divide the box into rows.length rows and recall function for each one
       rows.forEach(svgRow => {
-        this.groupShapesIntoDrawings(svgRow, box, foundDrawings);
+        this.groupShapesIntoDrawings(svgRow, foundDrawings);
       });
     } else {
       const lines = columns[0];
@@ -71,8 +71,10 @@ export class DrawingDetectionModule extends Module {
 
   private groupLines(
     svgLines: SvgLine[],
-    box: BoundingBox,
   ): { columns: SvgLine[][]; rows: SvgLine[][] } {
+
+    const box = BoundingBox.fromLines(svgLines);
+
     // vertical line
     const vControlLine = new SvgLine(null, 1, box.left, box.top, box.left, box.bottom);
     const groupedColumns = this.processGroup(svgLines, box, vControlLine);
@@ -107,7 +109,7 @@ export class DrawingDetectionModule extends Module {
     // if controlLine is horizontal, the sweep is done from top to bottom
     const type = controlLine.isVertical() ? 'h' : 'v';
     while (
-      (type === 'v' ? controlLine.toY : controlLine.toX) < (type === 'v' ? box.height : box.width)
+      (type === 'v' ? controlLine.toY : controlLine.toX) <= (type === 'v' ? box.bottom + 5 : box.right + 5)
     ) {
       const intersectingLines = lines.filter(
         l => controlLine.intersects(l) || this.controlLineIsOver(l, controlLine),
