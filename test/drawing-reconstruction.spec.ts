@@ -28,9 +28,9 @@ describe('Drawing Detection and Reconstruction', () => {
   describe('drawing detection', () => {
     withData(
       {
-        'only one drawing': [
+        'outlined table and bottom line': [
           'column_span_2.json',
-          1,
+          2,
         ],
         'two drawings': [
           'two-tables.json',
