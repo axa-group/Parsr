@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Document, Paragraph, TableOfContents } from '../../types/DocumentRepresentation';
+import { Document, Paragraph, TableOfContents, BoundingBox } from '../../types/DocumentRepresentation';
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
@@ -71,7 +71,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           integers[index]= Number(allStoredInteger[index].map(a => a.content).join().replace(/,/g,''));
           storeBoxValues[index] = Object.values(allStoredInteger[index][0].box);
           console.log(storeBoxValues[index].toString());
-
           // console.log('====');
           // console.log('integers= ' + integers[index].toString());
           // console.log('====');
@@ -83,7 +82,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         // let allIntegerParam = [];
 
         if (nbInteger > 2) {
-          this.findValidTocInteger(storeLines, allStoredInteger, integers);
+          this.findValidTocInteger(storeLines, allStoredInteger, integers, storeBoxValues);
           
           // allIntegerParam = this.setAndStoreIntegerParam(allStoredInteger);
           // allIntegerParam.sort(this.sortFunction);
@@ -267,21 +266,31 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
   }
 
-  private findValidTocInteger(storeLines, allStoredInteger, integers) {
+  private findValidTocInteger(storeLines, allStoredInteger, integers, storeBoxValues) {
     console.log('storeLine= ' + storeLines.length);
     console.log('allstoredInt= ' + allStoredInteger.length);
     console.log('integers= ' + integers.length);
-    for (let i = 0; i < allStoredInteger.length; i++) {
+    for (let i = 0; i < allStoredInteger.length / 2; i++) {
       // console.log(storeBoxValues[i].toString());
       // console.log(allStoredInteger[i][0].box);
-      // const integerBox = new BoundingBox(Object.values(allStoredInteger[i].box.left), );
-      //   console.log('------->');
-    //   console.log(integers[i].toString());
-    //   console.log('---');
-    //   console.log(allStoredInteger[i]);
+      const integerBox = new BoundingBox(storeBoxValues[i][0] - 25, storeBoxValues[i][1], storeBoxValues[i][2] + 50,  storeBoxValues[allStoredInteger.length - 1][1] - storeBoxValues[i][1] +  storeBoxValues[allStoredInteger.length - 1][3]);
+      console.log('------->');
+      console.log(integerBox);
+      console.log('---');
+      console.log(allStoredInteger[i]);
     //   console.log('---');
     //   console.log(storeLines[i].toString());
-    //   console.log('<------');
+      console.log('<------');
+      const integerInsideIntersection = allStoredInteger[i]
+      .filter(
+        char => BoundingBox.getOverlap(char.box, integerBox).box1OverlapProportion > 0,
+      );
+      console.log(integerInsideIntersection);
+      console.log('length= ' + integerInsideIntersection.length);
+      // let j = i;
+      // for (j; j < allStoredInteger.length; j++) {
+
+      // }
     }
   }
 }
