@@ -474,6 +474,10 @@ export class TableDetectionModule extends Module<Options> {
   }
 
   private drawingIsTableCandidate(d: Drawing, p: Page): boolean {
+    // if there is already a Table in the position of the drawing, skips.
+    if (p.getElementsSubset(d.box, false, false).some(e => e instanceof Table)) {
+      return false;
+    }
     const totalLines = d.content.length;
     const vhLines = (d.content as SvgLine[]).filter(l => l.isVertical() || l.isHorizontal());
 
@@ -487,10 +491,6 @@ export class TableDetectionModule extends Module<Options> {
   }
 
   private drawingIsTable(d: Drawing, p: Page): boolean {
-    // if there is already a Table in the position of the drawing, skips.
-    if (p.getElementsOfType<Table>(Table).some(table => BoundingBox.getOverlap(table.box, d.box).box1OverlapProportion > 0.9)) {
-      return false;
-    }
     const vhLines = (d.content as SvgLine[]).filter(l => l.isVertical() || l.isHorizontal());
 
     // Text elements strictly inside the bounding box of the drawing
