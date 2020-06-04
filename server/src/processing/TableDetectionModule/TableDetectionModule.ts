@@ -530,7 +530,7 @@ export class TableDetectionModule extends Module<Options> {
     const mainLinesIntersect = fullWidthHorizontalLines.some(hl =>
       verticalLinesInMiddle.some(vl => vl.intersects(hl)));
 
-    return overlappingTextPercentage < 0.25 &&
+    return overlappingTextPercentage < 0.4 &&
       fullWidthHorizontalLines.length >= 3 &&
       fullHeightVerticalLines.length >= 2 &&
       verticalLinesInMiddle.length >= 1 &&
