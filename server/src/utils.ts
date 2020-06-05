@@ -35,6 +35,7 @@ import {
   Text,
 } from './types/DocumentRepresentation';
 import logger from './utils/Logger';
+import Cache from './utils/CacheLayer';
 
 import { AbbyyTools } from './input/abbyy/AbbyyTools';
 import { AmazonTextractExtractor } from './input/amazon-textract/AmazonTextractExtractor';
@@ -326,7 +327,7 @@ export function removeNull(page: Page): Page {
   if (page.elements.length - newElements.length !== 0) {
     logger.debug(
       `Null elements removed for page #${page.pageNumber}: ${page.elements.length -
-        newElements.length}`,
+      newElements.length}`,
     );
     page.elements = newElements;
   }
@@ -360,11 +361,11 @@ export function getPageRegex(): RegExp {
 
   const pageRegex = new RegExp(
     `^(?:` +
-      `(?:${pagePrefix}${pageNumber})|` +
-      `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
-      `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
-      `(?:${before}${pageNumber}${after})` +
-      `)$`,
+    `(?:${pagePrefix}${pageNumber})|` +
+    `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
+    `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
+    `(?:${before}${pageNumber}${after})` +
+    `)$`,
     'i',
   );
 
@@ -758,6 +759,10 @@ function embedImagesInHTML(html: string): string {
 
 export function sanitizeXML(xmlPath: string): Promise<string> {
   const startTime: number = Date.now();
+  const cacheKey = `sanitizeXML-${xmlPath}`;
+  if (Cache.has(cacheKey)) {
+    return Promise.resolve(Cache.get(cacheKey));
+  }
   return new Promise<any>((resolve, _reject) => {
     try {
       // replace with empty char everything forbidden by XML 1.0 specifications,
@@ -768,6 +773,7 @@ export function sanitizeXML(xmlPath: string): Promise<string> {
       const outputFilePath = getTemporaryFile('.xml');
       fs.writeFileSync(outputFilePath, xml.replace(new RegExp(regex), ' '));
       logger.info(`Sanitize XML: ${(Date.now() - startTime) / 1000}s`);
+      Cache.set(cacheKey, outputFilePath);
       resolve(outputFilePath);
     } catch (error) {
       logger.warn(`Error sanitizing XML ${error}`);

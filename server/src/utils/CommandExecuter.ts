@@ -220,8 +220,15 @@ export function pdfMinerExtract(
     const to = pages.split(',').pop();
     logger.info('PdfMiner extracting contents (pages ' + from + ' to ' + to + ')');
   }
+
+  const key = ['pdf2txt', ...pdf2txtArguments].filter(arg => arg !== xmlOutputFile).join(' ');
+  if (Cache.has(key)) {
+    return Promise.resolve(Cache.get(key));
+  }
+
   return run(COMMANDS.PDF2TXT, pdf2txtArguments).then(() => {
     logger.info(`PdfMiner pdf2txt.py succeed --> ${xmlOutputFile}`);
+    Cache.set(key, xmlOutputFile);
     return xmlOutputFile;
   });
 }
