@@ -31,6 +31,7 @@ import { PdfminerFigure } from '../../types/PdfminerFigure';
 import { PdfminerPage } from '../../types/PdfminerPage';
 import { PdfminerShape } from '../../types/PdfminerShape';
 import { PdfminerText } from '../../types/PdfminerText';
+import { isPerimeterLine, isPixelLine } from '../../utils';
 import * as CommandExecuter from '../../utils/CommandExecuter';
 import logger from '../../utils/Logger';
 
@@ -260,27 +261,13 @@ function getPage(pageObj: PdfminerPage): Page {
   // treat svg lines and rectangles
   if (pageObj.shapes !== undefined) {
     pageObj.shapes.forEach(shape => {
-      const shapes = pdfminerShapeToSvgShapes(shape, pageBBox.height).filter(l =>
-        filterPerimeterLines(l, pageBBox),
-      );
+      const shapes = pdfminerShapeToSvgShapes(shape, pageBBox.height)
+        .filter(l => !isPerimeterLine(l, pageBBox) && !isPixelLine(l));
       elements.push(...shapes);
     });
   }
 
   return new Page(parseFloat(pageObj._attr.id), elements, pageBBox);
-}
-
-function filterPerimeterLines(l: SvgLine, pageBox: BoundingBox): boolean {
-  const [x, y] = [l.fromX, l.fromY].map(n => Math.round(n));
-  // vertical line
-  if (l.isVertical() && (x <= 0 || x >= pageBox.width)) {
-    return false;
-  }
-  // horizontal line
-  if (l.isHorizontal() && (y <= 0 || y >= pageBox.height)) {
-    return false;
-  }
-  return true;
 }
 
 function pdfminerShapeToSvgShapes(shape: PdfminerShape, pageHeight: number): SvgLine[] {

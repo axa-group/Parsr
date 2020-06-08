@@ -8,6 +8,10 @@ Groups SvgShapes into Drawings
 
 Converts all SvgShapes given by the extractor to a group of Drawings. Each Drawing is a set of Shapes that are visually together.
 
+## Parameters
+
+None
+
 ## Dependencies
 
 None

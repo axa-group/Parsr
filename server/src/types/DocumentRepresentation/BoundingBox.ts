@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
+
+
+import { maxValue, minValue } from './../../utils';
+import { SvgLine } from './SvgLine';
+
 /**
  * BoundingBox represents the size as well the location of any DocumentRepresentation
  * element, using the elements height, width, left and top. Other than a regular constructor,
  * the bounding box can also be constructed using a merge of multiple existing bounding box types.
  */
-
-import { maxValue, minValue } from './../../utils';
-import { SvgLine } from './SvgLine';
-
 export class BoundingBox {
   /**
    * Getter left
@@ -214,6 +215,18 @@ export class BoundingBox {
    */
   public areaIsEmpty(): boolean {
     return this.height === 0 || this.width === 0;
+  }
+
+  /**
+   * converts the 4 sides of the bounding box into 4 SvgLines.
+   */
+  public toSvgLines(): SvgLine[] {
+    return [
+      new SvgLine(null, 1, this.left, this.top, this.right, this.top),
+      new SvgLine(null, 1, this.right, this.top, this.right, this.bottom),
+      new SvgLine(null, 1, this.right, this.bottom, this.left, this.bottom),
+      new SvgLine(null, 1, this.left, this.bottom, this.left, this.top),
+    ];
   }
 
   public static fromLines(lines: SvgLine[]): BoundingBox {

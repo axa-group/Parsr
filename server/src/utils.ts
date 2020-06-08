@@ -43,6 +43,7 @@ import { GoogleVisionExtractor } from './input/google-vision/GoogleVisionExtract
 import { MicrosoftCognitiveExtractor } from './input/ms-cognitive-services/MicrosoftCognitiveServices';
 import { OcrExtractor } from './input/OcrExtractor';
 import { TesseractExtractor } from './input/tesseract/TesseractExtractor';
+import { SvgLine } from './types/DocumentRepresentation/SvgLine';
 
 let mutoolExtractionFolder: string = '';
 
@@ -793,6 +794,25 @@ export function rgbToHex(r: number, g: number, b: number) {
       })
       .join('')
   );
+}
+
+export function isPerimeterLine(l: SvgLine, box: BoundingBox): boolean {
+  const [fromX, fromY, toX, toY] = [l.fromX, l.fromY, l.toX, l.toY].map(n => Math.round(n));
+  const x = Math.min(fromX, toX);
+  const y = Math.min(fromY, toY);
+  const xMin = Math.floor(x - l.thickness / 2);
+  const xMax = Math.ceil(x + l.thickness / 2);
+  const yMin = Math.floor(y - l.thickness / 2);
+  const yMax = Math.ceil(y + l.thickness / 2);
+
+  return (l.isVertical() && (xMin <= 0 || xMax >= Math.floor(box.width)))
+    || (l.isHorizontal() && (yMin <= 0 || yMax >= Math.floor(box.height)));
+}
+
+export function isPixelLine(l: SvgLine): boolean {
+  const w = Math.abs(l.fromX - l.toX);
+  const h = Math.abs(l.fromY - l.toY);
+  return w < 0.5 && h < 0.5;
 }
 
 export function minValue(arr: number[]) {
