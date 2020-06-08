@@ -28,8 +28,8 @@ interface Options {
 const defaultOptions = (defaultConfig as any) as Options;
 
 let allStoredNumbers = [];
-let mostIntegerInOrder: number = 0;
-let nbNumber = 0;
+// let mostIntegerInOrder: number = 0;
+// let nbNumber = 0;
 let nbRomanNumbers = 0;
 let nbInteger = 0;
 export class TableOfContentsDetectionModule extends Module<Options> {
@@ -67,7 +67,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
         let allStoredInteger = this.storeIntegerFromNumbers();
         
-        nbNumber = allStoredNumbers.length;
+        // nbNumber = allStoredNumbers.length;
         nbInteger = allStoredInteger.length;
         // let integers = [];
         // let storeBoxValues = [];
@@ -91,16 +91,23 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
-        ((nbNumber > 2 && nbInteger / nbNumber > 0.5 && mostIntegerInOrder / nbInteger >= 0.7) ||
-          (nbRomanNumbers > 2 && nbInteger < nbRomanNumbers)) &&
+        // ((nbNumber > 2 && nbInteger / nbNumber > 0.5 && mostIntegerInOrder / nbInteger >= 0.7) ||
+        //   (nbRomanNumbers > 2 && nbInteger < nbRomanNumbers)) &&
         tocItemParagraphs.length > 0 &&
         tocItemParagraphs.length >=
           Math.floor(allParagraphs.length * detection.threshold * Math.pow(1.05, pagesSinceLastTOC))
       ) {
         foundTOC = true;
         const toc = new TableOfContents();
+        console.log(toc);
+        console.log('---------------------');
+        console.log(tocItemParagraphs);
+        console.log('---------------------');
+        
         toc.pageKeywords = this.options.pageKeywords;
         toc.content = tocItemParagraphs;
+        console.log(toc);
+        console.log('---------------------');
         page.elements = page.elements.filter(e => !tocItemParagraphs.map(t => t.id).includes(e.id));
         page.elements.push(toc);
         pagesSinceLastTOC = 0;
@@ -130,27 +137,30 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     let storeBoxNumber = [];
 
     for (const tocItemParagraph of tocItemParagraphs) {
+      // console.log(tocItemParagraph.toString());
       const w = tocItemParagraph.width * 0.1;
       const intersectionBoxRight = new BoundingBox(tocItemParagraph.right - w, tocItemParagraph.top, w, tocItemParagraph.height);
-      console.log(Object.values(intersectionBoxRight).toString());
+      // console.log(Object.values(intersectionBoxRight).toString());
       const intersectionBoxLeft = new BoundingBox(tocItemParagraph.left, tocItemParagraph.top, w, tocItemParagraph.height);
       const numbersInsideIntersectionRight = tocItemParagraph
         .getWords()
         .filter(
           word => BoundingBox.getOverlap(word.box, intersectionBoxRight).box1OverlapProportion > 0,
         );
-      console.log(numbersInsideIntersectionRight.toString());
+      // console.log(numbersInsideIntersectionRight.toString());
       const strNumberTocItem = numbersInsideIntersectionRight.toString();
       // if (strNumberTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
       numbersInsideIntersectionRight.forEach(word => {
         // let aligned = 0;
         if (word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
+          // console.log('word= ' + word.toString());
           this.addAlignedNumber(storeBoxNumber, word);
           // console.log('strTocItemMatch= ' + word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
           storeNumbersRight.push(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
         }
-        console.log('storeNumbersRight= ' + storeNumbersRight.toString());  
+        // console.log('storeNumbersRight= ' + storeNumbersRight.toString());  
       });
+      
 
       const numbersInsideIntersectionLeft = tocItemParagraph
         .getWords()
@@ -163,7 +173,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           // console.log('strTocItemMatch= ' + word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
           storeNumbersLeft.push(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
         }
-        console.log('storeNumbersLeft= ' + storeNumbersLeft.toString());  
+        // console.log('storeNumbersLeft= ' + storeNumbersLeft.toString());  
       });
       
       // if (strNumberTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
@@ -201,6 +211,15 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           }); 
         });
       }
+    }
+    storeBoxNumber.sort(function(a, b) {
+      return b.length - a.length;
+    });
+    for (let boxes of storeBoxNumber) {
+      boxes.sort(function(a, b) {
+        return a.box.top - b.box.top;
+      });
+      console.log(boxes.toString());
     }
     // for (const numbers of storeNumbers) {
     //   allStoredNumbers = allStoredNumbers.concat(numbers);
@@ -318,17 +337,17 @@ export class TableOfContentsDetectionModule extends Module<Options> {
   private addAlignedNumber(storeBoxNumber, number) {
    
     const indexLeftExist = storeBoxNumber.findIndex(aNum => aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width && aNum[0].box.left + aNum[0].box.width + 5 >= number.box.left + number.box.width);
-    console.log('index= ' + indexLeftExist);
+    // console.log('index= ' + indexLeftExist);
     if (indexLeftExist !== -1) {
-      console.log(storeBoxNumber[indexLeftExist].toString() + '   ------->');
-      console.log(storeBoxNumber[indexLeftExist]);
+      // console.log(storeBoxNumber[indexLeftExist].toString() + '   ------->');
+      // console.log(storeBoxNumber[indexLeftExist]);
       storeBoxNumber[indexLeftExist].push(number);
-      console.log(storeBoxNumber[indexLeftExist].toString() + '<-------');
+      // console.log(storeBoxNumber[indexLeftExist].toString() + ' <-------');
     }
     else {
-      console.log('not found yet: ' +  Math.floor(number.box.left));
+      // console.log('not found yet: ' +  Math.floor(number.box.left));
       storeBoxNumber.push([number]);
-      console.log(storeBoxNumber);
+      // console.log(storeBoxNumber);
     }
       // console.log(storeBoxNumber.toString());
   }
