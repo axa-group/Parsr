@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import { Document, Drawing, Element, Page } from '../../types/DocumentRepresentation';
+import { Document, Element, Page } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import { HeaderFooterDetectionModule } from '../HeaderFooterDetectionModule/HeaderFooterDetectionModule';
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
-import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 
 // TODO Handle rtl (right-to-left) languages
 /**
@@ -49,10 +48,7 @@ export class ReadingOrderDetectionModule extends Module<Options> {
   public main(doc: Document): Document {
     doc.pages = doc.pages.map((page: Page) => {
       // FIXME Hotfix because this algorithm bugs with floating point number
-      const sortableElements: Element[] =
-        page.elements.filter(e => Element.hasBoundingBox(e) && !(e instanceof Drawing) && !(e instanceof SvgLine));
-
-      const drawings: Element[] = page.elements.filter(e => e instanceof Drawing);
+      const sortableElements: Element[] = page.elements.filter(e => Element.hasBoundingBox(e));
 
       this.order = 0;
       // The min width is actually as a % of page width
@@ -63,7 +59,7 @@ export class ReadingOrderDetectionModule extends Module<Options> {
       this.process(sortableElements);
 
       sortableElements.sort(utils.sortElementsByOrder);
-      page.elements = [...sortableElements, ...drawings];
+      page.elements = sortableElements;
 
       return page;
     });
