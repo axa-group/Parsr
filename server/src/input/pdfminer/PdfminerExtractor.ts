@@ -21,7 +21,7 @@ import { extractImagesAndFonts } from '../extractImagesFonts';
 import { Extractor } from '../Extractor';
 import * as utils from './../../utils';
 import * as pdfminer from './pdfminer';
-import { writeFileSync } from 'fs';
+import { JsonExporter } from '../../output/json/JsonExporter';
 
 /**
  * The extractor is responsible to extract every possible information
@@ -76,7 +76,7 @@ export class PdfminerExtractor extends Extractor {
     pageIndex: number,
     maxPages: number,
     totalPages: number,
-    svgArray: any[] = [],
+    document: Document = new Document([]),
   ): Promise<string> {
     const toPage = pageIndex * maxPages - 1;
     logger.info('Extracting SVG paths with pdfminer...');
@@ -85,14 +85,16 @@ export class PdfminerExtractor extends Extractor {
       .extractPages(inputFile, totalPages != null ? extractPages : null)
       .then(utils.sanitizeXML)
       .then(pdfminer.extractDrawingsFromXML)
-      .then((svgs: any[]) => {
-        svgArray = svgArray.concat(svgs);
+      .then(pdfminer.jsParser)
+      .then((drawingsDoc: Document) => {
+        document.pages = document.pages.concat(drawingsDoc.pages);
+        document.pages.forEach((page, index) => (page.pageNumber = index + 1));
         if (totalPages != null && totalPages > toPage + 1) {
-          return this.extractSVGPaths(inputFile, pageIndex + 1, maxPages, totalPages, svgArray);
+          return this.extractSVGPaths(inputFile, pageIndex + 1, maxPages, totalPages, document);
         } else {
-          const drawingsFile = utils.getTemporaryFile('.json');
-          writeFileSync(drawingsFile, JSON.stringify(svgArray));
-          return drawingsFile;
+          const drawingsJson = utils.getTemporaryFile('.json');
+          new JsonExporter(document, 'word').export(drawingsJson);
+          return drawingsJson;
         }
       }).catch(err => {
         logger.error(err);
@@ -199,7 +201,7 @@ export class PdfminerExtractor extends Extractor {
 
       return Promise.all(promises).then(() => {
         logger.info(
-          `Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000}s`,
+          `Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000} s`,
         );
         return doc;
       });

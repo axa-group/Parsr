@@ -18,6 +18,9 @@ import { BoundingBox, Document, Drawing } from '../../types/DocumentRepresentati
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
+import { existsSync, readFileSync } from 'fs';
+import { json2document } from '../../utils/json2document';
+import { JsonExporter } from '../../output/json/JsonExporter';
 
 /**
  * groups together SvgLines that are visually connected
@@ -26,22 +29,29 @@ export class DrawingDetectionModule extends Module {
   public static moduleName = 'drawing-detection';
 
   public main(doc: Document): Promise<Document> {
-    if (doc.getElementsOfType<Drawing>(Drawing).length > 0) {
+    if (!doc.drawingsFile || !existsSync(doc.drawingsFile)) {
+      logger.warn(`Can't find drawings file: ${doc.drawingsFile}. Skipping Drawing detecion...`);
+      return Promise.resolve(doc);
+    }
+
+    const drawingsJson = JSON.parse(readFileSync(doc.drawingsFile, { encoding: 'utf8' }));
+    const drawingsDoc = json2document(drawingsJson);
+
+    if (drawingsDoc.getElementsOfType<Drawing>(Drawing).length > 0) {
       logger.warn('Document already has Drawings. Skipping...');
       return Promise.resolve(doc);
     }
 
-    doc.pages.forEach(page => {
+    drawingsDoc.pages.forEach(page => {
       const lines = page.getElementsOfType<SvgLine>(SvgLine, true);
       const drawings: Drawing[] = [];
       this.groupShapesIntoDrawings(lines, drawings);
 
-      // filter all SvgLine type elements and push Drawings containing those Lines
-      const lineIds = lines.map(l => l.id);
-      page.elements = page.elements.filter(e => !lineIds.includes(e.id));
-      page.elements.push(...drawings);
+      page.elements = drawings;
     });
-    logger.info(`${doc.getElementsOfType<Drawing>(Drawing).length} drawings found on document.`);
+
+    new JsonExporter(drawingsDoc, 'word').export(doc.drawingsFile);
+    logger.info(`${drawingsDoc.getElementsOfType<Drawing>(Drawing).length} drawings found on document.`);
     return Promise.resolve(doc);
   }
 

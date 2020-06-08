@@ -19,9 +19,11 @@ import { withData } from 'leche';
 import 'mocha';
 import { DrawingDetectionModule } from '../server/src/processing/DrawingDetectionModule/DrawingDetectionModule';
 import { Drawing } from '../server/src/types/DocumentRepresentation';
-import { getDocFromJson, runModules, TableExtractorStub } from './helpers';
-import { TableDetectionModule } from '../server/src/processing/TableDetectionModule/TableDetectionModule';
-import { readFileSync } from 'fs';
+import { getDocFromJson, runModules } from './helpers';
+import { readFileSync, copyFileSync } from 'fs';
+import { join } from 'path';
+import { json2document } from '../server/src/utils/json2document';
+import { getTemporaryFile } from '../server/src/utils';
 
 /* global describe, before, it */
 describe('Drawing Detection and Reconstruction', () => {
@@ -30,22 +32,35 @@ describe('Drawing Detection and Reconstruction', () => {
       {
         'outlined table and bottom line': [
           'column_span_2.json',
+          join(__dirname, 'assets', 'drawings-column_span_2.json'),
           2,
         ],
         'two drawings': [
           'two-tables.json',
+          join(__dirname, 'assets', 'drawings-two-tables.json'),
           2,
         ],
       },
-      (fileName, drawingCount) => {
+      (fileName, drawingsJson, drawingCount) => {
         let drawings;
         before(done => {
+          //making tmp file to aviod modifying main asset on DrawingDetectionModule
+          const tmpJsonFile = getTemporaryFile('.json');
+          copyFileSync(drawingsJson, tmpJsonFile);
           getDocFromJson(
-            doc => runModules(doc, [new DrawingDetectionModule()]),
+            doc => {
+              doc.drawingsFile = tmpJsonFile;
+              return runModules(doc, [new DrawingDetectionModule()]);
+            },
             fileName,
             fileName.replace('.json', '.pdf'),
           ).then(after => {
-            drawings = after.getElementsOfType<Drawing>(Drawing);
+            const drawingsDoc = json2document(
+              JSON.parse(
+                readFileSync(after.drawingsFile, { encoding: 'utf8' }),
+              ),
+            );
+            drawings = drawingsDoc.getElementsOfType<Drawing>(Drawing);
             done();
           });
         });
@@ -55,39 +70,5 @@ describe('Drawing Detection and Reconstruction', () => {
         });
       },
     );
-  });
-
-  describe('drawing line merge', () => {
-    withData({
-      'fuel-saving-oportunities': [
-        'fuel-saving-opportunities.json',
-        1,
-        16,
-      ],
-    },
-      (fileName, drawingCount, linesCount) => {
-        let drawings;
-        before(done => {
-          const camelotOutput = readFileSync(`${__dirname}/assets/camelot-fuel-saving-opportunities.json`, { encoding: 'utf8' });
-          
-          const tableExtractor = new TableExtractorStub(0, '', camelotOutput);
-          const td = new TableDetectionModule();
-          td.setExtractor(tableExtractor);
-
-          getDocFromJson(
-            doc => runModules(doc, [new DrawingDetectionModule(), td]),
-            fileName,
-            fileName.replace('.json', '.pdf'),
-          ).then(after => {
-            drawings = after.getElementsOfType<Drawing>(Drawing);
-            done();
-          });
-        });
-
-        it('should have correct amount of lines', () => {
-          expect(drawings.length).to.eq(drawingCount);
-          expect(drawings.reduce((acc, d) => acc + d.content.length, 0)).to.eq(linesCount);
-        });
-      });
   });
 });

@@ -76,7 +76,7 @@ const pushElement = (element, array, index = null) => {
   }
 };
 
-export function extractDrawingsFromXML(xmlPath: string): Promise<any[]> {
+export function extractDrawingsFromXML(xmlPath: string): Promise<any> {
   const startTime: number = Date.now();
   const fileStream = fs.createReadStream(xmlPath);
   const xml = new XmlStream(fileStream);
@@ -105,7 +105,7 @@ export function extractDrawingsFromXML(xmlPath: string): Promise<any[]> {
 
     xml.on('end', () => {
       logger.info(`SVGs extraction time: ${(Date.now() - startTime) / 1000}s`);
-      resolve(allPages);
+      resolve({ pages: { page: allPages } });
     });
 
     xml.on('error', message => {

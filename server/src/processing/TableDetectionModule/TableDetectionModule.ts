@@ -36,6 +36,7 @@ import * as defaultConfig from './defaultConfig.json';
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import drawingToTable from './DrawingToTableHelper';
 import drawingLineMerge from './DrawingLineMergeHelper';
+import { json2document } from '../../utils/json2document';
 
 export interface Options {
   pages?: number[];
@@ -174,10 +175,8 @@ export class TableDetectionModule extends Module<Options> {
         this.addTables(tablesData, doc);
       }
     }
-    const camelotCount = doc.getElementsOfType<Table>(Table).length;
-    logger.info(`${camelotCount} tables found with Camelot.`);
 
-    if (this.options.checkDrawings) {
+    if (this.options.checkDrawings && doc.drawingsFile && fs.existsSync(doc.drawingsFile)) {
       logger.info('Looking for table candidates on Drawings...');
       const drawingTablesData = this.findTablesOnDrawings(doc);
       this.addTables(drawingTablesData, doc);
@@ -455,10 +454,13 @@ export class TableDetectionModule extends Module<Options> {
 
   private findTablesOnDrawings(doc: Document): JsonTablePage[] {
     const jsonResult: JsonTablePage[] = [];
-    doc.pages.forEach((page, pageIndex) => {
+
+    const drawingsJson = JSON.parse(fs.readFileSync(doc.drawingsFile, { encoding: 'utf8' }));
+    const drawingsDoc = json2document(drawingsJson);
+    drawingsDoc.pages.forEach((page, pageIndex) => {
       const pageDrawings = page.getElementsOfType<Drawing>(Drawing);
       const improvedDrawings = pageDrawings
-        .filter(d => this.drawingIsTableCandidate(d, page))
+        .filter(d => this.drawingIsTableCandidate(d, doc.pages[pageIndex]))
         .map(drawingLineMerge);
 
       improvedDrawings.forEach(d => {
@@ -466,8 +468,8 @@ export class TableDetectionModule extends Module<Options> {
       });
 
       const tables = improvedDrawings
-        .filter(d => this.drawingIsTable(d, page))
-        .map(d => drawingToTable(d, page.height));
+        .filter(d => this.drawingIsTable(d, doc.pages[pageIndex]))
+        .map(d => drawingToTable(d, doc.pages[pageIndex].height));
       jsonResult.push({ page: pageIndex + 1, tables });
     });
     return jsonResult;
