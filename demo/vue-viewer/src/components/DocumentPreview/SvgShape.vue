@@ -1,5 +1,5 @@
 <template functional>
-  <svg>
+  <svg class="Drawing" :id="`Drawing_${props.element.id}`">
     <line
       class="drawing"
       v-for="svgLine in props.element.content"

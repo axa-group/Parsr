@@ -62,7 +62,7 @@ export class DrawingDetectionModule extends Module {
       const lines = columns[0];
       if (lines) {
         // a Drawing was found, the content in columns and rows is the same
-        const drawing = new Drawing(null, lines);
+        let drawing = new Drawing(null, lines);
         drawing.updateBoundingBox();
         foundDrawings.push(drawing);
       }
@@ -80,7 +80,7 @@ export class DrawingDetectionModule extends Module {
     const groupedColumns = this.processGroup(svgLines, box, vControlLine);
 
     // horizontal line
-    const hControlLine = new SvgLine(null, 1, box.left, box.top, box.width, box.top);
+    const hControlLine = new SvgLine(null, 1, box.left, box.top, box.right, box.top);
     const groupedRows = this.processGroup(svgLines, box, hControlLine);
 
     return {
@@ -104,7 +104,7 @@ export class DrawingDetectionModule extends Module {
     const processedLineIds: number[] = [];
     let currentLineGroup: SvgLine[] = [];
 
-    // until controlLine reaches the v/h end of the page
+    // until controlLine reaches the v/h end of the box
     // if controlLine is vertical, the sweep is done from left to right
     // if controlLine is horizontal, the sweep is done from top to bottom
     const type = controlLine.isVertical() ? 'h' : 'v';
@@ -112,7 +112,8 @@ export class DrawingDetectionModule extends Module {
       (type === 'v' ? controlLine.toY : controlLine.toX) <= (type === 'v' ? box.bottom + 5 : box.right + 5)
     ) {
       const intersectingLines = lines.filter(
-        l => controlLine.intersects(l) || this.controlLineIsOver(l, controlLine),
+        l => controlLine.intersects(l) || controlLine.isOnTop(l),
+        controlLine,
       );
       if (intersectingLines.length > 0) {
         const unusedLines = intersectingLines.filter(l => !processedLineIds.includes(l.id));
@@ -138,20 +139,5 @@ export class DrawingDetectionModule extends Module {
     }
 
     return groups;
-  }
-
-  /**
-   * As lines position are floating poing values,
-   * this avoids controlLine to jump over the line without detecting it
-   */
-  private controlLineIsOver(line: SvgLine, controlLine: SvgLine): boolean {
-    const is1pxAroundLineX =
-      controlLine.fromX + 0.5 >= line.fromX && controlLine.fromX - 0.5 <= line.fromX;
-    const is1pxAroundLineY =
-      controlLine.fromY + 0.5 >= line.fromY && controlLine.fromY - 0.5 <= line.fromY;
-    return (
-      (controlLine.isVertical() && is1pxAroundLineX) ||
-      (controlLine.isHorizontal() && is1pxAroundLineY)
-    );
   }
 }

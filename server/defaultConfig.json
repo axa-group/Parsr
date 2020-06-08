@@ -29,6 +29,7 @@
     [
       "table-detection",
       {
+        "checkDrawings": true,
         "runConfig": [
           {
             "pages": [],

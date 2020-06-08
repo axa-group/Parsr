@@ -90,6 +90,8 @@ function elementsFromJson(elementJson: JsonElement, fonts: Font[]): Element | vo
     return imageFromJson(elementJson);
   } else if (elementJson.type === 'list') {
     return listFromJson(elementJson, fonts);
+  }else if (elementJson.type === 'svg-line') {
+    return svgShapeFromJson(elementJson);
   } else if (elementJson.type === 'drawing') {
     return drawingFromJson(elementJson);
   } else if (elementJson.type === 'barcode') {
