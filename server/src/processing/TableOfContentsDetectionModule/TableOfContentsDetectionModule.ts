@@ -59,30 +59,27 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       );
       
       if (tocItemParagraphs.length > 0) {
+        // console.log(tocItemParagraphs);
+        
+
+
         this.storeNumAndRomanNum(tocItemParagraphs);
 
         let allStoredInteger = this.storeIntegerFromNumbers();
         
         nbNumber = allStoredNumbers.length;
         nbInteger = allStoredInteger.length;
-        let integers = [];
-        let storeBoxValues = [];
-        for (let index = 0; index < nbInteger; index++) {
-          integers[index]= Number(allStoredInteger[index].map(a => a.content).join().replace(/,/g,''));
-          storeBoxValues[index] = Object.values(allStoredInteger[index][0].box);
-          console.log(storeBoxValues[index].toString());
-          // console.log('====');
-          // console.log('integers= ' + integers[index].toString());
-          // console.log('====');
-
-          // for (let charact of allStoredInteger[index]) {
-          //   console.log(charact.box);
-          // }
-        }
-        // let allIntegerParam = [];
+        // let integers = [];
+        // let storeBoxValues = [];
+        // for (let index = 0; index < nbInteger; index++) {
+        //   integers[index]= Number(allStoredInteger[index].map(a => a.content).join().replace(/,/g,''));
+        //   storeBoxValues[index] = Object.values(allStoredInteger[index][0].box);
+        //   // console.log(storeBoxValues[index].toString());
+         
+        // }
 
         if (nbInteger > 2) {
-          this.findValidTocInteger(storeLines, allStoredInteger, integers, storeBoxValues);
+          // this.findValidTocInteger(storeLines, allStoredInteger, integers, storeBoxValues);
           
           // allIntegerParam = this.setAndStoreIntegerParam(allStoredInteger);
           // allIntegerParam.sort(this.sortFunction);
@@ -111,10 +108,10 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         pagesSinceLastTOC++;
       }
     }
-    nbNumber = 0;
+    // nbNumber = 0;
     nbInteger = 0;
     nbRomanNumbers = 0;
-    mostIntegerInOrder = 0;
+    // mostIntegerInOrder = 0;
 
     return doc;
   }
@@ -127,38 +124,75 @@ export class TableOfContentsDetectionModule extends Module<Options> {
   }
 
   private storeNumAndRomanNum(tocItemParagraphs: Paragraph[]) {
-    let storeNumbers = [];
+    let storeNumbersRight = [];
+    let storeNumbersLeft = [];
     let storeRomanNumbers = [];
+    let storeBoxNumber = [];
 
     for (const tocItemParagraph of tocItemParagraphs) {
-      const strTocItem = tocItemParagraph.toString();
+      const w = tocItemParagraph.width * 0.1;
+      const intersectionBoxRight = new BoundingBox(tocItemParagraph.right - w, tocItemParagraph.top, w, tocItemParagraph.height);
+      console.log(Object.values(intersectionBoxRight).toString());
+      const intersectionBoxLeft = new BoundingBox(tocItemParagraph.left, tocItemParagraph.top, w, tocItemParagraph.height);
+      const numbersInsideIntersectionRight = tocItemParagraph
+        .getWords()
+        .filter(
+          word => BoundingBox.getOverlap(word.box, intersectionBoxRight).box1OverlapProportion > 0,
+        );
+      console.log(numbersInsideIntersectionRight.toString());
+      const strNumberTocItem = numbersInsideIntersectionRight.toString();
+      // if (strNumberTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
+      numbersInsideIntersectionRight.forEach(word => {
+        // let aligned = 0;
+        if (word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
+          this.addAlignedNumber(storeBoxNumber, word);
+          // console.log('strTocItemMatch= ' + word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
+          storeNumbersRight.push(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
+        }
+        console.log('storeNumbersRight= ' + storeNumbersRight.toString());  
+      });
+
+      const numbersInsideIntersectionLeft = tocItemParagraph
+        .getWords()
+        .filter(
+          word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
+        );
+      numbersInsideIntersectionLeft.forEach(word => {
+        const strNumTocItem = word.toString();
+        if (strNumTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
+          // console.log('strTocItemMatch= ' + word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
+          storeNumbersLeft.push(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
+        }
+        console.log('storeNumbersLeft= ' + storeNumbersLeft.toString());  
+      });
       
-      if (strTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
-        tocItemParagraph.content.forEach(line => {
-          line.content.forEach(word => {
-            if (word.content.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
-              let index = word.content.length - 1;
-              let detectedNumber = [];
-              while (index >= 0) {
-                if (word.content[index].toString().match(/[0-9]/) ||
-                (index > 0 && word.content[index].toString().match(/[.,]/) &&
-                word.content[index - 1].toString().match(/[0-9]/))) {
-                  console.log(word.content.toString());
-                  detectedNumber.unshift(word.content[index]);
-                  index--;
-                } else if (detectedNumber.length > 0) {
-                  break;
-                } else {
-                  index--;
-                }
-              }
-              storeNumbers.push(detectedNumber);
-            }
-          }); 
-        });
-        // for (let num of storeNumbers) console.log(num);
-      }
-      if (strTocItem.match(/[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)) {
+      // if (strNumberTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
+      //   tocItemParagraph.content.forEach(line => {
+      //     line.content.forEach(word => {
+      //       if (word.content.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
+      //         let index = word.content.length - 1;
+      //         let detectedNumber = [];
+      //         while (index >= 0) {
+      //           if (word.content[index].toString().match(/[0-9]/) ||
+      //           (index > 0 && word.content[index].toString().match(/[.,]/) &&
+      //           word.content[index - 1].toString().match(/[0-9]/))) {
+      //             // console.log(word.content.toString());
+      //             detectedNumber.unshift(word.content[index]);
+      //             index--;
+      //           } else if (detectedNumber.length > 0) {
+      //             break;
+      //           } else {
+      //             index--;
+      //           }
+      //         }
+      //         storeNumbers.push(detectedNumber);
+      //       }
+      //     }); 
+      //   });
+      //   // for (let num of storeNumbers) console.log(num);
+      // }
+      
+      if (strNumberTocItem.match(/[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)) {
         tocItemParagraph.content.forEach(line => {
           line.content.forEach(word => {
             if (word.content.toString().match(/[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)) {
@@ -168,25 +202,40 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         });
       }
     }
-
-    allStoredNumbers = storeNumbers;
+    // for (const numbers of storeNumbers) {
+    //   allStoredNumbers = allStoredNumbers.concat(numbers);
+    // }
+    // console.log(allStoredNumbers.toString());
+    // allStoredNumbers = storeNumbers;
 
     for (const romanNumbers of storeRomanNumbers) {
       nbRomanNumbers = nbRomanNumbers + romanNumbers.length;
     }
     storeRomanNumbers = [];
-    storeNumbers = [];
+    storeNumbersRight = [];
+    storeNumbersLeft = [];
+
   }
 
-  private storeIntegerFromNumbers(): any[] {
-    let allStoredInteger: any[] = [];
+  private storeIntegerFromNumbers(): number[] {
+    let allStoredInteger: number[] = [];
     for (const num of allStoredNumbers) {
-      if (!num.some(char => char.content === '.') && !num.some(char => char.content === ',')) {
+      if (Number.isInteger(num)) {
         allStoredInteger.push(num);
       }
     }
     return allStoredInteger;
   }
+
+  // private storeIntegerFromNumbers(): any[] {
+  //   let allStoredInteger: any[] = [];
+  //   for (const num of allStoredNumbers) {
+  //     if (!num.some(char => char.content === '.') && !num.some(char => char.content === ',')) {
+  //       allStoredInteger.push(num);
+  //     }
+  //   }
+  //   return allStoredInteger;
+  // }
 
   // private setAndStoreIntegerParam(allStoredInteger: number[]): any[] {
   //   let allIntegerParam: any[] = [];
@@ -266,31 +315,45 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
   }
 
-  private findValidTocInteger(storeLines, allStoredInteger, integers, storeBoxValues) {
-    console.log('storeLine= ' + storeLines.length);
-    console.log('allstoredInt= ' + allStoredInteger.length);
-    console.log('integers= ' + integers.length);
-    for (let i = 0; i < allStoredInteger.length / 2; i++) {
-      // console.log(storeBoxValues[i].toString());
-      // console.log(allStoredInteger[i][0].box);
-      const integerBox = new BoundingBox(storeBoxValues[i][0] - 25, storeBoxValues[i][1], storeBoxValues[i][2] + 50,  storeBoxValues[allStoredInteger.length - 1][1] - storeBoxValues[i][1] +  storeBoxValues[allStoredInteger.length - 1][3]);
-      console.log('------->');
-      console.log(integerBox);
-      console.log('---');
-      console.log(allStoredInteger[i]);
-    //   console.log('---');
-    //   console.log(storeLines[i].toString());
-      console.log('<------');
-      const integerInsideIntersection = allStoredInteger[i]
-      .filter(
-        char => BoundingBox.getOverlap(char.box, integerBox).box1OverlapProportion > 0,
-      );
-      console.log(integerInsideIntersection);
-      console.log('length= ' + integerInsideIntersection.length);
-      // let j = i;
-      // for (j; j < allStoredInteger.length; j++) {
-
-      // }
+  private addAlignedNumber(storeBoxNumber, number) {
+   
+    const indexLeftExist = storeBoxNumber.findIndex(aNum => aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width && aNum[0].box.left + aNum[0].box.width + 5 >= number.box.left + number.box.width);
+    console.log('index= ' + indexLeftExist);
+    if (indexLeftExist !== -1) {
+      console.log(storeBoxNumber[indexLeftExist].toString() + '   ------->');
+      console.log(storeBoxNumber[indexLeftExist]);
+      storeBoxNumber[indexLeftExist].push(number);
+      console.log(storeBoxNumber[indexLeftExist].toString() + '<-------');
     }
+    else {
+      console.log('not found yet: ' +  Math.floor(number.box.left));
+      storeBoxNumber.push([number]);
+      console.log(storeBoxNumber);
+    }
+      // console.log(storeBoxNumber.toString());
   }
+
+  // private findValidTocInteger(storeLines, allStoredInteger, integers, storeBoxValues) {
+  //   console.log('storeLine= ' + storeLines.length);
+  //   console.log('allstoredInt= ' + allStoredInteger.length);
+  //   console.log('integers= ' + integers.length);
+  //   for (let i = 0; i < allStoredInteger.length / 2; i++) {
+  //     // console.log(storeBoxValues[i].toString());
+  //     // console.log(allStoredInteger[i][0].box);
+  //     const integerBox = new BoundingBox(storeBoxValues[i][0] - 25, storeBoxValues[i][1], storeBoxValues[i][2] + 50,  storeBoxValues[allStoredInteger.length - 1][1] - storeBoxValues[i][1] +  storeBoxValues[allStoredInteger.length - 1][3]);
+  //     // console.log('------->');
+  //     // console.log(integerBox);
+  //     // console.log('<------');
+  //     const integerInsideIntersection = allStoredInteger[i]
+  //     .filter(
+  //       char => BoundingBox.getOverlap(char.box, integerBox).box1OverlapProportion > 0,
+  //     );
+  //     // console.log(integerInsideIntersection);
+  //     console.log('length= ' + integerInsideIntersection.length);
+  //     // let j = i;
+  //     // for (j; j < allStoredInteger.length; j++) {
+
+  //     // }
+  //   }
+  // }
 }
