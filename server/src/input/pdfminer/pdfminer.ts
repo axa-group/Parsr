@@ -66,6 +66,55 @@ export function extractPages(
   });
 }
 
+const pushElement = (element, array, index = null) => {
+  if (index != null) {
+    array[index] = array[index] || [];
+    array[index].push(element);
+  } else {
+    array = array || [];
+    array.push(element);
+  }
+};
+
+export function extractDrawingsFromXML(xmlPath: string): Promise<any> {
+  const startTime: number = Date.now();
+  const fileStream = fs.createReadStream(xmlPath);
+  const xml = new XmlStream(fileStream);
+
+  let shapes = [];
+  const allPages = [];
+
+  return new Promise((resolve, reject) => {
+    xml.on('endElement: rect', rect => {
+      pushElement({ _attr: rect.$, type: 'rect' }, shapes);
+    });
+
+    // for now, curves are treated as polygons
+    xml.on('endElement: curve', poly => {
+      pushElement({ _attr: poly.$, type: 'poly' }, shapes);
+    });
+
+    xml.on('endElement: line', line => {
+      pushElement({ _attr: line.$, type: 'line' }, shapes);
+    });
+
+    xml.on('updateElement: page', pageElement => {
+      pushElement({ _attr: pageElement.$, shapes }, allPages);
+      shapes = [];
+    });
+
+    xml.on('end', () => {
+      logger.info(`SVGs extraction time: ${(Date.now() - startTime) / 1000}s`);
+      resolve({ pages: { page: allPages } });
+    });
+
+    xml.on('error', message => {
+      logger.info(`XML Parsing error: ${message}`);
+      reject(message);
+    });
+  });
+}
+
 export function xmlParser(xmlPath: string): Promise<any> {
   const startTime: number = Date.now();
 
@@ -78,7 +127,6 @@ export function xmlParser(xmlPath: string): Promise<any> {
     let textLines: any[] = [];
     let texts: any[] = [];
     let figures: Figure[] = [];
-    let shapes: any[] = [];
 
     type Figure = {
       _attr: {};
@@ -98,16 +146,6 @@ export function xmlParser(xmlPath: string): Promise<any> {
         element = { _attr: word.$ };
       }
       pushElement(element, array, index);
-    };
-
-    const pushElement = (element, array, index = null) => {
-      if (index != null) {
-        array[index] = array[index] || [];
-        array[index].push(element);
-      } else {
-        array = array || [];
-        array.push(element);
-      }
     };
 
     xml.on('endElement: page > textbox > textline > text', word => {
@@ -149,23 +187,9 @@ export function xmlParser(xmlPath: string): Promise<any> {
     });
 
     xml.on('updateElement: page', pageElement => {
-      pushElement({ _attr: pageElement.$, textbox: textBoxes, figure: figures, shapes }, allPages);
+      pushElement({ _attr: pageElement.$, textbox: textBoxes, figure: figures }, allPages);
       textBoxes = [];
       figures = [];
-      shapes = [];
-    });
-
-    xml.on('endElement: rect', rect => {
-      pushElement({ _attr: rect.$, type: 'rect' }, shapes);
-    });
-
-    // for now, curves are treated as polygons
-    xml.on('endElement: curve', poly => {
-      pushElement({ _attr: poly.$, type: 'poly' }, shapes);
-    });
-
-    xml.on('endElement: line', line => {
-      pushElement({ _attr: line.$, type: 'line' }, shapes);
     });
 
     xml.on('end', () => {

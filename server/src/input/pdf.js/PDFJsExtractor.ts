@@ -21,9 +21,11 @@ import { getDocument } from 'pdfjs-dist';
 import { Document, Page } from '../../types/DocumentRepresentation';
 import logger from '../../utils/Logger';
 import { Extractor } from '../Extractor';
-import { getTemporaryDirectory } from './../../utils';
+import { getTemporaryDirectory, getTemporaryFile } from './../../utils';
 import { repairPdf } from './../../utils/CommandExecuter';
 import { loadPage } from './pdfjs';
+import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
+import { JsonExporter } from '../../output/json/JsonExporter';
 
 /**
  * The extractor is responsible to extract every possible information
@@ -56,7 +58,21 @@ export class PDFJsExtractor extends Extractor {
             return Promise.all(pages).then((p: Page[]) => {
               const endTime: number = (Date.now() - startTime) / 1000;
               logger.info(`Elapsed time: ${endTime}s`);
-              resolveDocument(new Document(p, repairedPdf, assetsFolder));
+              const doc = new Document(p, repairedPdf, assetsFolder);
+
+              const drawingsDoc = this.moveDrawings(doc);
+              const jsonDrawingsFile = getTemporaryFile('.json');
+              return new JsonExporter(drawingsDoc, 'word')
+                .export(jsonDrawingsFile)
+                .then(() => {
+                  doc.drawingsFile = jsonDrawingsFile;
+                  return resolveDocument(doc);
+                })
+                .catch(e => {
+                  logger.error(e);
+                  return resolveDocument(doc);
+                });
+
             });
           });
         } catch (e) {
@@ -64,5 +80,15 @@ export class PDFJsExtractor extends Extractor {
         }
       }).catch(rejectDocument);
     });
+  }
+
+  private moveDrawings(doc: Document): Document {
+    const drawingsDoc = new Document([]);
+    doc.pages.forEach((p, pageIndex) => {
+      const drawingsLines = p.getElementsOfType<SvgLine>(SvgLine);
+      drawingsDoc.pages.push(new Page(pageIndex + 1, drawingsLines, p.box));
+      doc.pages[pageIndex].elements = doc.pages[pageIndex].elements.filter(e => !(e instanceof SvgLine));
+    });
+    return drawingsDoc;
   }
 }

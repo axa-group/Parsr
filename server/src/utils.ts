@@ -35,6 +35,7 @@ import {
   Text,
 } from './types/DocumentRepresentation';
 import logger from './utils/Logger';
+import Cache from './utils/CacheLayer';
 
 import { AbbyyTools } from './input/abbyy/AbbyyTools';
 import { AmazonTextractExtractor } from './input/amazon-textract/AmazonTextractExtractor';
@@ -759,6 +760,10 @@ function embedImagesInHTML(html: string): string {
 
 export function sanitizeXML(xmlPath: string): Promise<string> {
   const startTime: number = Date.now();
+  const cacheKey = `sanitizeXML-${xmlPath}`;
+  if (Cache.has(cacheKey)) {
+    return Promise.resolve(Cache.get(cacheKey));
+  }
   return new Promise<any>((resolve, _reject) => {
     try {
       // replace with empty char everything forbidden by XML 1.0 specifications,
@@ -769,6 +774,7 @@ export function sanitizeXML(xmlPath: string): Promise<string> {
       const outputFilePath = getTemporaryFile('.xml');
       fs.writeFileSync(outputFilePath, xml.replace(new RegExp(regex), ' '));
       logger.info(`Sanitize XML: ${(Date.now() - startTime) / 1000}s`);
+      Cache.set(cacheKey, outputFilePath);
       resolve(outputFilePath);
     } catch (error) {
       logger.warn(`Error sanitizing XML ${error}`);
