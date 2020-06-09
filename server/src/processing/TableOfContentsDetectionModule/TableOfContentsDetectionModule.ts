@@ -49,6 +49,9 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         .filter(this.isNotHeaderFooter);
       let storeLines: any[] = [];
       for (let para of allParagraphs) {
+        // console.log('>>>>>>>');
+        // console.log(para);
+        // console.log('<<<<<<<<');
         for (let line of para.content) {
           this.addWordToLine(storeLines, line);
         }
@@ -57,14 +60,18 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       const tocItemParagraphs = allParagraphs.filter((p) =>
         detection.TOCDetected(p, parameters),
       );
-      
+      let tocInteger = []
       if (tocItemParagraphs.length > 0) {
         // console.log(tocItemParagraphs);
-        
 
+        let storeBoxNumber = [];
+        this.storeNumAndRomanNum(tocItemParagraphs, storeBoxNumber);
 
-        this.storeNumAndRomanNum(tocItemParagraphs);
-
+        // for (let boxNum of storeBoxNumber) {
+        //   console.log('boxNum= ' + boxNum.toString());
+        // }
+        tocInteger = this.findTocNumber(storeBoxNumber);
+        console.log('tocInteger= ' + tocInteger);
         let allStoredInteger = this.storeIntegerFromNumbers();
         
         // nbNumber = allStoredNumbers.length;
@@ -93,21 +100,23 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       if (
         // ((nbNumber > 2 && nbInteger / nbNumber > 0.5 && mostIntegerInOrder / nbInteger >= 0.7) ||
         //   (nbRomanNumbers > 2 && nbInteger < nbRomanNumbers)) &&
+        tocInteger && tocInteger.length > 2 &&
         tocItemParagraphs.length > 0 &&
         tocItemParagraphs.length >=
           Math.floor(allParagraphs.length * detection.threshold * Math.pow(1.05, pagesSinceLastTOC))
       ) {
         foundTOC = true;
         const toc = new TableOfContents();
-        console.log(toc);
-        console.log('---------------------');
-        console.log(tocItemParagraphs);
-        console.log('---------------------');
+        // console.log(toc);
+        // console.log('---------------------');
+        // console.log(tocItemParagraphs);
+        // console.log('---------------------');
         
         toc.pageKeywords = this.options.pageKeywords;
         toc.content = tocItemParagraphs;
-        console.log(toc);
-        console.log('---------------------');
+        // console.log('---------------------');
+        // console.log(toc);
+        // console.log('---------------------');
         page.elements = page.elements.filter(e => !tocItemParagraphs.map(t => t.id).includes(e.id));
         page.elements.push(toc);
         pagesSinceLastTOC = 0;
@@ -130,14 +139,14 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     );
   }
 
-  private storeNumAndRomanNum(tocItemParagraphs: Paragraph[]) {
+  private storeNumAndRomanNum(tocItemParagraphs: Paragraph[], storeBoxNumber: any[]) {
     let storeNumbersRight = [];
     let storeNumbersLeft = [];
     let storeRomanNumbers = [];
-    let storeBoxNumber = [];
 
     for (const tocItemParagraph of tocItemParagraphs) {
       // console.log(tocItemParagraph.toString());
+      // console.log(tocItemParagraph);
       const w = tocItemParagraph.width * 0.1;
       const intersectionBoxRight = new BoundingBox(tocItemParagraph.right - w, tocItemParagraph.top, w, tocItemParagraph.height);
       // console.log(Object.values(intersectionBoxRight).toString());
@@ -219,8 +228,11 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       boxes.sort(function(a, b) {
         return a.box.top - b.box.top;
       });
-      console.log(boxes.toString());
+      // console.log(boxes.toString());
+      // console.log(boxes);
     }
+    
+   
     // for (const numbers of storeNumbers) {
     //   allStoredNumbers = allStoredNumbers.concat(numbers);
     // }
@@ -246,7 +258,105 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     return allStoredInteger;
   }
 
-  // private storeIntegerFromNumbers(): any[] {
+  
+
+  private addWordToLine(storeLines, line) {
+   
+    const indexTopExist = storeLines.findIndex(aLine => Math.floor(aLine.box.top) === Math.floor(line.box.top));
+    // console.log('index= ' + indexTopExist);
+    if (indexTopExist !== -1) {
+      // console.log(storeLines[indexTopExist].toString() + '------->');
+      storeLines[indexTopExist].content.push.apply(storeLines[indexTopExist].content, line.content);
+      // console.log(storeLines[indexTopExist].toString() + '<-------');
+    }
+    else {
+      // console.log('not found yet: ' +  Math.floor(line.box.top));
+      storeLines.push(line);
+      // console.log(line);
+    }
+      // console.log(storeLines.toString());
+
+  }
+
+  private addAlignedNumber(storeBoxNumber, number) {
+   
+    const indexValueExist = storeBoxNumber.findIndex(aNum => aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width && aNum[0].box.left + aNum[0].box.width + 5 >= number.box.left + number.box.width);
+    // console.log('index= ' + indexValueExist);
+    if (indexValueExist !== -1) {
+      // console.log(storeBoxNumber[indexValueExist].toString() + '   ------->');
+      // console.log(storeBoxNumber[indexValueExist]);
+      storeBoxNumber[indexValueExist].push(number);
+      // console.log(storeBoxNumber[indexValueExist].toString() + ' <-------');
+    }
+    else {
+      // console.log('not found yet: ' +  Math.floor(number.box.left));
+      storeBoxNumber.push([number]);
+      // console.log(storeBoxNumber);
+    }
+      // console.log(storeBoxNumber.toString());
+  }
+
+  private findTocNumber(storeBoxNumber): any {
+    let nbOfNumber;
+    let storedInteger = [];
+    let nbOfIntegerInOrder = 0;
+    for (let box of storeBoxNumber) {
+      nbOfNumber = box.length;
+      for (const word of box) {
+      //   let i = 0;
+      //   while(i < word.length()) {
+
+      //   }
+        let num = [];
+        num.push(Number(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)));
+        // let num = Number(strNum[0]);
+        // console.log('num= ' + num);
+        if (Number.isInteger(num[0])) {
+          // console.log('word= ' + word.toString());
+          storedInteger.push(num[0]);
+        }
+      }
+      if (storedInteger.length / nbOfNumber > 0.75) {
+        nbOfIntegerInOrder = this.findIntegerAscendingOrder(storedInteger);
+        if (nbOfIntegerInOrder / storedInteger.length > 0.75) {
+          return box;
+        }
+      }
+    }
+    return null;
+  }
+
+  private findIntegerAscendingOrder(storedInteger): number {
+    let maxIntegerInOrder = 0;
+    let iStart = 0;
+    let nbIntegerInOrder = 1;
+    while (
+      iStart < storedInteger.length / 3 &&
+      maxIntegerInOrder < storedInteger.length * 0.7
+    ) {
+      let step = 1;
+      let iLastInOrder = iStart;
+      let iCompare = iLastInOrder + step;
+
+      while (iCompare < storedInteger.length) {
+        if (storedInteger[iCompare] >= storedInteger[iLastInOrder]) {
+          nbIntegerInOrder++;
+          iLastInOrder = iCompare;
+          step = 0;
+        }
+        step++;
+        iCompare = iLastInOrder + step;
+      }
+      if (nbIntegerInOrder > maxIntegerInOrder) {
+        maxIntegerInOrder = nbIntegerInOrder;
+      }
+      iStart++;
+      nbIntegerInOrder = 1;
+    }
+    return maxIntegerInOrder;     
+  }
+
+// private storeIntegerFromNumbers(): any[] {
   //   let allStoredInteger: any[] = [];
   //   for (const num of allStoredNumbers) {
   //     if (!num.some(char => char.content === '.') && !num.some(char => char.content === ',')) {
@@ -317,40 +427,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
   //   return maxIntegerInOrder;
   // }
 
-  private addWordToLine(storeLines, line) {
-   
-    const indexTopExist = storeLines.findIndex(aLine => Math.floor(aLine.box.top) === Math.floor(line.box.top));
-    // console.log('index= ' + indexTopExist);
-    if (indexTopExist !== -1) {
-      // console.log(storeLines[indexTopExist].toString() + '------->');
-      storeLines[indexTopExist].content.push.apply(storeLines[indexTopExist].content, line.content);
-      // console.log(storeLines[indexTopExist].toString() + '<-------');
-    }
-    else {
-      // console.log('not found yet: ' +  Math.floor(line.box.top));
-      storeLines.push(line);
-    }
-      // console.log(storeLines.toString());
-
-  }
-
-  private addAlignedNumber(storeBoxNumber, number) {
-   
-    const indexLeftExist = storeBoxNumber.findIndex(aNum => aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width && aNum[0].box.left + aNum[0].box.width + 5 >= number.box.left + number.box.width);
-    // console.log('index= ' + indexLeftExist);
-    if (indexLeftExist !== -1) {
-      // console.log(storeBoxNumber[indexLeftExist].toString() + '   ------->');
-      // console.log(storeBoxNumber[indexLeftExist]);
-      storeBoxNumber[indexLeftExist].push(number);
-      // console.log(storeBoxNumber[indexLeftExist].toString() + ' <-------');
-    }
-    else {
-      // console.log('not found yet: ' +  Math.floor(number.box.left));
-      storeBoxNumber.push([number]);
-      // console.log(storeBoxNumber);
-    }
-      // console.log(storeBoxNumber.toString());
-  }
 
   // private findValidTocInteger(storeLines, allStoredInteger, integers, storeBoxValues) {
   //   console.log('storeLine= ' + storeLines.length);
