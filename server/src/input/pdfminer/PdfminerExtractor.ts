@@ -88,13 +88,18 @@ export class PdfminerExtractor extends Extractor {
       .then(pdfminer.jsParser)
       .then((drawingsDoc: Document) => {
         document.pages = document.pages.concat(drawingsDoc.pages);
-        document.pages.forEach((page, index) => (page.pageNumber = index + 1));
+        document.pages.forEach((page, index) => { page.pageNumber = index + 1; });
         if (totalPages != null && totalPages > toPage + 1) {
           return this.extractSVGPaths(inputFile, pageIndex + 1, maxPages, totalPages, document);
         } else {
           const drawingsJson = utils.getTemporaryFile('.json');
-          new JsonExporter(document, 'word').export(drawingsJson);
-          return drawingsJson;
+          return new JsonExporter(document, 'word')
+            .export(drawingsJson)
+            .then(() => drawingsJson)
+            .catch(e => {
+              logger.error(e);
+              return null;
+            });
         }
       }).catch(err => {
         logger.error(err);

@@ -62,9 +62,17 @@ export class PDFJsExtractor extends Extractor {
 
               const drawingsDoc = this.moveDrawings(doc);
               const jsonDrawingsFile = getTemporaryFile('.json');
-              new JsonExporter(drawingsDoc, 'word').export(jsonDrawingsFile);
-              doc.drawingsFile = jsonDrawingsFile;
-              resolveDocument(doc);
+              return new JsonExporter(drawingsDoc, 'word')
+                .export(jsonDrawingsFile)
+                .then(() => {
+                  doc.drawingsFile = jsonDrawingsFile;
+                  return resolveDocument(doc);
+                })
+                .catch(e => {
+                  logger.error(e);
+                  return resolveDocument(doc);
+                });
+
             });
           });
         } catch (e) {
