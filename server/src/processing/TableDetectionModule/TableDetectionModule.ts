@@ -463,10 +463,6 @@ export class TableDetectionModule extends Module<Options> {
         .filter(d => this.drawingIsTableCandidate(d, doc.pages[pageIndex]))
         .map(drawingLineMerge);
 
-      improvedDrawings.forEach(d => {
-        page.elements.find(e => e.id === d.id).content = d.content;
-      });
-
       const tables = improvedDrawings
         .filter(d => this.drawingIsTable(d, doc.pages[pageIndex]))
         .map(d => drawingToTable(d, doc.pages[pageIndex].height));
