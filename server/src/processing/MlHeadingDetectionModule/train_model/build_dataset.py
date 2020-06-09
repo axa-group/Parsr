@@ -72,9 +72,6 @@ def extract_lines(file):
     common_fonts = most_common_fonts(file, page_number, threshold)
     font_ratios_dict = font_ratios(file, page_number)
     for page in file['pages']:
-        # page_number = page['pageNumber']
-        # common_fonts = most_common_fonts(file, page_number, threshold)
-        # font_ratios_dict = font_ratios(file, page_number)
         for element in page['elements']:
             walk(file, page_number, element, lines, common_fonts, font_ratios_dict)
     return lines

@@ -122,18 +122,12 @@ export class MlHeadingDetectionModule extends Module {
           return font instanceof Font;
         })
         .reduce((acc, curr) => acc && curr);
-        // let initiatedHeading = false;
         if (instanceOfFontCheck) {
           const headingIdx: number[] = linesInParagraph
             .map((line: Line, pos: number) => {
-              if (
-                // (pos === 0 || initiatedHeading) &&
-                this.isHeadingLine(line, commonFonts, doc)
-              ) {
-                // initiatedHeading = true;
+              if (this.isHeadingLine(line, commonFonts, doc)) {
                 return pos;
               } else {
-                // initiatedHeading = false;
                 return undefined;
               }
             })
