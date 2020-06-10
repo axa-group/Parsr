@@ -53,22 +53,23 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       const tocItemParagraphs = allParagraphs.filter((p) =>
         detection.TOCDetected(p, parameters),
       );
-      let tocInteger = [];
+      let tocIntegerRight = [];
+      let tocIntegerLeft = [];
       if (tocItemParagraphs.length > 0) {
 
-        let storeBoxNumber = [];
-        this.storeNumAndRomanNum(tocItemParagraphs, storeBoxNumber);
+        let storeBoxNumberRight = [];
+        let storeBoxNumberLeft = [];
+        this.storeNumAndRomanNum(tocItemParagraphs, storeBoxNumberRight, storeBoxNumberLeft);
 
-        tocInteger = this.findTocNumber(storeBoxNumber);
-        console.log('tocInteger= ' + tocInteger);
-        
+        tocIntegerRight = this.findTocNumber(storeBoxNumberRight);
+        tocIntegerLeft = this.findTocNumber(storeBoxNumberLeft);
+        console.log('tocIntegerRight= ' + tocIntegerRight);
+        console.log('tocIntegerLeft= ' + tocIntegerLeft);
       }
 
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
-        // ((nbNumber > 2 && nbInteger / nbNumber > 0.5 && mostIntegerInOrder / nbInteger >= 0.7) ||
-        //   (nbRomanNumbers > 2 && nbInteger < nbRomanNumbers)) &&
-        tocInteger && tocInteger.length > 2 &&
+        (tocIntegerRight && tocIntegerRight.length > 2) || (tocIntegerLeft && tocIntegerLeft.length > 2) &&
         tocItemParagraphs.length > 0 &&
         tocItemParagraphs.length >=
           Math.floor(allParagraphs.length * detection.threshold * Math.pow(1.05, pagesSinceLastTOC))
@@ -96,15 +97,16 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     );
   }
 
-  private storeNumAndRomanNum(tocItemParagraphs: Paragraph[], storeBoxNumber: any[]) {
+  private storeNumAndRomanNum(tocItemParagraphs: Paragraph[], storeBoxNumberRight: any[], storeBoxNumberLeft: any[]) {
     let storeNumbersRight = [];
     let storeNumbersLeft = [];
     let storeRomanNumbers = [];
 
     for (const tocItemParagraph of tocItemParagraphs) {
       const w = tocItemParagraph.width * 0.1;
+
       const intersectionBoxRight = new BoundingBox(tocItemParagraph.right - w, tocItemParagraph.top, w, tocItemParagraph.height);
-      const intersectionBoxLeft = new BoundingBox(tocItemParagraph.left, tocItemParagraph.top, w, tocItemParagraph.height);
+      const intersectionBoxLeft = new BoundingBox(tocItemParagraph.left, tocItemParagraph.top, 1.5 * w, tocItemParagraph.height);
       const numbersInsideIntersectionRight = tocItemParagraph
         .getWords()
         .filter(
@@ -113,7 +115,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       const strNumberTocItem = numbersInsideIntersectionRight.toString();
       numbersInsideIntersectionRight.forEach(word => {
         if (word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
-          this.addAlignedNumber(storeBoxNumber, word);
+          this.addAlignedNumberRight(storeBoxNumberRight, word);
           storeNumbersRight.push(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
         }
       });
@@ -125,8 +127,8 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
         );
       numbersInsideIntersectionLeft.forEach(word => {
-        const strNumTocItem = word.toString();
-        if (strNumTocItem.match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
+        if (word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
+          this.addAlignedNumberLeft(storeBoxNumberLeft, word);
           storeNumbersLeft.push(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
         }
       });
@@ -141,10 +143,10 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         });
       }
     }
-    storeBoxNumber.sort(function(a, b) {
+    storeBoxNumberRight.sort(function(a, b) {
       return b.length - a.length;
     });
-    for (let boxes of storeBoxNumber) {
+    for (let boxes of storeBoxNumberRight) {
       boxes.sort(function(a, b) {
         return a.box.top - b.box.top;
       });
@@ -171,17 +173,27 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     }
   }
 
-  private addAlignedNumber(storeBoxNumber, number) {
+  private addAlignedNumberRight(storeBoxNumberRight, number) {
    
-    const indexValueExist = storeBoxNumber.findIndex(aNum => aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width && aNum[0].box.left + aNum[0].box.width + 5 >= number.box.left + number.box.width);
+    const indexValueExist = storeBoxNumberRight.findIndex(aNum => aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width && aNum[0].box.left + aNum[0].box.width + 5 >= number.box.left + number.box.width);
     if (indexValueExist !== -1) {
-      storeBoxNumber[indexValueExist].push(number);
+      storeBoxNumberRight[indexValueExist].push(number);
     }
     else {
-      storeBoxNumber.push([number]);
+      storeBoxNumberRight.push([number]);
     }
   }
-
+  
+  private addAlignedNumberLeft(storeBoxNumberLeft, number) {
+   
+    const indexValueExist = storeBoxNumberLeft.findIndex(aNum => aNum[0].box.left - 25 <= number.box.left && aNum[0].box.left + 25 >= number.box.left + number.box.width);
+    if (indexValueExist !== -1) {
+      storeBoxNumberLeft[indexValueExist].push(number);
+    }
+    else {
+      storeBoxNumberLeft.push([number]);
+    }
+  }
   private findTocNumber(storeBoxNumber): any {
     let nbOfNumber;
     let storedInteger = [];
@@ -234,110 +246,4 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     }
     return maxIntegerInOrder;     
   }
-
- // private storeIntegerFromNumbers(): number[] {
-  //   let allStoredInteger: number[] = [];
-  //   for (const num of allStoredNumbers) {
-  //     if (Number.isInteger(num)) {
-  //       allStoredInteger.push(num);
-  //     }
-  //   }
-  //   return allStoredInteger;
-  // }
-
-// private storeIntegerFromNumbers(): any[] {
-  //   let allStoredInteger: any[] = [];
-  //   for (const num of allStoredNumbers) {
-  //     if (!num.some(char => char.content === '.') && !num.some(char => char.content === ',')) {
-  //       allStoredInteger.push(num);
-  //     }
-  //   }
-  //   return allStoredInteger;
-  // }
-
-  // private setAndStoreIntegerParam(allStoredInteger: number[]): any[] {
-  //   let allIntegerParam: any[] = [];
-  //   let indexValue = 0;
-  //   while (indexValue < allStoredInteger.length) {
-  //     let indexToCompare = indexValue + 1;
-  //     let numberOfHigherInteger = 1;
-  //     while (indexToCompare < allStoredInteger.length) {
-  //       if (allStoredInteger[indexValue] <= allStoredInteger[indexToCompare]) {
-  //         numberOfHigherInteger++;
-  //       }
-  //       indexToCompare++;
-  //     }
-  //     const integerParam = [allStoredInteger[indexValue], numberOfHigherInteger, indexValue];
-  //     allIntegerParam.push(integerParam);
-  //     indexValue++;
-  //   }
-  //   return allIntegerParam;
-  // }
-
-  // private sortFunction(a, b) {
-  //   if (a[1] === b[1]) {
-  //     return 0;
-  //   } else {
-  //     return a[1] > b[1] ? -1 : 1;
-  //   }
-  // }
-
-  // private findNumberOfIntegerAscendingOrder(allIntegerParam): number {
-  //   let maxIntegerInOrder = 0;
-  //   let iStart = 0;
-  //   let nbIntegerInOrder = 1;
-  //   while (
-  //     iStart < allIntegerParam.length / 2 &&
-  //     allIntegerParam[iStart][1] >= nbIntegerInOrder &&
-  //     maxIntegerInOrder < allIntegerParam.length * 0.7
-  //   ) {
-  //     let step = 1;
-  //     let iLastInOrder = iStart;
-  //     let iTest = iLastInOrder + step;
-
-  //     while (iTest < allIntegerParam.length) {
-  //       if (
-  //         allIntegerParam[iTest][0] >= allIntegerParam[iLastInOrder][0] &&
-  //         allIntegerParam[iTest][2] > allIntegerParam[iLastInOrder][2]
-  //       ) {
-  //         nbIntegerInOrder++;
-  //         iLastInOrder = iTest;
-  //         step = 0;
-  //       }
-  //       step++;
-  //       iTest = iLastInOrder + step;
-  //     }
-  //     if (nbIntegerInOrder > maxIntegerInOrder) {
-  //       maxIntegerInOrder = nbIntegerInOrder;
-  //     }
-  //     iStart++;
-  //     nbIntegerInOrder = 1;
-  //   }
-  //   return maxIntegerInOrder;
-  // }
-
-
-  // private findValidTocInteger(storeLines, allStoredInteger, integers, storeBoxValues) {
-  //   console.log('storeLine= ' + storeLines.length);
-  //   console.log('allstoredInt= ' + allStoredInteger.length);
-  //   console.log('integers= ' + integers.length);
-  //   for (let i = 0; i < allStoredInteger.length / 2; i++) {
-  //     // console.log(storeBoxValues[i].toString());
-  //     // console.log(allStoredInteger[i][0].box);
-  //     const integerBox = new BoundingBox(storeBoxValues[i][0] - 25, storeBoxValues[i][1], storeBoxValues[i][2] + 50,  storeBoxValues[allStoredInteger.length - 1][1] - storeBoxValues[i][1] +  storeBoxValues[allStoredInteger.length - 1][3]);
-  //     // console.log('------->');
-  //     // console.log(integerBox);
-  //     // console.log('<------');
-  //     const integerInsideIntersection = allStoredInteger[i]
-  //     .filter(
-  //       char => BoundingBox.getOverlap(char.box, integerBox).box1OverlapProportion > 0,
-  //     );
-  //     // console.log(integerInsideIntersection);
-  //     console.log('length= ' + integerInsideIntersection.length);
-  //     // let j = i;
-  //     // for (j; j < allStoredInteger.length; j++) {
-
-  //     // }
-  //   }
-  // }
 }

@@ -30,15 +30,7 @@ const detectionMethods = {
     searches for text finishing in numbers in the right 10% width area of the BBox
   */
   startOrEndsWithNumber: (p: Paragraph): boolean => {
-    // for (let cont of p){
-    // console.log(storeLines);  
-    // }
-    // logger.info('p.length= ' + p.content);
-    // console.log(p.content);
-    // for (let aContent of p.content){
-    //   logger.info('aContent= ' + aContent + ' | aContent.top= ' + aContent.top);
-    // }
-    // logger.info('p.content.length= ' + p.content.length);
+    
     const w = p.width * 0.1;
     const intersectionBoxRight = new BoundingBox(p.right - w, p.top, w, p.height);
     const intersectionBoxLeft = new BoundingBox(p.left, p.top, w, p.height);
@@ -54,6 +46,7 @@ const detectionMethods = {
         word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
       )
       .filter(word => !isSeparator(word));
+
     return (
       wordsInsideIntersectionRight.filter(isNumberRight).length >
         Math.floor(wordsInsideIntersectionRight.length * 0.5) ||
@@ -62,10 +55,6 @@ const detectionMethods = {
     );
   },
   hasPageNKeyword: (p: Paragraph, parameters): boolean => {
-    console.log('------');
-    console.log(parameters['allLines'].toString());
-    console.log('------');
-    // console.log('----------------------------------------------------------');
     const regexp = `^(${parameters['pageKeywords'].join('|')}).* (\\d+) (.+)`;
     return new RegExp(regexp, 'gi').test(p.toString());
   },
