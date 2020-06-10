@@ -63,22 +63,25 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
         tocIntegerRight = this.findTocNumber(storeBoxNumberRight);
         tocIntegerLeft = this.findTocNumber(storeBoxNumberLeft);
-        console.log('tocIntegerRight= ' + tocIntegerRight);
-        console.log('tocIntegerLeft= ' + tocIntegerLeft);
       }
 
+      let tocParagraphs: Paragraph[] = [];
+      if (tocIntegerRight && tocIntegerRight.length > 1) {
+        tocParagraphs = this.findTocPara(tocItemParagraphs, tocIntegerRight);
+      } else if (tocIntegerLeft && tocIntegerLeft.length > 1) {
+        tocParagraphs = this.findTocPara(tocItemParagraphs, tocIntegerLeft);
+      }
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
-        (tocIntegerRight && tocIntegerRight.length > 2) || (tocIntegerLeft && tocIntegerLeft.length > 2) &&
-        tocItemParagraphs.length > 0 &&
-        tocItemParagraphs.length >=
+        tocParagraphs.length > 0 &&
+        tocParagraphs.length >=
           Math.floor(allParagraphs.length * detection.threshold * Math.pow(1.05, pagesSinceLastTOC))
       ) {
         foundTOC = true;
         const toc = new TableOfContents();
         toc.pageKeywords = this.options.pageKeywords;
-        toc.content = tocItemParagraphs;
-        page.elements = page.elements.filter(e => !tocItemParagraphs.map(t => t.id).includes(e.id));
+        toc.content = tocParagraphs;
+        page.elements = page.elements.filter(e => !tocParagraphs.map(t => t.id).includes(e.id));
         page.elements.push(toc);
         pagesSinceLastTOC = 0;
       } else {
@@ -186,7 +189,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
   
   private addAlignedNumberLeft(storeBoxNumberLeft, number) {
    
-    const indexValueExist = storeBoxNumberLeft.findIndex(aNum => aNum[0].box.left - 25 <= number.box.left && aNum[0].box.left + 25 >= number.box.left + number.box.width);
+    const indexValueExist = storeBoxNumberLeft.findIndex(aNum => aNum[0].box.left - 15 <= number.box.left && aNum[0].box.left + 15 >= number.box.left + number.box.width);
     if (indexValueExist !== -1) {
       storeBoxNumberLeft[indexValueExist].push(number);
     }
@@ -245,5 +248,20 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       nbIntegerInOrder = 1;
     }
     return maxIntegerInOrder;     
+  }
+
+  private findTocPara(tocItemParagraphs: Paragraph[],tocInteger: any[]) {
+    let tocPara: Paragraph[] = [];
+    for (let i = 0; i < tocItemParagraphs.length; i++) {
+      for (let j = 0; j < tocItemParagraphs[i].content.length; j++) {
+        for (let integer of tocInteger) {
+          if (tocItemParagraphs[i].content[j].content.find(word => word === integer) && !tocPara.includes(tocItemParagraphs[i])) {
+            tocPara.push(tocItemParagraphs[i]);
+            break;
+          }
+        }
+      }
+    }
+    return tocPara;
   }
 }
