@@ -135,7 +135,7 @@ function main(): void {
         const promises: Array<Promise<any>> = [];
         if (config.output.formats.json) {
           promises.push(
-            new JsonExporter(doc, config.output.granularity).export(
+            new JsonExporter(doc, config.output.granularity, config.output.includeDrawings).export(
               `${outputFolder}/${omitFilenameExtension(documentName)}.json`,
             ),
           );

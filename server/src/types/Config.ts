@@ -69,6 +69,7 @@ export type OutputGranularityOptions = 'character' | 'word';
 export interface OutputConfig {
   granularity: OutputGranularityOptions;
   includeMarginals: boolean;
+  includeDrawings: boolean;
   formats: {
     json?: boolean;
     simpleJson?: boolean;
