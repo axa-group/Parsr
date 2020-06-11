@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-import { Document, Paragraph, TableOfContents, BoundingBox } from '../../types/DocumentRepresentation';
+import {
+  Document,
+  Paragraph,
+  TableOfContents,
+  BoundingBox,
+  Line,
+  Word,
+} from '../../types/DocumentRepresentation';
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
@@ -43,20 +50,12 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       const allParagraphs = page
         .getElementsOfType<Paragraph>(Paragraph, false)
         .filter(this.isNotHeaderFooter);
-      let storeLines: any[] = [];
-      for (let para of allParagraphs) {
-        for (let line of para.content) {
-          this.addWordToLine(storeLines, line);
-        }
-      }
-      const parameters = {'pageKeywords' : this.options.pageKeywords, 'allLines' : storeLines};
-      const tocItemParagraphs = allParagraphs.filter((p) =>
-        detection.TOCDetected(p, parameters),
-      );
+      const mergedLines = this.mergeTopAlignedLines(allParagraphs);
+      const parameters = { pageKeywords: this.options.pageKeywords, allLines: mergedLines };
+      const tocItemParagraphs = allParagraphs.filter(p => detection.TOCDetected(p, parameters));
       let tocIntegerRight = [];
       let tocIntegerLeft = [];
       if (tocItemParagraphs.length > 0) {
-
         let storeBoxNumberRight = [];
         let storeBoxNumberLeft = [];
         this.storeNumAndRomanNum(tocItemParagraphs, storeBoxNumberRight, storeBoxNumberLeft);
@@ -100,16 +99,30 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     );
   }
 
-  private storeNumAndRomanNum(tocItemParagraphs: Paragraph[], storeBoxNumberRight: any[], storeBoxNumberLeft: any[]) {
+  private storeNumAndRomanNum(
+    tocItemParagraphs: Paragraph[],
+    storeBoxNumberRight: any[],
+    storeBoxNumberLeft: any[],
+  ) {
     let storeNumbersRight = [];
     let storeNumbersLeft = [];
-    let storeRomanNumbers = [];
+    let storeRomanNumbers: Word[] = [];
 
     for (const tocItemParagraph of tocItemParagraphs) {
       const w = tocItemParagraph.width * 0.1;
 
-      const intersectionBoxRight = new BoundingBox(tocItemParagraph.right - w, tocItemParagraph.top, w, tocItemParagraph.height);
-      const intersectionBoxLeft = new BoundingBox(tocItemParagraph.left, tocItemParagraph.top, 1.5 * w, tocItemParagraph.height);
+      const intersectionBoxRight = new BoundingBox(
+        tocItemParagraph.right - w,
+        tocItemParagraph.top,
+        w,
+        tocItemParagraph.height,
+      );
+      const intersectionBoxLeft = new BoundingBox(
+        tocItemParagraph.left,
+        tocItemParagraph.top,
+        1.5 * w,
+        tocItemParagraph.height,
+      );
       const numbersInsideIntersectionRight = tocItemParagraph
         .getWords()
         .filter(
@@ -122,7 +135,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           storeNumbersRight.push(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
         }
       });
-      
 
       const numbersInsideIntersectionLeft = tocItemParagraph
         .getWords()
@@ -135,14 +147,24 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           storeNumbersLeft.push(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
         }
       });
-      
-      if (strNumberTocItem.match(/[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)) {
+
+      if (
+        strNumberTocItem.match(
+          /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
+        )
+      ) {
         tocItemParagraph.content.forEach(line => {
           line.content.forEach(word => {
-            if (word.content.toString().match(/[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)) {
+            if (
+              word.content
+                .toString()
+                .match(
+                  /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
+                )
+            ) {
               storeRomanNumbers.push(word);
             }
-          }); 
+          });
         });
       }
     }
@@ -154,50 +176,62 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         return a.box.top - b.box.top;
       });
     }
-    
-    for (const romanNumbers of storeRomanNumbers) {
-      nbRomanNumbers = nbRomanNumbers + romanNumbers.length;
-    }
+
+    // for (const romanNumbers of storeRomanNumbers) {
+    //   nbRomanNumbers = nbRomanNumbers + romanNumbers.length;
+    // }
+    nbRomanNumbers = nbRomanNumbers + storeRomanNumbers.length;
     storeRomanNumbers = [];
     storeNumbersRight = [];
     storeNumbersLeft = [];
   }
 
- 
-
-  private addWordToLine(storeLines, line) {
-   
-    const indexTopExist = storeLines.findIndex(aLine => Math.floor(aLine.box.top) === Math.floor(line.box.top));
-    if (indexTopExist !== -1) {
-      storeLines[indexTopExist].content.push.apply(storeLines[indexTopExist].content, line.content);
+  private mergeTopAlignedLines(paragraphs: Paragraph[]): Line[] {
+    let storedLines: Line[] = [];
+    for (let para of paragraphs) {
+      for (let line of para.content) {
+        const indexTopExist = storedLines.findIndex(
+          aLine => Math.floor(aLine.box.top) === Math.floor(line.box.top),
+        );
+        if (indexTopExist !== -1) {
+          storedLines[indexTopExist].content.push.apply(
+            storedLines[indexTopExist].content,
+            line.content,
+          );
+        } else {
+          storedLines.push(line);
+        }
+      }
     }
-    else {
-      storeLines.push(line);
-    }
+    return storedLines;
   }
 
-  private addAlignedNumberRight(storeBoxNumberRight, number) {
-   
-    const indexValueExist = storeBoxNumberRight.findIndex(aNum => aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width && aNum[0].box.left + aNum[0].box.width + 5 >= number.box.left + number.box.width);
+  private addAlignedNumberRight(storeBoxNumberRight: any[], number: Word) {
+    const indexValueExist = storeBoxNumberRight.findIndex(
+      aNum =>
+        aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width &&
+        aNum[0].box.left + aNum[0].box.width + 5 >= number.box.left + number.box.width,
+    );
     if (indexValueExist !== -1) {
       storeBoxNumberRight[indexValueExist].push(number);
-    }
-    else {
+    } else {
       storeBoxNumberRight.push([number]);
     }
   }
-  
-  private addAlignedNumberLeft(storeBoxNumberLeft, number) {
-   
-    const indexValueExist = storeBoxNumberLeft.findIndex(aNum => aNum[0].box.left - 15 <= number.box.left && aNum[0].box.left + 15 >= number.box.left + number.box.width);
+
+  private addAlignedNumberLeft(storeBoxNumberLeft: any[], number: Word) {
+    const indexValueExist = storeBoxNumberLeft.findIndex(
+      aNum =>
+        aNum[0].box.left - 15 <= number.box.left &&
+        aNum[0].box.left + 15 >= number.box.left + number.box.width,
+    );
     if (indexValueExist !== -1) {
       storeBoxNumberLeft[indexValueExist].push(number);
-    }
-    else {
+    } else {
       storeBoxNumberLeft.push([number]);
     }
   }
-  private findTocNumber(storeBoxNumber): any {
+  private findTocNumber(storeBoxNumber: any[]): any {
     let nbOfNumber;
     let storedInteger = [];
     let nbOfIntegerInOrder = 0;
@@ -224,10 +258,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     let maxIntegerInOrder = 0;
     let iStart = 0;
     let nbIntegerInOrder = 1;
-    while (
-      iStart < storedInteger.length / 3 &&
-      maxIntegerInOrder < storedInteger.length * 0.7
-    ) {
+    while (iStart < storedInteger.length / 3 && maxIntegerInOrder < storedInteger.length * 0.7) {
       let step = 1;
       let iLastInOrder = iStart;
       let iCompare = iLastInOrder + step;
@@ -247,15 +278,18 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       iStart++;
       nbIntegerInOrder = 1;
     }
-    return maxIntegerInOrder;     
+    return maxIntegerInOrder;
   }
 
-  private findTocPara(tocItemParagraphs: Paragraph[],tocInteger: any[]) {
+  private findTocPara(tocItemParagraphs: Paragraph[], tocInteger: any[]) {
     let tocPara: Paragraph[] = [];
     for (let i = 0; i < tocItemParagraphs.length; i++) {
       for (let j = 0; j < tocItemParagraphs[i].content.length; j++) {
         for (let integer of tocInteger) {
-          if (tocItemParagraphs[i].content[j].content.find(word => word === integer) && !tocPara.includes(tocItemParagraphs[i])) {
+          if (
+            tocItemParagraphs[i].content[j].content.find(word => word === integer) &&
+            !tocPara.includes(tocItemParagraphs[i])
+          ) {
             tocPara.push(tocItemParagraphs[i]);
             break;
           }
