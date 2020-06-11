@@ -83,17 +83,20 @@ export class JsonExporter extends Exporter {
       drawingsDoc = json2document(JSON.parse(readFileSync(this.doc.drawingsFile, { encoding: 'utf8' })));
     }
 
-    this.json.pages = this.doc.pages.map((page: Page, index: number) => {
+    this.json.pages = this.doc.pages.map((page: Page) => {
       const elements = page.elements
         .sort(utils.sortElementsByOrder)
         .map(e => this.elementToJsonElement(e));
 
       if (drawingsDoc) {
-        elements.push(
-          ...drawingsDoc.pages[index].elements
-            .filter(e => e instanceof Drawing)
-            .map(e => this.elementToJsonElement(e)),
-        );
+        const drawingsPage = drawingsDoc.pages.find(p => p.pageNumber === page.pageNumber);
+        if (drawingsPage) {
+          elements.push(
+            ...drawingsPage.elements
+              .filter(e => e instanceof Drawing)
+              .map(e => this.elementToJsonElement(e)),
+          );
+        }
       }
 
       const jsonPage: JsonPage = {
