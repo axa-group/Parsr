@@ -31,7 +31,8 @@ import logger from '../../utils/Logger';
 import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagraphModule';
 import { Module } from '../Module';
 import { RandomForestClassifier } from './train_model/model';
-import { DecisionTreeClassifier } from './train_model/model_level';
+// import { DecisionTreeClassifier } from './train_model/model_level';
+import * as tf from '@tensorflow/tfjs';
 
 export class MlHeadingDetectionModule extends Module {
   public static moduleName = 'ml-heading-detection';
@@ -45,6 +46,9 @@ export class MlHeadingDetectionModule extends Module {
       return doc;
     }
 
+    // fetch the model
+    const model = tf.loadLayersModel('./train_model/keras_model/model.json');
+
     // get the main fonts from all the words in document
     const mainCommonFonts = this.commonFonts(doc);
 
@@ -56,7 +60,7 @@ export class MlHeadingDetectionModule extends Module {
     });
 
     if (this.headingsDetected(doc)) {
-      this.computeHeadingLevels(doc, mainCommonFonts);
+      this.computeHeadingLevels(doc, mainCommonFonts, model);
     }
     return doc;
   }
@@ -368,9 +372,9 @@ export class MlHeadingDetectionModule extends Module {
     return detected;
   }
 
-  private computeHeadingLevels(document: Document, commonFonts: Font[]) {
+  private computeHeadingLevels(document: Document, commonFonts: Font[], model: any) {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
-    const clf = new DecisionTreeClassifier();
+    // const clf = new DecisionTreeClassifier();
 
     headings.forEach(h => {
       const headingFont = h.getMainFont();
@@ -388,7 +392,8 @@ export class MlHeadingDetectionModule extends Module {
       const wordCount = h.content.length;
       const fontRatio = this.fontRatio(document, headingFont);
       const features = [size, weight, textCase, isFontBigger, differentColor, wordCount, fontRatio];
-      h.level = clf.predict(features) + 1;
+      logger.info('', model.predict(features));
+      h.level = model.predict(features) + 1;
     });
   }
 }
