@@ -25,7 +25,6 @@ import {
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
-// import logger from '../../utils/Logger';
 
 interface Options {
   keywords?: string[];
@@ -35,6 +34,8 @@ interface Options {
 const defaultOptions = (defaultConfig as any) as Options;
 
 let nbRomanNumbers = 0;
+let tocParagraphs: Paragraph[] = [];
+
 export class TableOfContentsDetectionModule extends Module<Options> {
   public static moduleName = 'table-of-contents-detection';
 
@@ -53,23 +54,30 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       const mergedLines = this.mergeTopAlignedLines(allParagraphs);
       const parameters = { pageKeywords: this.options.pageKeywords, allLines: mergedLines };
       const tocItemParagraphs = allParagraphs.filter(p => detection.TOCDetected(p, parameters));
-      let tocIntegerRight = [];
-      let tocIntegerLeft = [];
+      let tocIntegerRight: Word[] = [];
+      let tocIntegerLeft: Word[] = [];
       if (tocItemParagraphs.length > 0) {
-        let storeBoxNumberRight = [];
-        let storeBoxNumberLeft = [];
+        let storeBoxNumberRight: Word[][] = [];
+        let storeBoxNumberLeft: Word[][] = [];
         this.storeNumAndRomanNum(tocItemParagraphs, storeBoxNumberRight, storeBoxNumberLeft);
 
         tocIntegerRight = this.findTocNumber(storeBoxNumberRight);
         tocIntegerLeft = this.findTocNumber(storeBoxNumberLeft);
       }
 
-      let tocParagraphs: Paragraph[] = [];
       if (tocIntegerRight && tocIntegerRight.length > 1) {
-        tocParagraphs = this.findTocPara(tocItemParagraphs, tocIntegerRight);
+        this.findTocPara(tocItemParagraphs, tocIntegerRight);
       } else if (tocIntegerLeft && tocIntegerLeft.length > 1) {
-        tocParagraphs = this.findTocPara(tocItemParagraphs, tocIntegerLeft);
+        this.findTocPara(tocItemParagraphs, tocIntegerLeft);
       }
+      tocParagraphs.forEach(paragraph => {
+        paragraph.content.forEach(line => {
+          if (line.content.length == 1) {
+            this.completeTocLine(allParagraphs, line);
+          }
+        });
+        
+      });
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
         tocParagraphs.length > 0 &&
@@ -86,8 +94,11 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       } else {
         pagesSinceLastTOC++;
       }
+    
+      nbRomanNumbers = 0;
+      tocParagraphs = [];
     }
-    nbRomanNumbers = 0;
+    
 
     return doc;
   }
@@ -101,11 +112,11 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
   private storeNumAndRomanNum(
     tocItemParagraphs: Paragraph[],
-    storeBoxNumberRight: any[],
-    storeBoxNumberLeft: any[],
+    storeBoxNumberRight: Word[][],
+    storeBoxNumberLeft: Word[][],
   ) {
-    let storeNumbersRight = [];
-    let storeNumbersLeft = [];
+    let storeNumbersRight: String[][] = [];
+    let storeNumbersLeft: String[][] = [];
     let storeRomanNumbers: Word[] = [];
 
     for (const tocItemParagraph of tocItemParagraphs) {
@@ -177,9 +188,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       });
     }
 
-    // for (const romanNumbers of storeRomanNumbers) {
-    //   nbRomanNumbers = nbRomanNumbers + romanNumbers.length;
-    // }
     nbRomanNumbers = nbRomanNumbers + storeRomanNumbers.length;
     storeRomanNumbers = [];
     storeNumbersRight = [];
@@ -206,7 +214,8 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     return storedLines;
   }
 
-  private addAlignedNumberRight(storeBoxNumberRight: any[], number: Word) {
+  private addAlignedNumberRight(storeBoxNumberRight: Word[][], number: Word) {
+
     const indexValueExist = storeBoxNumberRight.findIndex(
       aNum =>
         aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width &&
@@ -219,7 +228,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     }
   }
 
-  private addAlignedNumberLeft(storeBoxNumberLeft: any[], number: Word) {
+  private addAlignedNumberLeft(storeBoxNumberLeft: Word[][], number: Word) {
     const indexValueExist = storeBoxNumberLeft.findIndex(
       aNum =>
         aNum[0].box.left - 15 <= number.box.left &&
@@ -231,9 +240,9 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       storeBoxNumberLeft.push([number]);
     }
   }
-  private findTocNumber(storeBoxNumber: any[]): any {
-    let nbOfNumber;
-    let storedInteger = [];
+  private findTocNumber(storeBoxNumber: Word[][]): Word[] {
+    let nbOfNumber: number;
+    let storedInteger: number[] = [];
     let nbOfIntegerInOrder = 0;
     for (let box of storeBoxNumber) {
       nbOfNumber = box.length;
@@ -281,21 +290,34 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     return maxIntegerInOrder;
   }
 
-  private findTocPara(tocItemParagraphs: Paragraph[], tocInteger: any[]) {
-    let tocPara: Paragraph[] = [];
+  private findTocPara(tocItemParagraphs: Paragraph[],tocInteger: Word[]) {
     for (let i = 0; i < tocItemParagraphs.length; i++) {
       for (let j = 0; j < tocItemParagraphs[i].content.length; j++) {
         for (let integer of tocInteger) {
           if (
             tocItemParagraphs[i].content[j].content.find(word => word === integer) &&
-            !tocPara.includes(tocItemParagraphs[i])
+            !tocParagraphs.includes(tocItemParagraphs[i])
           ) {
-            tocPara.push(tocItemParagraphs[i]);
+            tocParagraphs.push(tocItemParagraphs[i]);
             break;
           }
         }
       }
     }
-    return tocPara;
+  }
+
+  private completeTocLine(allParagraphs: Paragraph[], line: Line) {
+    for (let i = 0; i < allParagraphs.length; i++) {
+          if (
+            allParagraphs[i].content.find(OneLine =>
+            (
+              OneLine.box.top >= line.box.top - 1 &&
+              OneLine.box.top <= line.box.top + 1
+            ) &&
+            !tocParagraphs.includes(allParagraphs[i]))
+          ) {
+            tocParagraphs.push(allParagraphs[i]);
+          }
+    }
   }
 }
