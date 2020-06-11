@@ -38,7 +38,7 @@ export class MlHeadingDetectionModule extends Module {
   public static moduleName = 'ml-heading-detection';
   public static dependencies = [LinesToParagraphModule];
 
-  public main(doc: Document): Document {
+  public async main(doc: Document): Promise<Document> {
     if (this.headingsDetected(doc)) {
       logger.warn(
         'Warning: this page already has some headings in it. Not performing heading detection.',
@@ -47,7 +47,7 @@ export class MlHeadingDetectionModule extends Module {
     }
 
     // fetch the model
-    const model = tf.loadLayersModel('./train_model/keras_model/model.json');
+    const model = await tf.loadLayersModel('./train_model/keras_model/model.json');
 
     // get the main fonts from all the words in document
     const mainCommonFonts = this.commonFonts(doc);
