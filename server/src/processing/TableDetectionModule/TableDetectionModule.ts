@@ -305,12 +305,16 @@ export class TableDetectionModule extends Module<Options> {
   private isFalseTable(table: Table): boolean {
     const isFalse = table.content.some((_, index) => !this.existAdjacentRow(index, table));
     const only1Row = table.content.length === 1;
+    const only1Col = table.content.every(row => row.content
+      .filter(col => !(col instanceof SpannedTableCell)).length <= 1,
+    );
 
     const rowsHeightSum = table.content.reduce((total, row) => total + row.height, 0);
 
     const rowRights = table.content.map(row => row.right).sort((a, b) => a - b);
     return isFalse ||
       only1Row ||
+      only1Col ||
       Math.ceil(rowsHeightSum) < Math.floor(table.height) ||
       rowRights[rowRights.length - 1] - rowRights[0] > 5;
   }
