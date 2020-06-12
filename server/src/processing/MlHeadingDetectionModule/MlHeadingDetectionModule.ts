@@ -32,7 +32,9 @@ import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagra
 import { Module } from '../Module';
 import { RandomForestClassifier } from './train_model/model';
 // import { DecisionTreeClassifier } from './train_model/model_level';
-import * as tf from '@tensorflow/tfjs';
+import * as path from 'path';
+const tf = require('@tensorflow/tfjs');
+require('@tensorflow/tfjs-node');
 
 export class MlHeadingDetectionModule extends Module {
   public static moduleName = 'ml-heading-detection';
@@ -47,8 +49,8 @@ export class MlHeadingDetectionModule extends Module {
     }
 
     // fetch the model
-    const model = await tf.loadLayersModel('./train_model/keras_model/model.json');
-
+    const model = await tf.loadLayersModel('file://' + path.join(__dirname, '../../../assets/model.json'));
+    
     // get the main fonts from all the words in document
     const mainCommonFonts = this.commonFonts(doc);
 
