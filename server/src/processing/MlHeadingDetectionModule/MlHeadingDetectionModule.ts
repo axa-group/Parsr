@@ -31,7 +31,6 @@ import logger from '../../utils/Logger';
 import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagraphModule';
 import { Module } from '../Module';
 import { RandomForestClassifier } from './train_model/model';
-// import { DecisionTreeClassifier } from './train_model/model_level';
 import * as path from 'path';
 const tf = require('@tensorflow/tfjs');
 require('@tensorflow/tfjs-node');
@@ -376,7 +375,6 @@ export class MlHeadingDetectionModule extends Module {
 
   private computeHeadingLevels(document: Document, commonFonts: Font[], model: any) {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
-    // const clf = new DecisionTreeClassifier();
 
     headings.forEach(h => {
       const headingFont = h.getMainFont();
@@ -393,9 +391,10 @@ export class MlHeadingDetectionModule extends Module {
       .reduce((acc, curr) => acc && curr);
       const wordCount = h.content.length;
       const fontRatio = this.fontRatio(document, headingFont);
-      const features = [size, weight, textCase, isFontBigger, differentColor, wordCount, fontRatio];
-      logger.info('', model.predict(features));
-      h.level = model.predict(features) + 1;
+      const features = tf.tensor([size, weight, textCase, isFontBigger, differentColor, wordCount, fontRatio], [1, 7]);
+      const predictOut = model.predict(features);
+      const winner = predictOut.argMax(-1).dataSync()[0];
+      h.level = winner + 1;
     });
   }
 }
