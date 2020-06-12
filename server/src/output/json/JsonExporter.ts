@@ -49,18 +49,22 @@ import { ComplexMetadata, Metadata, NumberMetadata } from '../../types/Metadata'
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Exporter } from '../Exporter';
+import { existsSync, readFileSync } from 'fs';
+import { json2document } from '../../utils/json2document';
 
 export class JsonExporter extends Exporter {
   private granularity: string;
+  private includeDrawings: boolean;
   private currentMetadataId: number = 1;
   private currentFontId: number = 0;
   private json: JsonExport = {} as JsonExport;
   private fontCatalog: Map<Font, number> = new Map<Font, number>();
   private metadataCatalog: Map<Metadata, number> = new Map<Metadata, number>();
 
-  constructor(doc: Document, granularity: string) {
+  constructor(doc: Document, granularity: string, includeDrawings: boolean = false) {
     super(doc);
     this.granularity = granularity;
+    this.includeDrawings = includeDrawings;
   }
 
   public export(outputPath: string): Promise<void> {
@@ -74,15 +78,33 @@ export class JsonExporter extends Exporter {
     this.buildMetadataCatalog();
     this.metadataToJson();
 
+    let drawingsDoc = null;
+    if (this.includeDrawings && this.doc.drawingsFile && existsSync(this.doc.drawingsFile)) {
+      drawingsDoc = json2document(JSON.parse(readFileSync(this.doc.drawingsFile, { encoding: 'utf8' })));
+    }
+
     this.json.pages = this.doc.pages.map((page: Page) => {
+      const elements = page.elements
+        .sort(utils.sortElementsByOrder)
+        .map(e => this.elementToJsonElement(e));
+
+      if (drawingsDoc) {
+        const drawingsPage = drawingsDoc.pages.find(p => p.pageNumber === page.pageNumber);
+        if (drawingsPage) {
+          elements.push(
+            ...drawingsPage.elements
+              .filter(e => e instanceof Drawing)
+              .map(e => this.elementToJsonElement(e)),
+          );
+        }
+      }
+
       const jsonPage: JsonPage = {
         margins: this.doc.margins,
         box: this.boxToJsonBox(page.box),
         rotation: this.rotationToJsonRotation(page.pageRotation),
         pageNumber: page.pageNumber,
-        elements: page.elements
-          .sort(utils.sortElementsByOrder)
-          .map((element: Element) => this.elementToJsonElement(element)),
+        elements,
       };
 
       return jsonPage;
