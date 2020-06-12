@@ -51,8 +51,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       const allParagraphs = page
         .getElementsOfType<Paragraph>(Paragraph, false)
         .filter(this.isNotHeaderFooter);
-      const mergedLines = this.mergeTopAlignedLines(allParagraphs);
-      const parameters = { pageKeywords: this.options.pageKeywords, allLines: mergedLines };
+      const parameters = { pageKeywords: this.options.pageKeywords };
       const tocItemParagraphs = allParagraphs.filter(p => detection.TOCDetected(p, parameters));
       let tocIntegerRight: Word[] = [];
       let tocIntegerLeft: Word[] = [];
@@ -115,8 +114,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     storeBoxNumberRight: Word[][],
     storeBoxNumberLeft: Word[][],
   ) {
-    let storeNumbersRight: String[][] = [];
-    let storeNumbersLeft: String[][] = [];
     let storeRomanNumbers: Word[] = [];
 
     for (const tocItemParagraph of tocItemParagraphs) {
@@ -143,7 +140,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       numbersInsideIntersectionRight.forEach(word => {
         if (word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
           this.addAlignedNumberRight(storeBoxNumberRight, word);
-          storeNumbersRight.push(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
         }
       });
 
@@ -155,10 +151,8 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       numbersInsideIntersectionLeft.forEach(word => {
         if (word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
           this.addAlignedNumberLeft(storeBoxNumberLeft, word);
-          storeNumbersLeft.push(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g));
         }
       });
-
       if (
         strNumberTocItem.match(
           /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
@@ -190,28 +184,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
     nbRomanNumbers = nbRomanNumbers + storeRomanNumbers.length;
     storeRomanNumbers = [];
-    storeNumbersRight = [];
-    storeNumbersLeft = [];
-  }
-
-  private mergeTopAlignedLines(paragraphs: Paragraph[]): Line[] {
-    let storedLines: Line[] = [];
-    for (let para of paragraphs) {
-      for (let line of para.content) {
-        const indexTopExist = storedLines.findIndex(
-          aLine => Math.floor(aLine.box.top) === Math.floor(line.box.top),
-        );
-        if (indexTopExist !== -1) {
-          storedLines[indexTopExist].content.push.apply(
-            storedLines[indexTopExist].content,
-            line.content,
-          );
-        } else {
-          storedLines.push(line);
-        }
-      }
-    }
-    return storedLines;
   }
 
   private addAlignedNumberRight(storeBoxNumberRight: Word[][], number: Word) {
