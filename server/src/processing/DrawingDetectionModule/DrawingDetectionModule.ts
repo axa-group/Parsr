@@ -18,6 +18,9 @@ import { BoundingBox, Document, Drawing } from '../../types/DocumentRepresentati
 import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
+import { existsSync, readFileSync } from 'fs';
+import { json2document } from '../../utils/json2document';
+import { JsonExporter } from '../../output/json/JsonExporter';
 
 /**
  * groups together SvgLines that are visually connected
@@ -26,43 +29,50 @@ export class DrawingDetectionModule extends Module {
   public static moduleName = 'drawing-detection';
 
   public main(doc: Document): Promise<Document> {
-    if (doc.getElementsOfType<Drawing>(Drawing).length > 0) {
+    if (!doc.drawingsFile || !existsSync(doc.drawingsFile)) {
+      logger.warn(`Can't find drawings file: ${doc.drawingsFile}. Skipping Drawing detecion...`);
+      return Promise.resolve(doc);
+    }
+
+    const drawingsJson = JSON.parse(readFileSync(doc.drawingsFile, { encoding: 'utf8' }));
+    const drawingsDoc = json2document(drawingsJson);
+
+    if (drawingsDoc.getElementsOfType<Drawing>(Drawing).length > 0) {
       logger.warn('Document already has Drawings. Skipping...');
       return Promise.resolve(doc);
     }
 
-    doc.pages.forEach(page => {
+    drawingsDoc.pages.forEach(page => {
       const lines = page.getElementsOfType<SvgLine>(SvgLine, true);
       const drawings: Drawing[] = [];
-      this.groupShapesIntoDrawings(lines, page.box, drawings);
+      this.groupShapesIntoDrawings(lines, drawings);
 
-      // filter all SvgLine type elements and push Drawings containing those Lines
-      const lineIds = lines.map(l => l.id);
-      page.elements = page.elements.filter(e => !lineIds.includes(e.id));
-      page.elements.push(...drawings);
+      page.elements = drawings;
     });
-    logger.info(`${doc.getElementsOfType<Drawing>(Drawing).length} drawings found on document.`);
+
+    new JsonExporter(drawingsDoc, 'word').export(doc.drawingsFile);
+    logger.info(`${drawingsDoc.getElementsOfType<Drawing>(Drawing).length} drawings found on document.`);
     return Promise.resolve(doc);
   }
 
-  private groupShapesIntoDrawings(svgLines: SvgLine[], box: BoundingBox, foundDrawings: Drawing[]) {
-    const { columns, rows } = this.groupLines(svgLines, box);
+  private groupShapesIntoDrawings(svgLines: SvgLine[], foundDrawings: Drawing[]) {
+    const { columns, rows } = this.groupLines(svgLines);
 
     if (columns.length > 1) {
       // divide the box into columns.length cols and recall function for each one
       columns.forEach(svgColumn => {
-        this.groupShapesIntoDrawings(svgColumn, box, foundDrawings);
+        this.groupShapesIntoDrawings(svgColumn, foundDrawings);
       });
     } else if (rows.length > 1) {
       // divide the box into rows.length rows and recall function for each one
       rows.forEach(svgRow => {
-        this.groupShapesIntoDrawings(svgRow, box, foundDrawings);
+        this.groupShapesIntoDrawings(svgRow, foundDrawings);
       });
     } else {
       const lines = columns[0];
       if (lines) {
         // a Drawing was found, the content in columns and rows is the same
-        const drawing = new Drawing(null, lines);
+        let drawing = new Drawing(null, lines);
         drawing.updateBoundingBox();
         foundDrawings.push(drawing);
       }
@@ -71,14 +81,16 @@ export class DrawingDetectionModule extends Module {
 
   private groupLines(
     svgLines: SvgLine[],
-    box: BoundingBox,
   ): { columns: SvgLine[][]; rows: SvgLine[][] } {
+
+    const box = BoundingBox.fromLines(svgLines);
+
     // vertical line
     const vControlLine = new SvgLine(null, 1, box.left, box.top, box.left, box.bottom);
     const groupedColumns = this.processGroup(svgLines, box, vControlLine);
 
     // horizontal line
-    const hControlLine = new SvgLine(null, 1, box.left, box.top, box.width, box.top);
+    const hControlLine = new SvgLine(null, 1, box.left, box.top, box.right, box.top);
     const groupedRows = this.processGroup(svgLines, box, hControlLine);
 
     return {
@@ -102,15 +114,16 @@ export class DrawingDetectionModule extends Module {
     const processedLineIds: number[] = [];
     let currentLineGroup: SvgLine[] = [];
 
-    // until controlLine reaches the v/h end of the page
+    // until controlLine reaches the v/h end of the box
     // if controlLine is vertical, the sweep is done from left to right
     // if controlLine is horizontal, the sweep is done from top to bottom
     const type = controlLine.isVertical() ? 'h' : 'v';
     while (
-      (type === 'v' ? controlLine.toY : controlLine.toX) < (type === 'v' ? box.height : box.width)
+      (type === 'v' ? controlLine.toY : controlLine.toX) <= (type === 'v' ? box.bottom + 5 : box.right + 5)
     ) {
       const intersectingLines = lines.filter(
-        l => controlLine.intersects(l) || this.controlLineIsOver(l, controlLine),
+        l => controlLine.intersects(l) || controlLine.isOnTop(l),
+        controlLine,
       );
       if (intersectingLines.length > 0) {
         const unusedLines = intersectingLines.filter(l => !processedLineIds.includes(l.id));
@@ -136,20 +149,5 @@ export class DrawingDetectionModule extends Module {
     }
 
     return groups;
-  }
-
-  /**
-   * As lines position are floating poing values,
-   * this avoids controlLine to jump over the line without detecting it
-   */
-  private controlLineIsOver(line: SvgLine, controlLine: SvgLine): boolean {
-    const is1pxAroundLineX =
-      controlLine.fromX + 0.5 >= line.fromX && controlLine.fromX - 0.5 <= line.fromX;
-    const is1pxAroundLineY =
-      controlLine.fromY + 0.5 >= line.fromY && controlLine.fromY - 0.5 <= line.fromY;
-    return (
-      (controlLine.isVertical() && is1pxAroundLineX) ||
-      (controlLine.isHorizontal() && is1pxAroundLineY)
-    );
   }
 }

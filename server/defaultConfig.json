@@ -29,6 +29,7 @@
     [
       "table-detection",
       {
+        "checkDrawings": true,
         "runConfig": [
           {
             "pages": [],
@@ -113,6 +114,7 @@
   "output": {
     "granularity": "word",
     "includeMarginals": false,
+    "includeDrawings": false,
     "formats": {
       "json": true,
       "text": true,

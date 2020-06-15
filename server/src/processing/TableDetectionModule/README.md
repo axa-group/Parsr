@@ -24,6 +24,7 @@ Following is an example of the configuration of the table-detection module:
 [
   "table-detection",
   {
+        "checkDrawings": true,
         "runConfig": [
           {
             "pages": [1, 2, 3], // or [] for all pages
@@ -34,7 +35,7 @@ Following is an example of the configuration of the table-detection module:
   }
 ]
 ```
-
+- checkDrawings: Boolean value to specify if the module should look for table candidates using the previously detected Drawings. Default: true,
 - runConfig: Array of different configurations for the doc
   - pages: List of numbers representing pages.
   - flavor: The parsing method to use ('lattice' or 'stream'). Lattice is used by default. For more information on each parsing method, [check this information](https://camelot-py.readthedocs.io/en/master/user/how-it-works.html).

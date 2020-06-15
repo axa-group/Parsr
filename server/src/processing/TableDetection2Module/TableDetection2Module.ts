@@ -45,6 +45,7 @@ export class TableDetection2Module extends TableDetectionModule {
 
   constructor(options?: Options) {
     super(options);
+    this.options.checkDrawings = false;
   }
 
   public main(doc: Document): Promise<Document> {

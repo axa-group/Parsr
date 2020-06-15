@@ -97,6 +97,14 @@ export class Document {
     this._margins = value;
   }
 
+  public get drawingsFile(): string {
+    return this._drawingsFile;
+  }
+
+  public set drawingsFile(value: string) {
+    this._drawingsFile = value;
+  }
+
   /**
    * Generates a valid Document object from an input json.
    * @param json The input json from which the Document is to be constructed
@@ -109,6 +117,7 @@ export class Document {
   private _pages: Page[];
   private _inputFile: string;
   private _assetsFolder: string;
+  private _drawingsFile: string;
   private _margins: Margins;
 
   constructor(pages: Page[] = [], inputFile?: string, assetsFolder?: string) {

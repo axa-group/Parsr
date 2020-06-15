@@ -35,6 +35,7 @@ import {
   Text,
 } from './types/DocumentRepresentation';
 import logger from './utils/Logger';
+import Cache from './utils/CacheLayer';
 
 import { AbbyyTools } from './input/abbyy/AbbyyTools';
 import { AmazonTextractExtractor } from './input/amazon-textract/AmazonTextractExtractor';
@@ -42,6 +43,7 @@ import { GoogleVisionExtractor } from './input/google-vision/GoogleVisionExtract
 import { MicrosoftCognitiveExtractor } from './input/ms-cognitive-services/MicrosoftCognitiveServices';
 import { OcrExtractor } from './input/OcrExtractor';
 import { TesseractExtractor } from './input/tesseract/TesseractExtractor';
+import { SvgLine } from './types/DocumentRepresentation/SvgLine';
 
 let mutoolExtractionFolder: string = '';
 
@@ -326,7 +328,7 @@ export function removeNull(page: Page): Page {
   if (page.elements.length - newElements.length !== 0) {
     logger.debug(
       `Null elements removed for page #${page.pageNumber}: ${page.elements.length -
-        newElements.length}`,
+      newElements.length}`,
     );
     page.elements = newElements;
   }
@@ -360,11 +362,11 @@ export function getPageRegex(): RegExp {
 
   const pageRegex = new RegExp(
     `^(?:` +
-      `(?:${pagePrefix}${pageNumber})|` +
-      `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
-      `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
-      `(?:${before}${pageNumber}${after})` +
-      `)$`,
+    `(?:${pagePrefix}${pageNumber})|` +
+    `(?:${pageNumber}\\s*(?:\\|\\s*)?${pageWord})|` +
+    `(?:(?:${pageWord}\\s*)?${pageNumber}\\s*${ofWord}\\s*${pageNumber})|` +
+    `(?:${before}${pageNumber}${after})` +
+    `)$`,
     'i',
   );
 
@@ -758,6 +760,10 @@ function embedImagesInHTML(html: string): string {
 
 export function sanitizeXML(xmlPath: string): Promise<string> {
   const startTime: number = Date.now();
+  const cacheKey = `sanitizeXML-${xmlPath}`;
+  if (Cache.has(cacheKey)) {
+    return Promise.resolve(Cache.get(cacheKey));
+  }
   return new Promise<any>((resolve, _reject) => {
     try {
       // replace with empty char everything forbidden by XML 1.0 specifications,
@@ -768,6 +774,7 @@ export function sanitizeXML(xmlPath: string): Promise<string> {
       const outputFilePath = getTemporaryFile('.xml');
       fs.writeFileSync(outputFilePath, xml.replace(new RegExp(regex), ' '));
       logger.info(`Sanitize XML: ${(Date.now() - startTime) / 1000}s`);
+      Cache.set(cacheKey, outputFilePath);
       resolve(outputFilePath);
     } catch (error) {
       logger.warn(`Error sanitizing XML ${error}`);
@@ -787,4 +794,43 @@ export function rgbToHex(r: number, g: number, b: number) {
       })
       .join('')
   );
+}
+
+export function isPerimeterLine(l: SvgLine, box: BoundingBox): boolean {
+  const [fromX, fromY, toX, toY] = [l.fromX, l.fromY, l.toX, l.toY].map(n => Math.round(n));
+  const x = Math.min(fromX, toX);
+  const y = Math.min(fromY, toY);
+  const xMin = Math.floor(x - l.thickness / 2);
+  const xMax = Math.ceil(x + l.thickness / 2);
+  const yMin = Math.floor(y - l.thickness / 2);
+  const yMax = Math.ceil(y + l.thickness / 2);
+
+  return (l.isVertical() && (xMin <= 0 || xMax >= Math.floor(box.width)))
+    || (l.isHorizontal() && (yMin <= 0 || yMax >= Math.floor(box.height)));
+}
+
+export function isPixelLine(l: SvgLine): boolean {
+  const w = Math.abs(l.fromX - l.toX);
+  const h = Math.abs(l.fromY - l.toY);
+  return w < 0.5 && h < 0.5;
+}
+
+export function minValue(arr: number[]) {
+  let len = arr.length;
+  let min = Infinity;
+
+  while (len--) {
+    min = arr[len] < min ? arr[len] : min;
+  }
+  return min;
+}
+
+export function maxValue(arr: number[]) {
+  let len = arr.length;
+  let max = -Infinity;
+
+  while (len--) {
+    max = arr[len] > max ? arr[len] : max;
+  }
+  return max;
 }
