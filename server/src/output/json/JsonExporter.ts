@@ -274,7 +274,9 @@ export class JsonExporter extends Exporter {
     } else if (element instanceof TableCell) {
       jsonElement.rowspan = element.rowspan;
       jsonElement.colspan = element.colspan;
-      jsonElement.content = element.content.map(elem => this.elementToJsonElement(elem));
+      jsonElement.content = element.content
+        .sort(utils.sortElementsByOrder)
+        .map(elem => this.elementToJsonElement(elem));
     } else if (element instanceof SvgShape) {
       if (element instanceof SvgLine) {
         jsonElement.fromX = element.fromX;
