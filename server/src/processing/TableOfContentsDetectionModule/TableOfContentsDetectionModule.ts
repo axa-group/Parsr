@@ -33,7 +33,6 @@ interface Options {
 
 const defaultOptions = (defaultConfig as any) as Options;
 
-let nbRomanNumbers = 0;
 let tocParagraphs: Paragraph[] = [];
 
 export class TableOfContentsDetectionModule extends Module<Options> {
@@ -54,29 +53,34 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       const parameters = { pageKeywords: this.options.pageKeywords };
       const tocItemParagraphs = allParagraphs.filter(p => detection.TOCDetected(p, parameters));
       let tocIntegerRight: Word[] = [];
+      let tocRomanNumberRight: Word[] = [];
       let tocIntegerLeft: Word[] = [];
+      
       if (tocItemParagraphs.length > 0) {
         let storeBoxNumberRight: Word[][] = [];
         let storeBoxNumberLeft: Word[][] = [];
-        this.storeNumAndRomanNum(tocItemParagraphs, storeBoxNumberRight, storeBoxNumberLeft);
+        let storeBoxRomanNumberRight: Word[][] = [];
 
+        this.storeNumAndRomanNum(tocItemParagraphs, storeBoxNumberRight, storeBoxNumberLeft, storeBoxRomanNumberRight);
         tocIntegerRight = this.findTocNumber(storeBoxNumberRight);
+        tocRomanNumberRight = this.findTocRomanNumber(storeBoxRomanNumberRight);
         tocIntegerLeft = this.findTocNumber(storeBoxNumberLeft);
       }
-
       if (tocIntegerRight && tocIntegerRight.length > 1) {
         this.findTocPara(tocItemParagraphs, tocIntegerRight);
+      } else if (tocRomanNumberRight && tocRomanNumberRight.length > 1) {
+        this.findTocPara(tocItemParagraphs, tocRomanNumberRight);
       } else if (tocIntegerLeft && tocIntegerLeft.length > 1) {
         this.findTocPara(tocItemParagraphs, tocIntegerLeft);
       }
       tocParagraphs.forEach(paragraph => {
         paragraph.content.forEach(line => {
-          if (line.content.length == 1) {
+          if (line.content.length === 1) {
             this.completeTocLine(allParagraphs, line);
           }
         });
-        
       });
+
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
         tocParagraphs.length > 0 &&
@@ -94,7 +98,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         pagesSinceLastTOC++;
       }
     
-      nbRomanNumbers = 0;
       tocParagraphs = [];
     }
     
@@ -113,9 +116,9 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     tocItemParagraphs: Paragraph[],
     storeBoxNumberRight: Word[][],
     storeBoxNumberLeft: Word[][],
+    storeBoxRomanNumberRight: Word[][],
   ) {
-    let storeRomanNumbers: Word[] = [];
-
+    
     for (const tocItemParagraph of tocItemParagraphs) {
       const w = tocItemParagraph.width * 0.1;
 
@@ -136,10 +139,11 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         .filter(
           word => BoundingBox.getOverlap(word.box, intersectionBoxRight).box1OverlapProportion > 0,
         );
-      const strNumberTocItem = numbersInsideIntersectionRight.toString();
       numbersInsideIntersectionRight.forEach(word => {
         if (word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
           this.addAlignedNumberRight(storeBoxNumberRight, word);
+        } else if (word.toString().match(/[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)) {
+          this.addAlignedNumberRight(storeBoxRomanNumberRight, word);
         }
       });
 
@@ -153,50 +157,22 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           this.addAlignedNumberLeft(storeBoxNumberLeft, word);
         }
       });
-      if (
-        strNumberTocItem.match(
-          /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
-        )
-      ) {
-        tocItemParagraph.content.forEach(line => {
-          line.content.forEach(word => {
-            if (
-              word.content
-                .toString()
-                .match(
-                  /[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi,
-                )
-            ) {
-              storeRomanNumbers.push(word);
-            }
-          });
-        });
-      }
     }
-    storeBoxNumberRight.sort(function(a, b) {
-      return b.length - a.length;
-    });
-    for (let boxes of storeBoxNumberRight) {
-      boxes.sort(function(a, b) {
-        return a.box.top - b.box.top;
-      });
-    }
-
-    nbRomanNumbers = nbRomanNumbers + storeRomanNumbers.length;
-    storeRomanNumbers = [];
+    storeBoxNumberRight = this.sortBoxNumber(storeBoxNumberRight);
+    storeBoxRomanNumberRight = this.sortBoxNumber(storeBoxRomanNumberRight);
+    storeBoxNumberLeft = this.sortBoxNumber(storeBoxNumberLeft);
   }
 
-  private addAlignedNumberRight(storeBoxNumberRight: Word[][], number: Word) {
-
-    const indexValueExist = storeBoxNumberRight.findIndex(
+  private addAlignedNumberRight(storeBoxNumber: Word[][], number: Word) {
+    const indexValueExist = storeBoxNumber.findIndex(
       aNum =>
-        aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width &&
-        aNum[0].box.left + aNum[0].box.width + 5 >= number.box.left + number.box.width,
+        aNum[0].box.left + aNum[0].box.width - 10 <= number.box.left + number.box.width &&
+        aNum[0].box.left + aNum[0].box.width + 10 >= number.box.left + number.box.width,
     );
     if (indexValueExist !== -1) {
-      storeBoxNumberRight[indexValueExist].push(number);
+      storeBoxNumber[indexValueExist].push(number);
     } else {
-      storeBoxNumberRight.push([number]);
+      storeBoxNumber.push([number]);
     }
   }
 
@@ -212,6 +188,19 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       storeBoxNumberLeft.push([number]);
     }
   }
+
+  private sortBoxNumber(storeBoxNumber: Word[][]){
+    storeBoxNumber.sort(function(a, b) {
+      return b.length - a.length;
+    });
+    for (let boxes of storeBoxNumber) {
+      boxes.sort(function(a, b) {
+        return a.box.top - b.box.top;
+      });
+    }
+    return storeBoxNumber;
+  }
+  
   private findTocNumber(storeBoxNumber: Word[][]): Word[] {
     let nbOfNumber: number;
     let storedInteger: number[] = [];
@@ -219,7 +208,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     for (let box of storeBoxNumber) {
       nbOfNumber = box.length;
       for (const word of box) {
-        let num = [];
+        let num: number[] = [];
         num.push(Number(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)));
         if (Number.isInteger(num[0])) {
           storedInteger.push(num[0]);
@@ -235,7 +224,44 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     return null;
   }
 
-  private findIntegerAscendingOrder(storedInteger): number {
+  private findTocRomanNumber(storeBoxNumber: Word[][]): Word[] {
+    let nbOfNumber: number;
+    let storedRomanNbInteger: number[] = [];
+    let nbOfRomanNbIntegerInOrder = 0;
+    for (let box of storeBoxNumber) {
+      nbOfNumber = box.length;
+      for (const word of box) {
+        let romanNum: number[] = [];
+        romanNum.push(Number(this.romanToArabic(word.toString().match(/(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi))));
+          storedRomanNbInteger.push(romanNum[0]);
+      }
+      if (storedRomanNbInteger.length / nbOfNumber > 0.75) {
+        nbOfRomanNbIntegerInOrder = this.findIntegerAscendingOrder(storedRomanNbInteger);
+        if (nbOfRomanNbIntegerInOrder / storedRomanNbInteger.length > 0.75) {
+          return box;
+        }
+      }
+    }
+    return null;
+  }
+  
+  private romanToArabic(romanNumber){
+    romanNumber = romanNumber[0].toUpperCase();
+    const romanNumList = ['CM','M','CD','D','XC','C','XL','L','IX','X','IV','V','I'];
+    const corresp = [900,1000,400,500,90,100,40,50,9,10,4,5,1];
+    let index =  0, num = 0;
+    for(let rn in romanNumList){
+      index = romanNumber.indexOf(romanNumList[rn]);
+      while(index != -1){
+        num += corresp[rn];
+        romanNumber = romanNumber.replace(romanNumList[rn],'-');
+        index = romanNumber.indexOf(romanNumList[rn]);
+      }
+    }
+    return num;
+  }
+
+  private findIntegerAscendingOrder(storedInteger: number[]): number {
     let maxIntegerInOrder = 0;
     let iStart = 0;
     let nbIntegerInOrder = 1;
