@@ -465,6 +465,20 @@ function interpretImages(
   return [];
 }
 
+function addMissingSpaces(char: PdfminerText, index: number, array: PdfminerText[]): PdfminerText[] {
+  const nextChar = array[index + 1];
+  if (nextChar && nextChar._attr && char && char._attr && !charsAreSideBySide(char, nextChar)) {
+    return [char, new PdfminerText({ _: undefined, _attr: char._attr })];
+  }
+  return [char];
+}
+
+function charsAreSideBySide(char: PdfminerText, nextChar: PdfminerText): boolean {
+  const charBBox = getBoundingBox(char._attr.bbox);
+  const nextCharBBox = getBoundingBox(nextChar._attr.bbox);
+  return Math.abs(charBBox.bottom - nextCharBBox.bottom) < 2 && charBBox.left < nextCharBBox.left;
+}
+
 function breakLineIntoWords(
   texts: PdfminerText[],
   wordSeparator: string = ' ',
@@ -475,8 +489,11 @@ function breakLineIntoWords(
   const notAllowedChars = ['\u200B']; // &#8203 Zero Width Space
   const words: Word[] = [];
   const fakeSpaces = thereAreFakeSpaces(texts);
-  const chars: Character[] = texts
+  const filteredTexts = texts
     .filter(char => !notAllowedChars.includes(char._) && !isFakeChar(char, fakeSpaces))
+    .map(addMissingSpaces)
+    .reduce((acc, val) => acc.concat(val), []);
+  const chars: Character[] = filteredTexts
     .map(char => {
       if (char._ === undefined) {
         return undefined;
