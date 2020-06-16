@@ -74,7 +74,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           }
         });
       });
-      
+
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
         tocParagraphs.length > 0 &&
@@ -91,7 +91,6 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       } else {
         pagesSinceLastTOC++;
       }
-
       tocParagraphs = [];
     }
 
@@ -165,10 +164,10 @@ export class TableOfContentsDetectionModule extends Module<Options> {
   private addAlignedNumberRight(storeBoxNumber: Word[][], number: Word) {
     const indexValueExist = storeBoxNumber.findIndex(
       aNum =>
-        aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width &&
-        aNum[0].box.left + aNum[0].box.width + 10 >= number.box.left + number.box.width ||
-        aNum[0].box.left + aNum[0].box.width - 20 <= number.box.left &&
-        aNum[0].box.left + aNum[0].box.width - 5 >= number.box.left,
+        (aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width &&
+          aNum[0].box.left + aNum[0].box.width + 10 >= number.box.left + number.box.width) ||
+        (aNum[0].box.left + aNum[0].box.width - 20 <= number.box.left &&
+          aNum[0].box.left + aNum[0].box.width - 5 >= number.box.left),
     );
     if (indexValueExist !== -1) {
       storeBoxNumber[indexValueExist].push(number);
