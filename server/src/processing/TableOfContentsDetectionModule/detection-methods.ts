@@ -15,7 +15,6 @@
  */
 
 import { BoundingBox, Paragraph, Word } from './../../types/DocumentRepresentation';
-// import logger from '../../utils/Logger';
 
 export const threshold = 0.4;
 
@@ -25,7 +24,6 @@ export function TOCDetected(p: Paragraph, parameters): boolean {
 
 const detectionMethods = {
 
-  // reconstructParagraph: (p: Paragraph, pageKeywords: string[], storeLines: any[])
   /*
     searches for text finishing in numbers in the right 10% width area of the BBox
   */

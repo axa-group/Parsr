@@ -96,7 +96,7 @@
           :fonts="fonts"
           @custom-event="elementSelected"
         />
-        <svg-shape v-for="element in shapes" :key="`toc_${element.id}`" :element="element" />
+        <svg-shape v-for="element in shapes" :key="`shape_${element.id}`" :element="element" />
       </g>
     </svg>
   </div>
@@ -382,11 +382,15 @@ g.TableContainer text {
   stroke-width: 1;
 }
 
-svg line.drawing {
+svg.Drawing {
   display: none;
 }
 
-.VisibleShapes svg line.drawing {
+.VisibleShapes svg.Drawing,
+svg.Drawing.highlighted {
   display: block;
+}
+svg.Drawing.highlighted line {
+  stroke: #03e3aa;
 }
 </style>

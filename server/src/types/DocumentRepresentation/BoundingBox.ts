@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+
+
+import { maxValue, minValue } from './../../utils';
+import { SvgLine } from './SvgLine';
+
 /**
  * BoundingBox represents the size as well the location of any DocumentRepresentation
  * element, using the elements height, width, left and top. Other than a regular constructor,
@@ -136,11 +141,11 @@ export class BoundingBox {
   public static getOverlap(
     box1: BoundingBox,
     box2: BoundingBox,
-    ): {
-      jaccardIndex: number,
-      box1OverlapProportion: number,
-      box2OverlapProportion: number,
-    } {
+  ): {
+    jaccardIndex: number,
+    box1OverlapProportion: number,
+    box2OverlapProportion: number,
+  } {
     const result = {
       jaccardIndex: 0.0,
       box1OverlapProportion: 0.0,
@@ -210,5 +215,28 @@ export class BoundingBox {
    */
   public areaIsEmpty(): boolean {
     return this.height === 0 || this.width === 0;
+  }
+
+  /**
+   * converts the 4 sides of the bounding box into 4 SvgLines.
+   */
+  public toSvgLines(): SvgLine[] {
+    return [
+      new SvgLine(null, 1, this.left, this.top, this.right, this.top),
+      new SvgLine(null, 1, this.right, this.top, this.right, this.bottom),
+      new SvgLine(null, 1, this.right, this.bottom, this.left, this.bottom),
+      new SvgLine(null, 1, this.left, this.bottom, this.left, this.top),
+    ];
+  }
+
+  public static fromLines(lines: SvgLine[]): BoundingBox {
+    const xValues = lines.map(l => l.fromX).concat(lines.map(l => l.toX));
+    const yValues = lines.map(l => l.fromY).concat(lines.map(l => l.toY));
+
+    const minX = minValue(xValues);
+    const maxX = maxValue(xValues);
+    const minY = minValue(yValues);
+    const maxY = maxValue(yValues);
+    return new BoundingBox(minX, minY, maxX - minX, maxY - minY);
   }
 }

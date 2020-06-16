@@ -45,21 +45,18 @@ export class MlHeadingDetectionModule extends Module {
       return doc;
     }
 
-    // get the main body font from all the words in document
-    const mainCommonFont = this.commonFont(doc);
-
-    // get all the fonts to use for heading
-    const headingFonts = this.headingFonts(doc);
+    // get the main fonts from all the words in document
+    const mainCommonFonts = this.commonFonts(doc);
 
     doc.pages.forEach((page: Page) => {
-      const newContents = this.extractHeadings(page, mainCommonFont, headingFonts);
+      const newContents = this.extractHeadings(page, mainCommonFonts, doc);
       const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
       const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
       page.elements = newContents.rootElements.concat([...headings, ...paras]);
     });
 
     if (this.headingsDetected(doc)) {
-      this.computeHeadingLevels(doc, mainCommonFont);
+      this.computeHeadingLevels(doc, mainCommonFonts);
     }
     return doc;
   }
@@ -73,25 +70,25 @@ export class MlHeadingDetectionModule extends Module {
    */
   private extractHeadings(
     page: Page,
-    commonFont: Font,
-    headingFonts: Font[],
+    commonFonts: Font[],
+    doc: Document,
   ): { headingLines: Line[][]; paragraphLines: Line[][]; rootElements: Element[] } {
     // get all paragraphs in page root
     const pageParagraphs = this.pageParagraphs(page);
     return {
-      ...this.extractHeadingsInParagraphs(pageParagraphs, commonFont, headingFonts),
+      ...this.extractHeadingsInParagraphs(pageParagraphs, commonFonts, doc),
       rootElements: this.createHeadingsInOtherElements(
         this.pageOtherElements(page),
-        commonFont,
-        headingFonts,
+        commonFonts,
+        doc,
       ),
     };
   }
 
   private createHeadingsInOtherElements(
     elements: Element[],
-    commonFont: Font,
-    headingFonts: Font[],
+    commonFonts: Font[],
+    doc: Document,
   ): Element[] {
     this.getElementsWithParagraphs(elements, [])
       // this is to avoid setting table content as headings
@@ -99,8 +96,8 @@ export class MlHeadingDetectionModule extends Module {
       .forEach(element => {
         const newContents = this.extractHeadingsInParagraphs(
           this.getParagraphsInElement(element),
-          commonFont,
-          headingFonts,
+          commonFonts,
+          doc,
         );
         const paras: Paragraph[] = this.mergeLinesIntoParagraphs(newContents.paragraphLines);
         const headings: Heading[] = this.mergeLinesIntoHeadings(newContents.headingLines);
@@ -112,8 +109,8 @@ export class MlHeadingDetectionModule extends Module {
 
   private extractHeadingsInParagraphs(
     paragraphs: Paragraph[],
-    commonFont: Font,
-    headingFonts: Font[],
+    commonFonts: Font[],
+    doc: Document,
   ): { headingLines: Line[][]; paragraphLines: Line[][] } {
     const paragraphLines: Line[][] = [];
     const headingLines: Line[][] = [];
@@ -121,20 +118,16 @@ export class MlHeadingDetectionModule extends Module {
     paragraphs
       .map(paragraph => paragraph.content)
       .forEach(linesInParagraph => {
-        let initiatedHeading = false;
-        if (commonFont instanceof Font) {
+        const instanceOfFontCheck = commonFonts.map(font => {
+          return font instanceof Font;
+        })
+        .reduce((acc, curr) => acc && curr);
+        if (instanceOfFontCheck) {
           const headingIdx: number[] = linesInParagraph
             .map((line: Line, pos: number) => {
-              // const prevLine: Line = linesInParagraph[pos-1];
-              // const nextLine: Line = linesInParagraph[pos+1];
-              if (
-                (pos === 0 || initiatedHeading) &&
-                this.isHeadingCandidate(line, commonFont, headingFonts)
-              ) {
-                initiatedHeading = true;
+              if (this.isHeadingLine(line, commonFonts, doc)) {
                 return pos;
               } else {
-                initiatedHeading = false;
                 return undefined;
               }
             })
@@ -178,28 +171,29 @@ export class MlHeadingDetectionModule extends Module {
     return { headingLines: [], paragraphLines: paragraphs.map(paragraph => paragraph.content) };
   }
 
-  private isHeadingCandidate(line: Line, mostCommonFont: Font, headingFonts: Font[]): boolean {
-    const serializedHeadingFonts = headingFonts.map(font => JSON.stringify(font));
-
-    if (!serializedHeadingFonts.includes(JSON.stringify(this.noColourFont(line.getMainFont())))) {
-      return false;
-    }
-
-    return this.isHeadingLine(line, mostCommonFont);
-  }
-
-  private isHeadingLine(line: Line, commonFont: Font): boolean {
+  private isHeadingLine(line: Line, commonFonts: Font[], doc: Document): boolean {
     const lineStr = line.toString();
     if (lineStr.length === 1 || !isNaN(lineStr as any)) {
       return false;
     }
     const wordCount = line.content.length;
-    const isDifferentStyle = line.getMainFont().weight !== commonFont.weight;
-    const isFontBigger = line.getMainFont().size > commonFont.size;
+    const lineFont = line.getMainFont();
+    const isDifferentStyle = commonFonts.map(font => {
+      return lineFont.weight !== font.weight;
+    })
+    .reduce((acc, curr) => acc && curr);
+    const isFontBigger = commonFonts.map(font => {
+      return lineFont.size > font.size;
+    })
+    .reduce((acc, curr) => acc && curr);
+    const differentColor = commonFonts.map(font => {
+      return lineFont.color !== font.color;
+    })
+    .reduce((acc, curr) => acc && curr);
     const isFontUnique = line.isUniqueFont();
-    const differentColor = line.getMainFont().color !== commonFont.color;
     const isNumber = !isNaN(lineStr as any);
     const textCase = this.textCase(lineStr);
+    const fontRatio = this.fontRatio(doc, lineFont);
 
     const features = [
       isDifferentStyle,
@@ -209,6 +203,7 @@ export class MlHeadingDetectionModule extends Module {
       wordCount,
       differentColor,
       isNumber,
+      fontRatio,
     ];
     const clf = new RandomForestClassifier();
 
@@ -242,6 +237,26 @@ export class MlHeadingDetectionModule extends Module {
     return textCase;
   }
 
+  /*
+  🤔 Maybe we should also use 'page font ratio' as feature because I really think 
+  that it could help a lot to decrease false positives. For instance think about 
+  one document with a lot of pages with too much text but first page only contains one
+  H1 and two or three or four lines in the bottom part with some annotation text.
+  Font ratio for H1 could be like 0.0001 (for instance) and for bottom paragraph could be 
+  0.002.
+  But if we take care of page ratio then we could have:
+  - H1 ratio 0.01
+  - Bottom paragraph 0.99
+  Having this ratios I really think that bottom paragraph should not be considered as header
+  */
+  private fontRatio(document: Document, font: Font) {
+    const allWords = document.getElementsOfType<Word>(Word, true);
+    const allFonts = [...allWords.map(w => w.font).filter(f => f !== undefined)];
+    const count = allFonts.filter(f => f.name === font.name && f.size === font.size && f.weight === font.weight && f.isItalic === font.isItalic && f.isUnderline === font.isUnderline && f.color === font.color).length;
+
+    return count / allFonts.length;
+  }
+  
   private groupHeadingsByFont(headingIndexes: number[], lines: Line[]): number[][] {
     // Skip join heading lines if they doesn't have same font
     const fontGroupedHeadings: number[][] = [];
@@ -285,28 +300,29 @@ export class MlHeadingDetectionModule extends Module {
     });
   }
 
-  private noColourFont(font: Font): Font {
-    const newFont = new Font(font.name, font.size);
-    newFont.weight = font.weight;
-    newFont.isItalic = font.isItalic;
-    newFont.isUnderline = font.isUnderline;
-    newFont.color = null;
-    return newFont;
-  }
-
   /**
    * Returns most used font in document
    * @param doc The document to extract heading fonts
+   * 🤔 I'm not sure if having only one 'main font' is enought because a 
+   * normal document should have only one main font for texts but there 
+   * are a lot of cases that one document uses 'main font' and 'secodnary font'
    */
-  private commonFont(doc: Document): Font {
-    return utils.findMostCommonFont(
-      doc
-        .getElementsOfType<Line>(Line, true)
-        .map((l: Line) => l.content)
-        .reduce((a, b) => a.concat(b), [])
-        .map(w => w.font)
-        .filter(f => f !== undefined),
-    );
+  private commonFonts(doc: Document): Font[] {
+    const allWords = doc.getElementsOfType<Word>(Word, true);
+    const allFonts = [...allWords.map(w => w.font).filter(f => f !== undefined)];
+    let uniqueFonts: Font[] = [];
+    allFonts.forEach(font => {
+      if (uniqueFonts.filter(f => f.isEqual(font)).length === 0) {
+        uniqueFonts.push(font);
+      }
+    });
+    // sorting the fonts by their ratios
+    const sortedUniqueFonts = uniqueFonts.sort((fontA, fontB) => {
+      return this.fontRatio(doc, fontB) - this.fontRatio(doc, fontA);
+    });
+    // for now we return only the font with highest ratio as common font
+    // the idea is to return 1, 2 or 3 common fonts (i.e. .slice(0, threshold))
+    return sortedUniqueFonts.slice(0, 1);
   }
 
   private pageOtherElements(page: Page): Element[] {
@@ -342,24 +358,6 @@ export class MlHeadingDetectionModule extends Module {
     return page.getElementsOfType<Paragraph>(Paragraph, false);
   }
 
-  /**
-   * Returns an array of fonts to be used for heading detection
-   * @param doc The document to extract heading fonts
-   */
-  private headingFonts(doc: Document): Font[] {
-    const allWords = doc.getElementsOfType<Word>(Word, true);
-    const allFonts = [...allWords.map(w => this.noColourFont(w.font)).filter(f => f !== undefined)];
-
-    const uniqueFonts: Font[] = [];
-    allFonts.forEach(font => {
-      if (uniqueFonts.filter(f => f.isEqual(font)).length === 0) {
-        uniqueFonts.push(font);
-      }
-    });
-
-    return uniqueFonts;
-  }
-
   private headingsDetected(doc: Document): boolean {
     let detected = false;
     doc.pages.forEach(page => {
@@ -370,17 +368,26 @@ export class MlHeadingDetectionModule extends Module {
     return detected;
   }
 
-  private computeHeadingLevels(document: Document, commonFont: Font) {
+  private computeHeadingLevels(document: Document, commonFonts: Font[]) {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
     const clf = new DecisionTreeClassifier();
 
     headings.forEach(h => {
-      const size = h.getMainFont().size;
-      const weight = h.getMainFont().weight === 'bold' ? 1 : 0;
+      const headingFont = h.getMainFont();
+      const size = headingFont.size;
+      const weight = headingFont.weight === 'bold';
       const textCase = this.textCase(h.toString());
-      const isFontBigger = size > commonFont.size ? 1 : 0;
-      const differentColor = h.getMainFont().color !== commonFont.color ? 1 : 0;
-      const features = [size, weight, textCase, isFontBigger, differentColor];
+      const isFontBigger = commonFonts.map(font => {
+        return headingFont.size > font.size;
+      })
+      .reduce((acc, curr) => acc && curr);
+      const differentColor = commonFonts.map(font => {
+        return headingFont.color !== font.color;
+      })
+      .reduce((acc, curr) => acc && curr);
+      const wordCount = h.content.length;
+      const fontRatio = this.fontRatio(document, headingFont);
+      const features = [size, weight, textCase, isFontBigger, differentColor, wordCount, fontRatio];
       h.level = clf.predict(features) + 1;
     });
   }

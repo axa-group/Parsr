@@ -197,6 +197,19 @@ export class SvgLine extends SvgShape {
     }
   }
 
+  /**
+  * As lines position are floating poing values,
+  * this avoids controlLine to jump over the line without detecting it
+  */
+  public isOnTop(line: SvgLine): boolean {
+    const isAroundLineX = this.fromX + 1 >= line.fromX && this.fromX - 1 <= line.fromX;
+    const isAroundLineY = this.fromY + 1 >= line.fromY && this.fromY - 1 <= line.fromY;
+    return (
+      (this.isVertical() && line.isVertical() && isAroundLineX) ||
+      (this.isHorizontal() && line.isHorizontal() && isAroundLineY)
+    );
+  }
+
   public move(xDiff: number, yDiff: number) {
     this.fromX += xDiff;
     this.toX += xDiff;
@@ -214,5 +227,9 @@ export class SvgLine extends SvgShape {
 
   private rotationAngle(): number {
     return Math.atan2(this.toY - this.fromY, this.toX - this.fromX) * 180 / Math.PI;
+  }
+
+  public toString(): string {
+    return `${this.fromX}-${this.toX}-${this.fromY}-${this.toY}`;
   }
 }

@@ -3,33 +3,49 @@ from bs4 import BeautifulSoup
 from markdown import markdown
 import re
 
+
 def walk(node, fonts_ids):
+    elements_to_consider = {'paragraph', 'heading', 'list'}
     if node['type'] == 'line':
         for word in node['content']:
             fonts_ids.append(word['font'])
-    elif node['type'] == 'paragraph' or node['type'] == 'heading' or node['type'] == 'list':
-        for line in node['content']:
-            walk(line, fonts_ids)
+    elif node['type'] in elements_to_consider:
+        for elem in node['content']:
+            walk(elem, fonts_ids)
 
-def most_common_font(file):
-    """Takes the most common font of a file"""
+def get_fonts_ids(file, page_number):
+    """Gives all fonts of a file (page_number = 0) or by page if specified"""
     fonts_ids = []
-
     for page in file['pages']:
-        # skip pages that have no elements
-        if len(page['elements']) > 0:
+        if len(page['elements']) > 0 and (page_number == 0 or page['pageNumber'] == page_number):
             for element in page['elements']:
                 walk(element, fonts_ids)
-    
+
+    return fonts_ids
+
+def most_common_fonts(file, page_number, threshold):
+    """Gives the most common fonts of the entire file or by page if specified"""
+    fonts_ids = get_fonts_ids(file, page_number)
     if len(fonts_ids) > 0:
-        return file['fonts'][Counter(fonts_ids).most_common(1)[0][0] - 1]
+        most_common_list = Counter(fonts_ids).most_common(threshold)
+        common_fonts = [file['fonts'][most_common_list[i][0] - 1] for i in range(len(most_common_list))]
+        return common_fonts
 
-    # for pages that have no elements (i.e. no fonts) as "FLYER1.pdf.json"
-    return {}
+    # for pages that have no elements (i.e. no fonts)
+    return []
 
+def font_ratios(file, page_number):
+    """Gives the font ratios of the entire file or by page if specified"""
+    font_ratios = Counter()
+    fonts_ids = get_fonts_ids(file, page_number)    
+    if len(fonts_ids) > 0:
+        for font in fonts_ids:
+            font_ratios[str(font) + '_' + str(page_number)] += 1/len(fonts_ids)
+
+    return font_ratios
 
 def markdown_to_text(markdown_string):
-    """ Converts a markdown string to plaintext """
+    """Converts a markdown string to plaintext"""
 
     # md -> html -> text since BeautifulSoup can extract text cleanly
     html = markdown(markdown_string)
@@ -43,22 +59,3 @@ def markdown_to_text(markdown_string):
     text = ''.join(soup.findAll(text=True))
 
     return text
-
-
-def text_case(line):
-    """Return the text case (lower case, upper case, title case or none of them)"""
-    is_title_case = True
-    for word in line.split():
-        if len(word) > 4 and not word.startswith('(') and not word.startswith('['):
-            is_title_case = is_title_case and (bool(re.match(r'^[A-Z]\w+', word)) or bool(re.match(r'^(?:\W*\d+\W*)+\w+', word)))
-
-    if line.islower():
-        text_case = 0
-    elif line.isupper():
-        text_case = 1
-    elif is_title_case:
-        text_case = 2
-    else:
-        text_case = 3
-
-    return text_case

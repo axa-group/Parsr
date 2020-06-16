@@ -21,6 +21,7 @@ import { extractImagesAndFonts } from '../extractImagesFonts';
 import { Extractor } from '../Extractor';
 import * as utils from './../../utils';
 import * as pdfminer from './pdfminer';
+import { JsonExporter } from '../../output/json/JsonExporter';
 
 /**
  * The extractor is responsible to extract every possible information
@@ -31,7 +32,7 @@ import * as pdfminer from './pdfminer';
 export class PdfminerExtractor extends Extractor {
   public run(inputFile: string): Promise<Document> {
     return CommandExecuter.repairPdf(inputFile).then((repairedPdf: string) => {
-      return this.pageNumber(repairedPdf).then(totalPages => {
+      return this.pageNumber(repairedPdf).then(async totalPages => {
         let loggerMsg = "Extracting contents with pdfminer's pdf2txt.py tool...";
         if (totalPages != null) {
           loggerMsg = `Extracting contents (${totalPages.toString()} pages) with pdfminer's pdf2txt.py tool...`;
@@ -39,15 +40,17 @@ export class PdfminerExtractor extends Extractor {
         logger.info(loggerMsg);
         const startTime: number = Date.now();
         const extractFont = extractImagesAndFonts(repairedPdf);
-        const pdfminerExtract = this.extractFile(repairedPdf, 1, 500, totalPages);
-        return Promise.all([pdfminerExtract, extractFont]).then(
-          ([doc, assetsFolder]: [Document, string]) => {
+        const pdfminerExtract = await this.extractFile(repairedPdf, 1, 500, totalPages);
+        const extractSVGs = this.extractSVGPaths(repairedPdf, 1, 500, totalPages);
+        return Promise.all([pdfminerExtract, extractFont, extractSVGs]).then(
+          ([doc, assetsFolder, drawingsFile]: [Document, string, string]) => {
             doc.assetsFolder = assetsFolder;
+            doc.drawingsFile = drawingsFile;
             doc.inputFile = repairedPdf;
             const totalSeconds = (Date.now() - startTime) / 1000;
             logger.info(
               `Total PdfMiner ${
-                totalPages != null ? '(' + totalPages.toString() + ')' : ''
+              totalPages != null ? '(' + totalPages.toString() + ')' : ''
               } time: ${totalSeconds} sec - ${totalSeconds / 60} min`,
             );
             return doc;
@@ -64,6 +67,43 @@ export class PdfminerExtractor extends Extractor {
       })
       .catch(({ error }) => {
         logger.error(`Error reading pdf total page number... ${error}`);
+        return null;
+      });
+  }
+
+  private extractSVGPaths(
+    inputFile: string,
+    pageIndex: number,
+    maxPages: number,
+    totalPages: number,
+    document: Document = new Document([]),
+  ): Promise<string> {
+    const toPage = pageIndex * maxPages - 1;
+    logger.info('Extracting SVG paths with pdfminer...');
+    const extractPages = this.pagesToExtract(pageIndex, maxPages, totalPages);
+    return pdfminer
+      .extractPages(inputFile, totalPages != null ? extractPages : null)
+      .then(utils.sanitizeXML)
+      .then(pdfminer.extractDrawingsFromXML)
+      .then(pdfminer.jsParser)
+      .then((drawingsDoc: Document) => {
+        document.pages = document.pages.concat(drawingsDoc.pages);
+        document.pages.forEach((page, index) => { page.pageNumber = index + 1; });
+        if (totalPages != null && totalPages > toPage + 1) {
+          return this.extractSVGPaths(inputFile, pageIndex + 1, maxPages, totalPages, document);
+        } else {
+          const drawingsJson = utils.getTemporaryFile('.json');
+          return new JsonExporter(document, 'word')
+            .export(drawingsJson)
+            .then(() => drawingsJson)
+            .catch(e => {
+              logger.error(e);
+              return null;
+            });
+        }
+      }).catch(err => {
+        logger.error(err);
+        logger.error('There was an error while extracting SVG paths, skipping...');
         return null;
       });
   }
@@ -166,7 +206,7 @@ export class PdfminerExtractor extends Extractor {
 
       return Promise.all(promises).then(() => {
         logger.info(
-          `Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000}s`,
+          `Page rotation detection and correction finished in ${(Date.now() - startTime) / 1000} s`,
         );
         return doc;
       });
