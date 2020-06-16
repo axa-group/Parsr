@@ -63,13 +63,10 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
       let tocParagraphs: Paragraph[] = [];
 
-      if (tocIntegerRight && tocIntegerRight.length > 1) {
-        tocParagraphs.push(...this.findTocPara(tocCandidates, tocIntegerRight));
-      } else if (tocRomanNumberRight && tocRomanNumberRight.length > 1) {
-        tocParagraphs.push(...this.findTocPara(tocCandidates, tocRomanNumberRight));
-      } else if (tocIntegerLeft && tocIntegerLeft.length > 1) {
-        tocParagraphs.push(...this.findTocPara(tocCandidates, tocIntegerLeft));
-      }
+      tocParagraphs.push(...this.findTocPara(tocCandidates, tocIntegerRight));
+      tocParagraphs.push(...this.findTocPara(tocCandidates, tocRomanNumberRight));
+      tocParagraphs.push(...this.findTocPara(tocCandidates, tocIntegerLeft));
+
       tocParagraphs.forEach(paragraph => {
         paragraph.content.forEach(line => {
           if (line.content.length === 1) {
@@ -300,6 +297,9 @@ export class TableOfContentsDetectionModule extends Module<Options> {
   }
 
   private findTocPara(tocItemParagraphs: Paragraph[], tocInteger: Word[]): Paragraph[] {
+    if (!tocInteger || tocInteger.length === 0) {
+      return [];
+    }
     let paragraphs: Paragraph[] = [];
     for (let i = 0; i < tocItemParagraphs.length; i++) {
       for (let j = 0; j < tocItemParagraphs[i].content.length; j++) {
