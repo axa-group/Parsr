@@ -33,8 +33,6 @@ interface Options {
 
 const defaultOptions = (defaultConfig as any) as Options;
 
-let tocParagraphs: Paragraph[] = [];
-
 export class TableOfContentsDetectionModule extends Module<Options> {
   public static moduleName = 'table-of-contents-detection';
 
@@ -51,32 +49,31 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         .getElementsOfType<Paragraph>(Paragraph, false)
         .filter(this.isNotHeaderFooter);
       const parameters = { pageKeywords: this.options.pageKeywords };
-      const tocItemParagraphs = allParagraphs.filter(p => detection.TOCDetected(p, parameters));
+      const tocCandidates = allParagraphs.filter(p => detection.TOCDetected(p, parameters));
       let tocIntegerRight: Word[] = [];
       let tocRomanNumberRight: Word[] = [];
       let tocIntegerLeft: Word[] = [];
-      
-      if (tocItemParagraphs.length > 0) {
-        let storeBoxNumberRight: Word[][] = [];
-        let storeBoxNumberLeft: Word[][] = [];
-        let storeBoxRomanNumberRight: Word[][] = [];
 
-        this.storeNumAndRomanNum(tocItemParagraphs, storeBoxNumberRight, storeBoxNumberLeft, storeBoxRomanNumberRight);
-        tocIntegerRight = this.findTocNumber(storeBoxNumberRight);
-        tocRomanNumberRight = this.findTocRomanNumber(storeBoxRomanNumberRight);
-        tocIntegerLeft = this.findTocNumber(storeBoxNumberLeft);
+      if (tocCandidates.length > 0) {
+        const { right, left, roman } = this.storeNumAndRomanNum(tocCandidates);
+        tocIntegerRight = this.findTocNumber(right);
+        tocRomanNumberRight = this.findTocRomanNumber(roman);
+        tocIntegerLeft = this.findTocNumber(left);
       }
+
+      let tocParagraphs: Paragraph[] = [];
+
       if (tocIntegerRight && tocIntegerRight.length > 1) {
-        this.findTocPara(tocItemParagraphs, tocIntegerRight);
+        tocParagraphs.push(...this.findTocPara(tocCandidates, tocIntegerRight));
       } else if (tocRomanNumberRight && tocRomanNumberRight.length > 1) {
-        this.findTocPara(tocItemParagraphs, tocRomanNumberRight);
+        tocParagraphs.push(...this.findTocPara(tocCandidates, tocRomanNumberRight));
       } else if (tocIntegerLeft && tocIntegerLeft.length > 1) {
-        this.findTocPara(tocItemParagraphs, tocIntegerLeft);
+        tocParagraphs.push(...this.findTocPara(tocCandidates, tocIntegerLeft));
       }
       tocParagraphs.forEach(paragraph => {
         paragraph.content.forEach(line => {
           if (line.content.length === 1) {
-            this.completeTocLine(allParagraphs, line);
+            this.completeTocLine(tocParagraphs, allParagraphs, line);
           }
         });
       });
@@ -97,10 +94,9 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       } else {
         pagesSinceLastTOC++;
       }
-    
+
       tocParagraphs = [];
     }
-    
 
     return doc;
   }
@@ -114,11 +110,11 @@ export class TableOfContentsDetectionModule extends Module<Options> {
 
   private storeNumAndRomanNum(
     tocItemParagraphs: Paragraph[],
-    storeBoxNumberRight: Word[][],
-    storeBoxNumberLeft: Word[][],
-    storeBoxRomanNumberRight: Word[][],
-  ) {
-    
+  ): { right: Word[][]; left: Word[][]; roman: Word[][] } {
+    let numberRight: Word[][] = [];
+    let numberLeft: Word[][] = [];
+    let romanNumberRight: Word[][] = [];
+
     for (const tocItemParagraph of tocItemParagraphs) {
       const w = tocItemParagraph.width * 0.1;
 
@@ -141,9 +137,13 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         );
       numbersInsideIntersectionRight.forEach(word => {
         if (word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
-          this.addAlignedNumberRight(storeBoxNumberRight, word);
-        } else if (word.toString().match(/[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)) {
-          this.addAlignedNumberRight(storeBoxRomanNumberRight, word);
+          this.addAlignedNumberRight(numberRight, word);
+        } else if (
+          word
+            .toString()
+            .match(/[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)
+        ) {
+          this.addAlignedNumberRight(romanNumberRight, word);
         }
       });
 
@@ -154,13 +154,15 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         );
       numbersInsideIntersectionLeft.forEach(word => {
         if (word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
-          this.addAlignedNumberLeft(storeBoxNumberLeft, word);
+          this.addAlignedNumberLeft(numberLeft, word);
         }
       });
     }
-    storeBoxNumberRight = this.sortBoxNumber(storeBoxNumberRight);
-    storeBoxRomanNumberRight = this.sortBoxNumber(storeBoxRomanNumberRight);
-    storeBoxNumberLeft = this.sortBoxNumber(storeBoxNumberLeft);
+    return {
+      right: this.sortBoxNumber(numberRight),
+      left: this.sortBoxNumber(numberLeft),
+      roman: this.sortBoxNumber(romanNumberRight),
+    };
   }
 
   private addAlignedNumberRight(storeBoxNumber: Word[][], number: Word) {
@@ -189,7 +191,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     }
   }
 
-  private sortBoxNumber(storeBoxNumber: Word[][]){
+  private sortBoxNumber(storeBoxNumber: Word[][]) {
     storeBoxNumber.sort(function(a, b) {
       return b.length - a.length;
     });
@@ -200,7 +202,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     }
     return storeBoxNumber;
   }
-  
+
   private findTocNumber(storeBoxNumber: Word[][]): Word[] {
     let nbOfNumber: number;
     let storedInteger: number[] = [];
@@ -232,8 +234,16 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       nbOfNumber = box.length;
       for (const word of box) {
         let romanNum: number[] = [];
-        romanNum.push(Number(this.romanToArabic(word.toString().match(/(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi))));
-          storedRomanNbInteger.push(romanNum[0]);
+        romanNum.push(
+          Number(
+            this.romanToArabic(
+              word
+                .toString()
+                .match(/(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi),
+            ),
+          ),
+        );
+        storedRomanNbInteger.push(romanNum[0]);
       }
       if (storedRomanNbInteger.length / nbOfNumber > 0.75) {
         nbOfRomanNbIntegerInOrder = this.findIntegerAscendingOrder(storedRomanNbInteger);
@@ -244,17 +254,18 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     }
     return null;
   }
-  
-  private romanToArabic(romanNumber){
+
+  private romanToArabic(romanNumber) {
     romanNumber = romanNumber[0].toUpperCase();
-    const romanNumList = ['CM','M','CD','D','XC','C','XL','L','IX','X','IV','V','I'];
-    const corresp = [900,1000,400,500,90,100,40,50,9,10,4,5,1];
-    let index =  0, num = 0;
-    for(let rn in romanNumList){
+    const romanNumList = ['CM', 'M', 'CD', 'D', 'XC', 'C', 'XL', 'L', 'IX', 'X', 'IV', 'V', 'I'];
+    const corresp = [900, 1000, 400, 500, 90, 100, 40, 50, 9, 10, 4, 5, 1];
+    let index = 0,
+      num = 0;
+    for (let rn in romanNumList) {
       index = romanNumber.indexOf(romanNumList[rn]);
-      while(index != -1){
+      while (index != -1) {
         num += corresp[rn];
-        romanNumber = romanNumber.replace(romanNumList[rn],'-');
+        romanNumber = romanNumber.replace(romanNumList[rn], '-');
         index = romanNumber.indexOf(romanNumList[rn]);
       }
     }
@@ -288,34 +299,36 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     return maxIntegerInOrder;
   }
 
-  private findTocPara(tocItemParagraphs: Paragraph[],tocInteger: Word[]) {
+  private findTocPara(tocItemParagraphs: Paragraph[], tocInteger: Word[]): Paragraph[] {
+    let paragraphs: Paragraph[] = [];
     for (let i = 0; i < tocItemParagraphs.length; i++) {
       for (let j = 0; j < tocItemParagraphs[i].content.length; j++) {
         for (let integer of tocInteger) {
           if (
             tocItemParagraphs[i].content[j].content.find(word => word === integer) &&
-            !tocParagraphs.includes(tocItemParagraphs[i])
+            !paragraphs.includes(tocItemParagraphs[i])
           ) {
-            tocParagraphs.push(tocItemParagraphs[i]);
+            paragraphs.push(tocItemParagraphs[i]);
             break;
           }
         }
       }
     }
+    return paragraphs;
   }
 
-  private completeTocLine(allParagraphs: Paragraph[], line: Line) {
+  private completeTocLine(tocParagraphs: Paragraph[], allParagraphs: Paragraph[], line: Line) {
     for (let i = 0; i < allParagraphs.length; i++) {
-          if (
-            allParagraphs[i].content.find(OneLine =>
-            (
-              OneLine.box.top >= line.box.top - 1 &&
-              OneLine.box.top <= line.box.top + 1
-            ) &&
-            !tocParagraphs.includes(allParagraphs[i]))
-          ) {
-            tocParagraphs.push(allParagraphs[i]);
-          }
+      if (
+        allParagraphs[i].content.find(
+          OneLine =>
+            OneLine.box.top >= line.box.top - 1 &&
+            OneLine.box.top <= line.box.top + 1 &&
+            !tocParagraphs.includes(allParagraphs[i]),
+        )
+      ) {
+        tocParagraphs.push(allParagraphs[i]);
+      }
     }
   }
 }
