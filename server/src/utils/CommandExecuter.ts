@@ -193,6 +193,58 @@ export function detectTables2(filePath: string, pages: string): Promise<string> 
   });
 }
 
+export function levelPrediction(
+  size: string,
+  weight: string,
+  textCase: string,
+  isFontBigger: string,
+  differentColor: string,
+  wordCount: string,
+  fontRatio: string,
+): Promise<string> {
+  const args: string[] = [
+    path.join(__dirname, '../../assets/HeadingLevelPrediction.py'),
+    size,
+    weight,
+    textCase,
+    isFontBigger,
+    differentColor,
+    wordCount,
+    fontRatio,
+  ];
+  return run(COMMANDS.PYTHON, args).then(prediction => {
+    logger.info(`Level prediction succeed`);
+    return prediction;
+  });
+}
+
+export function headingPrediction(
+  isDifferentStyle: string,
+  isFontBigger: string,
+  isFontUnique: string,
+  textCase: string,
+  wordCount: string,
+  differentColor: string,
+  isNumber: string,
+  fontRatio: string,
+): Promise<string> {
+  const args: string[] = [
+    path.join(__dirname, '../../assets/HeadingLevelPrediction.py'),
+    isDifferentStyle,
+    isFontBigger,
+    isFontUnique,
+    textCase,
+    wordCount,
+    differentColor,
+    isNumber,
+    fontRatio,
+  ];
+  return run(COMMANDS.PYTHON, args).then(prediction => {
+    logger.info(`Heading prediction succeed`);
+    return prediction;
+  });
+}
+
 export function pdfMinerExtract(
   filePath: string,
   pages: string,

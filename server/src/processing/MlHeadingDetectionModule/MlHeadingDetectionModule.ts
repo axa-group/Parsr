@@ -31,15 +31,13 @@ import logger from '../../utils/Logger';
 import { LinesToParagraphModule } from '../LinesToParagraphModule/LinesToParagraphModule';
 import { Module } from '../Module';
 import { RandomForestClassifier } from './train_model/model';
-import * as path from 'path';
-const tf = require('@tensorflow/tfjs');
-require('@tensorflow/tfjs-node');
+import * as CommandExecuter from '../../utils/CommandExecuter';
 
 export class MlHeadingDetectionModule extends Module {
   public static moduleName = 'ml-heading-detection';
   public static dependencies = [LinesToParagraphModule];
 
-  public async main(doc: Document): Promise<Document> {
+  public main(doc: Document): Document {
     if (this.headingsDetected(doc)) {
       logger.warn(
         'Warning: this page already has some headings in it. Not performing heading detection.',
@@ -47,9 +45,6 @@ export class MlHeadingDetectionModule extends Module {
       return doc;
     }
 
-    // fetch the model
-    const model = await tf.loadLayersModel('file://' + path.join(__dirname, '../../../assets/model.json'));
-    
     // get the main fonts from all the words in document
     const mainCommonFonts = this.commonFonts(doc);
 
@@ -61,7 +56,7 @@ export class MlHeadingDetectionModule extends Module {
     });
 
     if (this.headingsDetected(doc)) {
-      this.computeHeadingLevels(doc, mainCommonFonts, model);
+      this.computeHeadingLevels(doc, mainCommonFonts);
     }
     return doc;
   }
@@ -184,19 +179,19 @@ export class MlHeadingDetectionModule extends Module {
     const wordCount = line.content.length;
     const lineFont = line.getMainFont();
     const isDifferentStyle = commonFonts.map(font => {
-      return lineFont.weight !== font.weight;
+      return lineFont.weight !== font.weight ? 1 : 0;
     })
     .reduce((acc, curr) => acc && curr);
     const isFontBigger = commonFonts.map(font => {
-      return lineFont.size > font.size;
+      return lineFont.size > font.size ? 1 : 0;
     })
     .reduce((acc, curr) => acc && curr);
     const differentColor = commonFonts.map(font => {
-      return lineFont.color !== font.color;
+      return lineFont.color !== font.color ? 1 : 0;
     })
     .reduce((acc, curr) => acc && curr);
-    const isFontUnique = line.isUniqueFont();
-    const isNumber = !isNaN(lineStr as any);
+    const isFontUnique = line.isUniqueFont() ? 1 : 0;
+    const isNumber = !isNaN(lineStr as any) ? 1 : 0;
     const textCase = this.textCase(lineStr);
     const fontRatio = this.fontRatio(doc, lineFont);
 
@@ -373,28 +368,36 @@ export class MlHeadingDetectionModule extends Module {
     return detected;
   }
 
-  private computeHeadingLevels(document: Document, commonFonts: Font[], model: any) {
+  private computeHeadingLevels(document: Document, commonFonts: Font[]) {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
 
-    headings.forEach(h => {
+    headings.forEach(async h => {
       const headingFont = h.getMainFont();
       const size = headingFont.size;
-      const weight = headingFont.weight === 'bold';
+      const weight = headingFont.weight === 'bold' ? 1 : 0;
       const textCase = this.textCase(h.toString());
       const isFontBigger = commonFonts.map(font => {
-        return headingFont.size > font.size;
+        return headingFont.size > font.size ? 1 : 0;
       })
       .reduce((acc, curr) => acc && curr);
       const differentColor = commonFonts.map(font => {
-        return headingFont.color !== font.color;
+        return headingFont.color !== font.color ? 1 : 0;
       })
       .reduce((acc, curr) => acc && curr);
       const wordCount = h.content.length;
       const fontRatio = this.fontRatio(document, headingFont);
-      const features = tf.tensor([size, weight, textCase, isFontBigger, differentColor, wordCount, fontRatio], [1, 7]);
-      const predictOut = model.predict(features);
-      const winner = predictOut.argMax(-1).dataSync()[0];
-      h.level = winner + 1;
+
+      await CommandExecuter.levelPrediction(
+        size.toString(),
+        weight.toString(),
+        textCase.toString(),
+        isFontBigger.toString(),
+        differentColor.toString(),
+        wordCount.toString(),
+        fontRatio.toString(),
+      ).then(stdout => {
+        h.level = parseInt(stdout);
+      });
     });
   }
 }
