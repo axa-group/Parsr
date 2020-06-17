@@ -73,14 +73,15 @@
               :hide-details="true"
               @change="swapFilters()"
             ></v-switch>
-            <!-- <v-switch
+            <v-switch
+              v-show="defaultConfig.output.includeDrawings"
               v-model="shapesFilter"
               label="Drawings"
               class="switch"
               color="indigo darken-3"
               :hide-details="true"
               @change="swapFilters()"
-            ></v-switch> -->
+            ></v-switch>
           </div>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -89,7 +90,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapState } from 'vuex';
 export default {
   data() {
     return {
@@ -112,6 +113,7 @@ export default {
   },
   computed: {
     ...mapGetters(['pageInspectorSwitchState']),
+    ...mapState(['defaultConfig']),
     pageInspectorSwitch: {
       get() {
         return this.pageInspectorSwitchState;

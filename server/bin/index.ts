@@ -135,7 +135,7 @@ function main(): void {
         const promises: Array<Promise<any>> = [];
         if (config.output.formats.json) {
           promises.push(
-            new JsonExporter(doc, config.output.granularity).export(
+            new JsonExporter(doc, config.output.granularity, config.output.includeDrawings).export(
               `${outputFolder}/${omitFilenameExtension(documentName)}.json`,
             ),
           );
@@ -147,14 +147,6 @@ function main(): void {
             ),
           );
         }
-
-        // if (config.output.formats['json-compact']) {
-        // 	promises.push(
-        // 		new JsonCompactExporter(doc).export(
-        // 			`${outputFolder}/${omitFilenameExtension(documentName)}.compact.json`,
-        // 		),
-        // 	);
-        // }
 
         if (config.output.formats.text) {
           promises.push(
@@ -171,22 +163,6 @@ function main(): void {
             ),
           );
         }
-
-        // if (config.output.formats.xml) {
-        // 	promises.push(
-        // 		new XmlExporter(doc).export(
-        // 			`${outputFolder}/${omitFilenameExtension(documentName)}.md`
-        // 		)
-        // 	);
-        // }
-
-        // if (config.output.formats.confidences) {
-        // 	promises.push(
-        // 		new ConfidencesExporter(doc).export(
-        // 			`${outputFolder}/${omitFilenameExtension(documentName)}.confidences`
-        // 		)
-        // 	);
-        // }
 
         if (config.output.formats.csv) {
           promises.push(

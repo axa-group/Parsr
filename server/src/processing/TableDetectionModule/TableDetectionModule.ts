@@ -305,14 +305,18 @@ export class TableDetectionModule extends Module<Options> {
   private isFalseTable(table: Table): boolean {
     const isFalse = table.content.some((_, index) => !this.existAdjacentRow(index, table));
     const only1Row = table.content.length === 1;
+    const only1Col = table.content.every(row => row.content
+      .filter(col => !(col instanceof SpannedTableCell)).length <= 1,
+    );
 
     const rowsHeightSum = table.content.reduce((total, row) => total + row.height, 0);
 
-    const rowWidths = table.content.map(row => row.width).sort((a, b) => a - b);
+    const rowRights = table.content.map(row => row.right).sort((a, b) => a - b);
     return isFalse ||
       only1Row ||
+      only1Col ||
       Math.ceil(rowsHeightSum) < Math.floor(table.height) ||
-      rowWidths[rowWidths.length - 1] - rowWidths[0] > 5;
+      rowRights[rowRights.length - 1] - rowRights[0] > 5;
   }
 
   private existAdjacentRow(rowIndex: number, table: Table): TableRow {
@@ -457,16 +461,17 @@ export class TableDetectionModule extends Module<Options> {
 
     const drawingsJson = JSON.parse(fs.readFileSync(doc.drawingsFile, { encoding: 'utf8' }));
     const drawingsDoc = json2document(drawingsJson);
-    drawingsDoc.pages.forEach((page, pageIndex) => {
-      const pageDrawings = page.getElementsOfType<Drawing>(Drawing);
+    drawingsDoc.pages.forEach(drawingPage => {
+      const pageDrawings = drawingPage.getElementsOfType<Drawing>(Drawing);
+      const docPage = doc.pages.find(p => p.pageNumber === drawingPage.pageNumber);
       const improvedDrawings = pageDrawings
-        .filter(d => this.drawingIsTableCandidate(d, doc.pages[pageIndex]))
+        .filter(d => this.drawingIsTableCandidate(d, docPage))
         .map(drawingLineMerge);
 
       const tables = improvedDrawings
-        .filter(d => this.drawingIsTable(d, doc.pages[pageIndex]))
-        .map(d => drawingToTable(d, doc.pages[pageIndex].height));
-      jsonResult.push({ page: pageIndex + 1, tables });
+        .filter(d => this.drawingIsTable(d, docPage))
+        .map(d => drawingToTable(d, docPage.height));
+      jsonResult.push({ page: docPage.pageNumber, tables });
     });
     return jsonResult;
   }
@@ -537,6 +542,8 @@ export class TableDetectionModule extends Module<Options> {
 
   private lineOverlapsText(line: SvgLine, e: Text): boolean {
     if (!e.box) return false;
-    return e.box.toSvgLines().some(boxLine => line.intersects(boxLine));
+    const svgLines = e.box.toSvgLines();
+    const bottom = svgLines[2];
+    return svgLines.some(boxLine => line.intersects(boxLine)) && bottom.fromY - e.bottom > 3;
   }
 }

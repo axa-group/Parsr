@@ -114,6 +114,7 @@
   "output": {
     "granularity": "word",
     "includeMarginals": false,
+    "includeDrawings": false,
     "formats": {
       "json": true,
       "text": true,
