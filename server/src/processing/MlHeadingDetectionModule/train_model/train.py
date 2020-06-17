@@ -46,6 +46,7 @@ def export_model_to_js(estimator, filename):
         f.write('export ' + output)
 
 def serialize_model(model, filename):
+    """Serialize the trained model into pickle format"""
     file_path = '/'.join(os.path.abspath(__file__).split('/')[:-5]) + '/assets/' + filename
     pickle.dump(model, open(file_path, 'wb'))
 
