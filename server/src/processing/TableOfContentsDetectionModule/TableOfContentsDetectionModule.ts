@@ -137,7 +137,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         } else if (
           word
             .toString()
-            .match(/[ ._]+(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)
+            .match(/[ ._]*(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)
         ) {
           this.addAlignedNumberRight(romanNumberRight, word);
         }
@@ -151,6 +151,12 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       numbersInsideIntersectionLeft.forEach(word => {
         if (word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
           this.addAlignedNumberLeft(numberLeft, word);
+        } else if (
+          word
+            .toString()
+            .match(/[ ._]*(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)
+        ) {
+          this.addAlignedNumberRight(romanNumberRight, word);
         }
       });
     }
