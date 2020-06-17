@@ -41,7 +41,7 @@ We use the [git flow branching model][git-flow].
 
 - `master` branch represents latest release version. HEAD of this branch should be equal to last tagged release.
 
-- `develop` branch represents the cutting edge version. This is probably the one you want to fork from and base your patch on. This is the default github branch.
+- `develop` branch represents the cutting edge version. This is probably the one you want to fork from and base your patch on.
 
 - Version tags. All released versions are tagged and pushed in the repository. For instance if you want to checkout the 1.0.2 version:
 
