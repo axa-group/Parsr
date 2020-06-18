@@ -312,13 +312,17 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     for (let i = 0; i < allParagraphs.length; i++) {
       if (
         allParagraphs[i].content.find(
-          OneLine =>
-            OneLine.box.top >= line.box.top - 1 &&
-            OneLine.box.top <= line.box.top + 1 &&
+          oneLine =>
+            oneLine.box.top >= line.box.top - 1 &&
+            oneLine.box.top <= line.box.top + 1 &&
             !tocParagraphs.includes(allParagraphs[i]),
         )
       ) {
-        tocParagraphs.push(allParagraphs[i]);
+        if(allParagraphs[i].left < line.box.left) {
+          tocParagraphs.unshift(allParagraphs[i]);
+        } else {
+          tocParagraphs.push(allParagraphs[i]);
+        }
       }
     }
   }
