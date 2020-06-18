@@ -33,6 +33,9 @@ interface Options {
 
 const defaultOptions = (defaultConfig as any) as Options;
 
+const arabicRegexp = /[0-9]+(\.[0-9]+)?( |$)/g;
+const romanRegexp = /(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi;
+
 export class TableOfContentsDetectionModule extends Module<Options> {
   public static moduleName = 'table-of-contents-detection';
 
@@ -132,13 +135,9 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           word => BoundingBox.getOverlap(word.box, intersectionBoxRight).box1OverlapProportion > 0,
         );
       numbersInsideIntersectionRight.forEach(word => {
-        if (word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
+        if (word.toString().match(arabicRegexp)) {
           this.addAlignedNumberRight(numberRight, word);
-        } else if (
-          word
-            .toString()
-            .match(/[ ._]*(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)
-        ) {
+        } else if (word.toString().match(romanRegexp)) {
           this.addAlignedNumberRight(romanNumberRight, word);
         }
       });
@@ -149,13 +148,9 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
         );
       numbersInsideIntersectionLeft.forEach(word => {
-        if (word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)) {
+        if (word.toString().match(arabicRegexp)) {
           this.addAlignedNumberLeft(numberLeft, word);
-        } else if (
-          word
-            .toString()
-            .match(/[ ._]*(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi)
-        ) {
+        } else if (word.toString().match(romanRegexp)) {
           this.addAlignedNumberRight(romanNumberRight, word);
         }
       });
@@ -214,10 +209,9 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     for (let box of storeBoxNumber) {
       nbOfNumber = box.length;
       for (const word of box) {
-        let num: number[] = [];
-        num.push(Number(word.toString().match(/[0-9]+(\.[0-9]+)?( |$)/g)));
-        if (Number.isInteger(num[0])) {
-          storedInteger.push(num[0]);
+        let num = Number(word.toString().match(arabicRegexp));
+        if (Number.isInteger(num)) {
+          storedInteger.push(num);
         }
       }
       if (storedInteger.length / nbOfNumber > 0.75) {
@@ -237,17 +231,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     for (let box of storeBoxNumber) {
       nbOfNumber = box.length;
       for (const word of box) {
-        let romanNum: number[] = [];
-        romanNum.push(
-          Number(
-            this.romanToArabic(
-              word
-                .toString()
-                .match(/(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi),
-            ),
-          ),
-        );
-        storedRomanNbInteger.push(romanNum[0]);
+        storedRomanNbInteger.push(Number(this.romanToArabic(word.toString().match(romanRegexp))));
       }
       if (storedRomanNbInteger.length / nbOfNumber > 0.75) {
         nbOfRomanNbIntegerInOrder = this.findIntegerAscendingOrder(storedRomanNbInteger);
