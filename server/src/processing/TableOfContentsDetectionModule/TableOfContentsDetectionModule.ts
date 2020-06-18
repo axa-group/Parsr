@@ -170,9 +170,9 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         (aNum[0].box.left + aNum[0].box.width - 20 <= number.box.left &&
           aNum[0].box.left + aNum[0].box.width - 5 >= number.box.left),
     );
-    if (indexValueExist !== -1) {
+    if (indexValueExist !== -1 && storeBoxNumber[indexValueExist].indexOf(number) === -1) {
       storeBoxNumber[indexValueExist].push(number);
-    } else {
+    } else if (indexValueExist === -1) {
       storeBoxNumber.push([number]);
     }
   }
