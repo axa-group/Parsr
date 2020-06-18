@@ -9,7 +9,7 @@ Block examples are obtained using the [foo.pdf](../samples/foo.pdf) sample file:
   - [1. Element types](#1-element-types)
     - [1.1. Paragraphs](#11-paragraphs)
     - [1.2. Headings](#12-headings)
-    - [1.3. Table](#13-tables)
+    - [1.3. Tables](#13-tables)
     - [1.4. Lists](#14-lists)
     - [1.5. Tables of Content](#15-table-of-contents)
 

@@ -2,7 +2,7 @@
 
 This module exports a json file with information about the contents and structure of the document.
 
-Example:
+Example from [foo.pdf](../../../../samples/foo.pdf) sample file:
 ```json
 {
   "metadata": [],
