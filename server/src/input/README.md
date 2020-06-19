@@ -37,93 +37,93 @@ Currently, the following file formats are available for Parsr:
     <td style="text-align:center; font-weight: bold">Amazon Textract</td>
     <td style="text-align:center; font-weight: bold">MS Cognitive Services</td>
   </tr>
-  <tr>
-    <td style="text-align:center; font-weight: bold">.pdf</td>
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
+  <tr style="text-align: center; font-weight: bold">
+    <td>.pdf</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
   </tr>
-  <tr>
-    <td style="text-align:center; font-weight: bold">.docx</td>
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
+  <tr style="text-align: center; font-weight: bold">
+    <td>.docx</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
   </tr>
-  <tr>
-    <td style="text-align:center; font-weight: bold">.eml</td>
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
+  <tr style="text-align: center; font-weight: bold">
+    <td>.eml</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
   </tr>
-  <tr>
-    <td style="text-align:center; font-weight: bold">.tiff</td>
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: #FF4040" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
+  <tr style="text-align: center; font-weight: bold">
+    <td>.tiff</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
   </tr>
-  <tr>
-    <td style="text-align:center; font-weight: bold">.png</td>
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: #FF4040" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
+  <tr style="text-align: center; font-weight: bold">
+    <td>.png</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
   </tr>
-  <tr>
-    <td style="text-align:center; font-weight: bold">.jpeg</td>
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: #FF4040" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
-    <td style="background: lightgreen" />
+    <tr style="text-align: center; font-weight: bold">
+    <td>.jpeg</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: lightgreen">✓</td>
   </tr>
-  <tr>
-    <td style="text-align:center; font-weight: bold">.json</td>
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: lightgreen" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
+    <tr style="text-align: center; font-weight: bold">
+    <td>.json</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
   </tr>
-  <tr>
-    <td style="text-align:center; font-weight: bold">.xml</td>
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: lightgreen" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
-    <td style="background: #FF4040" />
+    <tr style="text-align: center; font-weight: bold">
+    <td>.xml</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: lightgreen">✓</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
+    <td style="background: #FF4040">✗</td>
   </tr>
 </table>
 
