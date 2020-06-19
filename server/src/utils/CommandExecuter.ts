@@ -213,7 +213,6 @@ export function levelPrediction(
     fontRatio,
   ];
   return run(COMMANDS.PYTHON, args).then(prediction => {
-    logger.info(`Level prediction succeed`);
     return prediction;
   });
 }
@@ -240,7 +239,6 @@ export function headingPrediction(
     fontRatio,
   ];
   return run(COMMANDS.PYTHON, args).then(prediction => {
-    logger.info(`Heading prediction succeed`);
     return prediction;
   });
 }
