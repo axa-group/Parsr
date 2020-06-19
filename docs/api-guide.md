@@ -79,7 +79,7 @@ The document you sent has been accepted and is being processed. The body contain
 
 ### Status: 415 - Unsupported Media Type
 
-This error means the file format you sent is not supported by the platform (it's probably not a PDF or an Image).
+This error means the file format you sent is not supported by the platform.
 
 ## 2. Get the queue status: `GET /queue/{id}`
 
@@ -107,7 +107,7 @@ This status means the document is still being processed.
 
 The `estimated-remaining-time` is expressed in seconds.
 
-_**NB:** `estimated-remaining-time` and `progress-percentage` are not working yet and are here and are placeholder for future usage._
+_**NB:** `estimated-remaining-time` and `progress-percentage` are not working yet and are placeholder for future usage._
 
 ### Status: 201 - Created
 

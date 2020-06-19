@@ -2,21 +2,23 @@
 
 ## Purpose
 
-The Image detection module detect images in a PDF document when PdfMiner extractor is selected.
+The Image detection module detect images in a PDF document.
 
 ## What it does
 
-It matches every image detected by PdfMiner to the correct image file and appends image URI to all image elements in the document.
+It matches every image detected by the extractor to the correct image file and appends image URI to all image elements in the document.
 
 ## Dependencies
 
-MuPDF: `mutool extract` is used to extract all image files from a PDF.
+MuPDF: `mutool extract` is used to extract all image files from a PDF *when pdfminer is selected as pdf extractor*.
 
 ## Parameters
 
 `ocrImages`: Allows to extract data from detected images using selected OCR. When `true`, all detected images will be replaced with data extracted by OCR.
 
 ## How it works
+
+### with pdfminer:
 
 1. It uses the name of every image (figure name) detected by PdfMiner and tries to match with a single image identifier extracted by 'dumppdf'.
 
@@ -37,6 +39,10 @@ MuPDF: `mutool extract` is used to extract all image files from a PDF.
 </dict></value>
 ```
 
+### with pdfjs:
+
+For the case of pdfjs extractor, the library used to extract texts from the document can also natively extract every image. So a re-execution of pdfjs extractor is done, but asking only for image data.
+
 ## Accuracy
 
 Almost **perfect**.
@@ -45,7 +51,5 @@ Almost **perfect**.
 
 - Images will not be reconstructed if an image detected by extractor (pdfMiner) is not extracted by Muttol extract command then
 - Some PDF can use more than one image file (one alpha image with one background image) to generate one visual image in PDF, in that case the module will detect both images.
-
-##TODO
-
-- Add image detection for other extractors (Abby, Pdf.js...)
+- The module depends on the selected pdf extractor to have any way of extracting images from the document.
+- For now, only 'pdfminer' and 'pdfjs' can extract images information. So if you use another pdf extractor, the module will skip its execution and return an unmodified document.
