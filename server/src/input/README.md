@@ -22,19 +22,15 @@ Each module returns a valid `Document` object with an array of `Words` for each 
 
 Currently, the following file formats are available for Parsr:
 
- <style>
-      td, th {
-        text-align: center;
-        font-weight: bold;
-      }
-      .yes {
-        background: lightgreen;
-      }
-      .no {
-        background: #FF4040;
-    }
-</style>
 <table>
+  <style>
+    td, th {
+      text-align: center;
+      font-weight: bold;
+    }
+    .yes {background: lightgreen; }
+    .no { background: #FF4040; }
+  </style>
   <tr>
     <th rowspan="2">Input format</th>
     <th colspan="8">Input modules</th>
@@ -141,5 +137,6 @@ Currently, the following file formats are available for Parsr:
 
 This means that for processing a pdf file, 4 extractors can be chosen: pdfminer, pdf.js, ABBYY or Tesseract.
 
-**Note:** *not all extractors share the same functionality or return the same information, so one should check for the best extractor given the use case.*
+**Note:** *not all extractors share the same functionality or return the same information, so one should check for the best extractor given the use case.*  
+
 **Note:** *when using a json or xml file as input, extractor configuration will be ignored as there is currently only one extractor for each of this formats.*
