@@ -23,115 +23,107 @@ Each module returns a valid `Document` object with an array of `Words` for each 
 Currently, the following file formats are available for Parsr:
 
 <table>
-  <style>
-    td, th {
-      text-align: center;
-      font-weight: bold;
-    }
-    .yes {background: lightgreen; }
-    .no { background: #FF4040; }
-  </style>
   <tr>
     <th rowspan="2">Input format</th>
     <th colspan="8">Input modules</th>
   </tr>
   <tr>
-    <td>Pdfminer</td>
-    <td>pdf.js</td>
-    <td>ABBYY</td>
-    <td>Tesseract</td>
-    <td>JSON Extractor</td>
-    <td>Google Vision</td>
-    <td>Amazon Textract</td>
-    <td>MS Cognitive Services</td>
+    <td style="text-align:center; font-weight: bold">Pdfminer</td>
+    <td style="text-align:center; font-weight: bold">pdf.js</td>
+    <td style="text-align:center; font-weight: bold">ABBYY</td>
+    <td style="text-align:center; font-weight: bold">Tesseract</td>
+    <td style="text-align:center; font-weight: bold">JSON Extractor</td>
+    <td style="text-align:center; font-weight: bold">Google Vision</td>
+    <td style="text-align:center; font-weight: bold">Amazon Textract</td>
+    <td style="text-align:center; font-weight: bold">MS Cognitive Services</td>
   </tr>
   <tr>
-    <td>.pdf</td>
-    <td class="yes" />
-    <td class="yes" />
-    <td class="yes" />
-    <td class="yes" />
-    <td class="no" />
-    <td class="no" />
-    <td class="no" />
-    <td class="no" />
+    <td style="text-align:center; font-weight: bold">.pdf</td>
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
   </tr>
   <tr>
-    <td>.docx</td>
-    <td class="yes" />
-    <td class="yes" />
-    <td class="yes" />
-    <td class="yes" />
-    <td class="no" />
-    <td class="no" />
-    <td class="no" />
-    <td class="no" />
+    <td style="text-align:center; font-weight: bold">.docx</td>
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
   </tr>
   <tr>
-    <td>.eml</td>
-    <td class="yes" />
-    <td class="yes" />
-    <td class="yes" />
-    <td class="yes" />
-    <td class="no" />
-    <td class="no" />
-    <td class="no" />
-    <td class="no" />
+    <td style="text-align:center; font-weight: bold">.eml</td>
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
   </tr>
   <tr>
-    <td>.tiff</td>
-    <td class="no" />
-    <td class="no" />
-    <td class="yes" />
-    <td class="yes" />
-    <td class="no" />
-    <td class="yes" />
-    <td class="yes" />
-    <td class="yes" />
+    <td style="text-align:center; font-weight: bold">.tiff</td>
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: #FF4040" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
   </tr>
   <tr>
-    <td>.png</td>
-    <td class="no" />
-    <td class="no" />
-    <td class="yes" />
-    <td class="yes" />
-    <td class="no" />
-    <td class="yes" />
-    <td class="yes" />
-    <td class="yes" />
+    <td style="text-align:center; font-weight: bold">.png</td>
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: #FF4040" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
   </tr>
   <tr>
-    <td>.jpeg</td>
-    <td class="no" />
-    <td class="no" />
-    <td class="yes" />
-    <td class="yes" />
-    <td class="no" />
-    <td class="yes" />
-    <td class="yes" />
-    <td class="yes" />
+    <td style="text-align:center; font-weight: bold">.jpeg</td>
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: #FF4040" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
+    <td style="background: lightgreen" />
   </tr>
   <tr>
-    <td>.json</td>
-    <td class="no" />
-    <td class="no" />
-    <td class="no" />
-    <td class="no" />
-    <td class="yes" />
-    <td class="no" />
-    <td class="no" />
-    <td class="no" />
+    <td style="text-align:center; font-weight: bold">.json</td>
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: lightgreen" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
   </tr>
   <tr>
-    <td>.xml</td>
-    <td class="no" />
-    <td class="no" />
-    <td class="yes" />
-    <td class="no" />
-    <td class="no" />
-    <td class="no" />
-    <td class="no" />
-    <td class="no" />
+    <td style="text-align:center; font-weight: bold">.xml</td>
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: lightgreen" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
+    <td style="background: #FF4040" />
   </tr>
 </table>
 
