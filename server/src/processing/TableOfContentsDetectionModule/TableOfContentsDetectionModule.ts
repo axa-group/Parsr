@@ -69,13 +69,22 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       tocParagraphs.push(...this.findTocPara(tocCandidates, tocIntegerRight));
       tocParagraphs.push(...this.findTocPara(tocCandidates, tocRomanNumberRight));
       tocParagraphs.push(...this.findTocPara(tocCandidates, tocIntegerLeft));
-
       tocParagraphs.forEach(paragraph => {
         paragraph.content.forEach(line => {
           if (line.content.length === 1) {
             this.completeTocLine(tocParagraphs, allParagraphs, line);
           }
         });
+      });
+      tocCandidates.forEach(function(candidate) {
+        if (
+          new RegExp(`^(${parameters['pageKeywords'].join('|')}).* (\\d+) (.+)`, 'gi').test(
+            candidate.toString(),
+          ) &&
+          tocParagraphs.indexOf(candidate) === -1
+        ) {
+          tocParagraphs.push(candidate);
+        }
       });
 
       // the detection threshold is increased a little if the previous page didn't have a TOC.
@@ -108,28 +117,28 @@ export class TableOfContentsDetectionModule extends Module<Options> {
   }
 
   private storeNumAndRomanNum(
-    tocItemParagraphs: Paragraph[],
+    tocCandidatesParagraphs: Paragraph[],
   ): { right: Word[][]; left: Word[][]; roman: Word[][] } {
     let numberRight: Word[][] = [];
     let numberLeft: Word[][] = [];
     let romanNumberRight: Word[][] = [];
 
-    for (const tocItemParagraph of tocItemParagraphs) {
-      const w = tocItemParagraph.width * 0.1;
+    for (const tocCandidateParagraph of tocCandidatesParagraphs) {
+      const w = tocCandidateParagraph.width * 0.1;
 
       const intersectionBoxRight = new BoundingBox(
-        tocItemParagraph.right - w,
-        tocItemParagraph.top,
+        tocCandidateParagraph.right - w,
+        tocCandidateParagraph.top,
         w,
-        tocItemParagraph.height,
+        tocCandidateParagraph.height,
       );
       const intersectionBoxLeft = new BoundingBox(
-        tocItemParagraph.left,
-        tocItemParagraph.top,
-        1.5 * w,
-        tocItemParagraph.height,
+        tocCandidateParagraph.left,
+        tocCandidateParagraph.top,
+        w,
+        tocCandidateParagraph.height,
       );
-      const numbersInsideIntersectionRight = tocItemParagraph
+      const numbersInsideIntersectionRight = tocCandidateParagraph
         .getWords()
         .filter(
           word => BoundingBox.getOverlap(word.box, intersectionBoxRight).box1OverlapProportion > 0,
@@ -142,7 +151,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
         }
       });
 
-      const numbersInsideIntersectionLeft = tocItemParagraph
+      const numbersInsideIntersectionLeft = tocCandidateParagraph
         .getWords()
         .filter(
           word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
@@ -287,19 +296,19 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     return maxIntegerInOrder;
   }
 
-  private findTocPara(tocItemParagraphs: Paragraph[], tocInteger: Word[]): Paragraph[] {
+  private findTocPara(tocCandidatesParagraphs: Paragraph[], tocInteger: Word[]): Paragraph[] {
     if (!tocInteger || tocInteger.length < 2) {
       return [];
     }
     let paragraphs: Paragraph[] = [];
-    for (let i = 0; i < tocItemParagraphs.length; i++) {
-      for (let j = 0; j < tocItemParagraphs[i].content.length; j++) {
+    for (let i = 0; i < tocCandidatesParagraphs.length; i++) {
+      for (let j = 0; j < tocCandidatesParagraphs[i].content.length; j++) {
         for (let integer of tocInteger) {
           if (
-            tocItemParagraphs[i].content[j].content.find(word => word === integer) &&
-            !paragraphs.includes(tocItemParagraphs[i])
+            tocCandidatesParagraphs[i].content[j].content.find(word => word === integer) &&
+            !paragraphs.includes(tocCandidatesParagraphs[i])
           ) {
-            paragraphs.push(tocItemParagraphs[i]);
+            paragraphs.push(tocCandidatesParagraphs[i]);
             break;
           }
         }
@@ -318,7 +327,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
             !tocParagraphs.includes(allParagraphs[i]),
         )
       ) {
-        if(allParagraphs[i].left < line.box.left) {
+        if (allParagraphs[i].left < line.box.left) {
           tocParagraphs.unshift(allParagraphs[i]);
         } else {
           tocParagraphs.push(allParagraphs[i]);
