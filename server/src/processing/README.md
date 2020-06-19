@@ -10,26 +10,31 @@
 
 The processing modules in Parsr perform a central role of cleaning and enriching the extracted raw output.
 Each module performs a particular operation on a document representation, generates a new valid Document, and then passes it on to the next module for the next treatment.
-Each module contains a set of configurable parameters, which can be consulted in the per-module documentation pages below:
+Each module can contain a set of configurable parameters, which can be consulted in the per-module documentation pages below:
 
 ## 1. Current Processing Modules
 
-1. [Header and Footer Detection](HeaderFooterDetectionModule/README.md)
-2. [Hierarchy Detection](HierarchyDetectionModule/README.md)
-3. [Key-Value Pair Detection](KeyValueDetectionModule/README.md)
-4. [Lines to Paragraph](LinesToParagraphModule/README.md)
-5. [Link Detection](LinkDetectionModule/README.md)
-6. [List Detection](ListDetectionModule/README.md)
-7. [Number Correction](NumberCorrectionModule/README.md)
-8. [Out of Page Removal](OutOfPageRemovalModule/README.md)
-9. [Page Number Detection](PageNumberDetectionModule/README.md)
-10. [Reading Order Detection](ReadingOrderDetectionModule/README.md)
-11. [Redundancy Detection](RedundancyDetectionModule/README.md)
-12. [Regex Matcher](RegexMatcherModule/README.md)
-13. [Separate Words](SeparateWordsModule/README.md)
-14. [Table Detection](TableDetectionModule/README.md)
-15. [Whitespace Removal](WhitespaceRemovalModule/README.md)
-16. [Words To Line](WordsToLineModule/README.md)
+1. [Drawing Detection](DrawingDetectionModule/README.md)
+2. [Header and Footer Detection](HeaderFooterDetectionModule/README.md)
+3. [Heading Detection](MLHeadingDetectionModule/README.md)
+4. [Hierarchy Detection](HierarchyDetectionModule/README.md)
+5. [Image Detection](ImageDetectionModule/README.md)
+6. [Key-Value Pair Detection](KeyValueDetectionModule/README.md)
+7. [Lines to Paragraph](LinesToParagraphModule/README.md)
+8. [Link Detection](LinkDetectionModule/README.md)
+9. [List Detection](ListDetectionModule/README.md)
+10. [Number Correction](NumberCorrectionModule/README.md)
+11. [Out of Page Removal](OutOfPageRemovalModule/README.md)
+12. [Page Number Detection](PageNumberDetectionModule/README.md)
+13. [Reading Order Detection](ReadingOrderDetectionModule/README.md)
+14. [Redundancy Detection](RedundancyDetectionModule/README.md)
+15. [Regex Matcher](RegexMatcherModule/README.md)
+16. [Remote Module](RemoteModule/README.md)
+17. [Separate Words](SeparateWordsModule/README.md)
+18. [Table Detection](TableDetectionModule/README.md)
+19. [Table of Contents Detection](TableOfContentsDetectionModule/README.md)
+20. [Whitespace Removal](WhitespaceRemovalModule/README.md)
+21. [Words To Line](WordsToLineModule/README.md)
 
 ## 2. Create your own Processing Module
 
