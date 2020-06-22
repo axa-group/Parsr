@@ -1,6 +1,7 @@
 import argparse
 import os
 import pandas as pd
+import pickle
 from sklearn import metrics
 from sklearn.feature_selection import RFECV
 from sklearn.model_selection import train_test_split
@@ -43,6 +44,11 @@ def export_model_to_js(estimator, filename):
     output = porter.export(embed_data=True)
     with open(os.path.join(args.out_dir, filename), mode='w+', encoding='utf8') as f:
         f.write('export ' + output)
+
+def serialize_model(model, filename):
+    """Serialize the trained model into pickle format"""
+    file_path = '/'.join(os.path.abspath(__file__).split('/')[:-5]) + '/assets/' + filename
+    pickle.dump(model, open(file_path, 'wb'))
 
 
 parser = argparse.ArgumentParser(description='Train a random forest model to recognize headings and a decision tree model to compute their levels.')
@@ -99,6 +105,10 @@ print('recall (heading detection):', metrics.recall_score(y_test1, y_pred_headin
 print('f1-score (heading detection):', metrics.f1_score(y_test1, y_pred_heading))
 print('accuracy (headings level):', metrics.accuracy_score(y_test2, y_pred_level))
 
-# exporting the models
+# transpiling the models to js
 export_model_to_js(selector_heading.estimator_, 'model.js')
 export_model_to_js(selector_level.estimator_, 'model_level.js')
+
+# serializing the models with pickle
+serialize_model(selector_heading, 'headings_model.pkl')
+serialize_model(selector_level, 'levels_model.pkl')
