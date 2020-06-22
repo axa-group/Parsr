@@ -7,8 +7,8 @@ For more information, along with individual configuration options, consult the p
 ## The Modules
 
 1. [JSON](json/README.md)
-2. [Markdown](markdown/README.md)
-3. [Text](text/README.md)
-4. [CSV](csv/README.md)
-5. [PDF](pdf/README.md)
-6. [XML](xml/README.md)
+2. [Simple JSON](simpleJson/README.md)
+3. [Markdown](markdown/README.md)
+4. [Text](text/README.md)
+5. [CSV](csv/README.md)
+6. [PDF](pdf/README.md)

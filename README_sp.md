@@ -28,7 +28,9 @@
 # Tabla de Contenidos
 
 - [Tabla de Contenidos](#tabla-de-contenidos)
-- [Primeros Pasos](#primeros-pasos) - [Instalación](#instalación) - [Uso](#uso)
+- [Primeros Pasos](#primeros-pasos)
+  - [Instalación](#instalación)
+  - [Uso](#uso)
 - [Documentación](#documentación)
 - [Contribuir](#contribuir)
 - [Licencias de Terceros](#licencias-de-terceros)

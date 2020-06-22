@@ -2,33 +2,36 @@
 
 This page is a guide on how to use the API.
 
-- [API Guide](#api-guide)
-	- [0. Introduction](#0-introduction)
-	- [1. Send Your Document: POST /document](#1-send-your-document-post-document)
-		- [`curl` command](#curl-command)
-		- [Status: 202 - Accepted](#status-202---accepted)
-		- [Status: 415 - Unsupported Media Type](#status-415---unsupported-media-type)
-	- [2. Get the queue status: GET /queue/{id}](#2-get-the-queue-status-get-queueid)
-		- [`curl` command](#curl-command-1)
-		- [Status: 200 - OK](#status-200---ok)
-		- [Status: 201 - Created](#status-201---created)
-		- [Status: 404 - Not Found](#status-404---not-found)
-		- [Status: 500 - Internal Server Error](#status-500---internal-server-error)
-	- [3. Get the results](#3-get-the-results)
-		- [3.1. JSON, Markdown and Text results](#31-json-markdown-and-text-results)
-			- [`curl` command](#curl-command-2)
-			- [Status: 200 - OK](#status-200---ok-1)
-			- [Status: 404 - Not Found](#status-404---not-found-1)
-		- [3.2. CSV List of Files: GET /csv/{id}](#32-csv-list-of-files-get-csvid)
-			- [`curl` command](#curl-command-3)
-			- [Status: 200 - OK](#status-200---ok-2)
-			- [Status: 404 - Not Found](#status-404---not-found-2)
-		- [3.3. CSV File: GET /csv/{id}/{page}/{table}](#33-csv-file-get-csvidpagetable)
-			- [`curl` command](#curl-command-4)
-			- [Status: 200 - OK](#status-200---ok-3)
-			- [Status: 404 - Not Found](#status-404---not-found-3)
-		- [3.4. Download Results](#34-download-results)
-	- [4. Server Configuration Access](#4-server-configuration-access)
+- [0. Introduction](#0-introduction)
+- [1. Send Your Document: POST /document](#1-send-your-document-post-document)
+  - [`curl` command](#curl-command)
+  - [Status: 202 - Accepted](#status-202---accepted)
+  - [Status: 415 - Unsupported Media Type](#status-415---unsupported-media-type)
+- [2. Get the queue status: GET /queue/{id}](#2-get-the-queue-status-get-queueid)
+  - [`curl` command](#curl-command-1)
+  - [Status: 200 - OK](#status-200---ok)
+  - [Status: 201 - Created](#status-201---created)
+  - [Status: 404 - Not Found](#status-404---not-found)
+  - [Status: 500 - Internal Server Error](#status-500---internal-server-error)
+- [3. Get the results](#3-get-the-results)
+  - [3.1. JSON, Markdown and Text results](#31-json-markdown-and-text-results)
+    - [`curl` command](#curl-command-2)
+    - [Status: 200 - OK](#status-200---ok-1)
+    - [Status: 404 - Not Found](#status-404---not-found-1)
+  - [3.2. CSV List of Files: GET /csv/{id}](#32-csv-list-of-files-get-csvid)
+    - [`curl` command](#curl-command-3)
+    - [Status: 200 - OK](#status-200---ok-2)
+    - [Status: 404 - Not Found](#status-404---not-found-2)
+  - [3.3. CSV File: GET /csv/{id}/{page}/{table}](#33-csv-file-get-csvidpagetable)
+    - [`curl` command](#curl-command-4)
+    - [Status: 200 - OK](#status-200---ok-3)
+    - [Status: 404 - Not Found](#status-404---not-found-3)
+  - [3.4. Download Results](#34-download-results)
+- [4. Server Configuration Access](#4-server-configuration-access)
+  - [4.1. Default Configuration](#41-default-configuration)
+  - [4.2. List of Modules](#42-list-of-modules)
+  - [4.3. Module Configuration](#43-module-configuration)
+  - [4.4. Checking Installed Dependencies](#44-checking-installed-dependencies)
 
 ## 0. Introduction
 
@@ -79,7 +82,7 @@ The document you sent has been accepted and is being processed. The body contain
 
 ### Status: 415 - Unsupported Media Type
 
-This error means the file format you sent is not supported by the platform (it's probably not a PDF or an Image).
+This error means the file format you sent is not supported by the platform.
 
 ## 2. Get the queue status: `GET /queue/{id}`
 
@@ -107,7 +110,7 @@ This status means the document is still being processed.
 
 The `estimated-remaining-time` is expressed in seconds.
 
-_**NB:** `estimated-remaining-time` and `progress-percentage` are not working yet and are here and are placeholder for future usage._
+_**NB:** `estimated-remaining-time` and `progress-percentage` are not working yet and are placeholder for future usage._
 
 ### Status: 201 - Created
 
@@ -247,19 +250,35 @@ For CSV option, a `zip` will be downloaded, containing one `csv` file per each t
 
 The API can also be queried to gain access to the following server assets:
 
-1.  **Default Configuration**: The server's default configuration can be queried (at `/api/v1/default-config`) using:
+### 4.1. Default Configuration
 
-        curl -X GET \
-        http://localhost:3001/api/v1/default-config
+The server's default configuration can be queried (at `/api/v1/default-config`) using:
 
-2.  **List of Modules**: The list of all usable modules can be queried from the server (at `/api/v1/modules`) using:
+    curl -X GET \
+    http://localhost:3001/api/v1/default-config
 
-        curl -X GET \
-        http://localhost:3001/api/v1/modules
+### 4.2. List of Modules
 
-3.  **Module Configuration**: A module's configuration file, which includes name, description and each module parameter's default value and range can be queried (at `/api/v1/module-config/<module_name>`) using:
+The list of all usable modules can be queried from the server (at `/api/v1/modules`) using:
 
-        curl -X GET \
-        http://localhost:3001/api/v1/module-config/table-detection
+    curl -X GET \
+    http://localhost:3001/api/v1/modules
+
+### 4.3. Module Configuration
+
+A module's configuration file, which includes name, description and each module parameter's default value and range can be queried (at `/api/v1/module-config/<module_name>`) using:
+
+    curl -X GET \
+    http://localhost:3001/api/v1/module-config/table-detection
 
 ... which will fetch the configuration file for the table-detection module.
+
+### 4.4. Checking Installed Dependencies
+
+If you run into troubles running Parsr, a good first way to check if every required dependency is installed is by going to:
+
+    http://localhost:3001/api/v1/check-installation
+
+![table example](assets/check-installation.png)
+
+A table will be displayed, showing every required (and optional) dependency, and it's path in your system. If you find that your system is missing a dependency, refer to the [installation guide](installation.md) to fix the problem.

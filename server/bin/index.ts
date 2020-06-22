@@ -148,14 +148,6 @@ function main(): void {
           );
         }
 
-        // if (config.output.formats['json-compact']) {
-        // 	promises.push(
-        // 		new JsonCompactExporter(doc).export(
-        // 			`${outputFolder}/${omitFilenameExtension(documentName)}.compact.json`,
-        // 		),
-        // 	);
-        // }
-
         if (config.output.formats.text) {
           promises.push(
             new TextExporter(doc, config.output.includeMarginals).export(
@@ -171,22 +163,6 @@ function main(): void {
             ),
           );
         }
-
-        // if (config.output.formats.xml) {
-        // 	promises.push(
-        // 		new XmlExporter(doc).export(
-        // 			`${outputFolder}/${omitFilenameExtension(documentName)}.md`
-        // 		)
-        // 	);
-        // }
-
-        // if (config.output.formats.confidences) {
-        // 	promises.push(
-        // 		new ConfidencesExporter(doc).export(
-        // 			`${outputFolder}/${omitFilenameExtension(documentName)}.confidences`
-        // 		)
-        // 	);
-        // }
 
         if (config.output.formats.csv) {
           promises.push(

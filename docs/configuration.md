@@ -11,6 +11,7 @@
     - [4.1. Output Format](#41-output-format)
     - [4.2. Granularity](#42-granularity)
     - [4.3. Include Marginals](#43-include-marginals)
+    - [4.4. Include Drawings](#44-include-drawings)
   - [5. Exempli gratia](#5-exempli-gratia)
 
 To configure the pipeline and choose what modules will be called and with what parameters, you have to provide a JSON file.
@@ -21,9 +22,9 @@ There is only a few required keys:
 - `cleaner` `[Array]` is a list of every cleaning tools that will be called.
 - `output` `[Object]` contains the list of formats to export and some other details.
 
-Cleaning tools have default parameters that work pretty well, but you can override the parameters by providing the in the config.
+Cleaning tools have default parameters that work pretty well, but you can override the parameters by providing them in the config.
 
-The cleaner array may appear unconventionnal but is really easy to use. Every item can be of type:
+The cleaner array may appear unconventional but is really easy to use. Every item can be of type:
 
 - `String`: it's the name of the cleaning tool you want to call.
 - `Object`: it's the parameters for the cleaning tool below.
@@ -35,7 +36,6 @@ The cleaner array may appear unconventionnal but is really easy to use. Every it
     "version": 0.9,               // Version number of the configuration file format
     "extractor": {                // Extraction options (See section 2.)
         "pdf": "extractor-tool",  // Select the tool to extract PDF files
-        // "img": "extractor-tool", Deprecated since 0.9 version
         "ocr": "extractor-tool",  // Select the tool to extract image files (JPG, PNG, TIFF, etc.)
         "language": "lang",       // Select the defaut language of your document. This is used to increase the accuracy of OCR tools (See section 2.2)
         "credentials": {          // Extractors running online services may require credentials to work. (see section 2.3)
@@ -64,13 +64,14 @@ The cleaner array may appear unconventionnal but is really easy to use. Every it
             "csv": true,
             "markdown": false
         },
-        "granularity": "word | character", // Set the granularity of the output (See section 4.2.)
-        "includeMarginals": false          // Chose whether the output will include headers and footers (See section 4.3.)
+        "granularity": "word | character",  // Set the granularity of the output (See section 4.2.)
+        "includeMarginals": false,          // Chose whether the output will include headers and footers (See section 4.3.)
+        "includeDrawings": false,           // Choose whether the output will include Drawings information.
     }
 }
 ```
 
-_This means the module called `fontMerge` will be called, then `removeOutOfPage`, then `removeWhitespace` with some special parameters, etc._
+_This means the module called `module-name-1` will be called, then `module-name-2`, then `module-name-3` with some special parameters, etc._
 
 ## 2. Extractor Config
 
@@ -78,10 +79,11 @@ _This means the module called `fontMerge` will be called, then `removeOutOfPage`
 
 Different extractors are available for each input file format.
 
-- **PDF files:** two extractors are currently available for PDF files:
+- **PDF files:** four extractors are currently available for PDF files:
 
   - `pdfminer`, which is an advanced python based extractor capable of extracting low and high level textual structures (from characters to paragraphs),
   - `pdfjs`, Mozilla's free solution for parsing documents. This is the recommended extractor to parse large documents (200+ pages).
+  - `abbyy`, uses ABBYY Finereader service to extract contents from a PDF.
 
   If none is specified, `pdfminer` is the default one.
 
@@ -94,6 +96,12 @@ Different extractors are available for each input file format.
   - `amazon-textract`, that uses [Amazon Textract](https://us-east-2.console.aws.amazon.com/textract/home) service to detect and process text inside an image.
 
   If none is specified, `tesseract` is the default one.
+
+*Other supported file formats:*
+- **XML:** if an XML file is used as input, it will be interpreted with ABBYY.
+- **JSON:** JSON files extractor will expect the structure defined in [Parsr JSON output](json-output.md)
+- **EML:** .eml files will be converted into a PDF with A4 size pages, and then processed with the selected PDF extractor.
+- **DOCX:** .docx files will be converted into a PDF with A4 size pages, and then processed with the selected PDF extractor.
 
 ### 2.2. Language
 
@@ -169,10 +177,11 @@ _Note: some modules have dependencies that need to be called before in the pipel
 
 The platform can export the following formats:
 
-- `json`
-- `markdown`
-- `text`
-- `csv`
+- `json`, structure defined in [Parsr JSON output](json-output.md).
+- `simpleJson`, structure defined in [Parsr simpleJSON output](simple-json-output.md).
+- `markdown`,
+- `text`,
+- `csv`,
 - `pdf` (pandoc required)
 
 ### 4.2. Granularity
@@ -186,6 +195,12 @@ _Warning: exporting with a character granularity will result on very big Json fi
 ### 4.3. Include Marginals
 
 The `includeMarginals: boolean` parameter allows to chose whether the output will include headers and footers.
+
+### 4.4. Include Drawings
+
+The `includeDrawings: boolean` parameter specifies if json output should contain information about Drawings.
+
+*Warning: including Drawings information could greatly increase json output size.*
 
 ## 5. Exempli gratia
 
@@ -232,6 +247,7 @@ The `includeMarginals: boolean` parameter allows to chose whether the output wil
   "output": {
     "granularity": "word",
     "includeMarginals": false,
+    "includeDrawings": false,
     "formats": {
       "json": true,
       "text": true,

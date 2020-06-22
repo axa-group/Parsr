@@ -29,8 +29,8 @@
 
 - [Índice](#índice)
 - [Começando](#começando)
-- [Instalação](#instalação)
-- [Uso](#uso)
+  - [Instalação](#instalação)
+  - [Uso](#uso)
 - [Documentação](#documentação)
 - [Contribua](#contribua)
 - [Licenças de Terceiros](#licenças-de-terceiros)

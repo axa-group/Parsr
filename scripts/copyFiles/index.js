@@ -21,3 +21,4 @@ if (!shell.test('-d', './dist/assets') || !shell.test('-d', './dist/bin')) {
 }
 shell.cp('-u', './server/assets/*.py', './dist/assets/');
 shell.cp('-u', './server/defaultConfig.json', './dist/bin/');
+shell.cp('-u', './server/assets/*.pkl', './dist/assets/');

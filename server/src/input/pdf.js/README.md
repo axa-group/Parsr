@@ -1,7 +1,7 @@
 # PDF.js Input Module
 
 Extractor module for PDF files. 
-This is the recommended module for very large documents as it's the faster solution currently available.
+This is the recommended module for very large documents as it's the fastest solution currently available.
 
 ### Credentials
 
