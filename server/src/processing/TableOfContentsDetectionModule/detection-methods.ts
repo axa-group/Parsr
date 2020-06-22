@@ -21,7 +21,7 @@ export const threshold = 0.4;
 const arabicRegexp = /[0-9]+(\.[0-9]+)?( |$)/g;
 const romanRegexp = /(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi;
 
-export function TOCDetected(allParagraphs: Paragraph[], parameters): Paragraph[] {
+export function TOCDetected(allParagraphs: Paragraph[], pageKeywords: string[]): Paragraph[] {
   let tocCandidates: Paragraph[] = [];
   let tocParagraphs: Paragraph[] = [];
   let tocIntegerRight: Word[] = [];
@@ -29,7 +29,7 @@ export function TOCDetected(allParagraphs: Paragraph[], parameters): Paragraph[]
   let tocIntegerLeft: Word[] = [];
 
   if (allParagraphs.length > 0) {
-    const { right, left, roman, candidates } = storeNumAndRomanNum(allParagraphs);
+    const { right, left, roman, candidates } = storeNumAndRomanNum(allParagraphs, pageKeywords);
     tocIntegerRight = findTocNumber(right);
     tocRomanNumberRight = findTocRomanNumber(roman);
     tocIntegerLeft = findTocNumber(left);
@@ -48,9 +48,7 @@ export function TOCDetected(allParagraphs: Paragraph[], parameters): Paragraph[]
   });
   tocCandidates.forEach(function(candidate) {
     if (
-      new RegExp(`^(${parameters['pageKeywords'].join('|')}).* (\\d+) (.+)`, 'gi').test(
-        candidate.toString(),
-      ) &&
+      new RegExp(`^(${pageKeywords.join('|')}).* (\\d+) (.+)`, 'gi').test(candidate.toString()) &&
       tocParagraphs.indexOf(candidate) === -1
     ) {
       tocParagraphs.push(candidate);
@@ -59,8 +57,14 @@ export function TOCDetected(allParagraphs: Paragraph[], parameters): Paragraph[]
   return tocParagraphs;
 }
 
+/*
+  - Searches for text starting or finishing in numbers in the Left or right 10% width area of the BBox,
+    then store them by alignment.
+  - Searches for text containing pagekeywords following by a digit.
+*/
 function storeNumAndRomanNum(
   allParagraphs: Paragraph[],
+  pageKeywords: string[],
 ): { right: Word[][]; left: Word[][]; roman: Word[][]; candidates: Paragraph[] } {
   let numberRight: Word[][] = [];
   let numberLeft: Word[][] = [];
@@ -69,7 +73,6 @@ function storeNumAndRomanNum(
 
   for (const paragraph of allParagraphs) {
     const w = paragraph.width * 0.1;
-
     const intersectionBoxRight = new BoundingBox(
       paragraph.right - w,
       paragraph.top,
@@ -93,7 +96,8 @@ function storeNumAndRomanNum(
       numbersInsideIntersectionRight.filter(isNumberRight).length >
         Math.floor(numbersInsideIntersectionRight.length * 0.5) ||
       numbersInsideIntersectionLeft.filter(isNumberLeft).length >
-        Math.floor(numbersInsideIntersectionLeft.length * 0.5)
+        Math.floor(numbersInsideIntersectionLeft.length * 0.5) ||
+      hasPageNKeyword(paragraph, pageKeywords) === true
     ) {
       paragraphsCandidates.push(paragraph);
       numbersInsideIntersectionRight.forEach(word => {
@@ -118,6 +122,29 @@ function storeNumAndRomanNum(
     roman: sortBoxNumber(romanNumberRight),
     candidates: paragraphsCandidates,
   };
+}
+
+function isNumberRight(word: Word): boolean {
+  const decimalNumbers = new RegExp(arabicRegexp);
+  const romanNumbers = new RegExp(romanRegexp);
+  const w = word.toString();
+  return decimalNumbers.test(w) || romanNumbers.test(w);
+}
+
+function isNumberLeft(word: Word): boolean {
+  const decimalNumbers = new RegExp(arabicRegexp);
+  const w = word.toString();
+  return decimalNumbers.test(w);
+}
+
+function isSeparator(word: Word): boolean {
+  const separators = new RegExp(/^[-. ]+$/);
+  return separators.test(word.toString().trim());
+}
+
+function hasPageNKeyword(p: Paragraph, pageKeywords: string[]): boolean {
+  const regexp = `^(${pageKeywords.join('|')}).* (\\d+) (.+)`;
+  return new RegExp(regexp, 'gi').test(p.toString());
 }
 
 function addAlignedNumberRight(storeBoxNumber: Word[][], number: Word) {
@@ -160,6 +187,10 @@ function sortBoxNumber(storeBoxNumber: Word[][]) {
   return storeBoxNumber;
 }
 
+/*
+  Searches for a good rate of integer number,
+  then searches for a good rate of integer in ascending order
+*/
 function findTocNumber(storeBoxNumber: Word[][]): Word[] {
   let nbOfNumber: number;
   let storedInteger: number[] = [];
@@ -182,20 +213,19 @@ function findTocNumber(storeBoxNumber: Word[][]): Word[] {
   return null;
 }
 
+/*
+  Searches for a good rate of roman number in ascending order.
+*/
 function findTocRomanNumber(storeBoxNumber: Word[][]): Word[] {
-  let nbOfNumber: number;
   let storedRomanNbInteger: number[] = [];
   let nbOfRomanNbIntegerInOrder = 0;
   for (let box of storeBoxNumber) {
-    nbOfNumber = box.length;
     for (const word of box) {
       storedRomanNbInteger.push(Number(romanToArabic(word.toString().match(romanRegexp))));
     }
-    if (storedRomanNbInteger.length / nbOfNumber > 0.75) {
-      nbOfRomanNbIntegerInOrder = findIntegerAscendingOrder(storedRomanNbInteger);
-      if (nbOfRomanNbIntegerInOrder / storedRomanNbInteger.length > 0.75) {
-        return box;
-      }
+    nbOfRomanNbIntegerInOrder = findIntegerAscendingOrder(storedRomanNbInteger);
+    if (nbOfRomanNbIntegerInOrder / storedRomanNbInteger.length > 0.75) {
+      return box;
     }
   }
   return null;
@@ -245,6 +275,9 @@ function findIntegerAscendingOrder(storedInteger: number[]): number {
   return maxIntegerInOrder;
 }
 
+/*
+  Searches for the parents paragraphs containing TOC numbers.
+*/
 function findTocPara(tocCandidatesParagraphs: Paragraph[], tocInteger: Word[]): Paragraph[] {
   if (!tocInteger || tocInteger.length < 2) {
     return [];
@@ -266,6 +299,9 @@ function findTocPara(tocCandidatesParagraphs: Paragraph[], tocInteger: Word[]): 
   return paragraphs;
 }
 
+/*
+  Searches for paragraphs aligned with alone TOC number (cases with no leaders).
+*/
 function completeTocLine(tocParagraphs: Paragraph[], allParagraphs: Paragraph[], line: Line) {
   for (let i = 0; i < allParagraphs.length; i++) {
     if (
@@ -284,64 +320,3 @@ function completeTocLine(tocParagraphs: Paragraph[], allParagraphs: Paragraph[],
     }
   }
 }
-
-// export function TOCDetected(p: Paragraph, parameters): boolean {
-//   return Object.values(detectionMethods).some(method => method(p, parameters));
-// }
-
-// const detectionMethods = {
-//   /*
-//     searches for text starting or finishing in numbers in the Left or right 10% width area of the BBox
-//   */
-//   startOrEndsWithNumber: (p: Paragraph): boolean => {
-//     const w = p.width * 0.1;
-//     const intersectionBoxRight = new BoundingBox(p.right - w, p.top, w, p.height);
-//     const intersectionBoxLeft = new BoundingBox(p.left, p.top, w, p.height);
-//     const wordsInsideIntersectionRight = p
-//       .getWords()
-//       .filter(
-//         word => BoundingBox.getOverlap(word.box, intersectionBoxRight).box1OverlapProportion > 0,
-//       )
-//       .filter(word => !isSeparator(word));
-//     const wordsInsideIntersectionLeft = p
-//       .getWords()
-//       .filter(
-//         word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
-//       )
-//       .filter(word => !isSeparator(word));
-
-//     return (
-//       wordsInsideIntersectionRight.filter(isNumberRight).length >
-//         Math.floor(wordsInsideIntersectionRight.length * 0.5) ||
-//       wordsInsideIntersectionLeft.filter(isNumberLeft).length >
-//         Math.floor(wordsInsideIntersectionLeft.length * 0.5)
-//     );
-//   },
-//   hasPageNKeyword: (p: Paragraph, parameters): boolean => {
-//     const regexp = `^(${parameters['pageKeywords'].join('|')}).* (\\d+) (.+)`;
-//     return new RegExp(regexp, 'gi').test(p.toString());
-//   },
-// };
-
-function isNumberRight(word: Word): boolean {
-  const decimalNumbers = new RegExp(arabicRegexp);
-  const romanNumbers = new RegExp(romanRegexp);
-  const w = word.toString();
-  return decimalNumbers.test(w) || romanNumbers.test(w);
-}
-
-function isNumberLeft(word: Word): boolean {
-  const decimalNumbers = new RegExp(arabicRegexp);
-  const w = word.toString();
-  return decimalNumbers.test(w);
-}
-
-function isSeparator(word: Word): boolean {
-  const separators = new RegExp(/^[-. ]+$/);
-  return separators.test(word.toString().trim());
-}
-
-// export function hasKeyword(pageParagraphs: Paragraph[], keywords: string[]): boolean {
-//   const rawText = pageParagraphs.map(p => p.toString()).join(' ');
-//   return keywords.some(k => rawText.toLowerCase().includes(k.toLowerCase()));
-// }

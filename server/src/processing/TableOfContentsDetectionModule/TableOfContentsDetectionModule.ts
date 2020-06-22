@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  Document,
-  Paragraph,
-  TableOfContents,
-} from '../../types/DocumentRepresentation';
+import { Document, Paragraph, TableOfContents } from '../../types/DocumentRepresentation';
 import { Module } from '../Module';
 import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
@@ -45,7 +41,10 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       const allParagraphs = page
         .getElementsOfType<Paragraph>(Paragraph, false)
         .filter(this.isNotHeaderFooter);
-      const tocParagraphs: Paragraph[] = detection.TOCDetected(allParagraphs, this.options.pageKeywords);
+      const tocParagraphs: Paragraph[] = detection.TOCDetected(
+        allParagraphs,
+        this.options.pageKeywords,
+      );
 
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
