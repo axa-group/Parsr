@@ -132,7 +132,7 @@ Then,
    choco install qpdf imagemagick
    ```
 
-5. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install-deps.html#for-windows).
+5. For table detection, install [**camelot**](https://camelot-py.readthedocs.io/en/master/user/install.html#install).
 
 6. For **`tesseract`** you can download and install, or check out other available formats on [the wiki](https://github.com/UB-Mannheim/tesseract/wiki).
 Then, you need to add tesseract.exe to your PATH:

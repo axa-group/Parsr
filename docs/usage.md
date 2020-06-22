@@ -8,6 +8,8 @@
       - [2.2.1. Under Linux/MacOS:](#221-under-linuxmacos)
       - [2.2.2. Under Windows:](#222-under-windows)
     - [2.3. Command Line Usage](#23-command-line-usage)
+      - [2.3.1. Available Parameters](#231-available-parameters)
+      - [2.3.2. Usage examples](#232-usage-examples)
   - [3. API](#3-api)
   - [4. Test](#4-test)
 
@@ -58,6 +60,19 @@ cd demo/vue-viewer && npm install && npm run serve
 Open [localhost:8080](http://localhost:8080) with your favorite browser to use the GUI.
 
 ### 2.3. Command Line Usage
+
+#### 2.3.1. Available Parameters
+
+````
+-f, --input-file <filename>       // Input file to be processed.
+-o, --output-folder <foldername>  // Location of the folder where the output will be stored.
+-n, --document-name <name>        // Name of the document.
+-c, --config <filename>           // The file's path from which the application's parameters will be loaded.
+-l, --log-level <verbosity>       // Verbosity level: debug, info (default), warn, error.
+-p, --pretty-logs                 // Make logs look pretty but unreadable for a machine.
+````
+
+#### 2.3.2. Usage examples
 
 Under Mac OS X, Linux:
 
