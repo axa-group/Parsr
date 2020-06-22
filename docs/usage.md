@@ -5,8 +5,9 @@
   - [2. Run](#2-run)
     - [2.1. Configuration](#21-configuration)
     - [2.2. Demo: Web Viewer](#22-demo-web-viewer)
-      - [2.2.1. Under Linux/MacOS:](#221-under-linuxmacos)
-      - [2.2.2. Under Windows:](#222-under-windows)
+      - [2.2.1. Under Linux/MacOS](#221-under-linuxmacos)
+      - [2.2.2. Under Windows](#222-under-windows)
+      - [2.2.3. GUI Usage](#223-gui-usage)
     - [2.3. Command Line Usage](#23-command-line-usage)
       - [2.3.1. Available Parameters](#231-available-parameters)
       - [2.3.2. Usage examples](#232-usage-examples)
@@ -58,6 +59,10 @@ cd demo/vue-viewer && npm install && npm run serve
 ```
 
 Open [localhost:8080](http://localhost:8080) with your favorite browser to use the GUI.
+
+#### 2.2.3. GUI Usage
+
+For an explanation on how to use the web viewer demo, refer to the [GUI Usage Guide](gui-guide.md).
 
 ### 2.3. Command Line Usage
 
