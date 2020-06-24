@@ -39,7 +39,7 @@ describe('Table of Contents Detection Module', () => {
     {
       'one TOC Item per paragraph': ['2_1_185_CarPolicyWording-3.json', 21],
       'multiple TOC Items per paragraph': ['756_pages-3-5.json', 49],
-      'TOC with numbers on left side': ['dankse_Bank_Annual_Report.json', 34],
+      'TOC with numbers on left side': ['toc_left_side_number.json', 6],
       'TOC with numbers on right side': ['toc_right_side_number.json', 6],
       'TOC with roman numbers on right side': ['toc_roman_right_side.json', 6],
     },
