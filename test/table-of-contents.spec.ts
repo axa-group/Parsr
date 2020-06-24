@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2020 AXA Group Operations S.A.
  *
@@ -14,6 +15,7 @@
  * limitations under the License.
  */
 
+/* eslint-disable no-undef */
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
@@ -37,6 +39,9 @@ describe('Table of Contents Detection Module', () => {
     {
       'one TOC Item per paragraph': ['2_1_185_CarPolicyWording-3.json', 21],
       'multiple TOC Items per paragraph': ['756_pages-3-5.json', 49],
+      'TOC with numbers on left side': ['dankse_Bank_Annual_Report.json', 34],
+      'TOC with numbers on right side': ['toc_right_side_number.json', 6],
+      'TOC with roman numbers on right side': ['toc_roman_right_side.json', 6],
     },
     (fileName, tocItemCount) => {
       before(done => {
@@ -61,7 +66,6 @@ describe('Table of Contents Detection Module', () => {
         executePipeLine(fileName, done);
       });
       it('document should not have a TOC', () => {
-        // tslint:disable-next-line: no-unused-expression
         expect(toc).to.be.undefined;
       });
     },
