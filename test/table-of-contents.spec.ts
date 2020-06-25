@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2020 AXA Group Operations S.A.
  *
@@ -24,11 +23,30 @@ import { TableOfContents } from '../server/src/types/DocumentRepresentation';
 import { getDocFromJson, runModules } from './helpers';
 
 let toc: TableOfContents;
+let countTocWord: number = 0;
+
+function countWord(stringToCount: string): number {
+  stringToCount = stringToCount.replace(/(^\s*)|(\s*$)/gi, '');
+  stringToCount = stringToCount.replace(/[ ]{2,}/gi, ' ');
+  stringToCount = stringToCount.replace(/\n /, '\n');
+  return stringToCount.split(' ').length;
+}
 
 function executePipeLine(fileName: string, done) {
   getDocFromJson(doc => runModules(doc, [new TableOfContentsDetectionModule()]), fileName).then(
     after => {
+      countTocWord = 0;
       [toc] = after.getElementsOfType<TableOfContents>(TableOfContents);
+      if (typeof toc !== 'undefined') {
+        for (let tocItem of toc.items) {
+          if (typeof tocItem.description !== 'undefined') {
+            countTocWord = countTocWord + countWord(tocItem.description);
+          }
+          if (typeof tocItem.pageNumber !== 'undefined') {
+            countTocWord = countTocWord + countWord(tocItem.pageNumber);
+          }
+        }
+      }
       done();
     },
   );
@@ -37,19 +55,23 @@ function executePipeLine(fileName: string, done) {
 describe('Table of Contents Detection Module', () => {
   withData(
     {
-      'one TOC Item per paragraph': ['2_1_185_CarPolicyWording-3.json', 21],
-      'multiple TOC Items per paragraph': ['756_pages-3-5.json', 49],
-      'TOC with numbers on left side': ['toc_left_side_number.json', 6],
-      'TOC with numbers on right side': ['toc_right_side_number.json', 6],
-      'TOC with roman numbers on right side': ['toc_roman_right_side.json', 6],
+      'one TOC Item per paragraph': ['2_1_185_CarPolicyWording-3.json', 21, 122],
+      'multiple TOC Items per paragraph': ['756_pages-3-5.json', 49, 193],
+      'TOC with numbers on left side': ['toc_left_side_number.json', 6, 24],
+      'TOC with numbers on right side': ['toc_right_side_number.json', 6, 24],
+      'TOC with roman numbers on right side': ['toc_roman_right_side.json', 6, 24],
     },
-    (fileName, tocItemCount) => {
+    (fileName, tocItemCount, tocWordCount) => {
       before(done => {
         executePipeLine(fileName, done);
       });
 
       it(`should have correct amount of items`, () => {
         expect(toc.items.length).to.eq(tocItemCount);
+      });
+
+      it(`should have correct amount of word`, () => {
+        expect(countTocWord).to.eq(tocWordCount);
       });
     },
   );
@@ -60,6 +82,7 @@ describe('Table of Contents Detection Module', () => {
       '(2) document with no Table of Contents': ['paragraph-merge-2.json'],
       '(3) document with no Table of Contents': ['paragraph-merge-3.json'],
       '(4) document with no Table of Contents': ['paragraph-merge-5.json'],
+      '(5) document with no Table of Contents': ['numbers_not_ascending.json'],
     },
     fileName => {
       before(done => {
