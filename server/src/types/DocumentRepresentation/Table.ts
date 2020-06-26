@@ -18,6 +18,7 @@ import { BoundingBox } from './BoundingBox';
 import { Element } from './Element';
 import { TableCell } from './TableCell';
 import { TableRow } from './TableRow';
+import { SpannedTableCell } from './SpannedTableCell';
 
 /* table span type: array<[rowNb, colNb, colspan, rowspan]>
  *  ... where the array represents a collection of cells; coordinates represented
@@ -249,7 +250,9 @@ export class Table extends Element {
       let minRowspan: number = Infinity;
 
       for (const cell of row.content) {
-        nCol += cell.colspan;
+        if (!(cell instanceof SpannedTableCell)) {
+          nCol += cell.colspan;
+        }
         minRowspan = Math.min(minRowspan, cell.rowspan);
       }
       nRow += minRowspan;
@@ -268,31 +271,31 @@ export class Table extends Element {
     const arr: string[][] = new Array(dim[0])
       .fill(undefined)
       .map(() => new Array(dim[1]).fill(undefined));
-    let nRow: number = 0;
 
     for (let i = 0; i < arr.length; i++) {
-      const row: TableRow = this.content[nRow];
-      let nCol: number = 0;
+      const row: TableRow = this.content[i];
       let jumpLine: number = Infinity;
 
       for (let j = 0; j < arr[i].length; j++) {
         if (typeof arr[i][j] === 'undefined') {
-          const cell: TableCell = row.content[nCol];
+          const cell: TableCell = row.content[j];
 
           // hotfix
           if (typeof cell === 'undefined') {
             continue;
           }
 
-          for (let c = 0; c < cell.colspan; c++) {
-            for (let r = 0; r < cell.rowspan; r++) {
-              if (i + r < arr.length && j + c < arr[i].length) {
-                arr[i + r][j + c] = null;
+          if (!(cell instanceof SpannedTableCell)) {
+            for (let c = 0; c < cell.colspan; c++) {
+              for (let r = 0; r < cell.rowspan; r++) {
+                if (i + r < arr.length && j + c < arr[i].length) {
+                  arr[i + r][j + c] = null;
+                }
               }
             }
           }
 
-          if (exportFormatting) {
+          if (exportFormatting && !(cell instanceof SpannedTableCell)) {
             arr[i][j] = cell.toMarkdown() !== 'null' ? cell.toMarkdown().trim() : '';
           } else {
             // arr[i][j] = cell.content.toString().trim();
@@ -301,12 +304,9 @@ export class Table extends Element {
           jumpLine = Math.min(jumpLine, cell.rowspan);
 
           j += cell.colspan - 1;
-          nCol++;
         }
       }
-
       i += jumpLine - 1;
-      nRow++;
     }
 
     return arr;
@@ -334,8 +334,8 @@ export class Table extends Element {
       output.push(r);
     });
     return {
-      type : 'table',
-      content : output,
+      type: 'table',
+      content: output,
     };
   }
 
