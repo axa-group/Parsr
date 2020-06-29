@@ -5,7 +5,12 @@
 		"keyPatterns": {
 			"value": {}
 		},
-		"keyValueDividerChars": [":", ";"],
+		"keyValueDividerChars": {
+			"value": [
+				":",
+				";"
+			]
+		},
 		"thresholdRatio": {
 			"value": 0.2,
 			"range": {
