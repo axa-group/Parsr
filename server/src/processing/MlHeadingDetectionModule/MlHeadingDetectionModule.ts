@@ -37,7 +37,7 @@ export class MlHeadingDetectionModule extends Module {
   public static moduleName = 'ml-heading-detection';
   public static dependencies = [LinesToParagraphModule];
 
-  public main(doc: Document): Document {
+  public async main(doc: Document): Promise<Document> {
     if (this.headingsDetected(doc)) {
       logger.warn(
         'Warning: this page already has some headings in it. Not performing heading detection.',
@@ -56,7 +56,7 @@ export class MlHeadingDetectionModule extends Module {
     });
 
     if (this.headingsDetected(doc)) {
-      this.computeHeadingLevels(doc, mainCommonFonts);
+      await this.computeHeadingLevels(doc, mainCommonFonts);
     }
     return doc;
   }
@@ -121,7 +121,7 @@ export class MlHeadingDetectionModule extends Module {
         const instanceOfFontCheck = commonFonts.map(font => {
           return font instanceof Font;
         })
-        .reduce((acc, curr) => acc && curr);
+          .reduce((acc, curr) => acc && curr);
         if (instanceOfFontCheck) {
           const headingIdx: number[] = linesInParagraph
             .map((line: Line, pos: number) => {
@@ -181,15 +181,15 @@ export class MlHeadingDetectionModule extends Module {
     const isDifferentStyle = commonFonts.map(font => {
       return lineFont.weight !== font.weight ? 1 : 0;
     })
-    .reduce((acc, curr) => acc && curr);
+      .reduce((acc, curr) => acc && curr);
     const isFontBigger = commonFonts.map(font => {
       return lineFont.size > font.size ? 1 : 0;
     })
-    .reduce((acc, curr) => acc && curr);
+      .reduce((acc, curr) => acc && curr);
     const differentColor = commonFonts.map(font => {
       return lineFont.color !== font.color ? 1 : 0;
     })
-    .reduce((acc, curr) => acc && curr);
+      .reduce((acc, curr) => acc && curr);
     const isFontUnique = line.isUniqueFont() ? 1 : 0;
     const isNumber = !isNaN(lineStr as any) ? 1 : 0;
     const textCase = this.textCase(lineStr);
@@ -256,7 +256,7 @@ export class MlHeadingDetectionModule extends Module {
 
     return count / allFonts.length;
   }
-  
+
   private groupHeadingsByFont(headingIndexes: number[], lines: Line[]): number[][] {
     // Skip join heading lines if they doesn't have same font
     const fontGroupedHeadings: number[][] = [];
@@ -368,10 +368,11 @@ export class MlHeadingDetectionModule extends Module {
     return detected;
   }
 
-  private computeHeadingLevels(document: Document, commonFonts: Font[]) {
+  private async computeHeadingLevels(document: Document, commonFonts: Font[]) {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
+    const promises = [];
 
-    headings.forEach(async h => {
+    headings.forEach(h => {
       const headingFont = h.getMainFont();
       const size = headingFont.size;
       const weight = headingFont.weight === 'bold' ? 1 : 0;
@@ -379,15 +380,15 @@ export class MlHeadingDetectionModule extends Module {
       const isFontBigger = commonFonts.map(font => {
         return headingFont.size > font.size ? 1 : 0;
       })
-      .reduce((acc, curr) => acc && curr);
+        .reduce((acc, curr) => acc && curr);
       const differentColor = commonFonts.map(font => {
         return headingFont.color !== font.color ? 1 : 0;
       })
-      .reduce((acc, curr) => acc && curr);
+        .reduce((acc, curr) => acc && curr);
       const wordCount = h.content.length;
       const fontRatio = this.fontRatio(document, headingFont);
 
-      await CommandExecuter.levelPrediction(
+      promises.push(CommandExecuter.levelPrediction(
         size.toString(),
         weight.toString(),
         textCase.toString(),
@@ -397,7 +398,10 @@ export class MlHeadingDetectionModule extends Module {
         fontRatio.toString(),
       ).then(stdout => {
         h.level = parseInt(stdout);
-      });
+      }));
     });
+
+    await Promise.all(promises);
+    return;
   }
 }
