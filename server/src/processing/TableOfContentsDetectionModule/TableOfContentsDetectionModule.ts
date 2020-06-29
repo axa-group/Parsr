@@ -20,7 +20,6 @@ import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
 
 interface Options {
-  keywords?: string[];
   pageKeywords?: string[];
 }
 
@@ -53,6 +52,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
           Math.floor(allParagraphs.length * detection.threshold * Math.pow(1.05, pagesSinceLastTOC))
       ) {
         foundTOC = true;
+
         const toc = new TableOfContents();
         toc.pageKeywords = this.options.pageKeywords;
         toc.content = tocParagraphs;
