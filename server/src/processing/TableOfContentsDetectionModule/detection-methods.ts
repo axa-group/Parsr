@@ -36,9 +36,10 @@ export function TOCDetected(allParagraphs: Paragraph[], pageKeywords: string[]):
     tocCandidates = candidates;
   }
 
-  tocParagraphs.push(...findTocPara(tocCandidates, tocIntegerRight));
-  tocParagraphs.push(...findTocPara(tocCandidates, tocRomanNumberRight));
-  tocParagraphs.push(...findTocPara(tocCandidates, tocIntegerLeft));
+  findTocPara(tocCandidates, tocIntegerRight, tocParagraphs);
+  findTocPara(tocCandidates, tocRomanNumberRight, tocParagraphs);
+  findTocPara(tocCandidates, tocIntegerLeft, tocParagraphs);
+
   tocParagraphs.forEach(paragraph => {
     paragraph.content.forEach(line => {
       if (line.content.length === 1) {
@@ -56,7 +57,6 @@ export function TOCDetected(allParagraphs: Paragraph[], pageKeywords: string[]):
   });
   return tocParagraphs;
 }
-
 /*
   - Searches for text starting or finishing in numbers in the Left or right 10% width area of the BBox,
     then store them by alignment.
@@ -278,25 +278,34 @@ function findIntegerAscendingOrder(storedInteger: number[]): number {
 /*
   Searches for the parents paragraphs containing TOC numbers.
 */
-function findTocPara(tocCandidatesParagraphs: Paragraph[], tocInteger: Word[]): Paragraph[] {
+function findTocPara(tocCandidatesParagraphs: Paragraph[], tocInteger: Word[], tocParagraphs: Paragraph[]){
   if (!tocInteger || tocInteger.length < 2) {
-    return [];
+    return ;
   }
-  let paragraphs: Paragraph[] = [];
   for (let i = 0; i < tocCandidatesParagraphs.length; i++) {
     for (let j = 0; j < tocCandidatesParagraphs[i].content.length; j++) {
       for (let integer of tocInteger) {
         if (
-          tocCandidatesParagraphs[i].content[j].content.find(word => word === integer) &&
-          !paragraphs.includes(tocCandidatesParagraphs[i])
+          tocCandidatesParagraphs[i].content[j].content.find(word => word.id === integer.id) &&
+          containsObject(tocCandidatesParagraphs[i], tocParagraphs) === false
         ) {
-          paragraphs.push(tocCandidatesParagraphs[i]);
+          tocParagraphs.push(tocCandidatesParagraphs[i]);
           break;
         }
       }
     }
   }
-  return paragraphs;
+}
+
+function containsObject(obj, list) {
+  var i;
+  for (i = 0; i < list.length; i++) {
+    if (list[i].id === obj.id) {
+
+      return true;
+    }
+  }
+  return false;
 }
 
 /*
