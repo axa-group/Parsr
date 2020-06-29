@@ -49,7 +49,7 @@ export class TableOfContentsDetectionModule extends Module<Options> {
       if (
         tocParagraphs.length > 0 &&
         tocParagraphs.length >=
-          Math.floor(allParagraphs.length * detection.threshold * Math.pow(1.05, pagesSinceLastTOC))
+          Math.floor(allParagraphs.length * detection.THRESHOLD * Math.pow(1.05, pagesSinceLastTOC))
       ) {
         foundTOC = true;
 

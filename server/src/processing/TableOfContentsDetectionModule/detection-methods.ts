@@ -16,10 +16,10 @@
 
 import { BoundingBox, Paragraph, Word, Line } from './../../types/DocumentRepresentation';
 
-export const threshold = 0.4;
+const ARABIC_REGEXP = /[0-9]+(\.[0-9]+)?( |$)/g;
+const ROMAN_REGEXP = /(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi;
 
-const arabicRegexp = /[0-9]+(\.[0-9]+)?( |$)/g;
-const romanRegexp = /(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})( |$)/gi;
+export const THRESHOLD = 0.4;
 
 export function TOCDetected(allParagraphs: Paragraph[], pageKeywords: string[]): Paragraph[] {
   let tocCandidates: Paragraph[] = [];
@@ -28,13 +28,16 @@ export function TOCDetected(allParagraphs: Paragraph[], pageKeywords: string[]):
   let tocRomanNumberRight: Word[] = [];
   let tocIntegerLeft: Word[] = [];
 
-  if (allParagraphs.length > 0) {
-    const { right, left, roman, candidates } = storeNumAndRomanNum(allParagraphs, pageKeywords);
-    tocIntegerRight = findTocNumber(right);
-    tocRomanNumberRight = findTocRomanNumber(roman);
-    tocIntegerLeft = findTocNumber(left);
-    tocCandidates = candidates;
+  if (allParagraphs.length === 0) {
+    return [];
   }
+
+  const { right, left, roman, candidates } = storeNumAndRomanNum(allParagraphs, pageKeywords);
+  tocIntegerRight = findTocNumber(right);
+  tocRomanNumberRight = findTocRomanNumber(roman);
+  tocIntegerLeft = findTocNumber(left);
+  tocCandidates = candidates;
+
 
   findTocPara(tocCandidates, tocIntegerRight, tocParagraphs);
   findTocPara(tocCandidates, tocRomanNumberRight, tocParagraphs);
@@ -47,9 +50,10 @@ export function TOCDetected(allParagraphs: Paragraph[], pageKeywords: string[]):
       }
     });
   });
-  tocCandidates.forEach(function(candidate) {
+
+  tocCandidates.forEach(candidate => {
     if (
-      new RegExp(`^(${pageKeywords.join('|')}).* (\\d+) (.+)`, 'gi').test(candidate.toString()) &&
+      hasPageNKeyword(candidate, pageKeywords) &&
       tocParagraphs.indexOf(candidate) === -1
     ) {
       tocParagraphs.push(candidate);
@@ -80,37 +84,36 @@ function storeNumAndRomanNum(
       paragraph.height,
     );
     const intersectionBoxLeft = new BoundingBox(paragraph.left, paragraph.top, w, paragraph.height);
+
     const numbersInsideIntersectionRight = paragraph
       .getWords()
-      .filter(
-        word => BoundingBox.getOverlap(word.box, intersectionBoxRight).box1OverlapProportion > 0,
-      )
+      .filter(wordOverlaps(intersectionBoxRight))
       .filter(word => !isSeparator(word));
+
     const numbersInsideIntersectionLeft = paragraph
       .getWords()
-      .filter(
-        word => BoundingBox.getOverlap(word.box, intersectionBoxLeft).box1OverlapProportion > 0,
-      )
+      .filter(wordOverlaps(intersectionBoxLeft))
       .filter(word => !isSeparator(word));
+
     if (
       numbersInsideIntersectionRight.filter(isNumberRight).length >
-        Math.floor(numbersInsideIntersectionRight.length * 0.5) ||
+      Math.floor(numbersInsideIntersectionRight.length * 0.5) ||
       numbersInsideIntersectionLeft.filter(isNumberLeft).length >
-        Math.floor(numbersInsideIntersectionLeft.length * 0.5) ||
-      hasPageNKeyword(paragraph, pageKeywords) === true
+      Math.floor(numbersInsideIntersectionLeft.length * 0.5) ||
+      hasPageNKeyword(paragraph, pageKeywords)
     ) {
       paragraphsCandidates.push(paragraph);
       numbersInsideIntersectionRight.forEach(word => {
-        if (word.toString().match(arabicRegexp)) {
+        if (word.toString().match(ARABIC_REGEXP)) {
           addAlignedNumberRight(numberRight, word);
-        } else if (word.toString().match(romanRegexp)) {
+        } else if (word.toString().match(ROMAN_REGEXP)) {
           addAlignedNumberRight(romanNumberRight, word);
         }
       });
       numbersInsideIntersectionLeft.forEach(word => {
-        if (word.toString().match(arabicRegexp)) {
+        if (word.toString().match(ARABIC_REGEXP)) {
           addAlignedNumberLeft(numberLeft, word);
-        } else if (word.toString().match(romanRegexp)) {
+        } else if (word.toString().match(ROMAN_REGEXP)) {
           addAlignedNumberRight(romanNumberRight, word);
         }
       });
@@ -124,15 +127,19 @@ function storeNumAndRomanNum(
   };
 }
 
+function wordOverlaps(box: BoundingBox): (word: Word) => boolean {
+  return word => BoundingBox.getOverlap(word.box, box).box1OverlapProportion > 0;
+}
+
 function isNumberRight(word: Word): boolean {
-  const decimalNumbers = new RegExp(arabicRegexp);
-  const romanNumbers = new RegExp(romanRegexp);
+  const decimalNumbers = new RegExp(ARABIC_REGEXP);
+  const romanNumbers = new RegExp(ROMAN_REGEXP);
   const w = word.toString();
   return decimalNumbers.test(w) || romanNumbers.test(w);
 }
 
 function isNumberLeft(word: Word): boolean {
-  const decimalNumbers = new RegExp(arabicRegexp);
+  const decimalNumbers = new RegExp(ARABIC_REGEXP);
   const w = word.toString();
   return decimalNumbers.test(w);
 }
@@ -148,16 +155,17 @@ function hasPageNKeyword(p: Paragraph, pageKeywords: string[]): boolean {
 }
 
 function addAlignedNumberRight(storeBoxNumber: Word[][], number: Word) {
-  const indexValueExist = storeBoxNumber.findIndex(
+  const indexValue = storeBoxNumber.findIndex(
     aNum =>
       (aNum[0].box.left + aNum[0].box.width - 5 <= number.box.left + number.box.width &&
         aNum[0].box.left + aNum[0].box.width + 10 >= number.box.left + number.box.width) ||
       (aNum[0].box.left + aNum[0].box.width - 20 <= number.box.left &&
         aNum[0].box.left + aNum[0].box.width - 5 >= number.box.left),
   );
-  if (indexValueExist !== -1 && storeBoxNumber[indexValueExist].indexOf(number) === -1) {
-    storeBoxNumber[indexValueExist].push(number);
-  } else if (indexValueExist === -1) {
+
+  if (indexValue !== -1 && storeBoxNumber[indexValue].indexOf(number) === -1) {
+    storeBoxNumber[indexValue].push(number);
+  } else if (indexValue === -1) {
     storeBoxNumber.push([number]);
   }
 }
@@ -175,14 +183,10 @@ function addAlignedNumberLeft(storeBoxNumberLeft: Word[][], number: Word) {
   }
 }
 
-function sortBoxNumber(storeBoxNumber: Word[][]) {
-  storeBoxNumber.sort(function(a, b) {
-    return b.length - a.length;
-  });
+function sortBoxNumber(storeBoxNumber: Word[][]): Word[][] {
+  storeBoxNumber.sort((a, b) => b.length - a.length);
   for (let boxes of storeBoxNumber) {
-    boxes.sort(function(a, b) {
-      return a.box.top - b.box.top;
-    });
+    boxes.sort((a, b) => a.box.top - b.box.top);
   }
   return storeBoxNumber;
 }
@@ -198,7 +202,7 @@ function findTocNumber(storeBoxNumber: Word[][]): Word[] {
   for (let box of storeBoxNumber) {
     nbOfNumber = box.length;
     for (const word of box) {
-      let num = Number(word.toString().match(arabicRegexp));
+      let num = Number(word.toString().match(ARABIC_REGEXP));
       if (Number.isInteger(num)) {
         storedInteger.push(num);
       }
@@ -221,7 +225,7 @@ function findTocRomanNumber(storeBoxNumber: Word[][]): Word[] {
   let nbOfRomanNbIntegerInOrder = 0;
   for (let box of storeBoxNumber) {
     for (const word of box) {
-      storedRomanNbInteger.push(Number(romanToArabic(word.toString().match(romanRegexp))));
+      storedRomanNbInteger.push(romanToArabic(word.toString().match(ROMAN_REGEXP)));
     }
     nbOfRomanNbIntegerInOrder = findIntegerAscendingOrder(storedRomanNbInteger);
     if (nbOfRomanNbIntegerInOrder / storedRomanNbInteger.length > 0.75) {
@@ -231,12 +235,12 @@ function findTocRomanNumber(storeBoxNumber: Word[][]): Word[] {
   return null;
 }
 
-function romanToArabic(romanNumber) {
+function romanToArabic(romanNumber): number {
   romanNumber = romanNumber[0].toUpperCase();
   const romanNumList = ['CM', 'M', 'CD', 'D', 'XC', 'C', 'XL', 'L', 'IX', 'X', 'IV', 'V', 'I'];
   const corresp = [900, 1000, 400, 500, 90, 100, 40, 50, 9, 10, 4, 5, 1];
-  let index = 0,
-    num = 0;
+  let index = 0;
+  let num = 0;
   for (let rn in romanNumList) {
     index = romanNumber.indexOf(romanNumList[rn]);
     while (index != -1) {
@@ -278,16 +282,16 @@ function findIntegerAscendingOrder(storedInteger: number[]): number {
 /*
   Searches for the parents paragraphs containing TOC numbers.
 */
-function findTocPara(tocCandidatesParagraphs: Paragraph[], tocInteger: Word[], tocParagraphs: Paragraph[]){
+function findTocPara(tocCandidatesParagraphs: Paragraph[], tocInteger: Word[], tocParagraphs: Paragraph[]) {
   if (!tocInteger || tocInteger.length < 2) {
-    return ;
+    return;
   }
   for (let i = 0; i < tocCandidatesParagraphs.length; i++) {
     for (let j = 0; j < tocCandidatesParagraphs[i].content.length; j++) {
       for (let integer of tocInteger) {
         if (
           tocCandidatesParagraphs[i].content[j].content.find(word => word.id === integer.id) &&
-          containsObject(tocCandidatesParagraphs[i], tocParagraphs) === false
+          !containsObject(tocCandidatesParagraphs[i], tocParagraphs)
         ) {
           tocParagraphs.push(tocCandidatesParagraphs[i]);
           break;
@@ -297,15 +301,8 @@ function findTocPara(tocCandidatesParagraphs: Paragraph[], tocInteger: Word[], t
   }
 }
 
-function containsObject(obj, list) {
-  var i;
-  for (i = 0; i < list.length; i++) {
-    if (list[i].id === obj.id) {
-
-      return true;
-    }
-  }
-  return false;
+function containsObject(obj: Paragraph, list: Paragraph[]): boolean {
+  return list.some(e => e.id === obj.id);
 }
 
 /*
