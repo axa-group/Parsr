@@ -123,7 +123,7 @@ export class WordsToLineNewModule extends Module {
     let avgSpace = this.avgWordsSpace(words);
     words.forEach(word => {
       const lastWord = currentLine[currentLine.length - 1];
-      const tolerance = this.checkSpecialWord(currentLine, word) ? 3 : 1;
+      const tolerance = this.checkSpecialWord(currentLine, word) ? 5 : 1;
       if (!this.inSameLine(words, lastWord, word, avgSpace * tolerance)) {
         wordsLine.push(currentLine);
         avgSpace = this.avgWordsSpace(words.filter(w => !currentLine.includes(w)));
