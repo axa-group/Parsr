@@ -43,11 +43,6 @@ export class WordsToLineNewModule extends Module {
 
       const rootWords = this.getRootWords(page);
       const rootLines = this.mergeWordsInLines(rootWords);
-      // wordsLineCandidates.forEach((element, pos) => {
-      //   console.log(
-      //     `Pos ${pos} -> Top ${element[0].top} --> ${element.map(el => el.toString()).join(' ')}`,
-      //   );
-      // });
 
       // perform words to line for all the words inside other root elements
       let otherElements = this.getRootElements(page, rootWords);
@@ -126,14 +121,10 @@ export class WordsToLineNewModule extends Module {
     const wordsLine: Word[][] = [];
     let currentLine: Word[] = [];
     let avgSpace = this.avgWordsSpace(words);
-    console.log(`${words.map(w => w.toString()).join(' ')}`);
-    console.log(`avg space ${avgSpace}`);
     words.forEach(word => {
       const lastWord = currentLine[currentLine.length - 1];
       const tolerance = this.checkSpecialWord(currentLine, word) ? 3 : 1;
       if (!this.inSameLine(words, lastWord, word, avgSpace * tolerance)) {
-        const lastWordEnd = lastWord.left + lastWord.width;
-        console.log(`${lastWord.toString()} - ${word.toString()} --> ${word.left - lastWordEnd}`);
         wordsLine.push(currentLine);
         avgSpace = this.avgWordsSpace(words.filter(w => !currentLine.includes(w)));
         currentLine = [];
@@ -164,20 +155,9 @@ export class WordsToLineNewModule extends Module {
           const distance = word.left - prevWordEnd;
           if (distance < word.height * 0.2) {
             // If two words are too near then it will reduce avg space a lot
-            // making each word as a line
-            // console.log(`${words.map(w => w.toString()).join(' ')}`);
-            // console.log(
-            //   `Small distance ${distance} | ${words[
-            //     index - 1
-            //   ].toString()} <-> ${word.toString()} - Height ${word.height}`,
-            // );
-            const commonSpace = this.commonWordsSpace(words, index);
-            // console.log(`Common space ${commonSpace}`);
-            return commonSpace;
+            // making each word to be a line
+            return this.commonWordsSpace(words, index);
           }
-          // console.log(
-          //   `${words[index - 1].toString()} - ${word.toString()} --> ${distance}`,
-          // );
           return distance;
         })
         .reduce((a, b) => a + b, 0) /
@@ -231,24 +211,13 @@ export class WordsToLineNewModule extends Module {
   }
 
   private inSameVerticalLine(lineWords: Word[], word: Word): boolean {
-    // if (lineWords.filter(w => w.top + w.height < word.top).length > 0) {
-    //   console.log(`Not in same line !! ${word}`);
-    // }
     return lineWords.filter(w => w.top + w.height < word.top).length === 0;
   }
 
   private areVerticallyAligned(wordA: Word, wordB: Word): boolean {
-    // Ideally this should be wordA.top === wordB.top but OCR box accuracy needs to
-    // be more tolerant as words in same line could have no exact box (top & height)
-    // const case1 = wordB.top + wordB.height >= wordA.top + wordA.height;
-    // const case2 = wordB.top >= wordA.top + wordA.height;
-    // return !(case1 && case2);
     const case1 = wordA.top === wordB.top || wordA.bottom === wordB.bottom;
     const case3 = wordA.height - Math.abs(wordB.top - wordA.top) > wordA.height * 0.5;
     const case4 = wordB.height - Math.abs(wordB.top - wordA.top) > wordB.height * 0.5;
-    // if (!(case1 || case3 || case4)) {
-    //   console.log(`Not areVerticallyAligned -->  ${wordA} ${wordB}`);
-    // }
     return case1 || case3 || case4;
   }
 
