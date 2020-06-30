@@ -33,6 +33,7 @@ import { ListDetectionModule } from '../ListDetectionModule/ListDetectionModule'
  */
 export class WordsToLineNewModule extends Module {
   public static moduleName = 'words-to-line-new';
+  private wordsCounter = 0;
 
   public main(doc: Document): Document {
     doc.pages = doc.pages.map(page => {
@@ -130,6 +131,8 @@ export class WordsToLineNewModule extends Module {
         currentLine = [];
       }
       currentLine.push(word);
+      word.properties.order = this.wordsCounter;
+      this.wordsCounter++;
     });
     if (currentLine.length > 0) {
       wordsLine.push(currentLine);
