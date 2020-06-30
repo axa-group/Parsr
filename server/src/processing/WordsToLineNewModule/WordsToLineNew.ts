@@ -165,7 +165,7 @@ export class WordsToLineNewModule extends Module {
         })
         .reduce((a, b) => a + b, 0) /
       (words.length - 1);
-    return Math.round(space * 1.2);
+    return Math.round(space * 2.5);
   }
 
   private commonWordsSpace(words: Word[], excludeIndex: number): number {
