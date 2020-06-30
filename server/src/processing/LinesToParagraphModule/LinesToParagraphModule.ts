@@ -28,7 +28,7 @@ import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
 import { ReadingOrderDetectionModule } from '../ReadingOrderDetectionModule/ReadingOrderDetectionModule';
-import { WordsToLineModule } from '../WordsToLineModule/WordsToLineModule';
+import { WordsToLineNewModule } from '../WordsToLineNewModule/WordsToLineNew';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
@@ -50,7 +50,7 @@ type LineSpace = {
  */
 export class LinesToParagraphModule extends Module<Options> {
   public static moduleName = 'lines-to-paragraph';
-  public static dependencies = [ReadingOrderDetectionModule, WordsToLineModule];
+  public static dependencies = [ReadingOrderDetectionModule, WordsToLineNewModule];
   public maxLineDistance = 0;
 
   constructor(options?: Options) {
