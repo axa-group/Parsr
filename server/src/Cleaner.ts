@@ -37,6 +37,7 @@ import { TableDetectionModule } from './processing/TableDetectionModule/TableDet
 import { TableOfContentsDetectionModule } from './processing/TableOfContentsDetectionModule/TableOfContentsDetectionModule';
 import { WhitespaceRemovalModule } from './processing/WhitespaceRemovalModule/WhitespaceRemovalModule';
 import { WordsToLineModule } from './processing/WordsToLineModule/WordsToLineModule';
+import { WordsToLineNewModule } from './processing/WordsToLineNewModule/WordsToLineNew';
 import { CleanerConfig, Config } from './types/Config';
 import { Document } from './types/DocumentRepresentation/Document';
 import logger from './utils/Logger';
@@ -55,6 +56,7 @@ export class Cleaner {
     OutOfPageRemovalModule,
     ReadingOrderDetectionModule,
     WordsToLineModule,
+    WordsToLineNewModule,
     KeyValueDetectionModule,
     LinesToParagraphModule,
     MlHeadingDetectionModule,
