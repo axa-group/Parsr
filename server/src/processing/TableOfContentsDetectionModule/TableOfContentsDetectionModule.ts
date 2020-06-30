@@ -20,7 +20,6 @@ import * as defaultConfig from './defaultConfig.json';
 import * as detection from './detection-methods';
 
 interface Options {
-  keywords?: string[];
   pageKeywords?: string[];
 }
 
@@ -38,33 +37,32 @@ export class TableOfContentsDetectionModule extends Module<Options> {
     let pagesSinceLastTOC = 0;
     for (let i = 0; i <= doc.pages.length - 1 && (!foundTOC || pagesSinceLastTOC < 5); i++) {
       const page = doc.pages[i];
-
       const allParagraphs = page
         .getElementsOfType<Paragraph>(Paragraph, false)
         .filter(this.isNotHeaderFooter);
-
-      const tocItemParagraphs = allParagraphs.filter(p =>
-        detection.TOCDetected(p, this.options.pageKeywords),
+      const tocParagraphs: Paragraph[] = detection.TOCDetected(
+        allParagraphs,
+        this.options.pageKeywords,
       );
 
       // the detection threshold is increased a little if the previous page didn't have a TOC.
       if (
-        tocItemParagraphs.length > 0 &&
-        tocItemParagraphs.length >=
-          Math.floor(allParagraphs.length * detection.threshold * Math.pow(1.05, pagesSinceLastTOC))
+        tocParagraphs.length > 0 &&
+        tocParagraphs.length >=
+          Math.floor(allParagraphs.length * detection.THRESHOLD * Math.pow(1.05, pagesSinceLastTOC))
       ) {
         foundTOC = true;
+
         const toc = new TableOfContents();
         toc.pageKeywords = this.options.pageKeywords;
-        toc.content = tocItemParagraphs;
-        page.elements = page.elements.filter(e => !tocItemParagraphs.map(t => t.id).includes(e.id));
+        toc.content = tocParagraphs;
+        page.elements = page.elements.filter(e => !tocParagraphs.map(t => t.id).includes(e.id));
         page.elements.push(toc);
         pagesSinceLastTOC = 0;
       } else {
         pagesSinceLastTOC++;
       }
     }
-
     return doc;
   }
 

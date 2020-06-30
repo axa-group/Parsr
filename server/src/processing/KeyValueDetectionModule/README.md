@@ -28,7 +28,7 @@ Following is an example of the configuration of the key-value search module:
 [
   "key-value-detection",
   {
-    "threshold": 0.8,
+    "thresholdRatio": 0.8,
     "keyValueDividerChars": [":", ";"],
     "keyPatterns": {
       "Name": ["Name", "Fullname", "User"],
@@ -41,6 +41,103 @@ Following is an example of the configuration of the key-value search module:
 Here, the `keyValueDividerChars` describes the sets of characters that are used in the input document to separate the keys from values in a key-pair description.
 `keyPatterns` describe objects describing the key names and patterns on which these key names need to be matched.
 `threshold` describes the minimum similarity score for candidate substrings matches to pass.
+
+## Example
+
+Imagine a document containing the following text:
+```
+.....
+Name: John
+Surnames: Doe
+Residence: Fake Street 123
+.....
+```
+
+
+with config: 
+```json
+{
+  "thresholdRatio": 0.8,
+  "keyValueDividerChars": [
+    ":",
+  ],
+  "keyPatterns": {
+    "First Name": [
+      "Name", "First Name"
+    ],
+    "Surname": [
+      "Surname", "Surnames", "Last Name"
+    ],
+    "Address": [
+      "Address", "Domicile", "Residence"
+    ]
+  }
+}
+```
+
+`document.metadata` property after execution of this module:
+```json
+[
+  {
+    "id": 1,
+    "elements": [
+      468,
+      476
+    ],
+    "type": "key-value",
+    "data": {
+      "keyName": "First Name",
+      "keyElements": [
+        468
+      ],
+      "valueElements": [
+        476
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "elements": [
+      487,
+      498
+    ],
+    "type": "key-value",
+    "data": {
+      "keyName": "Surname",
+      "keyElements": [
+        487
+      ],
+      "valueElements": [
+        498,
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "elements": [
+      399,
+      431
+    ],
+    "type": "key-value",
+    "data": {
+      "keyName": "Address",
+      "keyElements": [
+        399
+      ],
+      "valueElements": [
+        431
+      ]
+    }
+  }
+]
+```
+
+Here we can see that 3 matches have been found:
+- **First Name**: Elements with IDs 468 and 476, corresponding to Words with contents "Name" and "John" respectively.
+- **Surname**: Elements with IDs 487 and 498, corresponding to Words with contents "Surnames" and "Doe".
+- **Address**: Elements with IDs 399 and 431, with contents "Residence" and "Fake Street 123"
+
+Note that `keyElements` and `valueElements` properties are defined as an array, because more than one match can be found for that key-value pair.
 
 ## Accuracy
 
