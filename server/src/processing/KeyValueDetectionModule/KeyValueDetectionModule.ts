@@ -20,7 +20,7 @@ import { KeyValueMetadata } from '../../types/Metadata/KeyValueMetadata';
 import { getSubCollections } from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
-import { WordsToLineModule } from '../WordsToLineModule/WordsToLineModule';
+import { WordsToLineNewModule } from '../WordsToLineNewModule/WordsToLineNew';
 import * as defaultConfig from './defaultConfig.json';
 
 interface Options {
@@ -44,7 +44,7 @@ export type KeyCandidate = {
  */
 export class KeyValueDetectionModule extends Module<Options> {
   public static moduleName = 'key-value-detection';
-  public static dependencies = [WordsToLineModule];
+  public static dependencies = [WordsToLineNewModule];
 
   constructor(options?: Options) {
     super(options, defaultOptions);

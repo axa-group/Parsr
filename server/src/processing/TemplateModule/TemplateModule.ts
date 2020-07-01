@@ -17,7 +17,7 @@
 import { Document } from '../../types/DocumentRepresentation';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
-import { WordsToLineModule } from '../WordsToLineModule/WordsToLineModule';
+import { WordsToLineNewModule } from '../WordsToLineNewModule/WordsToLineNew';
 import * as defaultConfig from './defaultConfig.json';
 
 // List of every options you need.
@@ -39,7 +39,7 @@ export class TemplateModule extends Module<Options> {
   // If your module can only be ran after another module, add it to the list.
   // For instance, if your module needs a document where lines have already be created,
   // you need to add `WordsToLineModule` as a dependency.
-  public static dependencies = [WordsToLineModule];
+  public static dependencies = [WordsToLineNewModule];
 
   // This constructor ensures options and default options will be correctly copied.
   constructor(options?: Options) {

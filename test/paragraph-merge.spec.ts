@@ -26,7 +26,7 @@ import {
 import { WhitespaceRemovalModule } from '../server/src/processing/WhitespaceRemovalModule/WhitespaceRemovalModule';
 
 import * as fs from 'fs';
-import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
+import { WordsToLineNewModule } from '../server/src/processing/WordsToLineNewModule/WordsToLineNew';
 import { Paragraph } from '../server/src/types/DocumentRepresentation';
 import { Document } from '../server/src/types/DocumentRepresentation/Document';
 import { getDocFromJson, runModules, TableExtractorStub } from './helpers';
@@ -44,8 +44,8 @@ function executePipeLine(jsonName: string, done, tableExtractor?: TableExtractor
       new OutOfPageRemovalModule(),
       new WhitespaceRemovalModule(),
       tableDetectionModule,
+      new WordsToLineNewModule(),
       new ReadingOrderDetectionModule(),
-      new WordsToLineModule(),
       new LinesToParagraphModule(),
     ]);
   }
@@ -126,6 +126,6 @@ describe('Paragraph merge function with tables ans more', () => {
   it('should merge side-by-side lines into paragraphs', () => {
     expect(docAfter.pages[0].getElementsOfType<Paragraph>(Paragraph, true))
       .to.be.an('array')
-      .and.to.be.of.length(52);
+      .and.to.be.of.length(54);
   });
 });

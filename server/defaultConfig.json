@@ -55,21 +55,13 @@
         "maxMarginPercentage": 8
       }
     ],
+    "link-detection",
+    "words-to-line-new",
     [
       "reading-order-detection",
       {
         "minVerticalGapWidth": 5,
         "minColumnWidthInPagePercent": 15
-      }
-    ],
-    "link-detection",
-    [
-      "words-to-line",
-      {
-        "lineHeightUncertainty": 0.2,
-        "topUncertainty": 0.4,
-        "maximumSpaceBetweenWords": 100,
-        "mergeTableElements": false
       }
     ],
     [

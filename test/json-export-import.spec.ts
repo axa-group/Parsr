@@ -21,7 +21,7 @@ import { JsonExporter } from '../server/src/output/json/JsonExporter';
 import { HierarchyDetectionModule } from '../server/src/processing/HierarchyDetectionModule/HierarchyDetectionModule';
 import { LinesToParagraphModule } from '../server/src/processing/LinesToParagraphModule/LinesToParagraphModule';
 import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
-import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
+import { WordsToLineNewModule } from '../server/src/processing/WordsToLineNewModule/WordsToLineNew';
 import { Document, Element, JsonExport } from '../server/src/types/DocumentRepresentation';
 import { json2document } from '../server/src/utils/json2document';
 import { getDocFromJson, runModules } from './helpers';
@@ -41,7 +41,7 @@ describe('JSON export and import', () => {
         Element.resetGlobalId();
         return runModules(json, [
           new ReadingOrderDetectionModule(),
-          new WordsToLineModule(),
+          new WordsToLineNewModule(),
           new LinesToParagraphModule(),
           new HierarchyDetectionModule(),
         ]);
