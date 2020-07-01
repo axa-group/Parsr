@@ -25,7 +25,7 @@ import { LinesToParagraphModule } from '../server/src/processing/LinesToParagrap
 import { OutOfPageRemovalModule } from '../server/src/processing/OutOfPageRemovalModule/OutOfPageRemovalModule';
 import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 import { WhitespaceRemovalModule } from '../server/src/processing/WhitespaceRemovalModule/WhitespaceRemovalModule';
-import { WordsToLineModule } from '../server/src/processing/WordsToLineModule/WordsToLineModule';
+import { WordsToLineNewModule } from '../server/src/processing/WordsToLineNewModule/WordsToLineNew';
 import { Document, Paragraph } from '../server/src/types/DocumentRepresentation';
 import { runModules } from './helpers';
 
@@ -63,7 +63,7 @@ describe('PDF.js input module', () => {
             new OutOfPageRemovalModule(),
             new WhitespaceRemovalModule(),
             new ReadingOrderDetectionModule(),
-            new WordsToLineModule(),
+            new WordsToLineNewModule(),
             new LinesToParagraphModule(),
           ]).then(doc => {
             exportedText = doc
@@ -115,7 +115,7 @@ describe('EML input module', () => {
             new OutOfPageRemovalModule(),
             new WhitespaceRemovalModule(),
             new ReadingOrderDetectionModule(),
-            new WordsToLineModule(),
+            new WordsToLineNewModule(),
             new LinesToParagraphModule(),
           ]).then(doc => {
             docAfter = doc;
@@ -178,7 +178,7 @@ describe('MS Word input module', () => {
             new OutOfPageRemovalModule(),
             new WhitespaceRemovalModule(),
             new ReadingOrderDetectionModule(),
-            new WordsToLineModule(),
+            new WordsToLineNewModule(),
             new LinesToParagraphModule(),
           ]).then(doc => {
             docAfter = doc;
