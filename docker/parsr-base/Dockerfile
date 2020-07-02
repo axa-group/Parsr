@@ -19,7 +19,10 @@ RUN apt-get update && \
   pip install PyPDF2 && \
   pip3 install ghostscript PyPDF2 camelot-py[cv] numpy pillow sklearn tabula-py
 
+ADD policy.xml /etc/ImageMagick-6/policy.xml
+
 WORKDIR /opt/app-root/src
+
 RUN chown 1001:0 /opt/app-root/src
 
 ENV PATH $PATH:/opt/app-root/src/node_modules/.bin

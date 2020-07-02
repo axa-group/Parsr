@@ -28,7 +28,7 @@ steps:
     image: plugins/docker
     settings:
       repo: axarev/parsr-base
-      context: .
+      context: docker/parsr-base
       dockerfile: docker/parsr-base/Dockerfile
       username:
         from_secret: registry_user
