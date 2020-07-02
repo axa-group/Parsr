@@ -62,8 +62,8 @@ describe('PDF.js input module', () => {
           runModules(document, [
             new OutOfPageRemovalModule(),
             new WhitespaceRemovalModule(),
-            new ReadingOrderDetectionModule(),
             new WordsToLineNewModule(),
+            new ReadingOrderDetectionModule(),
             new LinesToParagraphModule(),
           ]).then(doc => {
             exportedText = doc
@@ -114,8 +114,8 @@ describe('EML input module', () => {
           runModules(document, [
             new OutOfPageRemovalModule(),
             new WhitespaceRemovalModule(),
-            new ReadingOrderDetectionModule(),
             new WordsToLineNewModule(),
+            new ReadingOrderDetectionModule(),
             new LinesToParagraphModule(),
           ]).then(doc => {
             docAfter = doc;
@@ -177,8 +177,8 @@ describe('MS Word input module', () => {
           runModules(document, [
             new OutOfPageRemovalModule(),
             new WhitespaceRemovalModule(),
-            new ReadingOrderDetectionModule(),
             new WordsToLineNewModule(),
+            new ReadingOrderDetectionModule(),
             new LinesToParagraphModule(),
           ]).then(doc => {
             docAfter = doc;

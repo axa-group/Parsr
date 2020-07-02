@@ -17,7 +17,6 @@
 import { expect } from 'chai';
 import { withData } from 'leche';
 import 'mocha';
-import { ReadingOrderDetectionModule } from '../server/src/processing/ReadingOrderDetectionModule/ReadingOrderDetectionModule';
 import { WordsToLineNewModule } from '../server/src/processing/WordsToLineNewModule/WordsToLineNew';
 import { Document, Element } from '../server/src/types/DocumentRepresentation';
 import { getDocFromJson, runModules } from './helpers';
@@ -36,7 +35,7 @@ describe('Line merge function', () => {
 
       before(done => {
         function transform(json: Document) {
-          return runModules(json, [new ReadingOrderDetectionModule(), new WordsToLineNewModule()]);
+          return runModules(json, [new WordsToLineNewModule()]);
         }
 
         getDocFromJson(transform, jsonName).then(after => {

@@ -40,8 +40,8 @@ describe('JSON export and import', () => {
       function clean(json: Document): Promise<Document> {
         Element.resetGlobalId();
         return runModules(json, [
-          new ReadingOrderDetectionModule(),
           new WordsToLineNewModule(),
+          new ReadingOrderDetectionModule(),
           new LinesToParagraphModule(),
           new HierarchyDetectionModule(),
         ]);
