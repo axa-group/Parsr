@@ -48,10 +48,11 @@ export class HeaderFooterDetectionModule extends Module<Options> {
         })
         .reduce((a, b) => a + b, 0) > 0;
 
-    if (doc.pages.length === 1) {
+    let nbPageToTreat: number = this.countPageToTreat(doc.pages.length);
+    if (nbPageToTreat <= 1) {
       logger.warn(
         'Not computing marginals (headers and footers)' +
-          'the document only has 1 page (not enough data).',
+          'the document has only 1 page to check (not enough data).',
       );
       return doc;
     } else if (this.options.maxMarginPercentage === undefined) {
@@ -157,7 +158,7 @@ export class HeaderFooterDetectionModule extends Module<Options> {
         const footerElements: Element[] = page.getElementsSubset(
           new BoundingBox(0, doc.margins.bottom, page.width, page.height - doc.margins.bottom),
         );
-        
+
         for (const element of footerElements) {
           element.properties.isFooter = true;
         }
@@ -168,5 +169,15 @@ export class HeaderFooterDetectionModule extends Module<Options> {
       });
     logger.debug('Done with marginals detection.');
     return doc;
+  }
+  
+  private countPageToTreat(docLength: number): number {
+    let nbPagesToTreat: number = docLength;
+    this.options.ignorePages.forEach(p => {
+      if (p > 0 && p <= docLength) {
+        nbPagesToTreat = nbPagesToTreat - 1;
+      }
+    });
+    return nbPagesToTreat;
   }
 }
