@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  BoundingBox,
-  Document,
-  Element,
-} from '../../types/DocumentRepresentation';
+import { BoundingBox, Document, Element } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
@@ -87,7 +83,7 @@ export class HeaderFooterDetectionModule extends Module<Options> {
     }
 
     doc.pages
-      .filter(p => !this.options.ignorePages.includes(p))
+      .filter(p => !this.options.ignorePages.includes(p.pageNumber))
       .forEach(page => {
         const h: number[] = page.horizontalOccupancy.map(boolToInt);
         occupancyAcrossHeight = utils.addVectors(occupancyAcrossHeight, h);
@@ -151,23 +147,25 @@ export class HeaderFooterDetectionModule extends Module<Options> {
         `left: ${doc.margins.left}, right: ${doc.margins.right}`,
     );
 
-    doc.pages.forEach(page => {
-      const headerElements: Element[] = page.getElementsSubset(
-        new BoundingBox(0, 0, page.width, doc.margins.top),
-      );
+    doc.pages
+      .filter(p => !this.options.ignorePages.includes(p.pageNumber))
+      .forEach(page => {
+        const headerElements: Element[] = page.getElementsSubset(
+          new BoundingBox(0, 0, page.width, doc.margins.top),
+        );
 
-      const footerElements: Element[] = page.getElementsSubset(
-        new BoundingBox(0, doc.margins.bottom, page.width, page.height - doc.margins.bottom),
-      );
+        const footerElements: Element[] = page.getElementsSubset(
+          new BoundingBox(0, doc.margins.bottom, page.width, page.height - doc.margins.bottom),
+        );
+        
+        for (const element of footerElements) {
+          element.properties.isFooter = true;
+        }
 
-      for (const element of footerElements) {
-        element.properties.isFooter = true;
-      }
-
-      for (const element of headerElements) {
-        element.properties.isHeader = true;
-      }
-    });
+        for (const element of headerElements) {
+          element.properties.isHeader = true;
+        }
+      });
     logger.debug('Done with marginals detection.');
     return doc;
   }
