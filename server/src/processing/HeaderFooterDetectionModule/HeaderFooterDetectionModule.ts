@@ -41,6 +41,54 @@ export class HeaderFooterDetectionModule extends Module<Options> {
   }
 
   public main(doc: Document): Document {
+    if (!this.isComputable(doc)) {
+      return doc;
+    }
+
+    let occupancyAcrossHeight: number[] = [];
+    let occupancyAcrossWidth: number[] = [];
+    let pagesStoredBySize: Page[][] = [];
+
+    doc.pages
+      .filter(p => !this.options.ignorePages.includes(p.pageNumber))
+      .forEach(page => {
+        this.storePageSimilarSize(pagesStoredBySize, page);
+      });
+
+    pagesStoredBySize
+      .filter(groupOfP => groupOfP.length > 1)
+      .forEach(groupOfPage => {
+        groupOfPage.forEach(page => {
+          const h: number[] = page.horizontalOccupancy.map(this.boolToInt);
+          occupancyAcrossHeight = utils.addVectors(occupancyAcrossHeight, h);
+          const v: number[] = page.verticalOccupancy.map(this.boolToInt);
+          occupancyAcrossWidth = utils.addVectors(occupancyAcrossWidth, v);
+        });
+        // UNCOMMENT THESE TO EXPORT OCCUPANCIES INTO EXTERNAL CSV FILES
+        // writeFileSync("horizontal.csv", occupancyAcrossWidth.join(";"), {encoding: 'utf-8'})
+        // writeFileSync("vertical.csv", occupancyAcrossHeight.join(";"), {encoding: 'utf-8'})
+        this.setMargins(doc, occupancyAcrossHeight, occupancyAcrossWidth);
+        groupOfPage.forEach(page => {
+          this.setHeaderAndFooter(doc, page);
+          const headerElements: Element[] = page.getElementsSubset(
+            new BoundingBox(0, 0, page.width, doc.margins.top),
+          );
+          const footerElements: Element[] = page.getElementsSubset(
+            new BoundingBox(0, doc.margins.bottom, page.width, page.height - doc.margins.bottom),
+          );
+          for (const element of footerElements) {
+            element.properties.isFooter = true;
+          }
+          for (const element of headerElements) {
+            element.properties.isHeader = true;
+          }
+        });
+      });
+    logger.debug('Done with marginals detection.');
+    return doc;
+  }
+
+  private isComputable(doc: Document): boolean {
     const alreadyExist: boolean =
       doc.pages
         .map(p => {
@@ -54,130 +102,105 @@ export class HeaderFooterDetectionModule extends Module<Options> {
         'Not computing marginals (headers and footers)' +
           'the document has only 1 page to check (not enough data).',
       );
-      return doc;
+      return false;
     } else if (this.options.maxMarginPercentage === undefined) {
       logger.info(
         'Not computing marginals (headers and footers); maxMarginPercentage setting not found in the configuration.',
       );
-      return doc;
+      return false;
     } else if (alreadyExist) {
       logger.warn(
         'Not computing marginals (headers and footers): header and footer data already exists.',
       );
-      return doc;
+      return false;
     }
     logger.info(
       'Detecting marginals (headers and footers) with maxMarginPercentage:',
       this.options.maxMarginPercentage,
       '...',
     );
-
-    let occupancyAcrossHeight: number[] = [];
-    let occupancyAcrossWidth: number[] = [];
-    let pagesStoredBySize: Page[][] = [];
-
-    function boolToInt(p) {
-      if (p) {
-        return 1;
-      } else {
-        return 0;
-      }
+    return true;
+  }
+  private boolToInt(p) {
+    if (p) {
+      return 1;
+    } else {
+      return 0;
     }
-    doc.pages
-      .filter(p => !this.options.ignorePages.includes(p.pageNumber))
-      .forEach(page => {
-        this.storePageSimilarSize(pagesStoredBySize, page);
-      });
-    pagesStoredBySize
-      .filter(groupOfP => groupOfP.length > 1)
-      .forEach(groupOfPage => {
-        if (groupOfPage.length > 1) {
-          groupOfPage.forEach(page => {
-            const h: number[] = page.horizontalOccupancy.map(boolToInt);
-            occupancyAcrossHeight = utils.addVectors(occupancyAcrossHeight, h);
-            console.log('occupancyAcrossHeight= ' + occupancyAcrossHeight);
-            const v: number[] = page.verticalOccupancy.map(boolToInt);
-            occupancyAcrossWidth = utils.addVectors(occupancyAcrossWidth, v);
-          });
-          // UNCOMMENT THESE TO EXPORT OCCUPANCIES INTO EXTERNAL CSV FILES
-          // writeFileSync("horizontal.csv", occupancyAcrossWidth.join(";"), {encoding: 'utf-8'})
-          // writeFileSync("vertical.csv", occupancyAcrossHeight.join(";"), {encoding: 'utf-8'})
-
-          const heightZeros: number[] = utils
-            .findPositionsInArray(occupancyAcrossHeight, 0)
-            .sort((a, b) => {
-              return a - b;
-            });
-          const widthZeros: number[] = utils
-            .findPositionsInArray(occupancyAcrossWidth, 0)
-            .sort((a, b) => {
-              return a - b;
-            });
-
-          const maxT: number = Math.floor(
-            0 + (this.options.maxMarginPercentage * occupancyAcrossHeight.length) / 100,
-          );
-          doc.margins.top = heightZeros
-            .filter(value => value < maxT)
-            .sort((a, b) => {
-              return b - a;
-            })[0];
-          const maxB: number = Math.floor(
-            occupancyAcrossHeight.length -
-              (this.options.maxMarginPercentage * occupancyAcrossHeight.length) / 100,
-          );
-          doc.margins.bottom = heightZeros
-            .filter(value => value > maxB)
-            .sort((a, b) => {
-              return a - b;
-            })[0];
-          const maxL: number = Math.floor(
-            0 + (this.options.maxMarginPercentage * occupancyAcrossWidth.length) / 100,
-          );
-          doc.margins.left = widthZeros
-            .filter(value => value < maxL)
-            .sort((a, b) => {
-              return b - a;
-            })[0];
-          const maxR: number = Math.floor(
-            occupancyAcrossWidth.length -
-              (this.options.maxMarginPercentage * occupancyAcrossWidth.length) / 100,
-          );
-          doc.margins.right = widthZeros
-            .filter(value => value > maxR)
-            .sort((a, b) => {
-              return a - b;
-            })[0];
-
-          logger.info(
-            `Document margins for maxMarginPercentage ${this.options.maxMarginPercentage}: ` +
-              `top: ${doc.margins.top}, bottom: ${doc.margins.bottom}, ` +
-              `left: ${doc.margins.left}, right: ${doc.margins.right}`,
-          );
-        }
-
-        groupOfPage.forEach(page => {
-          const headerElements: Element[] = page.getElementsSubset(
-            new BoundingBox(0, 0, page.width, doc.margins.top),
-          );
-
-          const footerElements: Element[] = page.getElementsSubset(
-            new BoundingBox(0, doc.margins.bottom, page.width, page.height - doc.margins.bottom),
-          );
-
-          for (const element of footerElements) {
-            element.properties.isFooter = true;
-          }
-
-          for (const element of headerElements) {
-            element.properties.isHeader = true;
-          }
-        });
-      });
-    logger.debug('Done with marginals detection.');
-    return doc;
   }
 
+  private setMargins(
+    doc: Document,
+    occupancyAcrossHeight: number[],
+    occupancyAcrossWidth: number[],
+  ) {
+    const heightZeros: number[] = utils
+      .findPositionsInArray(occupancyAcrossHeight, 0)
+      .sort((a, b) => {
+        return a - b;
+      });
+    const widthZeros: number[] = utils
+      .findPositionsInArray(occupancyAcrossWidth, 0)
+      .sort((a, b) => {
+        return a - b;
+      });
+
+    const maxT: number = Math.floor(
+      0 + (this.options.maxMarginPercentage * occupancyAcrossHeight.length) / 100,
+    );
+    doc.margins.top = heightZeros
+      .filter(value => value < maxT)
+      .sort((a, b) => {
+        return b - a;
+      })[0];
+    const maxB: number = Math.floor(
+      occupancyAcrossHeight.length -
+        (this.options.maxMarginPercentage * occupancyAcrossHeight.length) / 100,
+    );
+    doc.margins.bottom = heightZeros
+      .filter(value => value > maxB)
+      .sort((a, b) => {
+        return a - b;
+      })[0];
+    const maxL: number = Math.floor(
+      0 + (this.options.maxMarginPercentage * occupancyAcrossWidth.length) / 100,
+    );
+    doc.margins.left = widthZeros
+      .filter(value => value < maxL)
+      .sort((a, b) => {
+        return b - a;
+      })[0];
+    const maxR: number = Math.floor(
+      occupancyAcrossWidth.length -
+        (this.options.maxMarginPercentage * occupancyAcrossWidth.length) / 100,
+    );
+    doc.margins.right = widthZeros
+      .filter(value => value > maxR)
+      .sort((a, b) => {
+        return a - b;
+      })[0];
+
+    logger.info(
+      `Document margins for maxMarginPercentage ${this.options.maxMarginPercentage}: ` +
+        `top: ${doc.margins.top}, bottom: ${doc.margins.bottom}, ` +
+        `left: ${doc.margins.left}, right: ${doc.margins.right}`,
+    );
+  }
+
+  private setHeaderAndFooter(doc: Document, page: Page) {
+    const headerElements: Element[] = page.getElementsSubset(
+      new BoundingBox(0, 0, page.width, doc.margins.top),
+    );
+    const footerElements: Element[] = page.getElementsSubset(
+      new BoundingBox(0, doc.margins.bottom, page.width, page.height - doc.margins.bottom),
+    );
+    for (const element of footerElements) {
+      element.properties.isFooter = true;
+    }
+    for (const element of headerElements) {
+      element.properties.isHeader = true;
+    }
+  }
   private countPageToTreat(docLength: number): number {
     let nbPagesToTreat: number = docLength;
     this.options.ignorePages.forEach(p => {
