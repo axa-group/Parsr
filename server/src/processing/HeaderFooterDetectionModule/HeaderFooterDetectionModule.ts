@@ -88,89 +88,92 @@ export class HeaderFooterDetectionModule extends Module<Options> {
       .forEach(page => {
         this.storePageSimilarSize(pagesStoredBySize, page);
       });
-    pagesStoredBySize.forEach(groupOfPage => {
-      groupOfPage.forEach(page => {
-        const h: number[] = page.horizontalOccupancy.map(boolToInt);
-        occupancyAcrossHeight = utils.addVectors(occupancyAcrossHeight, h);
-        console.log('occupancyAcrossHeight= ' + occupancyAcrossHeight);
-        const v: number[] = page.verticalOccupancy.map(boolToInt);
-        occupancyAcrossWidth = utils.addVectors(occupancyAcrossWidth, v);
-      });
+    pagesStoredBySize
+      .filter(groupOfP => groupOfP.length > 1)
+      .forEach(groupOfPage => {
+        if (groupOfPage.length > 1) {
+          groupOfPage.forEach(page => {
+            const h: number[] = page.horizontalOccupancy.map(boolToInt);
+            occupancyAcrossHeight = utils.addVectors(occupancyAcrossHeight, h);
+            console.log('occupancyAcrossHeight= ' + occupancyAcrossHeight);
+            const v: number[] = page.verticalOccupancy.map(boolToInt);
+            occupancyAcrossWidth = utils.addVectors(occupancyAcrossWidth, v);
+          });
+          // UNCOMMENT THESE TO EXPORT OCCUPANCIES INTO EXTERNAL CSV FILES
+          // writeFileSync("horizontal.csv", occupancyAcrossWidth.join(";"), {encoding: 'utf-8'})
+          // writeFileSync("vertical.csv", occupancyAcrossHeight.join(";"), {encoding: 'utf-8'})
 
-      // UNCOMMENT THESE TO EXPORT OCCUPANCIES INTO EXTERNAL CSV FILES
-      // writeFileSync("horizontal.csv", occupancyAcrossWidth.join(";"), {encoding: 'utf-8'})
-      // writeFileSync("vertical.csv", occupancyAcrossHeight.join(";"), {encoding: 'utf-8'})
+          const heightZeros: number[] = utils
+            .findPositionsInArray(occupancyAcrossHeight, 0)
+            .sort((a, b) => {
+              return a - b;
+            });
+          const widthZeros: number[] = utils
+            .findPositionsInArray(occupancyAcrossWidth, 0)
+            .sort((a, b) => {
+              return a - b;
+            });
 
-      const heightZeros: number[] = utils
-        .findPositionsInArray(occupancyAcrossHeight, 0)
-        .sort((a, b) => {
-          return a - b;
-        });
-      const widthZeros: number[] = utils
-        .findPositionsInArray(occupancyAcrossWidth, 0)
-        .sort((a, b) => {
-          return a - b;
-        });
+          const maxT: number = Math.floor(
+            0 + (this.options.maxMarginPercentage * occupancyAcrossHeight.length) / 100,
+          );
+          doc.margins.top = heightZeros
+            .filter(value => value < maxT)
+            .sort((a, b) => {
+              return b - a;
+            })[0];
+          const maxB: number = Math.floor(
+            occupancyAcrossHeight.length -
+              (this.options.maxMarginPercentage * occupancyAcrossHeight.length) / 100,
+          );
+          doc.margins.bottom = heightZeros
+            .filter(value => value > maxB)
+            .sort((a, b) => {
+              return a - b;
+            })[0];
+          const maxL: number = Math.floor(
+            0 + (this.options.maxMarginPercentage * occupancyAcrossWidth.length) / 100,
+          );
+          doc.margins.left = widthZeros
+            .filter(value => value < maxL)
+            .sort((a, b) => {
+              return b - a;
+            })[0];
+          const maxR: number = Math.floor(
+            occupancyAcrossWidth.length -
+              (this.options.maxMarginPercentage * occupancyAcrossWidth.length) / 100,
+          );
+          doc.margins.right = widthZeros
+            .filter(value => value > maxR)
+            .sort((a, b) => {
+              return a - b;
+            })[0];
 
-      const maxT: number = Math.floor(
-        0 + (this.options.maxMarginPercentage * occupancyAcrossHeight.length) / 100,
-      );
-      doc.margins.top = heightZeros
-        .filter(value => value < maxT)
-        .sort((a, b) => {
-          return b - a;
-        })[0];
-      const maxB: number = Math.floor(
-        occupancyAcrossHeight.length -
-          (this.options.maxMarginPercentage * occupancyAcrossHeight.length) / 100,
-      );
-      doc.margins.bottom = heightZeros
-        .filter(value => value > maxB)
-        .sort((a, b) => {
-          return a - b;
-        })[0];
-      const maxL: number = Math.floor(
-        0 + (this.options.maxMarginPercentage * occupancyAcrossWidth.length) / 100,
-      );
-      doc.margins.left = widthZeros
-        .filter(value => value < maxL)
-        .sort((a, b) => {
-          return b - a;
-        })[0];
-      const maxR: number = Math.floor(
-        occupancyAcrossWidth.length -
-          (this.options.maxMarginPercentage * occupancyAcrossWidth.length) / 100,
-      );
-      doc.margins.right = widthZeros
-        .filter(value => value > maxR)
-        .sort((a, b) => {
-          return a - b;
-        })[0];
-
-      logger.info(
-        `Document margins for maxMarginPercentage ${this.options.maxMarginPercentage}: ` +
-          `top: ${doc.margins.top}, bottom: ${doc.margins.bottom}, ` +
-          `left: ${doc.margins.left}, right: ${doc.margins.right}`,
-      );
-      groupOfPage
-      .forEach(page => {
-        const headerElements: Element[] = page.getElementsSubset(
-          new BoundingBox(0, 0, page.width, doc.margins.top),
-        );
-
-        const footerElements: Element[] = page.getElementsSubset(
-          new BoundingBox(0, doc.margins.bottom, page.width, page.height - doc.margins.bottom),
-        );
-
-        for (const element of footerElements) {
-          element.properties.isFooter = true;
+          logger.info(
+            `Document margins for maxMarginPercentage ${this.options.maxMarginPercentage}: ` +
+              `top: ${doc.margins.top}, bottom: ${doc.margins.bottom}, ` +
+              `left: ${doc.margins.left}, right: ${doc.margins.right}`,
+          );
         }
 
-        for (const element of headerElements) {
-          element.properties.isHeader = true;
-        }
+        groupOfPage.forEach(page => {
+          const headerElements: Element[] = page.getElementsSubset(
+            new BoundingBox(0, 0, page.width, doc.margins.top),
+          );
+
+          const footerElements: Element[] = page.getElementsSubset(
+            new BoundingBox(0, doc.margins.bottom, page.width, page.height - doc.margins.bottom),
+          );
+
+          for (const element of footerElements) {
+            element.properties.isFooter = true;
+          }
+
+          for (const element of headerElements) {
+            element.properties.isHeader = true;
+          }
+        });
       });
-    });
     logger.debug('Done with marginals detection.');
     return doc;
   }
@@ -193,7 +196,6 @@ export class HeaderFooterDetectionModule extends Module<Options> {
         pageSize[0].height * 0.9 <= page.height &&
         pageSize[0].height * 1.1 >= page.height,
     );
-
     if (indexValue !== -1 && pagesStoredBySize[indexValue].indexOf(page) === -1) {
       pagesStoredBySize[indexValue].push(page);
     } else if (indexValue === -1) {
