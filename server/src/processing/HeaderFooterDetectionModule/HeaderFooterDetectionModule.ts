@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { BoundingBox, Document, Element } from '../../types/DocumentRepresentation';
+import { BoundingBox, Document, Element, Page } from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
@@ -74,6 +74,7 @@ export class HeaderFooterDetectionModule extends Module<Options> {
 
     let occupancyAcrossHeight: number[] = [];
     let occupancyAcrossWidth: number[] = [];
+    let pagesStoredBySize: Page[][] = [];
 
     function boolToInt(p) {
       if (p) {
@@ -82,15 +83,20 @@ export class HeaderFooterDetectionModule extends Module<Options> {
         return 0;
       }
     }
-
     doc.pages
       .filter(p => !this.options.ignorePages.includes(p.pageNumber))
       .forEach(page => {
+        this.storePageSimilarSize(pagesStoredBySize, page);
+      });
+    pagesStoredBySize.forEach(groupOfPage => {
+      groupOfPage.forEach(page => {
         const h: number[] = page.horizontalOccupancy.map(boolToInt);
         occupancyAcrossHeight = utils.addVectors(occupancyAcrossHeight, h);
+        console.log('occupancyAcrossHeight= ' + occupancyAcrossHeight);
         const v: number[] = page.verticalOccupancy.map(boolToInt);
         occupancyAcrossWidth = utils.addVectors(occupancyAcrossWidth, v);
       });
+    });
 
     // UNCOMMENT THESE TO EXPORT OCCUPANCIES INTO EXTERNAL CSV FILES
     // writeFileSync("horizontal.csv", occupancyAcrossWidth.join(";"), {encoding: 'utf-8'})
@@ -170,7 +176,7 @@ export class HeaderFooterDetectionModule extends Module<Options> {
     logger.debug('Done with marginals detection.');
     return doc;
   }
-  
+
   private countPageToTreat(docLength: number): number {
     let nbPagesToTreat: number = docLength;
     this.options.ignorePages.forEach(p => {
@@ -179,5 +185,21 @@ export class HeaderFooterDetectionModule extends Module<Options> {
       }
     });
     return nbPagesToTreat;
+  }
+
+  private storePageSimilarSize(pagesStoredBySize: Page[][], page: Page) {
+    const indexValue = pagesStoredBySize.findIndex(
+      pageSize =>
+        pageSize[0].width * 0.9 <= page.width &&
+        pageSize[0].width * 1.1 >= page.width &&
+        pageSize[0].height * 0.9 <= page.height &&
+        pageSize[0].height * 1.1 >= page.height,
+    );
+
+    if (indexValue !== -1 && pagesStoredBySize[indexValue].indexOf(page) === -1) {
+      pagesStoredBySize[indexValue].push(page);
+    } else if (indexValue === -1) {
+      pagesStoredBySize.push([page]);
+    }
   }
 }
