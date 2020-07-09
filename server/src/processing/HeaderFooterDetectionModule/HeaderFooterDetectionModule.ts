@@ -64,6 +64,7 @@ export class HeaderFooterDetectionModule extends Module<Options> {
           const v: number[] = page.verticalOccupancy.map(this.boolToInt);
           occupancyAcrossWidth = utils.addVectors(occupancyAcrossWidth, v);
         });
+        
         // UNCOMMENT THESE TO EXPORT OCCUPANCIES INTO EXTERNAL CSV FILES
         // writeFileSync("horizontal.csv", occupancyAcrossWidth.join(";"), {encoding: 'utf-8'})
         // writeFileSync("vertical.csv", occupancyAcrossHeight.join(";"), {encoding: 'utf-8'})
@@ -83,6 +84,8 @@ export class HeaderFooterDetectionModule extends Module<Options> {
             element.properties.isHeader = true;
           }
         });
+        occupancyAcrossHeight = [];
+        occupancyAcrossWidth = [];
       });
     logger.debug('Done with marginals detection.');
     return doc;
