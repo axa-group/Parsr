@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { BoundingBox, Document, Element, Page } from '../../types/DocumentRepresentation';
+import {
+  BoundingBox,
+  Document,
+  Element,
+  Page,
+} from '../../types/DocumentRepresentation';
 import * as utils from '../../utils';
 import logger from '../../utils/Logger';
 import { Module } from '../Module';
