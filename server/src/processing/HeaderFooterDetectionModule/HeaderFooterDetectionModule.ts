@@ -129,8 +129,8 @@ export class HeaderFooterDetectionModule extends Module<Options> {
     );
     return true;
   }
-  private boolToInt(occupancy: boolean) : number{
-      return (occupancy? 1 : 0);
+  private boolToInt(occupancy: boolean) : number {
+      return occupancy ? 1 : 0;
   }
 
   private setMargins(
