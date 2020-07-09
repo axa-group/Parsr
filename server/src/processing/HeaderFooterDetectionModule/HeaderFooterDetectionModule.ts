@@ -216,12 +216,14 @@ export class HeaderFooterDetectionModule extends Module<Options> {
   }
 
   private storePageSimilarSize(pagesStoredBySize: Page[][], page: Page) {
+    const maxSizeSimilarity: number = 1 + this.options.similaritySizePercentage / 100;
+    const minSizeSimilarity: number = 1 / maxSizeSimilarity;
     const indexValue = pagesStoredBySize.findIndex(
       pageSize =>
-        pageSize[0].width * 0.9 <= page.width &&
-        pageSize[0].width * 1.1 >= page.width &&
-        pageSize[0].height * 0.9 <= page.height &&
-        pageSize[0].height * 1.1 >= page.height,
+        pageSize[0].width * minSizeSimilarity <= page.width &&
+        pageSize[0].width * maxSizeSimilarity >= page.width &&
+        pageSize[0].height * minSizeSimilarity <= page.height &&
+        pageSize[0].height * maxSizeSimilarity >= page.height,
     );
     if (indexValue !== -1 && pagesStoredBySize[indexValue].indexOf(page) === -1) {
       pagesStoredBySize[indexValue].push(page);

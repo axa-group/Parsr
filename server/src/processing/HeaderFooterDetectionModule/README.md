@@ -26,6 +26,7 @@ The following two parameters are available:
 1. `maxMarginPercentage`: The percentage of the page up to which (both from the top and the bottom) the algorithm will search for header or footer classification.
 2. `ignorePages`: The list of pages to be ignored in the header/footer search.
    This typically includes book titles, table of contents, preface, and other pages which do not typically have the same header/footer layout as the rest of the document.
+3. `similaritySizePercentage`: The percentage represent the difference of size between pages. This allow to apply the maxMarginPercentage option within groups of pages of similar size. 
 
 ## Accuracy
 
