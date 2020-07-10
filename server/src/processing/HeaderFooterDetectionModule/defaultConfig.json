@@ -11,6 +11,13 @@
 				"min": 0,
 				"max": 100
 			}
+		},
+		"similaritySizePercentage": {
+			"value": 10,
+			"range": {
+				"min": 0,
+				"max": 200
+			}
 		}
 	}
 }
