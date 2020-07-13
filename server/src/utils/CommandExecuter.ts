@@ -194,52 +194,14 @@ export function detectTables2(filePath: string, pages: string): Promise<string> 
 }
 
 export function levelPrediction(
-  size: string,
-  weight: string,
-  textCase: string,
-  isFontBigger: string,
-  differentColor: string,
-  wordCount: string,
-  fontRatio: string,
+  headings_features: string,
 ): Promise<string> {
   const args: string[] = [
     path.join(__dirname, '../../assets/HeadingLevelPrediction.py'),
-    size,
-    weight,
-    textCase,
-    isFontBigger,
-    differentColor,
-    wordCount,
-    fontRatio,
+    headings_features,
   ];
-  return run(COMMANDS.PYTHON, args).then(prediction => {
-    return prediction;
-  });
-}
-
-export function headingPrediction(
-  isDifferentStyle: string,
-  isFontBigger: string,
-  isFontUnique: string,
-  textCase: string,
-  wordCount: string,
-  differentColor: string,
-  isNumber: string,
-  fontRatio: string,
-): Promise<string> {
-  const args: string[] = [
-    path.join(__dirname, '../../assets/HeadingLevelPrediction.py'),
-    isDifferentStyle,
-    isFontBigger,
-    isFontUnique,
-    textCase,
-    wordCount,
-    differentColor,
-    isNumber,
-    fontRatio,
-  ];
-  return run(COMMANDS.PYTHON, args).then(prediction => {
-    return prediction;
+  return run(COMMANDS.PYTHON, args).then(predictions => {
+    return predictions;
   });
 }
 
