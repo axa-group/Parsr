@@ -23,16 +23,27 @@ const MIN_ROW_HEIGHT = 8;
 const MIN_COL_WIDTH = 10;
 
 export default (drawing: Drawing, pageHeight: number): JsonTable => {
-  const cols = getColsData(drawing);
-  const rows = getRowsData(drawing, pageHeight);
+  let cols: number[][] = []; 
+  let rows: number[][] = [];
+  let x: number = 0;
+  let y: number = 0;
+  let height: number = 0;
+  let width: number = 0;
+  
+  if (rows.length > 0 && cols.length > 0){
+    height = getTableHeight(rows);
+    width = getTableWidth(cols);    
+    cols = getColsData(drawing);
+    rows = getRowsData(drawing, pageHeight);
+    x = cols[0][0];
+    y = rows[0][0];
+  }
 
-  const height = getTableHeight(rows);
-  const width = getTableWidth(cols);
 
   return {
     location: {
-      x: cols[0][0],
-      y: rows[0][0],
+      x,
+      y,
     },
     size: {
       height,
