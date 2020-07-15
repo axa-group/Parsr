@@ -370,38 +370,32 @@ export class MlHeadingDetectionModule extends Module {
 
   private async computeHeadingLevels(document: Document, commonFonts: Font[]) {
     const headings: Heading[] = document.getElementsOfType<Heading>(Heading, true);
-    const promises = [];
-
+    let args = '';
+    
     headings.forEach(h => {
-      const headingFont = h.getMainFont();
-      const size = headingFont.size;
-      const weight = headingFont.weight === 'bold' ? 1 : 0;
-      const textCase = this.textCase(h.toString());
-      const isFontBigger = commonFonts.map(font => {
-        return headingFont.size > font.size ? 1 : 0;
-      })
-        .reduce((acc, curr) => acc && curr);
-      const differentColor = commonFonts.map(font => {
-        return headingFont.color !== font.color ? 1 : 0;
-      })
-        .reduce((acc, curr) => acc && curr);
-      const wordCount = h.content.length;
-      const fontRatio = this.fontRatio(document, headingFont);
+        const headingFont = h.getMainFont();
+        const size = headingFont.size;
+        const weight = headingFont.weight === 'bold' ? 1 : 0;
+        const textCase = this.textCase(h.toString());
+        const isFontBigger = commonFonts.map(font => {
+          return headingFont.size > font.size ? 1 : 0;
+        })
+          .reduce((acc, curr) => acc && curr);
+        const differentColor = commonFonts.map(font => {
+          return headingFont.color !== font.color ? 1 : 0;
+        })
+          .reduce((acc, curr) => acc && curr);
+        const wordCount = h.content.length;
+        const fontRatio = this.fontRatio(document, headingFont);
+  
+        args = args + [size, weight, textCase, isFontBigger, differentColor, wordCount, fontRatio].toString() + ',';
+      });
 
-      promises.push(CommandExecuter.levelPrediction(
-        size.toString(),
-        weight.toString(),
-        textCase.toString(),
-        isFontBigger.toString(),
-        differentColor.toString(),
-        wordCount.toString(),
-        fontRatio.toString(),
-      ).then(stdout => {
-        h.level = parseInt(stdout);
-      }));
-    });
-
-    await Promise.all(promises);
-    return;
+      await CommandExecuter.levelPrediction(args).then(stdout => {
+        const predictions = stdout.split(' ');
+        headings.forEach((h, index) => {
+          h.level = parseInt(predictions[index]);
+        });
+      });
   }
 }

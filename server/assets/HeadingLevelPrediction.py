@@ -4,14 +4,15 @@ import sys
 
 def main():
     # load the model and do the prediction
-    if len(sys.argv) == 8:
-        filename = os.path.dirname(__file__) + '/levels_model.pkl'
-    elif len(sys.argv) == 9:
-        filename = os.path.dirname(__file__) + '/headings_model.pkl'
-    model = pickle.load(open(filename, 'rb'))
-    X = [[float(sys.argv[i]) for i in range(1,len(sys.argv))]]
-    prediction = model.predict(X)[0]
-    print(prediction)
+    model = pickle.load(open(os.path.dirname(__file__) + '/levels_model.pkl', 'rb'))
+    nb_features = 7
+    values = sys.argv[1].strip(',').split(',')
+    predictions = []
+    for i in range(0, len(values), nb_features):
+        X = [[float(values[j]) for j in range(i, i + nb_features)]]
+        predictions.append(str(model.predict(X)[0]))
+    
+    print(' '.join(predictions))
     sys.stdout.flush()
     sys.exit(0)
 
