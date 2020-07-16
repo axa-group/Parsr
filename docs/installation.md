@@ -48,16 +48,14 @@ Under a **Debian** based distribution:
 sudo add-apt-repository ppa:ubuntuhandbook1/apps
 sudo apt-get update
 sudo apt-get install nodejs npm qpdf imagemagick tesseract-ocr libtesseract-dev python3-tk ghostscript python3-pip
-pip install camelot-py[cv]
-pip install numpy pillow scikit-image PyPDF2
-pip install pdfminer.six
+pip install camelot-py[cv] numpy pillow scikit-image PyPDF2 pdfminer.six sklearn
 ```
 
-Under **Arch** Linux :
+Under **Arch** Linux:
 
 ```sh
 pacman -S nodejs npm qpdf imagemagick python-pdfminer tesseract python-pip
-pip install camelot-py[cv] numpy pillow scikit-image PyPDF2
+pip install camelot-py[cv] numpy pillow scikit-image PyPDF2 pdfminer.six sklearn
 ```
 
 Note: if camelot-py[cv] generates an error in console, you might want to try replacing it with camelot-py\\[cv\\].
