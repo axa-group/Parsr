@@ -126,6 +126,7 @@ The text element type is of multiple levels of subtypes:
     "id": 1028,
     "box": {/* ... */},
     "type": "word",
+    "font": 4,
     "content": [/* ... */],        // strictly Character or string type elements
     "properties": [/* ... */],
     "metadata": [/* ... */],
