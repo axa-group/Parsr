@@ -87,5 +87,6 @@ Example from [foo.pdf](../../../../samples/foo.pdf) sample file:
   ]
 }
 ```
+By default the level of granularity of the export will be "word". You can configure it to "character" in the config file. For more information, refer to [Output Config/Granularity.](../../../../docs/configuration.md#42-Granularity).
 
-For information about the complete structure of the json file, refer to the [JSON output format.](../../../../docs/json-output.md)
+For information about the complete structure of the json file, refer to the [JSON output format.](../../../../docs/json-output.md).
