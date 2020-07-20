@@ -22,10 +22,12 @@ import { SvgLine } from '../../types/DocumentRepresentation/SvgLine';
 const MIN_ROW_HEIGHT = 8;
 const MIN_COL_WIDTH = 10;
 
-export default (drawing: Drawing, pageHeight: number): JsonTable => {
+export default (drawing: Drawing, pageHeight: number): JsonTable | null => {
   const cols = getColsData(drawing);
   const rows = getRowsData(drawing, pageHeight);
-
+  if (rows.length < 2 || cols.length < 2) {
+    return null;
+  }
   const height = getTableHeight(rows);
   const width = getTableWidth(cols);
 
@@ -65,7 +67,7 @@ function getColsData(d: Drawing): number[][] {
   for (let i = 0; i < xPositions.length - 1; i++) {
     cols.push([xPositions[i], xPositions[i + 1]]);
   }
-
+  
   return cols;
 }
 
