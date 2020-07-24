@@ -8,7 +8,7 @@ Find out all about Parsr (including download) at [http://par.sr](http://par.sr).
 ## 1 Installation
 
 ```sh
-pip install parsr
+pip install parsr-client
 ```
 
 ## 2 Usage
