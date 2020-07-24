@@ -3,12 +3,12 @@
 Provides a python interface to the Parsr tool via its API.
 Parsr transforms PDF, documents and images into enriched, structured data.
 
-Find out all about Parsr (including download) at [http://par.sr](http://par.sr).
+Find out all about Parsr (including download) at [https://github.com/axa-group/Parsr](https://github.com/axa-group/Parsr).
 
 ## 1 Installation
 
 ```sh
-pip install parsr
+pip install parsr-client
 ```
 
 ## 2 Usage
