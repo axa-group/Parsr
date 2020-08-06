@@ -48,7 +48,8 @@ Example from [foo.pdf](../../../../samples/foo.pdf) sample file:
                   "metadata": [],
                   "box": { "l": 72, "t": 74.13, "w": 8.34, "h": 15 },
                   "content": "2",
-                  "font": 1
+                  "font": 1,
+                  "fontSize": 15
                 },
                 {
                   "id": 57,
@@ -57,7 +58,8 @@ Example from [foo.pdf](../../../../samples/foo.pdf) sample file:
                   "metadata": [],
                   "box": { "l": 93.6, "t": 74.13, "w": 83.34, "h": 15 },
                   "content": "Quantifying",
-                  "font": 1
+                  "font": 1,
+                  "fontSize": 15
                 },
                 {
                   "id": 58,
@@ -66,7 +68,8 @@ Example from [foo.pdf](../../../../samples/foo.pdf) sample file:
                   "metadata": [],
                   "box": { "l": 181.1, "t": 74.13, "w": 84.99, "h": 15 },
                   "content": "Fuel-Saving",
-                  "font": 1
+                  "font": 1,
+                  "fontSize": 15
                 },
                 {
                   "id": 59,
@@ -75,7 +78,8 @@ Example from [foo.pdf](../../../../samples/foo.pdf) sample file:
                   "metadata": [],
                   "box": { "l": 270.25, "t": 74.13, "w": 98.27, "h": 15 },
                   "content": "Opportunities",
-                  "font": 1
+                  "font": 1,
+                  "fontSize": 15
                 }, 
               ]
             },
