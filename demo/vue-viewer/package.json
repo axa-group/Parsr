@@ -31,7 +31,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "material-design-icons-iconfont": "^5.0.1",
-    "serialize-javascript": "^3.0.0",
+    "serialize-javascript": "^3.1.0",
     "vue-cli-plugin-vuetify": "^0.6.3",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.2.2"
