@@ -190,7 +190,7 @@ export class TableDetectionModule extends Module<Options> {
 
   private addTables(tablesData: JsonTablePage[], doc: Document) {
     tablesData.map(pageData => {
-      pageData.tables.map(table => {
+      pageData.tables.filter(table => table != null).map(table => {
         this.addTable(table, doc.pages[pageData.page - 1]);
       });
     });

@@ -66,6 +66,8 @@ echo -e "\n${INFO}=> Installing python3 dependencies...${NO_COLOR}"
 pip3 install pillow
 pip3 install pdfminer.six
 pip3 install camelot-py[cv]
+pip3 install sklearn
+pip3 install tabula-py
 
 # Install python2 dependencies
 echo -e "\n${INFO}=> Installing python2 dependencies...${NO_COLOR}"
