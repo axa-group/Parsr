@@ -52,7 +52,7 @@ export class LinkDetectionModule extends Module {
 
     doc.pages.forEach((page: Page) => {
       const pageLinks = mdLinks.find(l => l.pageNumber + 1 === page.pageNumber);
-      for (let i = 0; i < page.getElementsOfType<Word>(Word, true).length - 1; i++) {
+      for (let i = 0; i < page.getElementsOfType<Word>(Word, true).length; i++) {
         // for a given word, check if the word matches any not used link position.
         let word = page.getElementsOfType<Word>(Word, true)[i];
         let nextWord = page.getElementsOfType<Word>(Word, true)[i + 1];
