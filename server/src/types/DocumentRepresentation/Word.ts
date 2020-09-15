@@ -47,18 +47,7 @@ export class Word extends Text {
     let mdString: string;
 
     if (this.properties.targetURL) {
-
-      // If the word match the beginning of a link but not a full link, it is supposed to be splitted on 2 lines.
-      // In that case we replace it with the targeted URL:
-      // [http://www.acli](http://www.acli.com) will be replaced by [http://www.acli.com](http://www.acli.com)
-      
-      const startLinkRegexp = /\b((http|https):\/\/?|(www))[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
-      const fullLinkRegexp = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
-      if (this.toString().match(startLinkRegexp) && !this.toString().match(fullLinkRegexp)) {
-        mdString = `[${this.properties.targetURL}](${this.properties.targetURL})`;
-      } else {
-        mdString = `[${this.toString()}](${this.properties.targetURL})`;
-      }
+      mdString = `[${this.toString()}](${this.properties.targetURL})`;
     } else {
       mdString = this.toString()
         .replace(/([\\`*_{}#|])/g, '\\$1');

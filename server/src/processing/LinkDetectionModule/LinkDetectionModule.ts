@@ -48,7 +48,7 @@ export class LinkDetectionModule extends Module {
 
     const count = mdLinks.reduce((acc, l) => acc + l.links.length, 0);
     logger.info('Found ' + count + ' links in document metadata.');
-    let splittedLinkPart: Boolean = false;
+    let splittedLinkPart: Word = null;
 
     doc.pages.forEach((page: Page) => {
       const pageLinks = mdLinks.find(l => l.pageNumber + 1 === page.pageNumber);
@@ -73,21 +73,26 @@ export class LinkDetectionModule extends Module {
         // For the link it will first match the beginning of link and then the full link pattern
         // to be able to rebuild a link which is separated on two lines.
         if (!word.properties.targetURL) {
-          const startLinkRegexp = /\b((http|https):\/\/?|(www))[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
+          const linkRegexp = /\b((http|https):\/\/?|(www))[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
           const fullLinkRegexp = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
           const mailRegexp = /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/;
-          if (splittedLinkPart === true) {
-            word = null;
-            splittedLinkPart = false;
-          } else if (word.toString().match(startLinkRegexp)) {
+          if (splittedLinkPart) {
+            word.properties.targetURL = splittedLinkPart
+                .toString()
+                .concat(word.toString())
+                .match(linkRegexp)[0];
+            splittedLinkPart = null;
+            word.properties.splittedLink = true;
+          } else if (word.toString().match(linkRegexp)) {
             if (!word.toString().match(fullLinkRegexp)) {
               word.properties.targetURL = word
                 .toString()
                 .concat(nextWord.toString())
-                .match(startLinkRegexp)[0];
-              splittedLinkPart = true;
+                .match(linkRegexp)[0];
+              splittedLinkPart = word;
+              word.properties.splittedLink = true;
             } else {
-              word.properties.targetURL = word.toString().match(startLinkRegexp)[0];
+              word.properties.targetURL = word.toString().match(linkRegexp)[0];
             }
           } else if (word.toString().match(mailRegexp)) {
             word.properties.targetURL = `mailto:${word.toString().match(mailRegexp)[0]}`;
