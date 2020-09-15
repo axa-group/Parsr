@@ -1,6 +1,6 @@
 {
   "name": "parsr",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Turn your documents into data!",
   "main": "dist/bin/index.js",
   "repository": {
