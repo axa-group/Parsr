@@ -5,6 +5,10 @@
     "ocrImages": {
       "value": false,
       "range": [true, false]
+    },
+    "wordsImagesSource": {
+      "value": true,
+      "range": [true, false]
     }
   }
 }
