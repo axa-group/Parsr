@@ -1,4 +1,14 @@
 {
-  "name": "words-to-line",
-  "description": "Create lines from a bunch of words, according to the reading order."
+  "name": "words-to-line-new",
+  "description": "Create lines from a bunch of words.",
+  "specs": {
+		"modifyAvgWordsSpace": {
+			"value": 0,
+			"range": { "min": -100, "max": 100}
+		},
+		"modifyCommonWordsSpace": {
+			"value": 0,
+			"range": { "min": -100, "max": 100}
+    }
+	}
 }
