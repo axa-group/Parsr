@@ -39,4 +39,5 @@ export interface Properties {
   cl?: number;
   targetURL?: string;
   splittedLink?: boolean;
+  srcImage?: string;
 }

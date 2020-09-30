@@ -46,12 +46,14 @@ export class PdfminerImageExtractor extends ImageExtractor {
     if (dumpPdfData != null) {
       const assets: string[] = readdirSync(doc.assetsFolder);
       const pageIds = DumpPdf.extractPageNodeIds(dumpPdfData);
+      const srcFile: string = doc.assetsFolder;
       doc.pages.forEach((page, index) => {
         const images = page.getElementsOfType(Image, true);
         images.forEach(img => (img.enabled = true));
         if (images.length > 0) {
           this.linkImages(images, pageIds[index], dumpPdfData, index);
           this.linkXObjectWithExtensions(images, assets, index, pageIds[index]);
+          this.linkSrcImages(images, assets, srcFile);
         }
       });
 
@@ -105,6 +107,19 @@ export class PdfminerImageExtractor extends ImageExtractor {
               img.refId
             } no extension found for file ${img.xObjId}`,
           );
+        }
+      });
+  }
+
+  private linkSrcImages(images: Image[], assets: string[], srcFile: string) {
+    images
+      .filter(img => !!img.xObjId)
+      .forEach(img => {
+        const asset = assets.filter(filename => {
+          return filename.startsWith('img-' + img.xObjId.padStart(4, '0'));
+        });
+        if (asset.length === 1) {
+          img.src = srcFile + '/' + asset[0];
         }
       });
   }
