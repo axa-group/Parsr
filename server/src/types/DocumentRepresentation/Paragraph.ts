@@ -173,6 +173,8 @@ export class Paragraph extends Text {
     }
 
     if (!!prevLine.lastWordLink && prevLine.lastWordLink === line.firstWordLink) {
+      const startLinkRegexp = /\b((http|https):\/\/?|(www))[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
+      const fullLinkRegexp = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
       // gets the last link MD in the previous line
       const mdLinksInPreviousLine = output.paragraphOutput.match(new RegExp(/\[.*?\]\(.*?\)/gs));
       if (!mdLinksInPreviousLine) {
@@ -187,28 +189,65 @@ export class Paragraph extends Text {
         return;
       }
       const lastLinkMDDescription = firstLinkMDInLine[0].replace(/\[(.*?)\]\(.*?\)/, '$1');
+      let mergedLinkMD: string;
 
-      // merges the last link in previous line with the description of the first link in current line
-      const mergedLinkMD = lastWordLinkMD.replace(
-        /\[(.*?)\]\((.*?)\)/s,
-        `[$1  \n${lastLinkMDDescription}]($2)`,
-      );
-      output.paragraphOutput = output.paragraphOutput.replace(lastWordLinkMD, mergedLinkMD).trim();
+      // If the word match the beginning of a link but not a full link, it is supposed to be splitted on 2 lines.
+      // In that case we concate the last link description in previous line with the description of the first link in current line.
+      if (
+        prevLine.line.content[prevLine.line.content.length - 1].toString().match(startLinkRegexp) &&
+        !prevLine.line.content[prevLine.line.content.length - 1].toString().match(fullLinkRegexp)
+      ) {
+        mergedLinkMD = lastWordLinkMD.replace(
+          /\[(.*?)\]\((.*?)\)/s,
+          `[$1${lastLinkMDDescription}]($2)`,
+        );
+      } else {
+        // merges the last link in previous line with the description of the first link in current line
+        mergedLinkMD = lastWordLinkMD.replace(
+          /\[(.*?)\]\((.*?)\)/s,
+          `[$1  \n${lastLinkMDDescription}]($2)`,
+        );
+      }
 
+      output.paragraphOutput = output.paragraphOutput.replace(lastWordLinkMD, mergedLinkMD);
+
+      let lineStartTagLength: number = 0;
+
+      if (
+        (format === 'html' || format === 'md') &&
+        prevLine.lastWordStyle != null &&
+        prevLine.lastWordStyle === line.firstWordStyle &&
+        firstLinkMDInLine[0]
+      ) {
+        lineStartTagLength = this.wordStyleStartTag(line.firstWordStyle, format).length;
+        if (
+          prevLine.line.content[prevLine.line.content.length - 1].properties.splittedLink === true
+        ) {
+          const endLink = output.paragraphOutput.length - 2;
+          output.paragraphOutput = output.paragraphOutput.slice(0, endLink);
+        }
+      }
       // removes the first link in current line, to avoid duplicated (it's already merged in the previous line)
-      output.lineOutput = output.lineOutput.slice(firstLinkMDInLine[0].length);
+      output.lineOutput = output.lineOutput.slice(firstLinkMDInLine[0].length + lineStartTagLength);
     }
 
     if (line.lineBreak) {
       return;
     }
 
-    if (prevLine.lastWordStyle != null && prevLine.lastWordStyle === line.firstWordStyle) {
+    if (
+      (format === 'html' || format === 'md') &&
+      prevLine.lastWordStyle != null &&
+      prevLine.lastWordStyle === line.firstWordStyle &&
+      prevLine.line.content[prevLine.line.content.length - 1].properties.splittedLink != true
+    ) {
       const endTag = this.wordStyleEndTag(prevLine.lastWordStyle, format);
       const end = output.paragraphOutput.length - (endTag.length + 1);
       output.paragraphOutput = output.paragraphOutput.slice(0, end) + ' ';
       const startTag = this.wordStyleStartTag(prevLine.lastWordStyle, format);
-      output.lineOutput = output.lineOutput.slice(startTag.length);
+      output.lineOutput = output.lineOutput.slice(
+        output.lineOutput.indexOf(startTag) + startTag.length,
+      );
     }
   }
 

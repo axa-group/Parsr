@@ -34,9 +34,9 @@ export class LinkDetectionModule extends Module {
   public static moduleName = 'link-detection';
 
   public async main(doc: Document): Promise<Document> {
-
     let mdLinks: DumpPdfLinksResponse[] = [];
-    const fileType: { ext: string; mime: string } = doc.inputFile && filetype(fs.readFileSync(doc.inputFile));
+    const fileType: { ext: string; mime: string } =
+      doc.inputFile && filetype(fs.readFileSync(doc.inputFile));
     if (!fileType || fileType === null || (fileType && fileType.ext !== 'pdf')) {
       logger.warn(
         `Warning: Input file ${doc.inputFile} is not a PDF (${utils.prettifyObject(fileType)}); \
@@ -48,11 +48,14 @@ export class LinkDetectionModule extends Module {
 
     const count = mdLinks.reduce((acc, l) => acc + l.links.length, 0);
     logger.info('Found ' + count + ' links in document metadata.');
+    let splittedLinkPart: Word = null;
 
     doc.pages.forEach((page: Page) => {
       const pageLinks = mdLinks.find(l => l.pageNumber + 1 === page.pageNumber);
-      page.getElementsOfType<Word>(Word, true).forEach(word => {
+      for (let i = 0; i < page.getElementsOfType<Word>(Word, true).length; i++) {
         // for a given word, check if the word matches any not used link position.
+        let word = page.getElementsOfType<Word>(Word, true)[i];
+        let nextWord = page.getElementsOfType<Word>(Word, true)[i + 1];
         (pageLinks || { links: [] }).links.forEach(pageLink => {
           const linkBB = new BoundingBox(
             pageLink.box.left,
@@ -66,30 +69,45 @@ export class LinkDetectionModule extends Module {
           }
         });
 
+        // Set the targetURL property if it match the link or mail pattern.
+        // For the link it will first match the beginning of link and then the full link pattern
+        // to be able to rebuild a link which is separated on two lines.
         if (!word.properties.targetURL) {
-          this.matchTextualLinks(word);
+          const linkRegexp = /\b((http|https):\/\/?|(www))[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
+          const fullLinkRegexp = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
+          const mailRegexp = /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/;
+          if (splittedLinkPart) {
+            word.properties.targetURL = splittedLinkPart
+                .toString()
+                .concat(word.toString())
+                .match(linkRegexp)[0];
+            splittedLinkPart = null;
+            word.properties.splittedLink = true;
+          } else if (word.toString().match(linkRegexp)) {
+            if (!word.toString().match(fullLinkRegexp)) {
+              word.properties.targetURL = word
+                .toString()
+                .concat(nextWord.toString())
+                .match(linkRegexp)[0];
+              splittedLinkPart = word;
+              word.properties.splittedLink = true;
+            } else {
+              word.properties.targetURL = word.toString().match(linkRegexp)[0];
+            }
+          } else if (word.toString().match(mailRegexp)) {
+            word.properties.targetURL = `mailto:${word.toString().match(mailRegexp)[0]}`;
+          }
         }
-      });
+      }
     });
     return doc;
-  }
-
-  private matchTextualLinks(word: Word) {
-    const linkRegexp = /\b((http|https):\/\/?|(www))[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/?))/;
-    // tslint:disable-next-line:max-line-length
-    const mailRegexp = /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/;
-    if (word.toString().match(linkRegexp)) {
-      word.properties.targetURL = word.toString().match(linkRegexp)[0];
-    } else if (word.toString().match(mailRegexp)) {
-      word.properties.targetURL = `mailto:${word.toString().match(mailRegexp)[0]}`;
-    }
   }
 
   /*
     runs the 'dumppdf.py' script and returns a JSON with all the metadata found in the file
   */
   private getFileMetadata(pdfFilePath: string): Promise<DumpPdfLinksResponse[]> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       CommandExecuter.dumpPdf(pdfFilePath)
         .then(utils.sanitizeXML)
         .then(extractLinks)
