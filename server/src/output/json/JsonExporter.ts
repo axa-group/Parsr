@@ -243,7 +243,7 @@ export class JsonExporter extends Exporter {
           .map(elem => this.elementToJsonElement(elem));
       }
 
-      if (element instanceof Word) {
+      if (element instanceof Word || element instanceof Character) {
         if (typeof element.font !== 'undefined') {
           const allFonts = Array.from(this.fontCatalog.keys());
           const wordFont = allFonts.filter(font => font.isEqual(element.font));
@@ -251,8 +251,10 @@ export class JsonExporter extends Exporter {
             this.currentFontId++;
             this.fontCatalog.set(element.font, this.currentFontId);
             jsonElement.font = this.currentFontId;
+            jsonElement.fontSize = element.font.size;
           } else {
             jsonElement.font = this.fontCatalog.get(wordFont[0]);
+            jsonElement.fontSize = element.font.size;
           }
         }
       } else if (element instanceof Heading) {
