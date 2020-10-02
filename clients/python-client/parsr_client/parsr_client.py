@@ -147,8 +147,8 @@ class ParsrClient():
                         'server_response']
                     print('>> Job done!')
             return {
-                'file': file,
-                'config': config,
+                'file': file_path,
+                'config': config_path,
                 'status_code': r.status_code,
                 'server_response': r.text}
 

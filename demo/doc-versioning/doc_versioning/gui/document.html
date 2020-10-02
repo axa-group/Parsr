@@ -21,7 +21,16 @@
 
         <!-- differ
         -- --------------------------------------------------- -->
-
+        
+        <!-- clickjacking protection-->
+        <style> html {display : none; } </style>
+        <script>
+            if ( self === top ) {
+                document.documentElement.style.display = 'block';
+            } else {
+                top.location = self.location;
+            }
+        </script>
     </head>
     <body>
         <div style="text-align: center; margin-top: 50px; margin-left: 50px">

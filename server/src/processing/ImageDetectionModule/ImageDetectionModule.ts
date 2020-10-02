@@ -28,6 +28,7 @@ import { ImageExtractor, PdfJsImageExtractor, PdfminerImageExtractor } from './e
 
 interface Options {
   ocrImages?: boolean;
+  wordsImagesSource?: boolean;
 }
 
 type DocumentImages = {
@@ -123,6 +124,9 @@ export class ImageDetectionModule extends Module<Options> {
           if (document && document.pages.length > 0) {
             const pageIndex = imagesToScan[index].pageNumber - 1;
             const resizedWords = this.scaleWordsToFitImageBox(document, imagesToScan[index].image);
+            if (this.options.wordsImagesSource === true) {
+              this.setWordPropertieSrcImage(resizedWords, document.inputFile);
+            }
             this.removeImage(doc, imagesToScan[index]);
             doc.pages[pageIndex].elements = doc.pages[pageIndex].elements.concat(resizedWords);
             doc.pages[pageIndex].pageRotation = document.pages[pageIndex].pageRotation;
@@ -143,6 +147,12 @@ export class ImageDetectionModule extends Module<Options> {
       element => element !== imageDetected.image,
     );
     document.pages[imageDetected.pageNumber - 1].elements = noImageElements;
+  }
+
+  private setWordPropertieSrcImage(imgWords: Word[], srcFile: string) {
+    imgWords.forEach(word => {
+      word.properties.srcImage = srcFile;
+    });
   }
 
   private scaleWordsToFitImageBox(document: Document, image: Image): Word[] {

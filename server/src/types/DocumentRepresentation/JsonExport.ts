@@ -60,6 +60,7 @@ export interface JsonElement {
   box?: JsonBox;
   content?: JsonElement[] | string;
   font?: number;
+  fontSize?: number;
   src?: string;
   refId?: string;
   xObjId?: string;

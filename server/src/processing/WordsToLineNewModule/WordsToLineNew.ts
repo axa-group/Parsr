@@ -26,14 +26,26 @@ import logger from '../../utils/Logger';
 import * as utils from '../../utils';
 import { Module } from '../Module';
 import { ListDetectionModule } from '../ListDetectionModule/ListDetectionModule';
+import * as defaultConfig from './defaultConfig.json';
+
+interface Options {
+  modifyAvgWordsSpace?: number;
+  modifyCommonWordsSpace?: number;
+}
+
+const defaultOptions = (defaultConfig as any) as Options;
 
 /**
  * Stability: Stable
  * Merge text block that are side by side to make lines.
  */
-export class WordsToLineNewModule extends Module {
+export class WordsToLineNewModule extends Module <Options> {
   public static moduleName = 'words-to-line-new';
   private wordsCounter = 0;
+
+  constructor(options?: Options) {
+    super(options, defaultOptions);
+  }
 
   public main(doc: Document): Document {
     doc.pages = doc.pages.map(page => {
@@ -156,16 +168,16 @@ export class WordsToLineNewModule extends Module {
           if (index === 0) return 0;
           const prevWordEnd = words[index - 1].left + words[index - 1].width;
           const distance = word.left - prevWordEnd;
-          if (distance < word.height * 0.2) {
+          if (distance + this.options.modifyAvgWordsSpace < word.height * 0.2) {
             // If two words are too near then it will reduce avg space a lot
             // making each word to be a line
             return this.commonWordsSpace(words, index);
           }
-          return distance;
+          return distance + this.options.modifyAvgWordsSpace;
         })
         .reduce((a, b) => a + b, 0) /
       (words.length - 1);
-    return Math.round(space * 2.5);
+    return Math.round(space * 2.5) + this.options.modifyAvgWordsSpace;
   }
 
   private commonWordsSpace(words: Word[], excludeIndex: number): number {
@@ -175,11 +187,11 @@ export class WordsToLineNewModule extends Module {
           if (index === 0 || index === excludeIndex) return 0;
           const prevWordEnd = words[index - 1].left + words[index - 1].width;
           const distance = word.left - prevWordEnd;
-          return distance;
+          return distance + this.options.modifyCommonWordsSpace;
         })
         .reduce((a, b) => a + b, 0) /
       (words.length - 2);
-    return Math.round(space * 1.2);
+    return Math.round(space * 1.2) + this.options.modifyCommonWordsSpace;
   }
 
   private inSameLine(lineWords: Word[], lastWord: Word, word: Word, avgSpace: number): boolean {
