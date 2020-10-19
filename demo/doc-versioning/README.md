@@ -1,7 +1,7 @@
 # Doc Versioning
 
 - Stores and displays document (PDF, Images, DOCx) revisions and diffs.
-- Uses [Parsr](http://par.sr) to perform the document data extraction.
+- Uses [Parsr](https://github.com/axa-group/Parsr) to perform the document data extraction.
 - Based on Python 3
 
 ## Installation
