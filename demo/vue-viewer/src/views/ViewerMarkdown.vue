@@ -11,10 +11,10 @@
       <v-tab>Render</v-tab>
 
       <v-tab-item class="tabItem">
-        <pre class="text">{{ documentMarkdown }}</pre>
+        <pre class="text">{{ compiledMarkdown }}</pre>
       </v-tab-item>
       <v-tab-item class="tabItem">
-        <vueMarkdown class="text">{{ documentMarkdown }}</vueMarkdown>
+        <vueMarkdown class="text">{{ compiledMarkdown }}</vueMarkdown>
       </v-tab-item>
     </v-tabs>
 
@@ -42,19 +42,21 @@
 </template>
 <script>
 import { mapState } from 'vuex';
-import VueMarkdown from 'vue-markdown';
+import marked from 'marked';
 
 export default {
   data() {
     return { error: null };
   },
-  components: { VueMarkdown },
   computed: {
     uploadedDocument() {
       return this.documentId !== null;
     },
     documentMarkdownFetched() {
-      return this.documentMarkdown !== null;
+      return this.compiledMarkdown !== null;
+    },
+    compiledMarkdown: function() {
+      return marked(this.documentMarkdown, { sanitize: true });
     },
     ...mapState({
       documentId: state => state.uuid,
