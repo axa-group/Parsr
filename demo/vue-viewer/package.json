@@ -10,10 +10,10 @@
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^2.6.5",
+    "marked": "^1.2.0",
     "sass": "^1.26.3",
     "sass-loader": "^7.1.0",
     "vue": "^2.6.11",
-    "vue-markdown": "^2.2.4",
     "vue-observe-visibility": "^0.4.6",
     "vue-router": "^3.1.6",
     "vuetify": "^2.2.17",

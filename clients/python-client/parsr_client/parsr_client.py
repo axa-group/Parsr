@@ -269,7 +269,7 @@ class ParsrClient():
         return responses
 
     def get_status(self, request_id: str = "", server: str = ""):
-        """Get the status of a partcular request using its ID
+        """Get the status of a particular request using its ID
 
         - request_id: The ID of the request to be queried with the server
         - server: The server address where the query is to be made
@@ -310,8 +310,8 @@ class ParsrClient():
                 raise Exception('No request ID provided')
             else:
                 request_id = self.request_id
-                r = get(
-                    'http://{}/api/v1/json/{}'.format(server, request_id))
+        r = get(
+            'http://{}/api/v1/json/{}'.format(server, request_id))
         if r.text != "":
             return r.json()
         else:
@@ -334,8 +334,8 @@ class ParsrClient():
                 raise Exception('No request ID provided')
             else:
                 request_id = self.request_id
-                r = get(
-                    'http://{}/api/v1/markdown/{}'.format(server, request_id))
+        r = get(
+            'http://{}/api/v1/markdown/{}'.format(server, request_id))
         if r.text != "":
             return r.text
         else:
@@ -358,8 +358,8 @@ class ParsrClient():
                 raise Exception('No request ID provided')
             else:
                 request_id = self.request_id
-                r = get(
-                    'http://{}/api/v1/text/{}'.format(server, request_id))
+        r = get(
+            'http://{}/api/v1/text/{}'.format(server, request_id))
         if r.text != "":
             return r.text
         else:
