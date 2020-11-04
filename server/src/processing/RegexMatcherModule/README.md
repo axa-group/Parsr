@@ -18,7 +18,7 @@ with config:
   "queries": [
     {
       "label": "Number",
-      "regex": [0-9]+
+      "regex": "[0-9]+"
     },
     {
       "label": "unit",
