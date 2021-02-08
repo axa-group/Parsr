@@ -10,7 +10,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^2.6.5",
-    "marked": "^1.2.0",
+    "marked": "^2.0.0",
     "sass": "^1.26.3",
     "sass-loader": "^7.1.0",
     "vue": "^2.6.11",
