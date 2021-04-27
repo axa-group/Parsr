@@ -9,4 +9,4 @@ verify_ssl = true
 parsr-client = ">=3"
 jupyterlab = "*"
 ipython = "==7.9.0"
-Pygments = "==2.4.2"
+Pygments = "==2.7.4"
