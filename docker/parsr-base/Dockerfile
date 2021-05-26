@@ -17,7 +17,8 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 RUN apt-get update && \
   apt-get install -y imagemagick mupdf mupdf-tools qpdf pandoc tesseract-ocr-all nodejs npm python-pdfminer python-pip python3-pip python-tk python3-pdfminer python3-opencv && \
   pip install PyPDF2 && \
-  pip3 install ghostscript PyPDF2 camelot-py[cv] numpy pillow sklearn tabula-py
+  pip3 install --upgrade setuptools pip && \
+  pip3 install opencv-python ghostscript PyPDF2 camelot-py[cv] numpy pillow scikit-learn==0.23.2 tabula-py
 
 ADD policy.xml /etc/ImageMagick-6/policy.xml
 
