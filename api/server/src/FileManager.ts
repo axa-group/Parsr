@@ -60,6 +60,10 @@ export class FileManager {
     if (type === 'json') {
       return this.checkFile(binder, `${binder.name}.json`);
     }
+    
+    if (type === 'simple-json') {
+      return this.checkFile(binder, `${binder.name}.simple.json`);
+    }
 
     if (type === 'markdown') {
       return this.checkFile(binder, `${binder.name}.md`);
