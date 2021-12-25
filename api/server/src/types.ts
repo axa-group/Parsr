@@ -47,6 +47,7 @@ export type SingleFileType =
   | 'config'
   | 'input'
   | 'json'
+  | 'simple-json'
   | 'xml'
   | 'text'
   | 'pdf'
