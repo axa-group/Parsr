@@ -74,6 +74,7 @@ export class Paragraph extends Text {
     return {
       type: 'paragraph',
       content: this.export('simple'),
+      page: this.page,
     };
   }
 

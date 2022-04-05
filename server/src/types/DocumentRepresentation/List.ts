@@ -122,6 +122,7 @@ export class List extends Element {
     return {
       type : 'list',
       content : this.export('simple'),
+      page: this.page,
     };
   }
 

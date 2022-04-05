@@ -197,6 +197,22 @@ export abstract class Element {
     this.globalId = 1;
   }
 
+  /**
+   * Getter page
+   * @return {number}
+   */
+  public get page(): number {
+    return this._page;
+  }
+
+  /**
+   * Setter page
+   * @param {number} value
+   */
+  public set page(value: number) {
+    this._page= value;
+  }
+
   private static globalId = 1;
   private _id: number;
   private _metadata: Metadata[];
@@ -204,6 +220,7 @@ export abstract class Element {
   private _parent: Element;
   private _children: Element[];
   private _box?: BoundingBox;
+  private _page: number;
 
   constructor(box?: BoundingBox) {
     this._id = Element.globalId++;
