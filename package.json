@@ -64,7 +64,7 @@
     "pdfmerge": "^1.0.2",
     "pino": "^5.17.0",
     "pino-pretty": "^2.6.1",
-    "shelljs": "^0.8.4",
+    "shelljs": "^0.8.5",
     "string-similarity": "^1.2.1",
     "webpack": "^4.43.0",
     "xml-stream": "^0.4.5",
