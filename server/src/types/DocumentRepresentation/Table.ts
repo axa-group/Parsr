@@ -336,6 +336,7 @@ export class Table extends Element {
     return {
       type: 'table',
       content: output,
+      page: this.page,
     };
   }
 

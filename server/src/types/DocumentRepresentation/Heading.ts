@@ -71,6 +71,7 @@ export class Heading extends Paragraph {
       type : 'heading',
       level : this.level,
       content : this.toString(),
+      page: this.page,
     };
   }
 }

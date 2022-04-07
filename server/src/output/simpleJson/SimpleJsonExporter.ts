@@ -40,7 +40,7 @@ export class SimpleJsonExporter extends Exporter {
 
   private getSimpleJSON(): string {
     const simpleJSON = [];
-    this.doc.pages.forEach((page) => {
+    this.doc.pages.forEach((page, pageN) => {
       page.elements.forEach(element => {
         if (
           (element.properties.isHeader || element.properties.isFooter) &&
@@ -48,6 +48,7 @@ export class SimpleJsonExporter extends Exporter {
         ) {
           return;
         }
+        element.page = pageN;
         if (element instanceof Heading) {
           simpleJSON.push(element.toSimpleJSON());
         } else if (element instanceof Paragraph) {

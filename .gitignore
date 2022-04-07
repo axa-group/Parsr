@@ -1,3 +1,6 @@
+*.kdev4
+*.kate-swp
+
 # General
 .DS_Store
 .AppleDouble

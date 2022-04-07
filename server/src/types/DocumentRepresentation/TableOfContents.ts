@@ -62,6 +62,7 @@ export class TableOfContents extends Element {
     return {
       type : 'tableOfContent',
       content : this.items.map(c => c.toString()),
+      page: this.page,
     };
   }
 
