@@ -41,6 +41,7 @@ type BinderKeys = {
   csvs?: string[][];
   outputPath: string;
   name: string;
+  docId: string;
 };
 
 export type SingleFileType =

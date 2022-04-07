@@ -33,10 +33,20 @@ import RateLimiter from 'express-rate-limit';
 
 
 export class ApiServer {
-  private outputDir: string = path.resolve(`${__dirname}/output`);
-  private fileManager: FileManager = new FileManager();
-  private processManager: ProcessManager = new ProcessManager();
-  private serverManager: ServerManager = new ServerManager();
+  private outputDir: string;
+  private fileManager: FileManager;
+  private processManager: ProcessManager;
+  private serverManager: ServerManager;
+  
+  constructor() {
+    this.outputDir = path.resolve(`${__dirname}/output`);
+    if (!fs.existsSync(this.outputDir)) {
+      fs.mkdirSync(this.outputDir);
+    }
+    this.fileManager = new FileManager(this.outputDir);
+    this.processManager = new ProcessManager();
+    this.serverManager  = new ServerManager();
+  }
 
   private upload = multer({
     storage: multer.diskStorage({
@@ -61,13 +71,7 @@ export class ApiServer {
     'image/jpeg',
     'application/json',
   ];
-
-  constructor() {
-    if (!fs.existsSync(this.outputDir)) {
-      fs.mkdirSync(this.outputDir);
-    }
-  }
-
+  
   public launchServer(port: number): void {
     const app = express();
     // tslint:disable-next-line:variable-name
@@ -372,14 +376,15 @@ export class ApiServer {
     this.handleGetFile(req, res, 'confidences');
   }
 
-  private handleGetCsv(req: Request, res: Response) {
+  private async handleGetCsv(req: Request, res: Response) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     const docId: string = req.params.id;
+    const binder: Binder = await this.fileManager.getBinder(docId);
     const page: number = parseInt(req.params.page, 10);
     const table: number = parseInt(req.params.table, 10);
 
     try {
-      const file: string = this.fileManager.getCsvFilePath(docId, page, table);
+      const file = this.fileManager.getCsvFilePath(binder, page, table);
       res.sendFile(file);
     } catch (err) {
       res.status(404).send(err);
@@ -390,12 +395,12 @@ export class ApiServer {
     res.setHeader('Access-Control-Allow-Origin', '*');
     const docId: string = req.params.id;
     try {
-      const fileName = this.fileManager.getBinder(docId).name;
-      const folder: string = this.fileManager.getFilePath(docId, 'csvs');
+      const binder = await this.fileManager.getBinder(docId);
+      const fileName = binder.name;
+      const folder: string = this.fileManager.getFilePath(binder, 'csvs');
       const filesInFolder = fs.readdirSync(folder);
-      let paths: string[] = [];
       if (req.query.download) {
-        paths = filesInFolder.map(this.fileToLocalPath(docId)).filter(fs.existsSync);
+        let paths = filesInFolder.map(this.fileToLocalPath(binder)).filter(fs.existsSync);
         if (paths.length > 0) {
           const zipFile = await this.compress(paths, fileName.concat('.csv'));
           res.download(zipFile);
@@ -403,7 +408,7 @@ export class ApiServer {
           res.end();
         }
       } else {
-        paths = filesInFolder.map(this.fileToDownloadURI(docId, req.baseUrl));
+        let paths = filesInFolder.map(this.fileToDownloadURI(docId, req.baseUrl));
         res.json(paths);
       }
     } catch (err) {
@@ -411,10 +416,10 @@ export class ApiServer {
     }
   }
 
-  private fileToLocalPath(docId: string): (file: string) => string {
-    return (file: string) => {
+  private fileToLocalPath(binder: Binder): (file: string) => string {
+    return (file: string): string => {
       const match = file.match(/-(\d+)-(\d+)\.csv$/);
-      return this.fileManager.getCsvFilePath(docId, parseInt(match[1], 10), parseInt(match[2], 10));
+      return this.fileManager.getCsvFilePath(binder, parseInt(match[1], 10), parseInt(match[2], 10));
     };
   }
 
@@ -437,9 +442,10 @@ export class ApiServer {
     res.setHeader('Access-Control-Allow-Origin', '*');
 
     try {
-      let file: string = this.fileManager.getFilePath(req.params.id, type);
+      const binder = await this.fileManager.getBinder(req.params.id);
+      let file: string = this.fileManager.getFilePath(binder, type);
       if (req.query.download && type === 'markdown') {
-        const fileName = this.fileManager.getBinder(req.params.id).name;
+        const fileName = binder.name;
         const assetsFolder = path.join(path.dirname(file), `assets_${fileName}`);
         const filesToCompress = [file, assetsFolder].filter(fs.existsSync);
         if (filesToCompress.length > 1) {
@@ -494,11 +500,11 @@ export class ApiServer {
     `);
   }
 
-  private handleGetImage(req: Request, res: Response) {
+  private async handleGetImage(req: Request, res: Response) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     const docId: string = req.params.docId;
     const imageName: string = 'img-' + req.params.imageId.padStart(4, '0') + '.';
-    const binder: Binder = this.fileManager.getBinder(docId);
+    const binder: Binder = await this.fileManager.getBinder(docId);
     const assetsFolder = binder.outputPath + '/assets_' + binder.name;
     if (!fs.existsSync(assetsFolder)) {
       res.sendStatus(404);
@@ -523,12 +529,12 @@ export class ApiServer {
     }
   }
 
-  private handleGetThumb(req: Request, res: Response) {
+  private async handleGetThumb(req: Request, res: Response) {
     res.setHeader('Access-Control-Allow-Origin', '*');
 
     const docId: string = req.params.id;
     const page: number = parseInt(req.params.page, 10) + 1;
-    const binder: Binder = this.fileManager.getBinder(docId);
+    const binder: Binder = await this.fileManager.getBinder(docId);
 
     const filetype = require('file-type');
 

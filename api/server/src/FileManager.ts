@@ -17,9 +17,20 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Binder, FileMapper, SingleFileType } from './types';
+import Datastore from 'nedb';
+
+interface Db {
+  docBindings: Datastore<Binder>
+}
 
 export class FileManager {
-  private fileSystem: FileMapper = {};
+  private db: Db;
+
+  constructor(outputDir: string) {
+    this.db = {
+      'docBindings': new Datastore({ filename: outputDir + '/db/doc_bindings', autoload: true }),
+    };
+  }
 
   public newBinder(
     docId: string,
@@ -27,36 +38,28 @@ export class FileManager {
     configPath: string,
     outputPath: string,
     docName: string,
-  ): Binder {
+  ) {
     const binder: Binder = {
       input: document,
       name: docName,
       outputPath,
       config: configPath,
+      docId: docId,
     };
-
-    this.fileSystem[docId] = binder;
-
-    return this.fileSystem[docId];
+    this.insertBinderWrapper(binder);
   }
 
-  public getCsvFilePath(docId: string, page: number, table: number) {
-    const binder: Binder = this.getBinder(docId);
-
+  public getCsvFilePath(binder: Binder, page: number, table: number): string {
     const absPath: string = path.resolve(
       `${binder.outputPath}/csv/${binder.name}-${page}-${table}.csv`,
     );
-
     if (!fs.existsSync(absPath)) {
-      throw new Error(`File not found for document ID ${docId}`);
+      throw new Error(`File not found for document ID ${binder.docId}`);
     }
-
     return absPath;
   }
 
-  public getFilePath(docId: string, type: SingleFileType | 'csvs'): string {
-    const binder = this.getBinder(docId);
-
+  public getFilePath(binder: Binder, type: SingleFileType | 'csvs'): string {
     if (type === 'json') {
       return this.checkFile(binder, `${binder.name}.json`);
     }
@@ -89,28 +92,63 @@ export class FileManager {
       const absPath = path.resolve(`${binder.outputPath}/csv`);
 
       if (!fs.existsSync(absPath)) {
-        throw new Error(`Folder of CSV files not found for document ID ${docId}`);
+        throw new Error(`Folder of CSV files not found for document ID ${binder.docId}`);
       }
-
       return absPath;
     }
   }
 
-  public getBinder(docId: string): Binder {
-    if (this.fileSystem[docId]) {
-      return this.fileSystem[docId];
-    } else {
-      throw new Error(`Binder with Document ID ${docId} not found.`);
-    }
+  public getBinder(docId: string): Promise<Binder> {
+    return this.getDocByDocIdWrapper(docId);
   }
 
   private checkFile(binder: Binder, filePath: string): string {
-    const absPath = path.resolve(`${binder.outputPath}/${filePath}`);
-
+    const outputPath = `${binder.outputPath}/${filePath}`;
+    const absPath = path.resolve(outputPath);
     if (!fs.existsSync(absPath)) {
       throw new Error(`File not found`);
     }
 
     return absPath;
+  }
+
+  private async getDocByDocIdWrapper(docId: string): Promise<Binder> {
+    try {
+      const result = await this.getDocByDocId(docId);
+      return result;
+    } catch (err) {
+      throw new Error('error fetching the binding in db for ' + docId + ', err = ' + err);
+    }
+  }
+
+  private getDocByDocId(docId: string): Promise<Binder> {
+    return new Promise((resolve, reject) => {
+      this.db.docBindings.findOne({docId: docId}, (err: Error | null, doc: Binder) => {
+        if (!err && doc) {
+          resolve(doc);
+        }
+        reject(err || 'binder doc is undefined while fetching.');
+      });
+    });
+  }
+
+  private async insertBinderWrapper(binder: Binder): Promise<Binder> {
+    try {
+      return await this.insertBinder(binder).then(result => result);
+    } catch (err) {
+      throw new Error('error inserting the binding in db' + err);
+    }
+  }
+
+  private insertBinder(binder: Binder) {
+    return new Promise<Binder|undefined>((resolve, reject) => {
+      this.db.docBindings.insert(binder, (err: Error, doc: Binder) => {
+        if (!err && doc) {
+          resolve(doc);
+        }
+        reject(err || 'binder doc is undefined after inserting.');
+      });
+    });
+    
   }
 }
