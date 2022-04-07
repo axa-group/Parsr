@@ -85,6 +85,7 @@ export class ApiServer {
     v1_0.post('/document', this.upload.fields(uploadsConf), this.handlePostDoc.bind(this));
     v1_0.get('/queue/:id', this.handleGetQueue.bind(this));
     v1_0.get('/json/:id', this.handleGetJson.bind(this));
+    v1_0.get('/simple-json/:id', this.handleGetSimpleJson.bind(this));
     v1_0.get('/text/:id', this.handleGetText.bind(this));
     v1_0.get('/confidences/:id', this.handleGetConfidences.bind(this));
     v1_0.get('/csv/:id', this.handleGetCsvList.bind(this));
@@ -349,6 +350,10 @@ export class ApiServer {
 
   private handleGetJson(req: Request, res: Response): void {
     this.handleGetFile(req, res, 'json');
+  }
+
+  private handleGetSimpleJson(req: Request, res: Response): void {
+    this.handleGetFile(req, res, 'simple-json')
   }
 
   private handleGetText(req: Request, res: Response): void {
