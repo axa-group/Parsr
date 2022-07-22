@@ -55,7 +55,7 @@
     "concaveman": "^1.2.0",
     "convert-html-to-pdf": "^1.0.1",
     "csv-stringify": "^5.5.0",
-    "file-type": "^9.0.0",
+    "file-type": "^16.5.4",
     "html-entities": "^1.3.1",
     "limit-async": "^1.3.0",
     "lodash": "^4.17.21",
