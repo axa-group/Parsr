@@ -27,7 +27,7 @@ parsr = ParsrClient('localhost:3001')
 ```python
 parsr.send_document(
    file_path='README.pdf',
-   config_path='defaultConfig.json'
+   config_path='defaultConfig.json',
    document_name='The Readme',
    save_request_id=True)
 ```
