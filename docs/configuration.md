@@ -220,7 +220,7 @@ The `includeDrawings: boolean` parameter specifies if json output should contain
     ["header-footer-detection", { "maxMarginPercentage": 15 }],
     ["reading-order-detection", { "minColumnWidthInPagePercent": 15 }],
     "link-detection",
-    ["words-to-line", { "maximumSpaceBetweenWords": 100 }],
+    ["words-to-line-new", { "maximumSpaceBetweenWords": 100 }],
     "lines-to-paragraph",
     "page-number-detection",
     "hierarchy-detection",
