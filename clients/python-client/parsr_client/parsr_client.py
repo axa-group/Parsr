@@ -83,8 +83,9 @@ class ParsrClient():
             silent: bool = True) -> dict:
         """Send the document to the Parsr server
 
-        - file: The address of the file to be sent to the server
-        - config: The configuration file to be sent with the request
+        - file_path: The address of the file to be sent to the server
+        - config_path: The configuration file to be sent with the request
+        - server: The address of the server
         - document_name: The name of the document
         - revision: Type of revision (major or minor) of the document
         - wait_till_finished: Should the sending be blocking or not
