@@ -24,7 +24,7 @@
     "@mdi/font": "^4.9.95",
     "@mdi/js": "^4.9.95",
     "@vue/cli-plugin-eslint": "^4.4.6",
-    "@vue/cli-service": "^4.4.6",
+    "@vue/cli-service": "^5.0.8",
     "@vue/eslint-config-prettier": "^4.0.1",
     "babel-core": "^6.0.0",
     "babel-eslint": "^10.1.0",
