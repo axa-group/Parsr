@@ -99,7 +99,7 @@
     "lint-staged": "^10.2.11",
     "mocha": "^7.2.0",
     "prettier": "^1.18.2",
-    "remark-cli": "^7.0.1",
+    "remark-cli": "^11.0.0",
     "remark-lint-no-dead-urls": "^1.0.2",
     "remark-validate-links": "^9.2.0",
     "ts-node": "^8.10.2",
