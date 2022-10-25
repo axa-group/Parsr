@@ -21,7 +21,7 @@
 
 - **Parsr**, is a minimal-footprint document (**image, pdf, docx, eml**) cleaning, parsing and extraction toolchain which generates readily available, organized and usable data in **JSON, Markdown (MD), CSV/Pandas DF** or **TXT** formats.
 
-- It provides analysis, data scientists and developers with clean structured and label-enriched information set for ready-to-use applications ranging from data entry and document analysts automation, archival, and many others.
+- It provides analysts, data scientists and developers with clean structured and label-enriched information set for ready-to-use applications ranging from data entry and document analysts automation, archival, and many others.
 
 - Currently, Parsr can perform: document cleaning, _hierarchy regeneration_ (words, lines, paragraphs), detection of _headings, tables, lists, table of contents, page numbers, headers/footers, links_, and others. Check out [all the features](server/src/processing/README.md#1-current-processing-modules).
 
