@@ -137,14 +137,15 @@ class ParsrClient():
         else:
             print('> Polling server for the job {}...'.format(jobId))
             server_status_response = self.get_status(jobId)['server_response']
-            while ('progress-percentage' in server_status_response):
-                if not silent:
+            if not silent:
+                while ('progress-percentage' in server_status_response):
                     print(
                         '>> Progress percentage: {}'.format(
                             server_status_response['progress-percentage']))
                     sleep(refresh_period)
                     server_status_response = self.get_status(jobId)[
                         'server_response']
+                else:
                     print('>> Job done!')
             return {
                 'file': file_path,
