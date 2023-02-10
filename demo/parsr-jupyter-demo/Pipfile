@@ -8,5 +8,5 @@ verify_ssl = true
 [packages]
 parsr-client = ">=3"
 jupyterlab = "*"
-ipython = "==7.16.3"
+ipython = "==8.10.0"
 Pygments = "==2.7.4"
