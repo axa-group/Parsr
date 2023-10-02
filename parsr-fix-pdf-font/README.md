@@ -22,9 +22,11 @@ ImageMagick Convert
 ## Usage
 Use the command line interface to run the Parsr tool:
 
+```sh
+cd parsr-fix-pdf-font
+node parsr-fix-pdf-font.js --input ./test/testPage.pdf --output pdf.pdf --lang eng
 ```
-  parsr-fix-pdf-fonts --input <path-to-pdf> --ouput <path-to-out-pdf> --lang eng
-```
+
 Parameters:
 
 - --input <path-to-pdf>: Specifies the path to the source PDF file that needs to be fixed.
