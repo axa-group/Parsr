@@ -12,6 +12,13 @@ This tool leverages Tesseract.js, an optical character recognition engine, to re
 
 - Easy-to-Use Command Line Interface: Simplified command line usage for quick fixes.
 
+## Requirements
+
+nodejs >18
+
+ImageMagick Convert
+
+
 ## Usage
 Use the command line interface to run the Parsr tool:
 
@@ -30,6 +37,12 @@ If you encounter any issues:
 Inspect PDF: Ensure that the PDF isn't password protected or encrypted. If it is, decrypt it before running the tool.
 
 Language Mismatch: If the OCR isn't accurate, ensure you've chosen the correct language setting for the document.
+
+## Limits
+
+Tesseract OCR is not really good on single Glyph, but at least the text is readable / understandable for an LLM.
+
+We do not reconstruct the XREF table yet. Using a tool like ```mutools clean ``` will allow you to fix them if needed.
 
 ## Contribution
 Parsr is an open-source tool. Contributions in the form of bug reports, feature requests, or code are always welcome. Check our GitHub repository for more details.
