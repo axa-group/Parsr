@@ -1,0 +1,22 @@
+{
+  "name": "fixfontinpdf",
+  "version": "1.0.0",
+  "description": "# Usage",
+  "main": "fixPdfFonts.js",
+  "directories": {
+    "test": "test"
+  },
+  "bin": {
+    "parsr-fix-pdf-font": "fix-pdf-font.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^11.0.0",
+    "opentype.js": "^1.3.4",
+    "tesseract.js": "^5.0.0"
+  }
+}
