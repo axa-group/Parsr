@@ -19,6 +19,10 @@
   <img src="assets/demo_screen.gif">
 </p-->
 
+> [!WARNING]
+> **This project is no longer maintained.** Security patches are not being applied. Consider using an alternative such as [LiteParse](https://github.com/run-llama/liteparse) if you need a local, Apache 2.0–licensed parsing solution.
+
+
 - **Parsr**, is a minimal-footprint document (**image, pdf, docx, eml**) cleaning, parsing and extraction toolchain which generates readily available, organized and usable data in **JSON, Markdown (MD), CSV/Pandas DF** or **TXT** formats.
 
 - It provides analysts, data scientists and developers with clean structured and label-enriched information set for ready-to-use applications ranging from data entry and document analysts automation, archival, and many others.
